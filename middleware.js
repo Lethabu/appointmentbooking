@@ -38,4 +38,3 @@ export const config = {
   // Matcher to run middleware on all requests except for static assets.
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
-
