@@ -1,6 +1,6 @@
-import { createClient } from '@/lib/supabase/server'
+import { createServerComponentClient, createServerActionClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import QueryProvider from '@/components/QueryProvider'
 import Link from 'next/link'
 import {
   HomeIcon,
@@ -29,7 +29,7 @@ async function getSalonForUser(supabase, userId) {
 const SignOut = () => {
   const signOutAction = async () => {
     'use server'
-    const supabase = createClient()
+    const supabase = createServerActionClient({ cookies })
     await supabase.auth.signOut()
     return redirect('/')
   }
@@ -53,7 +53,7 @@ const NavLink = ({ href, icon: Icon, children }) => (
 )
 
 export default async function DashboardLayout({ children }) {
-  const supabase = createClient()
+  const supabase = createServerComponentClient({ cookies })
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -94,9 +94,7 @@ export default async function DashboardLayout({ children }) {
         </div>
       </aside>
       <main className="flex-grow p-6 sm:p-8">
-        <QueryProvider>
-          {children}
-        </QueryProvider>
+        {children}
       </main>
     </div>
   )

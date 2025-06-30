@@ -1,4 +1,5 @@
-import { createClient } from '@/lib/supabase/server'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import AppointmentCard from './AppointmentCard'
 
@@ -59,7 +60,7 @@ async function getPastAppointments(supabase, salonId) {
 }
 
 export default async function AppointmentsPage() {
-  const supabase = createClient()
+  const supabase = createServerComponentClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
