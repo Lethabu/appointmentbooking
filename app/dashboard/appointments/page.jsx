@@ -21,14 +21,14 @@ async function getUpcomingAppointments(supabase, salonId) {
     .from('appointments')
     .select(`
       id,
-      start_time,
+      scheduled_time,
       status,
-      clients ( name ),
+      profiles ( full_name ),
       services ( name, price )
     `)
     .eq('salon_id', salonId)
-    .gte('start_time', new Date().toISOString())
-    .order('start_time', { ascending: true })
+    .gte('scheduled_time', new Date().toISOString())
+    .order('scheduled_time', { ascending: true })
 
   if (error) {
     console.error('Error fetching upcoming appointments:', error)
@@ -42,14 +42,14 @@ async function getPastAppointments(supabase, salonId) {
     .from('appointments')
     .select(`
       id,
-      start_time,
+      scheduled_time,
       status,
-      clients ( name ),
+      profiles ( full_name ),
       services ( name, price )
     `)
     .eq('salon_id', salonId)
-    .lt('start_time', new Date().toISOString())
-    .order('start_time', { ascending: false })
+    .lt('scheduled_time', new Date().toISOString())
+    .order('scheduled_time', { ascending: false })
 
   if (error) {
     console.error('Error fetching past appointments:', error)
