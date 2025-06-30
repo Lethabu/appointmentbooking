@@ -1,8 +1,8 @@
 'use client';
-import AdminLayout from '@/components/Admin/Layout';
-import DashboardStats from '@/components/Admin/DashboardStats';
-import RecentActivity from '@/components/Admin/RecentActivity';
-import SubscriptionReport from '@/components/Admin/SubscriptionReport';
+import AdminLayout from '@/app/components/Admin/Layout';
+import DashboardStats from '@/app/components/Admin/DashboardStats';
+import RecentActivity from '@/app/components/Admin/RecentActivity';
+import SubscriptionReport from '@/app/components/Admin/SubscriptionReport';
 
 export default function AdminDashboardPage() {
   return (
