@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { supabase } from '@/app/utils/supabaseClient';
+import { supabase } from '@/app/utils/supabaseClient'; // This path is correct
 import Calendar from "@/app/components/Booking/Calendar";
 
 export default function BookingPage() {

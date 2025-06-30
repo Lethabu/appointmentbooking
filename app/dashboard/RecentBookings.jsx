@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { supabase } from "../utils/supabaseClient";
-import { subscribeToAppointments } from "../utils/realtime";
+import { supabase } from "@/app/utils/supabaseClient";
+import { subscribeToAppointments } from "@/app/utils/realtime";
 
 export default function RecentBookings({ salonId }) {
   const [bookings, setBookings] = useState([]);

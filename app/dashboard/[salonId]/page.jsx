@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/navigation';
-import DashboardOverview from '@/components/Dashboard/Overview';
+import DashboardOverview from '@/app/components/Dashboard/Overview';
 
 export default function SalonDashboardPage({ params }) {
     const user = useUser();
