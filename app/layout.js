@@ -1,20 +1,11 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 import "./globals.css";
 import { CartProvider } from "./context/CartContext";
 import PerformanceObserver from "./components/PerformanceObserver";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import Providers from "./providers";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata = {
   title: "Create Next App",
@@ -26,7 +17,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <CartProvider>
         <Providers>
-          <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}>
+          <body className={`${GeistSans.variable} ${GeistMono.variable} antialiased bg-gray-50`}>
             <div className="flex flex-col min-h-screen">
               <PerformanceObserver />
               <Navbar />
