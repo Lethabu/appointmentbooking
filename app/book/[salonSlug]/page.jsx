@@ -1,8 +1,6 @@
-"use client";
-import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { supabase } from "../../utils/supabaseClient";
-import Calendar from "../../../../appointmentbooking/components/components/Booking/Calendar";
+import Calendar from "@/app/components/Booking/Calendar";
 
 export default function BookingPage() {
   const router = useRouter();
