@@ -15,13 +15,14 @@ export default function RecentBookings({ salonId }) {
       setError(null);
       const { data, error } = await supabase
         .from("appointments")
-        .select("id, user_id, start_time, service_id, services(name), profiles(full_name)")
-        .leftJoin("profiles", "user_id", "profiles.id")
+        .select("id, scheduled_time, services(name), profiles(full_name)")
         .eq("salon_id", salonId)
-        .order("start_time", { ascending: false })
+        .order("scheduled_time", { ascending: false })
         .limit(5);
-      if (error) setError("Failed to load bookings");
-      else setBookings(data || []);
+      if (error) {
+        console.error("Error fetching bookings:", error);
+        setError("Failed to load bookings. Please try again.");
+      } else setBookings(data || []);
       setLoading(false);
     };
     if (salonId) {
@@ -41,11 +42,14 @@ export default function RecentBookings({ salonId }) {
   if (!bookings.length) return <div className="text-gray-500">No recent bookings.</div>;
 
   return (
-    <ul>
+    <ul className="space-y-3">
       {bookings.map((b) => (
-        <li key={b.id} className="mb-2 flex justify-between items-center">
-          <span>{b.profiles?.full_name || b.user_id} ({b.services?.name || b.service_id})</span>
-          <span className="text-sm text-gray-500">{new Date(b.start_time).toLocaleString()}</span>
+        <li key={b.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+          <div>
+            <p className="font-medium text-gray-900">{b.profiles?.full_name || 'Unknown Client'}</p>
+            <p className="text-sm text-gray-600">{b.services?.name || 'Unknown Service'}</p>
+          </div>
+          <span className="text-sm text-gray-500">{new Date(b.scheduled_time).toLocaleString('en-ZA', { dateStyle: 'short', timeStyle: 'short' })}</span>
         </li>
       ))}
     </ul>
