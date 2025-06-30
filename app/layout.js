@@ -4,6 +4,7 @@ import { CartProvider } from "./context/CartContext";
 import PerformanceObserver from "./components/PerformanceObserver";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
+import Providers from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,14 +25,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <CartProvider>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}>
-          <div className="flex flex-col min-h-screen">
-            <PerformanceObserver />
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-          </div>
-        </body>
+        <Providers>
+          <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}>
+            <div className="flex flex-col min-h-screen">
+              <PerformanceObserver />
+              <Navbar />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </div>
+          </body>
+        </Providers>
       </CartProvider>
     </html>
   );
