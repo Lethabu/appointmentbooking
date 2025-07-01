@@ -1,15 +1,17 @@
-export default function HomePage() {
-  return (
-    <div style={{ fontFamily: 'sans-serif', textAlign: 'center', padding: '50px' }}>
-      <h1>Welcome to AppointmentBookings.co.za</h1>
-      <p>The all-in-one platform for salon management.</p>
-      <p>Tenant portals are available via custom domains.</p>
-      <p><em>(Homepage under construction)</em></p>
-    </div>
-  );
 import Image from "next/image";
 import Link from 'next/link'
 
+export default function HomePage() {
+  return (
+    <>
+      <HeroSection />
+      <SocialProofSection />
+      <FeaturesSection />
+      <PricingSection />
+      <FinalCTASection />
+    </>
+  );
+}
 const CheckIcon = () => <svg className="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>;
 const CrossIcon = () => <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>;
 
@@ -164,5 +166,9 @@ const FinalCTASection = () => (
             <p className="text-lg text-indigo-200 mb-8 max-w-2xl mx-auto">
                 Join dozens of modern salons who are automating their operations and boosting their revenue with AppointmentBookings.co.za.
             </p>
-            <Link href="/signup" className="bg-white text-indigo-700 font-bold py-4 px-10 rounded-lg hover:bg-gray-100 transition-colors text-lg
-
+            <Link href="/signup" className="bg-white text-indigo-700 font-bold py-4 px-10 rounded-lg hover:bg-gray-100 transition-colors text-lg">
+                Start Your Free Trial
+            </Link>
+        </div>
+    </section>
+)
