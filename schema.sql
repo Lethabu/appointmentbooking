@@ -112,3 +112,27 @@ CREATE POLICY "Salon-scoped service access" ON services FOR ALL USING (salon_id 
 CREATE POLICY "Salon-scoped appointment access" ON appointments FOR ALL USING (salon_id IN (SELECT id FROM salons WHERE owner_id = auth.uid()));
 CREATE POLICY "Salon-scoped product access" ON products FOR ALL USING (salon_id IN (SELECT id FROM salons WHERE owner_id = auth.uid()));
 CREATE POLICY "Salon-scoped order access" ON orders FOR ALL USING (salon_id IN (SELECT id FROM salons WHERE owner_id = auth.uid()));
+
+
+-- =========== FUNCTIONS ===========
+
+-- Function to get key statistics for a salon dashboard
+-- This is called from the main dashboard page to show overview stats.
+CREATE OR REPLACE FUNCTION get_salon_stats(salon_id_param UUID)
+RETURNS TABLE(total_bookings BIGINT, upcoming BIGINT, revenue BIGINT) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        -- Total number of appointments ever for the salon
+        (SELECT COUNT(*) FROM public.appointments WHERE salon_id = salon_id_param) AS total_bookings,
+
+        -- Count of appointments scheduled for the future
+        (SELECT COUNT(*) FROM public.appointments WHERE salon_id = salon_id_param AND scheduled_time > NOW()) AS upcoming,
+
+        -- Total revenue from completed appointments (assumes price is in cents)
+        (SELECT COALESCE(SUM(s.price), 0)::BIGINT FROM public.appointments a JOIN public.services s ON a.service_id = s.id WHERE a.salon_id = salon_id_param AND a.status = 'completed') AS revenue;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Grant execution rights to the authenticated role so it can be called from the app
+GRANT EXECUTE ON FUNCTION get_salon_stats(UUID) TO authenticated;

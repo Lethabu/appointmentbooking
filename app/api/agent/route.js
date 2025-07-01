@@ -1,5 +1,5 @@
 // pages/api/agent/route.js
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 // We'll also need the regular createClient for service_role access later
 import { createClient } from '@supabase/supabase-js'
@@ -9,9 +9,40 @@ import { z } from 'zod';
 
 const openai = new OpenAI(process.env.OPENAI_API_KEY)
 
+// Zod schemas defined at the module level
+const BookAppointmentArgsSchema = z.object({
+  service_id: z.string(),
+  datetime: z.string(),
+  client_name: z.string(),
+  client_phone: z.string().optional(),
+});
+const GetAvailableAppointmentsArgsSchema = z.object({
+  service_id: z.string(),
+  date: z.string().optional(),
+});
+const SearchProductsArgsSchema = z.object({
+  query: z.string()
+});
+
 export async function POST(req) {
   const cookieStore = cookies()
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        get(name) {
+          return cookieStore.get(name)?.value
+        },
+        set(name, value, options) {
+          cookieStore.set({ name, value, ...options })
+        },
+        remove(name, options) {
+          cookieStore.set({ name, value: '', ...options })
+        },
+      },
+    }
+  )
   const { data: { session }} = await supabase.auth.getSession()
   if (!session) return new Response('Unauthorized', { status: 401 })
 
@@ -87,20 +118,6 @@ export async function POST(req) {
       const functionName = responseMessage.function_call.name
       const functionArgsRaw = JSON.parse(responseMessage.function_call.arguments)
       let functionResponse
-      // Zod schemas
-      const BookAppointmentArgsSchema = z.object({
-        service_id: z.string(),
-        datetime: z.string(),
-        client_name: z.string(),
-        client_phone: z.string().optional(),
-      });
-      const GetAvailableAppointmentsArgsSchema = z.object({
-        service_id: z.string(),
-        date: z.string().optional(),
-      });
-      const SearchProductsArgsSchema = z.object({
-        query: z.string()
-      });
       try {
         switch (functionName) {
           case 'get_available_appointments':

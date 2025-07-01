@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '../utils/supabase/client';
 
 export default function LoginPage() {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const router = useRouter();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ export default function LoginPage() {
     setError(null);
     const { error: magicError } = await supabase.auth.signInWithOtp({
       email: e.target.magic_email.value,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      options: { email_redirect_to: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
     if (magicError) setError(magicError.message);
@@ -48,7 +48,7 @@ export default function LoginPage() {
     setError(null);
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirect_to: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
     if (oauthError) setError(oauthError.message);

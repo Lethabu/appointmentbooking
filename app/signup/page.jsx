@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '../utils/supabase/client';
 
 export default function SignUpPage() {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const router = useRouter();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ export default function SignUpPage() {
         data: {
           full_name: e.target.full_name.value,
         },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        email_redirect_to: `${window.location.origin}/auth/callback`,
       },
     });
 
@@ -41,7 +41,7 @@ export default function SignUpPage() {
     setError(null);
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirect_to: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
     if (oauthError) setError(oauthError.message);

@@ -3,16 +3,19 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSession } from '@supabase/auth-helpers-react';
-import { supabase } from "../utils/supabaseClient";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Link from "next/link";
 import RecentBookings from "./RecentBookings"; // Import the RecentBookings component
 import AdvancedDashboard from "@/app/components/Analytics/AdvancedDashboard";
 import RealTimeAnalytics from "@/app/components/Dashboard/RealTimeAnalytics";
 import AppointmentLiveView from "@/app/components/Dashboard/AppointmentLiveView";
 import ServiceForm from "@/app/components/ServiceForm";
+import { useRouter } from "next/navigation";
 
 export default function OwnerDashboard() {
   const session = useSession();
+  const supabase = createClientComponentClient();
+  const router = useRouter();
   const [salon, setSalon] = useState(null);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -38,7 +41,7 @@ export default function OwnerDashboard() {
         .single();
       if (salonError || !salonData) {
         // If no salon, redirect to onboarding
-        window.location.replace('/dashboard/create-salon');
+        router.replace('/dashboard/create-salon');
         return;
       }
       setSalon(salonData);
@@ -53,7 +56,7 @@ export default function OwnerDashboard() {
       setLoading(false);
     };
     fetchSalonAndStats();
-  }, [session]);
+  }, [session, router]);
 
   if (!session) {
     return (
@@ -89,7 +92,9 @@ export default function OwnerDashboard() {
         </div>
         <div className="bg-white rounded shadow p-4">
           <div className="text-gray-500">Revenue</div>
-          <div className="text-2xl font-bold">R{stats?.revenue ?? 0}</div>
+          <div className="text-2xl font-bold">
+            {new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format((stats?.revenue ?? 0) / 100)}
+          </div>
         </div>
         <div className="bg-white rounded shadow p-4">
           <div className="text-gray-500">Upcoming</div>
