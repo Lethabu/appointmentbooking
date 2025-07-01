@@ -1,3 +1,12 @@
+export default function HomePage() {
+  return (
+    <div style={{ fontFamily: 'sans-serif', textAlign: 'center', padding: '50px' }}>
+      <h1>Welcome to AppointmentBookings.co.za</h1>
+      <p>The all-in-one platform for salon management.</p>
+      <p>Tenant portals are available via custom domains.</p>
+      <p><em>(Homepage under construction)</em></p>
+    </div>
+  );
 import Image from "next/image";
 import Link from 'next/link'
 
@@ -155,21 +164,5 @@ const FinalCTASection = () => (
             <p className="text-lg text-indigo-200 mb-8 max-w-2xl mx-auto">
                 Join dozens of modern salons who are automating their operations and boosting their revenue with AppointmentBookings.co.za.
             </p>
-            <Link href="/signup" className="bg-white text-indigo-700 font-bold py-4 px-10 rounded-lg hover:bg-gray-100 transition-colors text-lg shadow-xl">
-                Get Started for Free
-            </Link>
-        </div>
-    </section>
-);
+            <Link href="/signup" className="bg-white text-indigo-700 font-bold py-4 px-10 rounded-lg hover:bg-gray-100 transition-colors text-lg
 
-export default function HomePage() {
-  return (
-    <>
-      <HeroSection />
-      <SocialProofSection />
-      <FeaturesSection />
-      <PricingSection />
-      <FinalCTASection />
-    </>
-  );
-}
