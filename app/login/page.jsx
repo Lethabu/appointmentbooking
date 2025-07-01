@@ -7,13 +7,15 @@ import { createClient } from '@/utils/supabase/client';
 export default function LoginPage() {
   const supabase = createClient();
   const router = useRouter();
-  const [error, setError] = useState(null);
+  const [message, setMessage] = useState({ type: '', content: '' });
   const [loading, setLoading] = useState(false);
+
+  const showMessage = (type, content) => setMessage({ type, content });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
+    showMessage('', '');
 
     const { error: loginError } = await supabase.auth.signInWithPassword({
       email: e.target.email.value,
@@ -22,7 +24,7 @@ export default function LoginPage() {
 
     setLoading(false);
     if (loginError) {
-      setError(loginError.message);
+      showMessage('error', loginError.message);
       return;
     }
     router.push('/dashboard');
@@ -32,26 +34,26 @@ export default function LoginPage() {
   const handleMagicLink = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
+    showMessage('', '');
     const { error: magicError } = await supabase.auth.signInWithOtp({
       email: e.target.magic_email.value,
       options: { email_redirect_to: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
-    if (magicError) setError(magicError.message);
-    else setError('Check your email for a magic link!');
+    if (magicError) showMessage('error', magicError.message);
+    else showMessage('success', 'Check your email for a magic link!');
   };
 
   // OAuth
   const handleOAuth = async (provider) => {
     setLoading(true);
-    setError(null);
+    showMessage('', '');
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
       options: { redirect_to: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
-    if (oauthError) setError(oauthError.message);
+    if (oauthError) showMessage('error', oauthError.message);
   };
 
   return (
@@ -106,7 +108,13 @@ export default function LoginPage() {
           <button onClick={() => handleOAuth('google')} className="w-full py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600">Sign in with Google</button>
           <button onClick={() => handleOAuth('github')} className="w-full py-2 px-4 bg-gray-800 text-white rounded hover:bg-gray-900">Sign in with GitHub</button>
         </div>
-        {error && <p className="text-red-500 text-center text-sm mt-2">{error}</p>}
+        {message.content && (
+          <p className={`text-center text-sm mt-2 ${
+            message.type === 'error' ? 'text-red-500' : 'text-green-500'
+          }`}>
+            {message.content}
+          </p>
+        )}
       </div>
     </div>
   );
