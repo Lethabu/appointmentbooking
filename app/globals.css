@@ -1,0 +1,29 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for the salon booking platform */
+.btn {
+  @apply px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-200;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-md p-6;
+}
+
+/* SuperSaaS widget customization */
+.supersaas-booking-widget {
+  @apply w-full flex justify-center;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+}
