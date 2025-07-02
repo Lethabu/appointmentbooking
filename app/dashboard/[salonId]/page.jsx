@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useUser, useSupabaseClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
 import DashboardOverview from '@/app/components/Dashboard/Overview';
 

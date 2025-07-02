@@ -1,0 +1,10 @@
+{
+	"extends": "tsconfig/react-library.json",
+	"compilerOptions": {
+		"extends": "../../tsconfig.json",
+		"allowSyntheticDefaultImports": true,
+		"allowJs": true
+	},
+	"include": ["src"],
+	"exclude": ["dist", "build", "node_modules"]
+}

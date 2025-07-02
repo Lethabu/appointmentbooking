@@ -2,8 +2,8 @@
 
 "use client";
 import { useEffect, useState } from "react";
-import { useSession } from '@supabase/auth-helpers-react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useSession } from '@supabase/ssr';
+import { createClientComponentClient } from '@supabase/ssr'
 import Link from "next/link";
 import RecentBookings from "./RecentBookings"; // Import the RecentBookings component
 import AdvancedDashboard from "@/app/components/Analytics/AdvancedDashboard";

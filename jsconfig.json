@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "paths": {
-      "@/*": ["./*"]
+      "@/utils/*": ["./utils/*"],
+      "@/utils/supabaseclient": ["./utils/supabaseclient.js"]
     }
   }
 }

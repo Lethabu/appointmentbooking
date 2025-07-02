@@ -1,4 +1,11 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  // ... other configurations ...
+  webpack: (config) => {
+    config.resolve.alias['@/utils'] = path.join(__dirname, 'utils');
+    return config;
+  },
+};
 
-export default nextConfig;
+module.exports = nextConfig;
+
