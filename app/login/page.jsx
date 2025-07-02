@@ -3,19 +3,18 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/ssr';
+import Notification from '@/app/components/UI/Notification';
 
 export default function LoginPage() {
   const supabase = createClientComponentClient();
   const router = useRouter();
-  const [message, setMessage] = useState({ type: '', content: '' });
+  const [notification, setNotification] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
-
-  const showMessage = (type, content) => setMessage({ type, content });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    showMessage('', '');
+    setNotification({ type: '', message: '' });
 
     const { error: loginError } = await supabase.auth.signInWithPassword({
       email: e.target.email.value,
@@ -24,7 +23,7 @@ export default function LoginPage() {
 
     setLoading(false);
     if (loginError) {
-      showMessage('error', loginError.message);
+      setNotification({ type: 'error', message: loginError.message });
       return;
     }
     router.push('/dashboard');
@@ -34,26 +33,26 @@ export default function LoginPage() {
   const handleMagicLink = async (e) => {
     e.preventDefault();
     setLoading(true);
-    showMessage('', '');
+    setNotification({ type: '', message: '' });
     const { error: magicError } = await supabase.auth.signInWithOtp({
       email: e.target.magic_email.value,
       options: { email_redirect_to: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
-    if (magicError) showMessage('error', magicError.message);
-    else showMessage('success', 'Check your email for a magic link!');
+    if (magicError) setNotification({ type: 'error', message: magicError.message });
+    else setNotification({ type: 'success', message: 'Check your email for a magic link!' });
   };
 
   // OAuth
   const handleOAuth = async (provider) => {
     setLoading(true);
-    showMessage('', '');
+    setNotification({ type: '', message: '' });
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
       options: { redirect_to: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
-    if (oauthError) showMessage('error', oauthError.message);
+    if (oauthError) setNotification({ type: 'error', message: oauthError.message });
   };
 
   return (
@@ -108,13 +107,7 @@ export default function LoginPage() {
           <button onClick={() => handleOAuth('google')} className="w-full py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600">Sign in with Google</button>
           <button onClick={() => handleOAuth('github')} className="w-full py-2 px-4 bg-gray-800 text-white rounded hover:bg-gray-900">Sign in with GitHub</button>
         </div>
-        {message.content && (
-          <p className={`text-center text-sm mt-2 ${
-            message.type === 'error' ? 'text-red-500' : 'text-green-500'
-          }`}>
-            {message.content}
-          </p>
-        )}
+        <Notification type={notification.type} message={notification.message} onDismiss={() => setNotification({ type: '', message: '' })} />
       </div>
     </div>
   );
