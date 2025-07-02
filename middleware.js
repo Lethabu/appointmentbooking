@@ -29,18 +29,37 @@ export async function middleware(req) {
   const { pathname, searchParams } = req.nextUrl;
   const host = req.headers.get('host');
 
-  // For local development, you can use localhost:3000
-  const domain = process.env.NODE_ENV === 'production' 
-    ? 'appointmentbookings.co.za' 
-    : 'localhost:3000';
-
-  const subdomain = host.replace(`.${domain}`, '');
-
-  // If it's a subdomain request, rewrite the URL to include the subdomain as a query parameter
-  if (subdomain !== host && subdomain !== 'www') {
-    return NextResponse.rewrite(
-      new URL(`/${subdomain}${pathname}${searchParams.toString() ? `?${searchParams}` : ''}`, req.url)
-    );
+  // Handle multiple domains
+  let salonSlug = null;
+  
+  if (process.env.NODE_ENV === 'production') {
+    // Handle custom domains (like instylehairboutique.co.za)
+    if (host !== 'appointmentbookings.co.za' && !host.includes('appointmentbookings.co.za')) {
+      // This is a custom domain, treat as salon
+      salonSlug = host.replace('.co.za', '').replace('.com', ''); // Extract salon name from domain
+      return NextResponse.rewrite(
+        new URL(`/${salonSlug}${pathname}${searchParams.toString() ? `?${searchParams}` : ''}`, req.url)
+      );
+    }
+    
+    // Handle subdomains on main platform (salon.appointmentbookings.co.za)
+    const subdomain = host.replace('.appointmentbookings.co.za', '');
+    if (subdomain !== host && subdomain !== 'www') {
+      return NextResponse.rewrite(
+        new URL(`/${subdomain}${pathname}${searchParams.toString() ? `?${searchParams}` : ''}`, req.url)
+      );
+    }
+  } else {
+    // Development: handle Replit domains
+    if (host.includes('replit.dev') || host.includes('repl.co')) {
+      // Check if there's a salon parameter or use a default for testing
+      const testSalon = searchParams.get('salon') || 'instylehairboutique';
+      if (pathname === '/' && !pathname.startsWith('/dashboard')) {
+        return NextResponse.rewrite(
+          new URL(`/${testSalon}${pathname}${searchParams.toString() ? `?${searchParams}` : ''}`, req.url)
+        );
+      }
+    }
   }
 
   // Standard auth protection for dashboard routes
