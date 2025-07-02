@@ -80,7 +80,7 @@ export default function OwnerDashboard() {
         <h2 className="text-3xl font-bold mb-4">Welcome to your new dashboard!</h2>
         <p className="mb-6 text-gray-600">Get started by adding your first service, inviting staff, or sharing your booking link with clients.</p>
         <div className="flex flex-col gap-4 items-center">
-          <a href="/dashboard" className="btn">Go to Dashboard</a>
+          <Link href="/dashboard/appointments" className="btn">View Appointments</Link>
           <a href="/dashboard/create-salon" className="btn btn-secondary">Edit Salon Details</a>
         </div>
       </div>
