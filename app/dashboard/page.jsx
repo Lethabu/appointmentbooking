@@ -1,8 +1,7 @@
 // (removed duplicate import and export)
 
 "use client";
-import { useEffect, useState } from "react";
-import { useSession } from '@supabase/ssr';
+import { useEffect, useState } from 'react';
 import { createClientComponentClient } from '@supabase/ssr'
 import Link from "next/link";
 import RecentBookings from "./RecentBookings"; // Import the RecentBookings component
@@ -13,52 +12,59 @@ import ServiceForm from "@/app/components/ServiceForm";
 import { useRouter } from "next/navigation";
 
 export default function OwnerDashboard() {
-  const session = useSession();
   const supabase = createClientComponentClient();
   const router = useRouter();
+  const [session, setSession] = useState(null);
   const [salon, setSalon] = useState(null);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!session) return;
-    // Only allow access if user is owner or admin
-    const userRole = session.user?.user_metadata?.role;
-    if (userRole && userRole !== 'owner' && userRole !== 'admin') {
-      setError('Access denied. You do not have permission to view this dashboard.');
-      setLoading(false);
-      return;
-    }
-    const fetchSalonAndStats = async () => {
+    const fetchData = async () => {
       setLoading(true);
       setError(null);
-      // Fetch salon for current user
-      const { data: salonData, error: salonError } = await supabase
-        .from("salons")
-        .select("id, name")
-        .eq("owner_id", session.user.id)
-        .single();
-      if (salonError || !salonData) {
-        // If no salon, redirect to onboarding
-        router.replace('/dashboard/create-salon');
+
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+
+      if (!session) {
+        setLoading(false);
         return;
       }
-      setSalon(salonData);
-      // Fetch stats via RPC
-      const { data: statsData, error: statsError } = await supabase
-        .rpc("get_salon_stats", { salon_id: salonData.id });
-      if (statsError) {
-        setError("Failed to fetch stats.");
+
+      const userRole = session.user?.user_metadata?.role;
+      if (userRole && userRole !== 'owner' && userRole !== 'admin') {
+        setError('Access denied. You do not have permission to view this dashboard.');
       } else {
-        setStats(statsData);
+        const { data: salonData, error: salonError } = await supabase
+          .from("salons")
+          .select("id, name")
+          .eq("owner_id", session.user.id)
+          .single();
+
+        if (salonError || !salonData) {
+          router.replace('/dashboard/create-salon');
+          return; // Exit early on redirect
+        }
+        setSalon(salonData);
+
+        const { data: statsData, error: statsError } = await supabase
+          .rpc("get_salon_stats", { salon_id: salonData.id });
+
+        if (statsError) {
+          setError("Failed to fetch stats.");
+        } else {
+          setStats(statsData);
+        }
       }
       setLoading(false);
     };
-    fetchSalonAndStats();
-  }, [session, router]);
+    fetchData();
+  }, [supabase, router]);
 
-  if (!session) {
+  if (loading) return <div className="p-8 text-center">Loading dashboard...</div>;
+  if (!session && !loading) {
     return (
       <div className="max-w-xl mx-auto mt-16 text-center">
         <h2 className="text-2xl font-bold mb-4">Sign in required</h2>
@@ -66,7 +72,6 @@ export default function OwnerDashboard() {
       </div>
     );
   }
-  if (loading) return <div className="p-8 text-center">Loading dashboard...</div>;
   if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
 
   if (salon && stats?.total_bookings === 0) {

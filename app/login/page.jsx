@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
+import { createClientComponentClient } from '@supabase/ssr';
 
 export default function LoginPage() {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
   const router = useRouter();
   const [message, setMessage] = useState({ type: '', content: '' });
   const [loading, setLoading] = useState(false);
