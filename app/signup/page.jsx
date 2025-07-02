@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -15,14 +16,21 @@ export default function SignUpPage() {
     setLoading(true);
     setError(null);
 
+    const formData = new FormData(e.target);
+    const email = formData.get('email');
+    const password = formData.get('password');
+    const fullName = formData.get('full_name');
+    const userType = formData.get('user_type') || 'client';
+
     const { data, error: signUpError } = await supabase.auth.signUp({
-      email: e.target.email.value,
-      password: e.target.password.value,
+      email,
+      password,
       options: {
         data: {
-          full_name: e.target.full_name.value,
+          full_name: fullName,
+          user_type: userType,
         },
-        email_redirect_to: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 
@@ -30,6 +38,22 @@ export default function SignUpPage() {
       setError(signUpError.message);
       setLoading(false);
       return;
+    }
+
+    // Create profile record
+    if (data.user) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: data.user.id,
+          full_name: fullName,
+          email: email,
+          role: userType,
+        });
+
+      if (profileError) {
+        console.error('Profile creation error:', profileError);
+      }
     }
 
     router.push('/check-email');
@@ -41,14 +65,14 @@ export default function SignUpPage() {
     setError(null);
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirect_to: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
     if (oauthError) setError(oauthError.message);
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex justify-center items-center min-h-screen py-12">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center">Create your Account</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -87,11 +111,25 @@ export default function SignUpPage() {
               id="password"
               name="password"
               type="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="••••••••"
             />
+          </div>
+          <div>
+            <label htmlFor="user_type" className="text-sm font-medium text-gray-700">
+              Account Type
+            </label>
+            <select
+              id="user_type"
+              name="user_type"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="client">Client</option>
+              <option value="staff">Staff Member</option>
+              <option value="admin">Salon Owner</option>
+            </select>
           </div>
           <button
             type="submit"
@@ -110,6 +148,12 @@ export default function SignUpPage() {
             Sign up with GitHub
           </button>
         </div>
+        <p className="text-center text-sm text-gray-600">
+          Already have an account?{' '}
+          <a href="/login" className="text-indigo-600 hover:text-indigo-500">
+            Sign in
+          </a>
+        </p>
       </div>
     </div>
   );
