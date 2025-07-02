@@ -1,1 +1,35 @@
-"use strict";(()=>{var e={};e.id=2888,e.ids=[2888],e.modules={31931:(e,s,r)=>{r.r(s),r.d(s,{default:()=>x});var i=r(20997),t=r(41664),n=r.n(t);let d=()=>i.jsx("header",{className:"bg-white shadow-md sticky top-0 z-50",children:i.jsx("nav",{className:"container mx-auto px-4 sm:px-6 lg:px-8",children:(0,i.jsxs)("div",{className:"flex items-center justify-between h-16",children:[i.jsx("div",{className:"flex-shrink-0",children:i.jsx(n(),{href:"/",className:"text-2xl font-bold text-gray-800 hover:text-indigo-600 transition-colors",children:"AppointmentBookings"})}),i.jsx("div",{className:"hidden md:block",children:(0,i.jsxs)("div",{className:"ml-10 flex items-baseline space-x-4",children:[i.jsx(n(),{href:"/pricing",className:"text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium",children:"Pricing"}),i.jsx(n(),{href:"/about",className:"text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium",children:"About"}),i.jsx(n(),{href:"/contact",className:"text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium",children:"Contact"})]})}),i.jsx("div",{className:"hidden md:block",children:(0,i.jsxs)("div",{className:"ml-4 flex items-center md:ml-6 space-x-2",children:[i.jsx(n(),{href:"/login",className:"text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium",children:"Log in"}),i.jsx(n(),{href:"/signup",className:"bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",children:"Sign up"})]})})]})})}),a=()=>i.jsx("footer",{className:"bg-white border-t",children:i.jsx("div",{className:"container mx-auto py-6 px-4 sm:px-6 lg:px-8",children:(0,i.jsxs)("div",{className:"text-center text-sm text-gray-500",children:[(0,i.jsxs)("p",{children:["\xa9 ",new Date().getFullYear()," AppointmentBookings.co.za. All rights reserved."]}),(0,i.jsxs)("div",{className:"mt-2 space-x-4",children:[i.jsx(n(),{href:"/terms",className:"hover:text-gray-700",children:"Terms of Service"}),i.jsx("span",{children:"\xb7"}),i.jsx(n(),{href:"/privacy",className:"hover:text-gray-700",children:"Privacy Policy"})]})]})})});function c({children:e}){return(0,i.jsxs)("div",{className:"min-h-screen flex flex-col bg-gray-50",children:[i.jsx(d,{}),i.jsx("main",{className:"flex-grow",children:e}),i.jsx(a,{})]})}let x=function({Component:e,pageProps:s}){return i.jsx(c,{children:i.jsx(e,{...s})})}},62785:e=>{e.exports=require("next/dist/compiled/next-server/pages.runtime.prod.js")},16689:e=>{e.exports=require("react")},20997:e=>{e.exports=require("react/jsx-runtime")}};var s=require("../webpack-runtime.js");s.C(e);var r=e=>s(s.s=e),i=s.X(0,[9013,1664],()=>r(31931));module.exports=i})();
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(() => {
+var exports = {};
+exports.id = "pages/_app";
+exports.ids = ["pages/_app"];
+exports.modules = {
+
+/***/ "./pages/_app.js":
+/*!***********************!*\
+  !*** ./pages/_app.js ***!
+  \***********************/
+/***/ (() => {
+
+eval("//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiIuL3BhZ2VzL19hcHAuanMiLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///./pages/_app.js\n");
+
+/***/ })
+
+};
+;
+
+// load runtime
+var __webpack_require__ = require("../webpack-runtime.js");
+__webpack_require__.C(exports);
+var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
+var __webpack_exports__ = (__webpack_exec__("./pages/_app.js"));
+module.exports = __webpack_exports__;
+
+})();
