@@ -8,6 +8,8 @@ export default function InStyleSetupPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  const [scrapedData, setScrapedData] = useState(null);
+  const [scraping, setScraping] = useState(false);
 
   const supabase = createClient();
 
@@ -102,6 +104,25 @@ export default function InStyleSetupPage() {
       stock_quantity: 18
     }
   ];
+
+  const scrapeSocialMedia = async () => {
+    setScraping(true);
+    try {
+      const response = await fetch('/api/scrape-social', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platforms: ['instagram', 'tiktok'] })
+      });
+      
+      const data = await response.json();
+      setScrapedData(data);
+      setSuccess('Social media data scraped successfully!');
+    } catch (error) {
+      setError('Failed to scrape social media: ' + error.message);
+    } finally {
+      setScraping(false);
+    }
+  };
 
   const setupInStyleData = async () => {
     setLoading(true);
@@ -228,13 +249,23 @@ export default function InStyleSetupPage() {
           </div>
         </div>
 
-        <button
-          onClick={setupInStyleData}
-          disabled={loading}
-          className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Setting up...' : 'Setup InStyle Hair Boutique'}
-        </button>
+        <div className="space-y-4">
+          <button
+            onClick={scrapeSocialMedia}
+            disabled={scraping}
+            className="w-full bg-pink-600 text-white py-3 px-6 rounded-lg hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+          >
+            {scraping ? 'Scraping Social Media...' : 'Scrape Instagram & TikTok Data'}
+          </button>
+          
+          <button
+            onClick={setupInStyleData}
+            disabled={loading}
+            className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Setting up...' : 'Setup InStyle Hair Boutique'}
+          </button>
+        </div>
 
         {success && (
           <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
@@ -245,6 +276,24 @@ export default function InStyleSetupPage() {
         {error && (
           <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
             {error}
+          </div>
+        )}
+
+        {scrapedData && (
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
+            <h3 className="font-medium text-blue-800 mb-2">Scraped Social Media Data:</h3>
+            <div className="text-sm text-blue-700">
+              {scrapedData.instagram && (
+                <div className="mb-2">
+                  <strong>Instagram:</strong> {scrapedData.instagram.posts?.length || 0} posts found
+                </div>
+              )}
+              {scrapedData.tiktok && (
+                <div>
+                  <strong>TikTok:</strong> {scrapedData.tiktok.videos?.length || 0} videos found
+                </div>
+              )}
+            </div>
           </div>
         )}
 
