@@ -1,4 +1,4 @@
-import { createServerComponentClient, createServerActionClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -29,7 +29,24 @@ async function getSalonForUser(supabase, userId) {
 const SignOut = () => {
   const signOutAction = async () => {
     'use server'
-    const supabase = createServerActionClient({ cookies })
+    const cookieStore = cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      {
+        cookies: {
+          get(name) {
+            return cookieStore.get(name)?.value
+          },
+          set(name, value, options) {
+            cookieStore.set({ name, value, ...options })
+          },
+          remove(name, options) {
+            cookieStore.set({ name, value: '', ...options })
+          },
+        },
+      }
+    )
     await supabase.auth.signOut()
     return redirect('/')
   }
@@ -53,7 +70,19 @@ const NavLink = ({ href, icon: Icon, children }) => (
 )
 
 export default async function DashboardLayout({ children }) {
-  const supabase = createServerComponentClient({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        get(name) {
+          return cookieStore.get(name)?.value
+        },
+      },
+    }
+  )
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
