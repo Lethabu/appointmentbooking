@@ -2,6 +2,7 @@
 
 "use client";
 import { useEffect, useState } from 'react';
+import StatCard from "@/app/components/Dashboard/StatCard";
 import { createClientComponentClient } from '@supabase/ssr'
 import Link from "next/link";
 import RecentBookings from "./RecentBookings"; // Import the RecentBookings component
@@ -90,21 +91,10 @@ export default function OwnerDashboard() {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">Welcome, {salon.name}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white rounded shadow p-4">
-          <div className="text-gray-500">Total Bookings</div>
-          <div className="text-2xl font-bold">{stats?.total_bookings ?? 0}</div>
-        </div>
-        <div className="bg-white rounded shadow p-4">
-          <div className="text-gray-500">Revenue</div>
-          <div className="text-2xl font-bold">
-            {new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format((stats?.revenue ?? 0) / 100)}
-          </div>
-        </div>
-        <div className="bg-white rounded shadow p-4">
-          <div className="text-gray-500">Upcoming</div>
-          <div className="text-2xl font-bold">{stats?.upcoming ?? 0}</div>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <StatCard title="Total Bookings" value={stats?.total_bookings} />
+        <StatCard title="Revenue" value={stats?.revenue} formatAsCurrency={true} />
+        <StatCard title="Upcoming" value={stats?.upcoming} />
       </div>
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Recent Bookings</h2>

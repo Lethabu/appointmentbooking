@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { createClientComponentClient } from '@supabase/ssr';
+import StatCard from './StatCard';
 
 const TimeframeSelector = ({ timeframe, setTimeframe }) => {
   const options = [
@@ -60,20 +61,9 @@ export default function DashboardOverview({ salonId }) {
     <>
       <TimeframeSelector timeframe={timeframe} setTimeframe={setTimeframe} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-gray-500 text-sm font-medium">Total Bookings</h3>
-          <p className="text-3xl font-bold mt-2">{stats?.total_bookings ?? 0}</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-gray-500 text-sm font-medium">Total Revenue</h3>
-          <p className="text-3xl font-bold mt-2">
-            {new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format((stats?.revenue ?? 0) / 100)}
-          </p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-gray-500 text-sm font-medium">Upcoming Appointments</h3>
-          <p className="text-3xl font-bold mt-2">{stats?.upcoming ?? 0}</p>
-        </div>
+        <StatCard title="Total Bookings" value={stats?.total_bookings} />
+        <StatCard title="Total Revenue" value={stats?.revenue} formatAsCurrency />
+        <StatCard title="Upcoming Appointments" value={stats?.upcoming} />
       </div>
     </>
   );

@@ -1,13 +1,15 @@
 "use client"
 
 import { useState, useEffect, useCallback } from 'react'
-import { createClientComponentClient } from '@supabase/ssr'
+import { createClientComponentClient } from '@supabase/ssr';
+import Notification from '@/app/components/UI/Notification';
 
 export default function BookingsPage() {
   const supabase = createClientComponentClient()
   const [loading, setLoading] = useState(true)
   const [appointments, setAppointments] = useState([])
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
+  const [notification, setNotification] = useState({ message: '', type: '' });
 
   const fetchAppointments = useCallback(async (date) => {
     try {
@@ -35,7 +37,7 @@ export default function BookingsPage() {
       setAppointments(data)
     } catch (error) {
       console.error('Error fetching appointments:', error)
-      alert(error.message)
+      setNotification({ message: `Error: ${error.message}`, type: 'error' });
     } finally {
       setLoading(false)
     }
@@ -50,8 +52,11 @@ export default function BookingsPage() {
       .from('appointments')
       .update({ status: 'confirmed' })
       .eq('id', id)
-    if (error) alert(error.message)
-    else fetchAppointments(selectedDate) // Refresh list
+    if (error) {
+      setNotification({ message: error.message, type: 'error' });
+    } else {
+      fetchAppointments(selectedDate) // Refresh list
+    }
   }
 
   const handleSendWhatsApp = async (id) => {
@@ -61,11 +66,12 @@ export default function BookingsPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ appointment_id: id })
     })
-    alert('WhatsApp reminder queued!')
+    setNotification({ message: 'WhatsApp reminder queued!', type: 'success' });
   }
 
   return (
     <>
+      <Notification message={notification.message} type={notification.type} onDismiss={() => setNotification({ message: '', type: '' })} />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Appointments</h1>
         <input

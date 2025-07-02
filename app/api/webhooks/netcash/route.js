@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
-import { verifyNetcashSignature } from '@/lib/server/verify-webhook'
+import { verifyNetcashSignature } from '../../../lib/server/verify-webhook'
 
 export async function POST(req) {
   const payload = await req.json()
