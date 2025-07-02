@@ -5,23 +5,33 @@ import { useEffect } from 'react';
 
 export default function PerformanceObserver() {
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'PerformanceObserver' in window) {
+    // Only run in browser environment
+    if (typeof window === 'undefined') return;
+
+    // Check if PerformanceObserver is supported
+    if (!('PerformanceObserver' in window)) return;
+
+    try {
       const observer = new PerformanceObserver((list) => {
-        list.getEntries().forEach((entry) => {
-          // Log performance metrics for debugging
-          if (process.env.NODE_ENV === 'development') {
+        // Only log in development
+        if (process.env.NODE_ENV === 'development') {
+          list.getEntries().forEach((entry) => {
             console.log('Performance:', entry.name, entry.duration);
-          }
-        });
+          });
+        }
       });
 
-      try {
-        observer.observe({ entryTypes: ['navigation', 'paint'] });
-      } catch (error) {
-        console.log('PerformanceObserver not supported');
-      }
+      observer.observe({ entryTypes: ['navigation', 'paint'] });
 
-      return () => observer.disconnect();
+      return () => {
+        try {
+          observer.disconnect();
+        } catch (e) {
+          // Silently handle disconnect errors
+        }
+      };
+    } catch (error) {
+      console.warn('PerformanceObserver initialization failed:', error);
     }
   }, []);
 

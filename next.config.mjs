@@ -1,9 +1,30 @@
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    allowedDevOrigins: [
-      'https://a0a81b81-e43e-4f6e-a0e5-2c534462dfce-00-2b7uhvz7qey3w.kirk.replit.dev',
-    ],
+    serverActions: {
+      allowedOrigins: [
+        'localhost:3000',
+        '*.replit.dev',
+        '*.repl.co',
+        'appointmentbooking.co.za',
+        'instylehairboutique.co.za'
+      ]
+    }
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/:path*',
+        destination: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'instylehairboutique.co.za',
+          },
+        ],
+      },
+    ];
   },
   async headers() {
     return [
@@ -13,20 +34,6 @@ const nextConfig = {
           {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN',
-          },
-        ],
-      },
-    ];
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/((?!api|_next|_static|favicon.ico).*)',
-        destination: '/api/subdomain-handler',
-        has: [
-          {
-            type: 'host',
-            value: '(?<subdomain>.*)\\.repl\\.co',
           },
         ],
       },
