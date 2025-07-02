@@ -1,52 +1,57 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useUser, useSupabaseClient } from '@supabase/ssr';
+import { createClientComponentClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
 import DashboardOverview from '@/app/components/Dashboard/Overview';
 
 export default function SalonDashboardPage({ params }) {
-    const user = useUser();
-    const supabase = useSupabaseClient();
+    const supabase = createClientComponentClient();
     const router = useRouter();
     const { salonId } = params;
 
+    const [user, setUser] = useState(null);
     const [salon, setSalon] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!user || !salonId) {
-            if (user === null) {
-              router.push('/login');
-            }
-            return;
-        }
-
         const fetchSalonAndVerifyOwner = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+
+            if (!user) {
+                router.push('/login');
+                return;
+            }
+            setUser(user);
+
+            if (!salonId) {
+                setLoading(false);
+                return;
+            }
+
             setLoading(true);
             setError(null);
 
-            const { data, error: fetchError } = await supabase
+            const { data: salonData, error: fetchError } = await supabase
                 .from('salons')
                 .select('*')
                 .eq('id', salonId)
                 .eq('owner_id', user.id)
                 .single();
 
-            if (fetchError || !data) {
+            if (fetchError || !salonData) {
                 setError('You do not have permission to view this salon, or it does not exist.');
                 setLoading(false);
                 return;
             }
 
-            setSalon(data);
+            setSalon(salonData);
             setLoading(false);
         };
 
         fetchSalonAndVerifyOwner();
-
-    }, [user, salonId, supabase, router]);
+    }, [salonId, supabase, router]);
 
     if (loading) {
         return <div className="text-center p-12">Loading Your Dashboard...</div>;

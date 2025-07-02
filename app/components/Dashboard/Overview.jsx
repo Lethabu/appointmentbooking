@@ -1,10 +1,47 @@
-'use client'
+'use client';
+import { useState, useEffect, useCallback } from 'react';
+import { createClientComponentClient } from '@supabase/ssr';
 
-export default function Overview() {
+export default function DashboardOverview({ salonId }) {
+  const supabase = createClientComponentClient();
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [timeframe, setTimeframe] = useState('this_month');
+
+  const fetchStats = useCallback(async () => {
+    if (!salonId) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data, error: rpcError } = await supabase.rpc('get_salon_stats', {
+        p_salon_id: salonId,
+        p_timeframe: timeframe,
+      });
+
+      if (rpcError) throw rpcError;
+      setStats(data);
+    } catch (err) {
+      console.error("Error fetching dashboard stats:", err);
+      setError("Could not load salon statistics.");
+    } finally {
+      setLoading(false);
+    }
+  }, [supabase, salonId, timeframe]);
+
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
+
+  if (loading) return <div>Loading stats...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+
   return (
-    <div className="p-4 bg-white rounded-lg shadow">
-      <h2 className="text-lg font-semibold mb-4">Dashboard Overview</h2>
-      <p className="text-sm text-gray-500">Key metrics and stats will be displayed here.</p>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      {/* Your stats display components will go here, using the `stats` object */}
     </div>
-  )
+  );
 }
