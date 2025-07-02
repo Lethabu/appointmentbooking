@@ -15,18 +15,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <CartProvider>
-        <Providers>
-          <body className={`${GeistSans.variable} ${GeistMono.variable} antialiased bg-gray-50`}>
-            <div className="flex flex-col min-h-screen">
-              <PerformanceObserver />
-              <Navbar />
-              <main className="flex-grow">{children}</main>
-              <Footer />
-            </div>
-          </body>
-        </Providers>
-      </CartProvider>
+      <Providers>
+        <body className={`${GeistSans.variable} ${GeistMono.variable} antialiased bg-gray-50`}>
+          <div className="flex flex-col min-h-screen">
+            <PerformanceObserver />
+            <Navbar />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </div>
+        </body>
+      </Providers>
     </html>
   );
 }

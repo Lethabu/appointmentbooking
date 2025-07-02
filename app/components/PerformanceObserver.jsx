@@ -10,12 +10,16 @@ export default function PerformanceObserver() {
         list.getEntries().forEach((entry) => {
           // Log performance metrics for debugging
           if (process.env.NODE_ENV === 'development') {
-            console.log('Performance:', entry);
+            console.log('Performance:', entry.name, entry.duration);
           }
         });
       });
 
-      observer.observe({ entryTypes: ['navigation', 'paint'] });
+      try {
+        observer.observe({ entryTypes: ['navigation', 'paint'] });
+      } catch (error) {
+        console.log('PerformanceObserver not supported');
+      }
 
       return () => observer.disconnect();
     }
