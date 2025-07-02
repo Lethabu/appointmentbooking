@@ -2,6 +2,23 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createClientComponentClient } from '@supabase/ssr';
 
+const TimeframeSelector = ({ timeframe, setTimeframe }) => {
+  const options = [
+    { value: 'today', label: 'Today' },
+    { value: 'this_week', label: 'This Week' },
+    { value: 'this_month', label: 'This Month' },
+    { value: 'this_year', label: 'This Year' },
+  ];
+
+  return (
+    <div className="flex justify-end mb-4">
+      <select value={timeframe} onChange={(e) => setTimeframe(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 bg-white shadow-sm">
+        {options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+      </select>
+    </div>
+  );
+};
+
 export default function DashboardOverview({ salonId }) {
   const supabase = createClientComponentClient();
   const [stats, setStats] = useState(null);
@@ -40,8 +57,24 @@ export default function DashboardOverview({ salonId }) {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      {/* Your stats display components will go here, using the `stats` object */}
-    </div>
+    <>
+      <TimeframeSelector timeframe={timeframe} setTimeframe={setTimeframe} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-gray-500 text-sm font-medium">Total Bookings</h3>
+          <p className="text-3xl font-bold mt-2">{stats?.total_bookings ?? 0}</p>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-gray-500 text-sm font-medium">Total Revenue</h3>
+          <p className="text-3xl font-bold mt-2">
+            {new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format((stats?.revenue ?? 0) / 100)}
+          </p>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-gray-500 text-sm font-medium">Upcoming Appointments</h3>
+          <p className="text-3xl font-bold mt-2">{stats?.upcoming ?? 0}</p>
+        </div>
+      </div>
+    </>
   );
 }
