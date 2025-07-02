@@ -1,17 +1,14 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
-import { Chart } from './Chart'
-import { useState, useEffect, useCallback } from 'react'
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
-// Assuming you have a Chart component
-// import { Chart } from './Chart' 
+
+'use client';
+import { useState, useEffect, useCallback } from 'react';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+// import { Chart } from './Chart'; // Uncomment if Chart is needed
 
 export default function DashboardOverview({ salonId }) {
-  const supabase = useSupabaseClient()
-  const user = useUser()
-  const [stats, setStats] = useState(null)
-  const [timeframe, setTimeframe] = useState('this_month')
+  const supabase = useSupabaseClient();
+  const user = useUser();
+  const [stats, setStats] = useState(null);
+  const [timeframe, setTimeframe] = useState('this_month');
 
   const fetchStats = useCallback(async () => {
     if (!user) return;
@@ -38,14 +35,16 @@ export default function DashboardOverview({ salonId }) {
     }
   }, [supabase, user, timeframe]);
 
-  useEffect(() => {
-    fetchStats()
-  }, [fetchStats])
 
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {/* Add your content/components here */}
-      </div>
-    );
-  }
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
+
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      {/* Add your content/components here */}
+    </div>
+  );
+}
 
