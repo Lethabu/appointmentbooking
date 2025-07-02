@@ -3,6 +3,7 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Head from 'next/head';
 
 export default function SalonBookingPage() {
   const params = useParams();
@@ -31,7 +32,24 @@ export default function SalonBookingPage() {
       }
     };
 
+    // Load SuperSaaS widget script
+    const loadSuperSaaSWidget = () => {
+      if (typeof window !== 'undefined' && params.salon === 'instylehairboutique') {
+        const script1 = document.createElement('script');
+        script1.src = 'https://cdn.supersaas.net/widget.js';
+        script1.async = true;
+        document.head.appendChild(script1);
+
+        script1.onload = () => {
+          const script2 = document.createElement('script');
+          script2.innerHTML = 'var supersaas_695384 = new SuperSaaS("517890:InStyle_Hair_Boutique","695384:Instyle_Hair_Boutique",{})';
+          document.head.appendChild(script2);
+        };
+      }
+    };
+
     fetchSalonData();
+    loadSuperSaaSWidget();
   }, [params.salon]);
 
   if (loading) {
@@ -104,12 +122,21 @@ export default function SalonBookingPage() {
           <div className="bg-white rounded-lg shadow-lg p-8">
             <div className="text-center">
               <p className="text-gray-600 mb-4">Select your preferred date and time</p>
-              {/* This is where you'll embed the SuperSaaS widget */}
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8">
-                <p className="text-gray-500">SuperSaaS Booking Widget will be embedded here</p>
-                <p className="text-sm text-gray-400 mt-2">
-                  Salon: {params.salon}
-                </p>
+              {/* SuperSaaS Booking Widget */}
+              <div className="supersaas-booking-widget">
+                <button 
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && window.supersaas_695384) {
+                      window.supersaas_695384.show();
+                    } else {
+                      // Fallback to direct SuperSaaS page
+                      window.open('https://www.supersaas.com/schedule/InStyle_Hair_Boutique/Instyle_Hair_Boutique?view=widget', '_blank');
+                    }
+                  }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-200"
+                >
+                  Book Now
+                </button>
               </div>
             </div>
           </div>
