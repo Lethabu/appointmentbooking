@@ -199,6 +199,7 @@ export default function InStyleSalonPage({ params }) {
                         src={post.image} 
                         alt={post.description}
                         fill
+                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw"
                         className="object-cover hover:scale-105 transition-transform duration-300"
                       />
                     </div>
@@ -219,6 +220,7 @@ export default function InStyleSalonPage({ params }) {
                           src={video.thumbnail} 
                           alt={video.description}
                           fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 20vw"
                           className="object-cover"
                         />
                       </div>
