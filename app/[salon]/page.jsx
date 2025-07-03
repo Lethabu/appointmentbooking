@@ -1,8 +1,10 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { Suspense } from 'react';
+import VirtualReceptionist from '../components/AI/VirtualReceptionist';
+import AutomatedReviews from '../components/Reviews/AutomatedReviews';
 import Link from 'next/link';
 
 export default function InStyleSalonPage({ params }) {
@@ -76,7 +78,7 @@ export default function InStyleSalonPage({ params }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ platforms: ['instagram', 'tiktok'] })
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setSocialData(data);
@@ -185,7 +187,7 @@ export default function InStyleSalonPage({ params }) {
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h3 className="text-4xl font-bold text-center mb-12 text-gray-900">Follow Our Work</h3>
-            
+
             {/* Instagram Gallery */}
             {socialData.instagram?.posts && (
               <div className="mb-12">
@@ -232,34 +234,21 @@ export default function InStyleSalonPage({ params }) {
         </section>
       )}
 
+      {/* Automated Reviews Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AutomatedReviews salonId="instylehairboutique" />
+        </div>
+      </section>
+
+      {/* AI Virtual Receptionist */}
+      <VirtualReceptionist salonData={{ name: 'InStyle Hair Boutique', subdomain: 'instylehairboutique' }} />
+
       {/* SuperSaaS Integration */}
       <script src="https://cdn.supersaas.net/widget.js"></script>
       <script dangerouslySetInnerHTML={{
         __html: `var supersaas_695384 = new SuperSaaS("517890:InStyle_Hair_Boutique","695384:Instyle_Hair_Boutique",{})`
       }} />
-
-      {/* Contact Section */}
-      <section className="py-16 bg-gradient-to-r from-pink-600 to-purple-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h3 className="text-3xl font-bold mb-8">Get In Touch</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <h4 className="text-xl font-semibold mb-2">Phone</h4>
-                <p>{salonData?.phone}</p>
-              </div>
-              <div>
-                <h4 className="text-xl font-semibold mb-2">Email</h4>
-                <p>{salonData?.email}</p>
-              </div>
-              <div>
-                <h4 className="text-xl font-semibold mb-2">Location</h4>
-                <p>{salonData?.address}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

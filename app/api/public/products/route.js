@@ -39,3 +39,39 @@ export async function GET(req) {
   // Return both salon details and its products
   return NextResponse.json({ salon, products })
 }
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
+
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const salon = searchParams.get('salon');
+
+  try {
+    const supabase = createRouteHandlerClient({ cookies });
+    
+    const { data: products, error } = await supabase
+      .from('products')
+      .select(`
+        id,
+        name,
+        description,
+        price,
+        stock_quantity,
+        is_active,
+        salons!inner(subdomain)
+      `)
+      .eq('salons.subdomain', salon)
+      .eq('is_active', true);
+
+    if (error) {
+      console.error('Products query error:', error);
+      return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+    }
+
+    return NextResponse.json({ products: products || [] });
+  } catch (error) {
+    console.error('Products API error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
