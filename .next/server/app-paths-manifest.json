@@ -1,4 +1,7 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/[salon]/page": "app/[salon]/page.js",
-  "/api/public/services/route": "app/api/public/services/route.js"
+  "/api/scrape-social/route": "app/api/scrape-social/route.js",
+  "/api/public/services/route": "app/api/public/services/route.js",
+  "/api/public/products/route": "app/api/public/products/route.js"
 }
