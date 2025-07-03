@@ -5,11 +5,9 @@ export async function POST(request) {
   try {
     const { platforms } = await request.json();
     
-    // Import dynamically to avoid server-side issues
-    const SocialMediaScraper = require('../../../lib/scrapers/social-media-scraper');
+    // Import ES module properly
+    const { default: SocialMediaScraper } = await import('../../../lib/scrapers/social-media-scraper.js');
     const scraper = new SocialMediaScraper();
-    
-    await scraper.init();
     
     const results = {};
     
@@ -21,7 +19,7 @@ export async function POST(request) {
       results.tiktok = await scraper.scrapeTikTok('instylehairboutique');
     }
     
-    await scraper.close();
+    // No cleanup needed for mock scraper
     
     return NextResponse.json(results);
   } catch (error) {
