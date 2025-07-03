@@ -1,4 +1,3 @@
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -47,8 +46,10 @@ const nextConfig = {
         'localhost:3000',
         '*.replit.dev',
         '*.repl.co',
-        'appointmentbooking.co.za',
-        'instylehairboutique.co.za'
+        '*.replit.app',
+        'appointmentbookings.co.za',
+        'instylehairboutique.co.za',
+        'www.instylehairboutique.co.za'
       ]
     }
   },

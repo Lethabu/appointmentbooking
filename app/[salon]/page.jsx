@@ -216,11 +216,11 @@ export default function InStyleSalonPage({ params }) {
                   {socialData.tiktok.videos.map((video, index) => (
                     <div key={index} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
                       <div className="aspect-video relative">
-                        <Image 
-                          src={video.thumbnail} 
+                        <Image
+                          src={video.thumbnail}
                           alt={video.description}
                           fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 20vw"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           className="object-cover"
                         />
                       </div>

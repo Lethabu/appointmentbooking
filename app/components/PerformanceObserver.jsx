@@ -1,28 +1,29 @@
-'use client';
-
-import { useEffect } from 'react';
+'use client'
+import { useEffect } from 'react'
 
 export default function PerformanceObserver() {
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'PerformanceObserver' in window) {
+    // Only run in production and if PerformanceObserver is supported
+    if (typeof window !== 'undefined' && 'PerformanceObserver' in window && process.env.NODE_ENV === 'production') {
       try {
+        // Simple performance monitoring without database calls
         const observer = new PerformanceObserver((list) => {
-          list.getEntries().forEach((entry) => {
-            // Log performance metrics for debugging
-            if (process.env.NODE_ENV === 'development') {
-              console.log('Performance:', entry);
+          const entries = list.getEntries()
+          entries.forEach(entry => {
+            if (entry.duration > 1000) { // Log slow operations
+              console.warn(`Slow operation detected: ${entry.name} took ${entry.duration}ms`)
             }
-          });
-        });
+          })
+        })
 
-        observer.observe({ entryTypes: ['navigation', 'paint'] });
+        observer.observe({ entryTypes: ['measure', 'navigation'] })
 
-        return () => observer.disconnect();
+        return () => observer.disconnect()
       } catch (error) {
-        console.warn('PerformanceObserver not supported:', error);
+        console.warn('PerformanceObserver setup failed:', error)
       }
     }
-  }, []);
+  }, [])
 
-  return null;
+  return null
 }
