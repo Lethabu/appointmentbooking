@@ -1,0 +1,61 @@
+~/workspace$ ^[[200~git add .
+git add .bash: git: command not found
+~/workspace$ git commit -m "Applied changes for InStyle Hair Boutique setup and fixed import issues."
+On branch main
+Your branch is ahead of 'origin/main' by 32 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+    modified:   .next/app-build-manifest.json
+    modified:   .next/build-manifest.json
+    modified:   .next/server/app-paths-manifest.json
+    deleted:    .next/server/app/[salon]/page.js
+    deleted:    .next/server/app/[salon]/page_client-reference-manifest.js
+    deleted:    .next/server/app/api/public/products/route.js
+    deleted:    .next/server/app/api/public/services/route.js
+    deleted:    .next/server/app/api/scrape-social/route.js
+    deleted:    .next/server/edge-runtime-webpack.js
+    modified:   .next/server/middleware-build-manifest.js
+    modified:   .next/server/middleware-manifest.json
+    deleted:    .next/server/middleware.js
+    modified:   .next/server/next-font-manifest.js
+    modified:   .next/server/next-font-manifest.json
+    modified:   .next/server/server-reference-manifest.json
+    deleted:    .next/server/static/webpack/633457081244afec._.hot-update.json
+    deleted:    .next/server/vendor-chunks/@supabase.js
+    deleted:    .next/server/vendor-chunks/@swc.js
+    deleted:    .next/server/vendor-chunks/geist.js
+    deleted:    .next/server/vendor-chunks/isows.js
+    deleted:    .next/server/vendor-chunks/jose.js
+    deleted:    .next/server/vendor-chunks/next.js
+    deleted:    .next/server/vendor-chunks/set-cookie-parser.js
+    deleted:    .next/server/vendor-chunks/tr46.js
+    deleted:    .next/server/vendor-chunks/webidl-conversions.js
+    deleted:    .next/server/vendor-chunks/whatwg-url.js
+    deleted:    .next/server/vendor-chunks/ws.js
+    deleted:    .next/server/webpack-runtime.js
+    deleted:    .next/static/chunks/app-pages-internals.js
+    deleted:    .next/static/chunks/app/[salon]/page.js
+    deleted:    .next/static/chunks/app/layout.js
+    deleted:    .next/static/chunks/main-app.js
+    deleted:    .next/static/chunks/webpack.js
+    deleted:    .next/static/css/app/layout.css
+    deleted:    .next/static/media/028c0d39d2e8f589-s.p.woff2
+    deleted:    .next/static/media/5b01f339abf2f1a5.p.woff2
+    deleted:    .next/static/webpack/633457081244afec._.hot-update.json
+    modified:   .next/trace
+    deleted:    .next/types/app/[salon]/page.ts
+    deleted:    .next/types/app/api/public/products/route.ts
+    deleted:    .next/types/app/api/public/services/route.ts
+    deleted:    .next/types/app/api/scrape-social/route.ts
+    deleted:    .next/types/app/layout.ts
+
+no changes added to commit (use "git add" and/or "git commit -a")
+~/workspace$ git push origin main~
+fatal: invalid refspec 'main~'
+~/workspace$ ^[[200~git add .~
+git add .~bash: git: command not found
+~/workspace$ ^C
+~/workspace$ 

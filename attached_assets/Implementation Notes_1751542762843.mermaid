@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant Owner
+    participant Client
+    participant Frontend
+    participant Middleware
+    participant Supabase
+
+    Owner->>Frontend: Sign Up
+    Frontend->>Supabase: Create User
+    Supabase-->>Frontend: User Created
+    Frontend->>Owner: Redirect to Salon Creation
+    Owner->>Frontend: Create Salon (instyle-cpt)
+    Frontend->>Supabase: Insert Salon Record
+    Owner->>Frontend: Add Services
+    Client->>Middleware: Visit instyle-cpt.localhost:3000/book
+    Middleware->>Supabase: Resolve Salon ID
+    Supabase-->>Middleware: Salon Data
+    Middleware->>Frontend: Inject Salon Context
+    Frontend->>Client: Show Booking Page
+    Client->>Frontend: Select Service & Book
+    Frontend->>Supabase: Create Appointment
