@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr'
 
 export default function ProfilePage() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [fullName, setFullName] = useState(null)
