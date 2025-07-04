@@ -1,72 +1,48 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
-export async function PUT(req, { params }) {
-  const supabase = createRouteHandlerClient({ cookies })
-  const { data: { session } } = await supabase.auth.getSession()
+async function getSupabaseAndSalonForService(serviceId) {
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        get: (name) => cookieStore.get(name)?.value,
+      },
+    }
+  );
 
-  if (!session) {
-    return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } })
-  }
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return { error: { message: 'Unauthorized' }, status: 401 };
 
-  // Fetch the user's salon ID to ensure operations are scoped correctly.
-  const { data: salon } = await supabase
-    .from('salons')
-    .select('id')
-    .eq('owner_id', session.user.id)
-    .single()
-
-  const body = await req.json()
-  // Sanitize body to prevent changing immutable fields
-  delete body.id
-  delete body.salon_id
-  delete body.created_at
-
-  const { data, error } = await supabase
+  // Verify the user owns the salon that this service belongs to
+  const { data: service, error: serviceError } = await supabase
     .from('services')
-    .update(body)
-    // The .eq('salon_id', salon.id) ensures a user can only update a service that belongs to their salon.
-    .eq('id', params.id)
-    .eq('salon_id', salon?.id) // Use optional chaining in case salon is null
-    .select()
-    .single()
+    .select('salons(owner_id)')
+    .eq('id', serviceId)
+    .single();
 
-  if (error) return new NextResponse(JSON.stringify({ error: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } })
-
-  if (!data) {
-    return new NextResponse(JSON.stringify({ error: 'Service not found or you do not have permission to edit it.' }), { status: 404, headers: { 'Content-Type': 'application/json' } })
+  if (serviceError || !service || service.salons.owner_id !== session.user.id) {
+    return { error: { message: 'Forbidden' }, status: 403 };
   }
 
-  return NextResponse.json(data)
+  return { supabase, error: null, status: 200 };
 }
 
-export async function DELETE(req, { params }) {
-  const supabase = createRouteHandlerClient({ cookies })
-  const { data: { session } } = await supabase.auth.getSession()
+export async function PUT(req, { params }) {
+  const { id } = params;
+  const { supabase, error, status } = await getSupabaseAndSalonForService(id);
+  if (error) return NextResponse.json({ error: error.message }, { status });
 
-  if (!session) {
-    return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } })
-  }
+  const body = await req.json();
+  const { error: updateError } = await supabase.from('services').update(body).eq('id', id);
 
-  // Fetch the user's salon ID to ensure operations are scoped correctly.
-  const { data: salon } = await supabase
-    .from('salons')
-    .select('id')
-    .eq('owner_id', session.user.id)
-    .single()
-
-  const { error, count } = await supabase
-    .from('services')
-    .delete({ count: 'exact' })
-    .eq('id', params.id)
-    .eq('salon_id', salon?.id) // Use optional chaining in case salon is null
-
-  if (error) return new NextResponse(JSON.stringify({ error: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } })
-
-  if (count === 0) {
-    return new NextResponse(JSON.stringify({ error: 'Service not found or you do not have permission to delete it.' }), { status: 404, headers: { 'Content-Type': 'application/json' } })
-  }
+  return updateError
+    ? NextResponse.json({ error: updateError.message }, { status: 500 })
+    : NextResponse.json({ success: true }, { status: 200 });
+}
 
   return new NextResponse(null, { status: 204 })
 }
