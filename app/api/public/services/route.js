@@ -3,10 +3,10 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(request.url);
   const salon = searchParams.get('salon');
 
-  try {    
+  try {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -16,10 +16,11 @@ export async function GET(request) {
         },
       }
     );
-    
+
     const { data: services, error } = await supabase
       .from('services')
       .select(`
+
         id,
         name,
         price,
