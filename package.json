@@ -11,7 +11,7 @@
   "dependencies": {
     "@heroicons/react": "^2.1.3",
     "@supabase/ssr": "^0.4.0",
-    "@supabase/supabase-js": "^2.44.4",  
+    "@supabase/supabase-js": "^2.44.4",
     "@tanstack/react-query": "^5.45.1",
     "axios": "^1.10.0",
     "cheerio": "^1.1.0",
@@ -27,7 +27,7 @@
     "zustand": "^4.5.7"
   },
   "devDependencies": {
-    "@types/react": "19.1.8",
+    "@types/react": "^18",
     "autoprefixer": "^10.4.19",
     "eslint": "^8",
     "eslint-config-next": "^14.2.30",
