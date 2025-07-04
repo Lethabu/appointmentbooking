@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
-export default async function handler(req, res) {
+export async function POST(req) {
   const { orderId, amount, returnUrl, provider } = await req.json()
 
   if (!orderId || !amount || !returnUrl || !provider) {
