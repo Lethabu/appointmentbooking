@@ -44,5 +44,22 @@ export async function PUT(req, { params }) {
     : NextResponse.json({ success: true }, { status: 200 });
 }
 
-  return new NextResponse(null, { status: 204 })
+export async function DELETE(req, { params }) {
+  const { id } = params;
+  const { supabase, error, status } = await getSupabaseAndSalonForService(id);
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status });
+  }
+
+  const { error: deleteError } = await supabase
+    .from('services')
+    .delete()
+    .eq('id', id);
+
+  if (deleteError) {
+    return NextResponse.json({ error: deleteError.message }, { status: 500 });
+  }
+
+  return new NextResponse(null, { status: 204 }); // Success, no content
 }
+
