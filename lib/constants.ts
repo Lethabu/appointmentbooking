@@ -1,8 +1,9 @@
 import React from 'react';
 import { AgentType } from './types';
+import { AgentType } from '../../lib/types';
 
 export const Agents = [
-   {
+  {
     type: AgentType.BLAZE,
     name: 'Blaze',
     description: 'A creative agent for marketing and brainstorming.',
