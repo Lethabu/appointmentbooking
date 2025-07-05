@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { AgentType, ChatMessage, MinimalChatMessage } from '../types'; // Added MinimalChatMessage
-import { Agents, getAgentSystemInstruction } from '../constants';
+import { AgentType, ChatMessage, MinimalChatMessage } from '../../lib/types'; // Added MinimalChatMessage
+import { Agents, getAgentSystemInstruction } from '../../lib/constants';
 import AgentSelector from './AgentSelector';
 import ChatMessageItem from './ChatMessageItem';
 import ChatInput from './ChatInput';

@@ -1,8 +1,6 @@
-export enum AgentType {
-  NIA = 'nia',
-  BLAZE = 'blaze',
-  NOVA = 'nova',
-}
+
+
+import { AgentType } from './types';
 
 export const AppName = "Smart Salon HQ";
 

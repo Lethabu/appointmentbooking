@@ -1,9 +1,0 @@
-graph LR
-    A[Local Development] --> B[Feature Branch]
-    B --> C[CI/CD Pipeline]
-    C --> D{Automated Tests}
-    D -->|Pass| E[Staging Environment]
-    D -->|Fail| F[Notify Developers]
-    E --> G[Manual QA]
-    G -->|Approve| H[Production Deployment]
-    G -->|Reject| I[Feedback Loop]
