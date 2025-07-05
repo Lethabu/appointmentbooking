@@ -2,7 +2,7 @@ import React from 'react';
 import { AgentType } from './types';
 
 export const Agents = [
-  {
+   {
     type: AgentType.BLAZE,
     name: 'Blaze',
     description: 'A creative agent for marketing and brainstorming.',
@@ -29,3 +29,4 @@ export const getAgentSystemInstruction = (agentType: AgentType): string => {
   const agent = Agents.find((a) => a.type === agentType);
   return agent ? agent.systemInstruction : 'You are a helpful assistant.';
 };
+
