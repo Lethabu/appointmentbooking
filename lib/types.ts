@@ -1,19 +1,18 @@
-
 export enum AgentType {
-  NIA = 'nia',
-  BLAZE = 'blaze',
-  NOVA = 'nova',
+  BLAZE = 'BLAZE',
+  AURA = 'AURA',
+  ECHO = 'ECHO',
 }
 
-export interface ChatMessage {
+export type ChatMessage = {
   id: string;
-  role: 'user' | 'agent';
-  content: string;
-  agentType?: AgentType;
+  role: 'user' | 'model';
+  text: string;
   timestamp: number;
-}
+  agentType?: AgentType;
+};
 
-export interface MinimalChatMessage {
-  role: 'user' | 'agent';
-  content: string;
-}
+export type MinimalChatMessage = {
+  role: 'user' | 'model';
+  text: string;
+};
