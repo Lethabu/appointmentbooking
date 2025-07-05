@@ -1,1 +1,16 @@
 node_modules
+
+# Vercel
+.vercel
+
+# Next.js
+.next/
+out/
+
+# IDE / Editor specific
+.vscode/
+*.code-workspace
+
+# Temporary files
+Untitled-*.js
+Untitled-*.ts
