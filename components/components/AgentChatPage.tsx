@@ -4,7 +4,7 @@ import { Agents, getAgentSystemInstruction } from '../../lib/constants';
 import AgentSelector from './AgentSelector';
 import ChatMessageItem from './ChatMessageItem';
 import ChatInput from './ChatInput';
-import { generateAgentResponse } from '../services/geminiService';
+import { generateAgentResponse } from '../../app/services/geminiService';
 
 const AgentChatPage: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<AgentType>(Agents[0].type);

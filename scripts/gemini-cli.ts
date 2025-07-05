@@ -1,4 +1,4 @@
-import { generateAgentResponse } from '../components/services/geminiService';
+import { generateAgentResponse } from '../app/services/geminiService';
 import { AgentType } from '../lib/types';
 
 /**
