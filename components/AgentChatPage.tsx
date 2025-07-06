@@ -96,7 +96,13 @@ const AgentChatPage: React.FC = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] bg-white shadow-xl rounded-lg overflow-hidden">
       <div className="p-4 border-b border-neutral-200 bg-neutral-50">
-        <AgentSelector selectedAgent={selectedAgent} onSelectAgent={handleSelectAgent} />
+        <AgentSelector
+          id="agent-selector"
+          label="Select an AI Agent"
+          agents={Agents}
+          selectedAgent={selectedAgent}
+          onSelectAgent={handleSelectAgent}
+        />
         {currentAgentDetails && (
            <p className="text-sm text-neutral-600 mt-1">{currentAgentDetails.description}</p>
         )}

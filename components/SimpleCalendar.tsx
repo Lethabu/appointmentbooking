@@ -48,13 +48,13 @@ const SimpleCalendar: React.FC<SimpleCalendarProps> = ({ onDateSelect, selectedD
   return (
     <div className="bg-white p-4 rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-4">
-        <button onClick={() => changeMonth(-1)} className="p-2 rounded-full hover:bg-neutral-100">
+        <button onClick={() => changeMonth(-1)} className="p-2 rounded-full hover:bg-neutral-100" aria-label="Previous month">
           <IconChevronDown className="h-5 w-5 transform rotate-90 text-neutral-600" />
         </button>
         <h3 className="text-lg font-semibold text-neutral-700">
           {currentMonth.toLocaleString('default', { month: 'long' })} {year}
         </h3>
-        <button onClick={() => changeMonth(1)} className="p-2 rounded-full hover:bg-neutral-100">
+        <button onClick={() => changeMonth(1)} className="p-2 rounded-full hover:bg-neutral-100" aria-label="Next month">
           <IconChevronDown className="h-5 w-5 transform -rotate-90 text-neutral-600" />
         </button>
       </div>
