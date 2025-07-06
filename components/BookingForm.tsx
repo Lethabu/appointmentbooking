@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Booking, Service } from './types';
 import { MockServices } from './constants';
-import { IconWhatsApp } from './icons';
+
+import { IconWhatsApp } from '@/components/icons';
 
 interface BookingFormProps {
   selectedDate: Date | null;
