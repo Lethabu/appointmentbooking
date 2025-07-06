@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { ChatMessage } from '../lib/types';
-import { IconUserCircle, IconSparkles } from './constants';
+import { IconUserCircle, IconSparkles } from './icons';
 
 interface ChatMessageItemProps {
   message: ChatMessage;
