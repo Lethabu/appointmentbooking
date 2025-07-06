@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { AgentType } from '../../lib/types';
-
+ 
+interface AgentSelectorProps {
   selectedAgent: AgentType;
   onSelectAgent: (agent: AgentType) => void;
 }
