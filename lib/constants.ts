@@ -1,7 +1,8 @@
 import React from 'react';
 import { AgentType } from './types';
-import { AgentType } from '../../lib/types';
+import { ChevronDown } from 'lucide-react';
 
+export const IconChevronDown = ChevronDown;
 export const Agents = [
   {
     type: AgentType.BLAZE,
@@ -30,4 +31,3 @@ export const getAgentSystemInstruction = (agentType: AgentType): string => {
   const agent = Agents.find((a) => a.type === agentType);
   return agent ? agent.systemInstruction : 'You are a helpful assistant.';
 };
-
