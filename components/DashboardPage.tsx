@@ -1,7 +1,7 @@
 
 import React from 'react';
 import StatCard from './StatCard';
-import { IconCalendar, IconChat, IconSparkles } from '../constants'; // Assuming you have an icon for revenue or clients
+import { IconCalendar, IconChat, IconSparkles } from './constants';
 
 const DashboardPage: React.FC = () => {
   return (

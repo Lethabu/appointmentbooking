@@ -1,2 +1,0 @@
-// If you need these types and have moved them to Shared/types.ts:
-import { Booking, Service } from '../../Shared/types';

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import SimpleCalendar from './SimpleCalendar';
 import BookingForm from './BookingForm';
-import { Booking } from '../types';
+import { Booking, Service } from './types';
 
 const BookingsPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -16,7 +16,7 @@ const BookingsPage: React.FC = () => {
     const newBooking: Booking = {
       ...newBookingData,
       id: `booking-${Date.now()}`, // Simple unique ID
-      status: 'Pending', // Default status
+      status: 'pending',
     };
     setBookings(prevBookings => [...prevBookings, newBooking]);
     alert(`Booking for ${newBooking.clientName} on ${newBooking.dateTime.toLocaleDateString()} at ${newBooking.dateTime.toLocaleTimeString()} added! Status: Pending.`);
@@ -39,7 +39,7 @@ const BookingsPage: React.FC = () => {
             <ul className="space-y-2">
               {bookingsForSelectedDate.map(booking => (
                 <li key={booking.id} className="p-3 bg-neutral-50 rounded-md shadow-sm">
-                  <p className="font-medium text-neutral-800">{booking.clientName} - {booking.service}</p>
+                  <p className="font-medium text-neutral-800">{booking.clientName} - {booking.service.name}</p>
                   <p className="text-sm text-neutral-600">
                     Time: {booking.dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - Status: {booking.status}
                   </p>

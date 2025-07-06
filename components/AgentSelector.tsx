@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { AgentType } from '../../lib/types';
-import { Agents, IconChevronDown } from '../../lib/constants';
+import { AgentType } from '../lib/types';
+import { Agents } from '../lib/constants';
+import { IconChevronDown } from './constants';
  
 interface AgentSelectorProps {
   selectedAgent: AgentType;

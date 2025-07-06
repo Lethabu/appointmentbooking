@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { AgentType, ChatMessage, MinimalChatMessage } from '../../lib/types'; // Added MinimalChatMessage
-import { Agents, getAgentSystemInstruction } from '../../lib/constants';
-import AgentSelector from '../../app/components/AgentSelector';
-import ChatMessageItem from '../../app/components/ChatMessageItem';
-import ChatInput from '../../app/components/ChatInput';
-import { generateAgentResponse } from '../../app/services/geminiService';
+import { AgentType, ChatMessage, MinimalChatMessage } from '../lib/types';
+import { Agents, getAgentSystemInstruction } from '../lib/constants';
+import AgentSelector from './AgentSelector';
+import ChatMessageItem from './ChatMessageItem';
+import ChatInput from './ChatInput';
+import { generateAgentResponse } from '../app/services/geminiService';
 
 const AgentChatPage: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<AgentType>(Agents[0].type);

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { AppName, AppRoutes, IconDashboard, IconChat, IconCalendar, IconSparkles } from '../constants';
+import { AppName, AppRoutes, IconDashboard, IconChat, IconCalendar, IconSparkles } from './constants';
 
 const Sidebar: React.FC = () => {
   const navLinkClasses = ({ isActive }: { isActive: boolean }): string =>

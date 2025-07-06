@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { IconChevronDown } from '../constants'; // Re-using for prev/next month
+import { IconChevronDown } from './constants';
 
 interface SimpleCalendarProps {
   onDateSelect: (date: Date) => void;
