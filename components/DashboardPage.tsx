@@ -1,7 +1,7 @@
 
 import React from 'react';
 import StatCard from './StatCard';
-import { IconCalendar, IconChat, IconSparkles } from './constants';
+import { IconCalendar, IconChat, IconSparkles } from './icons';
 
 const DashboardPage: React.FC = () => {
   return (
