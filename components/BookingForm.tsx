@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Booking, Service } from './types';
 import { MockServices } from './constants';
 import { IconChat } from './icons';
-
 interface BookingFormProps {
   selectedDate: Date | null;
-  onBookingSubmit: (booking: Omit<Booking, 'id' | 'status'>) => void;
+  onBookingSubmit: (booking: Omit<Booking, 'id' | 'status'>) => Promise<void>; // Assuming it might be async
 }
 
 const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit }) => {
