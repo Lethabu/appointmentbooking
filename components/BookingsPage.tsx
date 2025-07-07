@@ -12,7 +12,7 @@ const BookingsPage: React.FC = () => {
     setSelectedDate(date);
   };
 
-  const handleBookingSubmit = (newBookingData: Omit<Booking, 'id' | 'status'>) => {
+  const handleBookingSubmit = async (newBookingData: Omit<Booking, 'id' | 'status'>) => {
     const newBooking: Booking = {
       ...newBookingData,
       id: `booking-${Date.now()}`, // Simple unique ID
