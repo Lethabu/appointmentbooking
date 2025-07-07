@@ -53,3 +53,9 @@ export const IconSparkles = () => (
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.571L14 21m-3-3V5m-2.428 5.714l-.714 2.143" />
   </svg>
 );
+
+export const IconUserCircle = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20a8 8 0 100-16 8 8 0 000 16zm0 0s-3-2-5-4m5 4s3-2 5-4m-5 4V4" />
+  </svg>
+);

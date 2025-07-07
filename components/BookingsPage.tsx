@@ -1,16 +1,36 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SimpleCalendar from './SimpleCalendar';
 import BookingForm from './BookingForm';
 import { Booking, Service } from './types';
+import { useQuery, useMutation, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+
+// Create a QueryClient instance
+const queryClient = new QueryClient();
+
 
 const BookingsPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [bookings, setBookings] = useState<Booking[]>([]); // To store created bookings locally
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
   };
+  // Mock API call to fetch bookings
+  const fetchBookings = async (): Promise<Booking[]> => {
+    // Replace this with your actual API call
+    console.log("Fetching bookings...");
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network latency
+    return []; // Return an empty array or fetch from a mock data source
+  };
+
+  const { isLoading, error, data: bookingsData } = useQuery({
+    queryKey: ['bookings'],
+    queryFn: fetchBookings,
+    initialData: [], // Provide an initial empty array
+    // Add error handling, retries, etc. as needed.
+  });
+
 
   const handleBookingSubmit = async (newBookingData: Omit<Booking, 'id' | 'status'>) => {
     const newBooking: Booking = {
@@ -18,13 +38,17 @@ const BookingsPage: React.FC = () => {
       id: `booking-${Date.now()}`, // Simple unique ID
       status: 'pending',
     };
-    setBookings(prevBookings => [...prevBookings, newBooking]);
+     // Simulate adding booking to the server
+    await new Promise(resolve => setTimeout(resolve, 500));
+    // Update the local state
+    // Invalidate and refetch bookings
+    queryClient.invalidateQueries({ queryKey: ['bookings'] });
     alert(`Booking for ${newBooking.clientName} on ${newBooking.dateTime.toLocaleDateString()} at ${newBooking.dateTime.toLocaleTimeString()} added! Status: Pending.`);
     // You could also clear selectedDate or give other feedback
   };
   
   const bookingsForSelectedDate = selectedDate 
-    ? bookings.filter(b => b.dateTime.toDateString() === selectedDate.toDateString())
+    ? bookingsData.filter(b => b.dateTime.toDateString() === selectedDate.toDateString())
     : [];
 
   return (
@@ -32,7 +56,11 @@ const BookingsPage: React.FC = () => {
       <div className="lg:col-span-2">
         <SimpleCalendar onDateSelect={handleDateSelect} selectedDate={selectedDate} />
         {selectedDate && bookingsForSelectedDate.length > 0 && (
-          <div className="mt-6 bg-white p-4 rounded-lg shadow-lg">
+             <div className="mt-6 bg-white p-4 rounded-lg shadow-lg">
+             {isLoading && <p>Loading bookings...</p>}
+             {error && <p>Error: {error.message}</p>}
+             {!isLoading && !error && (
+                <>
             <h3 className="text-lg font-semibold text-neutral-700 mb-3">
               Bookings for {selectedDate.toLocaleDateString()}:
             </h3>
@@ -45,21 +73,33 @@ const BookingsPage: React.FC = () => {
                   </p>
                 </li>
               ))}
-            </ul>
+            </ul></>
+            )}
           </div>
         )}
-         {selectedDate && bookingsForSelectedDate.length === 0 && (
+          {selectedDate && bookingsForSelectedDate.length === 0 && (
+          <div className="mt-6 bg-white p-4 rounded-lg shadow-lg">
+            {isLoading && <p>Loading bookings...</p>}
+            {error && <p>Error: {error.message}</p>}
+            {!isLoading && !error && (
            <div className="mt-6 bg-white p-4 rounded-lg shadow-lg text-center">
              <p className="text-neutral-500">No bookings scheduled for {selectedDate.toLocaleDateString()}.</p>
            </div>
          )}
-
+          </div> 
+      )}
       </div>
       <div className="lg:col-span-1">
         <BookingForm selectedDate={selectedDate} onBookingSubmit={handleBookingSubmit} />
       </div>
-    </div>
+    </div> 
   );
 };
 
-export default BookingsPage;
+const BookingsPageWrapper: React.FC = () => (
+  <QueryClientProvider client={queryClient}>
+    <BookingsPage />
+  </QueryClientProvider>
+);
+
+export default BookingsPageWrapper;
