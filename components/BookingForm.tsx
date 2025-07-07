@@ -18,7 +18,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
     // Reset form or update based on selectedDate if needed
   }, [selectedDate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => { // Make handleSubmit async
     e.preventDefault();
     if (!selectedDate || !selectedServiceId) {
       alert('Please select a date and service.');
@@ -34,17 +34,22 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
     const bookingDateTime = new Date(selectedDate);
     bookingDateTime.setHours(hours, minutes, 0, 0);
 
-    onBookingSubmit({
-      clientName,
-      service,
-      dateTime: bookingDateTime,
-      clientPhone,
-    });
-    // Reset form (optional)
-    setClientName('');
-    setSelectedServiceId(MockServices[0]?.id || '');
-    setBookingTime('09:00');
-    setClientPhone('');
+    try {
+      await onBookingSubmit({
+        clientName,
+        service,
+        dateTime: bookingDateTime,
+        clientPhone,
+      });
+      // Reset form (optional)
+      setClientName('');
+      setSelectedServiceId(MockServices[0]?.id || '');
+      setBookingTime('09:00');
+      setClientPhone('');
+    } catch (error) {
+      console.error("Booking submission failed:", error);
+      // Handle error appropriately, e.g., display an error message to the user.
+    }
   };
 
   const handleSimulateWhatsAppReminder = () => {
