@@ -12,9 +12,12 @@ export const IconChat = () => (
   </svg>
 );
 
-export const IconSend = () => (
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-8-7v7m12-7v7m-4 0H3v-4l4-4h8v8z" />
+interface IconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number; // Example of a custom prop
+}
+
+export const IconSend: React.FC<IconProps> = (props) => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-8-7v7m12-7v7m-4 0H3v-4l4-4h8v8z" />
   </svg>
 );
 
