@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Booking, Service } from './types';
 import { MockServices } from './constants';
-
-import { IconWhatsApp } from '@/components/icons';
+import { IconChat } from './icons';
 
 interface BookingFormProps {
   selectedDate: Date | null;
@@ -48,11 +47,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
     setBookingTime('09:00');
     setClientPhone('');
   };
-  
+
   const handleSimulateWhatsAppReminder = () => {
     if (!clientPhone) {
-        alert("Please enter a client phone number to simulate WhatsApp reminder.");
-        return;
+      alert("Please enter a client phone number to simulate WhatsApp reminder.");
+      return;
     }
     alert(`(Simulated) WhatsApp reminder would be sent to ${clientPhone} for this booking if it were confirmed.`);
   };
@@ -61,15 +60,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
     const hour = Math.floor(i / 2) + 9;
     const minute = (i % 2) * 30;
     return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-  });
+  })
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg space-y-4">
       <h3 className="text-xl font-semibold text-neutral-700 mb-2">
         {selectedDate ? `Book for ${selectedDate.toLocaleDateString()}` : 'Select a date to book'}
       </h3>
+     
       
-      <div>
         <label htmlFor="clientName" className="block text-sm font-medium text-neutral-700">Client Name</label>
         <input
           type="text"
@@ -80,9 +79,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
           required
           disabled={!selectedDate}
         />
-      </div>
+      
 
-       <div>
+       
         <label htmlFor="clientPhone" className="block text-sm font-medium text-neutral-700">Client Phone (for reminders)</label>
         <input
           type="tel"
@@ -93,9 +92,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
           className="mt-1 block w-full px-3 py-2 border border-neutral-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
           disabled={!selectedDate}
         />
-      </div>
+      
 
-      <div>
+      
         <label htmlFor="service" className="block text-sm font-medium text-neutral-700">Service</label>
         <select
           id="service"
@@ -109,9 +108,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
             <option key={service.id} value={service.id}>{service.name} - {service.durationMinutes}min (R{service.price})</option>
           ))}
         </select>
-      </div>
+      
 
-      <div>
+      
         <label htmlFor="bookingTime" className="block text-sm font-medium text-neutral-700">Time</label>
         <select
           id="bookingTime"
@@ -123,13 +122,12 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
         >
           {availableTimes.map(time => <option key={time} value={time}>{time}</option>)}
         </select>
-      </div>
       
-      <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0 pt-2">
-        <button
+
+      <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0 pt-2 ">
+        <button className="w-full sm:w-auto flex-grow justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-light disabled:opacity-50"
             type="submit"
             disabled={!selectedDate}
-            className="w-full sm:w-auto flex-grow justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-light disabled:opacity-50"
         >
             Add Booking
         </button>
@@ -139,12 +137,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
             disabled={!selectedDate || !clientPhone}
             className="w-full sm:w-auto flex-grow justify-center py-2 px-4 border border-secondary text-secondary hover:bg-secondary hover:text-white rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-light disabled:opacity-50 flex items-center space-x-2"
         >
-            <IconWhatsApp className="h-5 w-5" />
+            <IconChat />
             <span>Simulate Reminder</span>
         </button>
       </div>
     </form>
-  );
+  )
 };
-
 export default BookingForm;
