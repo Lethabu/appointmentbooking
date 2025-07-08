@@ -27,8 +27,10 @@ const BookingsPage: React.FC = () => {
   const { isLoading, error, data: bookingsData } = useQuery({
     queryKey: ['bookings'],
     queryFn: fetchBookings,
-    initialData: [], // Provide an initial empty array
-    // Add error handling, retries, etc. as needed.
+    initialData: [], // Provide an initial empty array to avoid loading states on initial mount
+    // TanStack Query automatically retries failed requests 3 times with exponential backoff.
+    // You can customize this. For example, to retry only once:
+    retry: 1,
   });
 
 
