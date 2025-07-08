@@ -42,7 +42,7 @@ export const IconChat: Icon = (props) => (
   </svg>
 );
 
-export const IconSend = () => (
+export const IconSend: Icon = (props) => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-8-7v7m12-7v7m-4 0H3v-4l4-4h8v8z" />
   </svg>
@@ -54,7 +54,7 @@ export const IconSparkles: Icon = (props) => (
   </svg>
 );
 
-export const IconUserCircle = () => (
+export const IconUserCircle: Icon = (props) => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20a8 8 0 100-16 8 8 0 000 16zm0 0s-3-2-5-4m5 4s3-2 5-4m-5 4V4" />
   </svg>
