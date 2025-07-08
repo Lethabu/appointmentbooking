@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { IconUserCircle } from './constants';
+import { IconUserCircle } from './icons';
 
 const Header: React.FC = () => {
   // In a real app, you'd get the current page title or breadcrumbs from routing context

@@ -1,12 +1,15 @@
 
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { AppName, AppRoutes, IconDashboard, IconChat, IconCalendar, IconSparkles } from './constants';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { AppName, AppRoutes } from './constants';
+import { IconDashboard, IconChat, IconCalendar, IconSparkles } from './icons';
 
 const Sidebar: React.FC = () => {
-  const navLinkClasses = ({ isActive }: { isActive: boolean }): string =>
+  const pathname = usePathname();
+  const navLinkClasses = (path: string): string =>
     `flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ease-in-out hover:bg-primary-dark hover:text-white ${
-      isActive ? 'bg-primary-dark text-white shadow-md' : 'text-neutral-200'
+      pathname === path ? 'bg-primary-dark text-white shadow-md' : 'text-neutral-200'
     }`;
 
   return (
@@ -16,18 +19,18 @@ const Sidebar: React.FC = () => {
         <h1 className="text-2xl font-bold text-white">{AppName}</h1>
       </div>
       <nav className="flex-1 space-y-2">
-        <NavLink to={AppRoutes.DASHBOARD} className={navLinkClasses}>
+        <Link href={AppRoutes.DASHBOARD} className={navLinkClasses(AppRoutes.DASHBOARD)}>
           <IconDashboard className="h-6 w-6" />
           <span>Dashboard</span>
-        </NavLink>
-        <NavLink to={AppRoutes.AGENT_CHAT} className={navLinkClasses}>
+        </Link>
+        <Link href={AppRoutes.AGENT_CHAT} className={navLinkClasses(AppRoutes.AGENT_CHAT)}>
           <IconChat className="h-6 w-6" />
           <span>AI Agents</span>
-        </NavLink>
-        <NavLink to={AppRoutes.BOOKINGS} className={navLinkClasses}>
+        </Link>
+        <Link href={AppRoutes.BOOKINGS} className={navLinkClasses(AppRoutes.BOOKINGS)}>
           <IconCalendar className="h-6 w-6" />
           <span>Bookings</span>
-        </NavLink>
+        </Link>
       </nav>
       <div className="mt-auto p-2 text-center text-neutral-400 text-xs">
         &copy; {new Date().getFullYear()} {AppName}
