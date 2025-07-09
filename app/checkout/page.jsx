@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation'
 import { useCart } from '@/app/context/CartContext'
 
 export default function CheckoutPage() {
-  const { cart, clearCart } = useCart()
+  const { items, clearCart } = useCart()
   const router = useRouter()
   const [client, setClient] = useState({ name: '', email: '', phone: '', address: '' })
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState(null)
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
   const handleCheckout = async (e) => {
     e.preventDefault()

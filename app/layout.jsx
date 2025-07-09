@@ -1,5 +1,5 @@
 import { GeistSans } from 'geist/font/sans';
-import { CartProvider } from '@/components/cart-provider'; // Please adjust this import path if your component is located elsewhere
+import { CartProvider } from '@/app/context/CartContext';
 import './globals.css';
 
 export const metadata = {
