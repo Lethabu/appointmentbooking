@@ -1,7 +1,7 @@
 # Stage 1: Dependencies and Build
 FROM node:lts-alpine AS builder
 WORKDIR /app
-COPY package.json yarn.lock* package-lock.json* ./ # Copy lock files for consistent installs
+COPY package.json package-lock.json ./
 RUN npm install --frozen-lockfile # Install all dependencies, including dev
 COPY . .
 RUN npm run build
