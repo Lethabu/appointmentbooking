@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import SimpleCalendar from './SimpleCalendar';
 import BookingForm from './BookingForm';
 import { Booking, Service } from './types';
@@ -13,9 +13,9 @@ const queryClient = new QueryClient();
 const BookingsPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
-  const handleDateSelect = (date: Date) => {
+  const handleDateSelect = useCallback((date: Date) => {
     setSelectedDate(date);
-  };
+  }, []);
   // Mock API call to fetch bookings
   const fetchBookings = async (): Promise<Booking[]> => {
     // Replace this with your actual API call
@@ -34,21 +34,21 @@ const BookingsPage: React.FC = () => {
   });
 
 
-  const handleBookingSubmit = async (newBookingData: Omit<Booking, 'id' | 'status'>) => {
+  const handleBookingSubmit = useCallback(async (newBookingData: Omit<Booking, 'id' | 'status'>) => {
     const newBooking: Booking = {
       ...newBookingData,
       id: `booking-${Date.now()}`, // Simple unique ID
       status: 'pending',
     };
-     // Simulate adding booking to the server
+    // Simulate adding booking to the server
     await new Promise(resolve => setTimeout(resolve, 500));
     // Update the local state
     // Invalidate and refetch bookings
     queryClient.invalidateQueries({ queryKey: ['bookings'] });
     alert(`Booking for ${newBooking.clientName} on ${newBooking.dateTime.toLocaleDateString()} at ${newBooking.dateTime.toLocaleTimeString()} added! Status: Pending.`);
     // You could also clear selectedDate or give other feedback
-  };
-  
+  }, []);
+
   const bookingsForSelectedDate = selectedDate 
     ? bookingsData.filter(b => b.dateTime.toDateString() === selectedDate.toDateString())
     : [];

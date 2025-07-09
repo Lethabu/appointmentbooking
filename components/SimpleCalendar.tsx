@@ -1,6 +1,12 @@
 
-import React, { useState } from 'react';
-import { IconChevronDown } from './icons';
+import React, { useMemo, useState } from 'react';
+import { ChevronDownIcon as IconChevronDown } from '@heroicons/react/24/solid';
+
+// --- Helper functions moved outside the component for better performance ---
+const daysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
+const firstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay(); // 0 for Sunday
+
+const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 interface SimpleCalendarProps {
   onDateSelect: (date: Date) => void;
@@ -10,40 +16,50 @@ interface SimpleCalendarProps {
 const SimpleCalendar: React.FC<SimpleCalendarProps> = ({ onDateSelect, selectedDate }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  const daysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
-  const firstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay(); // 0 for Sunday, 1 for Monday...
-
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth(); // 0-11
-
-  const numDays = daysInMonth(year, month);
-  const startDay = (firstDayOfMonth(year, month) + 6) % 7; // Adjust to make Monday first day (0)
-
-  const calendarDays = [];
-  for (let i = 0; i < startDay; i++) {
-    calendarDays.push(<div key={`empty-${i}`} className="p-2 border border-neutral-200"></div>);
-  }
-  for (let day = 1; day <= numDays; day++) {
-    const date = new Date(year, month, day);
-    const isSelected = selectedDate && date.toDateString() === selectedDate.toDateString();
-    calendarDays.push(
-      <div
-        key={day}
-        className={`p-2 border border-neutral-200 text-center cursor-pointer hover:bg-primary-light hover:text-white transition-colors
-                    ${isSelected ? 'bg-primary text-white font-bold' : 'bg-white text-neutral-700'}
-                    ${new Date().toDateString() === date.toDateString() ? 'ring-2 ring-secondary' : ''}`}
-        onClick={() => onDateSelect(date)}
-      >
-        {day}
-      </div>
-    );
-  }
 
   const changeMonth = (offset: number) => {
     setCurrentMonth(new Date(year, month + offset, 1));
   };
 
-  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  // Memoize calendar grid generation to avoid re-calculating on every render
+  const calendarDays = useMemo(() => {
+    const numDays = daysInMonth(year, month);
+    const startDay = (firstDayOfMonth(year, month) + 6) % 7; // Adjust to make Monday first day (0)
+
+    // Hoist date string calculations outside the loop for efficiency
+    const todayString = new Date().toDateString();
+    const selectedDateString = selectedDate?.toDateString();
+
+    const days = [];
+
+    // Add empty cells for days before the first of the month
+    for (let i = 0; i < startDay; i++) {
+      days.push(<div key={`empty-${i}`} className="p-2 border border-neutral-200"></div>);
+    }
+
+    // Add cells for each day of the month
+    for (let day = 1; day <= numDays; day++) {
+      const date = new Date(year, month, day);
+      const dateString = date.toDateString();
+      const isSelected = selectedDateString === dateString;
+      const isToday = todayString === dateString;
+
+      days.push(
+        <div
+          key={day}
+          className={`p-2 border border-neutral-200 text-center cursor-pointer hover:bg-primary-light hover:text-white transition-colors
+                      ${isSelected ? 'bg-primary text-white font-bold' : 'bg-white text-neutral-700'}
+                      ${isToday ? 'ring-2 ring-secondary' : ''}`}
+          onClick={() => onDateSelect(date)}
+        >
+          {day}
+        </div>
+      );
+    }
+    return days;
+  }, [year, month, selectedDate, onDateSelect]);
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-lg">
