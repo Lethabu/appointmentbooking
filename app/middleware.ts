@@ -58,7 +58,7 @@ export async function middleware(request: NextRequest) {
   if (tenant) {
     // Rewrite the URL to the tenant-specific page and add branding headers
     const newUrl = new URL(`/${tenant.subdomain}${pathname}`, request.url);
-    const response = NextResponse.rewrite(newUrl);
+    const response = NextResponse.rewrite(newUrl)
 
     if (tenant.theme) {
       response.headers.set('X-Tenant-Theme', JSON.stringify(tenant.theme));

@@ -1,5 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Link from 'next/link';
 import {
@@ -12,19 +12,6 @@ import {
   CreditCardIcon,
   CubeIcon,
 } from '@heroicons/react/24/outline';
-import BrandingInjector from '../components/Branding/BrandingInjector';
-import { headers } from 'next/headers';
-
-const Logo = () => {
-  const headersList = headers();
-  const logoUrl = headersList.get('X-Tenant-Logo-Url');
-
-  if (!logoUrl) {
-    return null;
-  }
-
-  return <img src={logoUrl} alt="Salon Logo" className="h-10 w-auto" />;
-};
 
 async function getSalonForUser(supabase, userId) {
   const { data: salon, error } = await supabase
@@ -112,12 +99,29 @@ export default async function DashboardLayout({ children }) {
     return redirect('/dashboard/create-salon')
   }
 
+  const headersList = headers();
+  const logoUrl = headersList.get('X-Tenant-Logo-Url');
+  const themeHeader = headersList.get('X-Tenant-Theme');
+
+  let cssVariables = '';
+  if (themeHeader) {
+    try {
+      const theme = JSON.parse(themeHeader);
+      cssVariables = Object.entries(theme)
+        .map(([key, value]) => `--${key}: ${value};`)
+        .join('\n');
+    } catch (error) {
+      console.error('Failed to parse tenant theme in layout:', error);
+    }
+  }
+
   return (
-    <div className="min-h-screen flex bg-gray-100">
-      <BrandingInjector />
+    <>
+      {cssVariables && <style jsx global>{`:root { ${cssVariables} }`}</style>}
+      <div className="min-h-screen flex bg-gray-100">
       <aside className="w-64 bg-white shadow-md flex-shrink-0 flex flex-col">
         <div className="p-6 border-b flex items-center space-x-4">
-          <Logo />
+          {logoUrl && <img src={logoUrl} alt="Salon Logo" className="h-10 w-auto" />}
           <Link href="/dashboard" className="text-2xl font-bold text-indigo-600 truncate">
             {salon.name}
           </Link>
@@ -137,9 +141,10 @@ export default async function DashboardLayout({ children }) {
           <SignOut />
         </div>
       </aside>
-      <main className="flex-grow p-6 sm:p-8">
+      <main className="flex-1 p-6 sm:p-8">
         {children}
       </main>
     </div>
+    </>
   )
 }
