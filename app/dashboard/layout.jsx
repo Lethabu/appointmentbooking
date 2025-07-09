@@ -1,4 +1,3 @@
-'use client';
 import { createServerClient } from '@supabase/ssr'
 import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
@@ -13,6 +12,7 @@ import {
   CreditCardIcon,
   CubeIcon,
 } from '@heroicons/react/24/outline';
+import ThemeInjector from '../components/Branding/ThemeInjector';
 
 async function getSalonForUser(supabase, userId) {
   const { data: salon, error } = await supabase
@@ -118,7 +118,7 @@ export default async function DashboardLayout({ children }) {
 
   return (
     <>
-      {cssVariables && <style jsx global>{`:root { ${cssVariables} }`}</style>}
+      <ThemeInjector cssVariables={cssVariables} />
       <div className="min-h-screen flex bg-gray-100">
       <aside className="w-64 bg-white shadow-md flex-shrink-0 flex flex-col">
         <div className="p-6 border-b flex items-center space-x-4">
