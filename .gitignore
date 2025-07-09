@@ -14,3 +14,6 @@ out/
 # Temporary files
 Untitled-*.js
 Untitled-*.ts
+
+# Local environment variables
+.env.local

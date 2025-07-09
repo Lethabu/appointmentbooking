@@ -1,13 +1,9 @@
 // pages/api/agent/route.js
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-// We'll also need the regular createClient for service_role access later
-import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
 import { getAvailableAppointments, bookAppointment, searchProducts } from '../../lib/agent-functions';
 import { z } from 'zod';
-
-const openai = new OpenAI(process.env.OPENAI_API_KEY)
 
 // Zod schemas defined at the module level
 const BookAppointmentArgsSchema = z.object({
@@ -97,6 +93,9 @@ export async function POST(req) {
   };
 
   try {
+    // Instantiate the OpenAI client inside the handler to ensure
+    // process.env.OPENAI_API_KEY is available at runtime.
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     // Initial AI call
     const response = await openai.chat.completions.create({
       model: 'gpt-4-turbo',
