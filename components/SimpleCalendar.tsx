@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { IconChevronDown } from './constants';
+import { IconChevronDown } from './icons';
 
 interface SimpleCalendarProps {
   onDateSelect: (date: Date) => void;
