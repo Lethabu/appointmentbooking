@@ -18,7 +18,7 @@ export default function CheckoutPage() {
     setIsProcessing(true)
     setError(null)
 
-    const salonId = cart.length > 0 ? cart[0].salon_id : null
+    const salonId = items.length > 0 ? items[0].salon_id : null
     if (!salonId) {
       setError('Could not determine the salon for this order.')
       setIsProcessing(false)
@@ -29,7 +29,7 @@ export default function CheckoutPage() {
       const orderRes = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ salonId, clientDetails: client, cart, total }),
+        body: JSON.stringify({ salonId, clientDetails: client, items, total }),
       })
 
       if (!orderRes.ok) throw new Error('Failed to create the order.')
@@ -57,7 +57,7 @@ export default function CheckoutPage() {
     }
   }
 
-  if (cart.length === 0 && !isProcessing) {
+  if (items.length === 0 && !isProcessing) {
     return (
       <div className="max-w-2xl mx-auto p-8 text-center">
         <h1 className="text-2xl font-bold">Your cart is empty.</h1>
@@ -83,7 +83,7 @@ export default function CheckoutPage() {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4">2. Order Summary</h2>
           <div className="space-y-2 mb-4">
-            {cart.map(item => (
+            {items.map(item => (
               <div key={item.id} className="flex justify-between">
                 <span>{item.name} x {item.quantity}</span>
                 <span>R{(item.price * item.quantity / 100).toFixed(2)}</span>
