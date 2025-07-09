@@ -20,6 +20,50 @@ const SearchProductsArgsSchema = z.object({
   query: z.string()
 });
 
+// Define the functions available to the AI agents
+const functions = {
+  nia: [
+    {
+      name: 'get_available_appointments',
+      description: 'Get available appointment slots for a specific service and optional date.',
+      parameters: {
+        type: 'object',
+        properties: {
+          service_id: { type: 'string', description: 'The ID of the service to check for appointments.' },
+          date: { type: 'string', description: "The date to check for appointments, in YYYY-MM-DD format. Defaults to today if not provided." },
+        },
+        required: ['service_id'],
+      },
+    },
+    {
+      name: 'book_appointment',
+      description: 'Book a new appointment for a client.',
+      parameters: {
+        type: 'object',
+        properties: {
+          service_id: { type: 'string', description: 'The ID of the service for the appointment.' },
+          datetime: { type: 'string', description: "The specific date and time for the appointment in ISO 8601 format (e.g., '2024-05-20T14:30:00')." },
+          client_name: { type: 'string', description: 'The full name of the client.' },
+          client_phone: { type: 'string', description: 'The phone number of the client (optional).' },
+        },
+        required: ['service_id', 'datetime', 'client_name'],
+      },
+    },
+  ],
+  orion: [
+    {
+      name: 'search_products',
+      description: 'Search for products based on a query.',
+      parameters: {
+        type: 'object',
+        properties: { query: { type: 'string', description: 'The search term for products.' } },
+        required: ['query'],
+      },
+    },
+  ],
+  blaze: [], // No functions defined for the 'blaze' agent yet
+};
+
 export async function POST(req) {
   const cookieStore = cookies()
   const supabase = createServerClient(
