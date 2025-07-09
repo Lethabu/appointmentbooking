@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
   // 1. Check for custom domain
   const { data: customDomainTenant } = await supabase
     .from('tenants')
-    .select('*, tenant_id:id')
+    .select('*, tenant_id:id, theme, logo_url')
     .eq('custom_domain', host)
     .single();
 
@@ -46,7 +46,7 @@ export async function middleware(request: NextRequest) {
     // 2. Fallback to subdomain
     const { data: subdomainTenant } = await supabase
       .from('tenants')
-      .select('*, tenant_id:id')
+      .select('*, tenant_id:id, theme, logo_url')
       .eq('subdomain', subdomain)
       .single();
     
@@ -56,9 +56,18 @@ export async function middleware(request: NextRequest) {
   }
 
   if (tenant) {
-    // Rewrite the URL to the tenant-specific page
+    // Rewrite the URL to the tenant-specific page and add branding headers
     const newUrl = new URL(`/${tenant.subdomain}${pathname}`, request.url);
-    return NextResponse.rewrite(newUrl);
+    const response = NextResponse.rewrite(newUrl);
+
+    if (tenant.theme) {
+      response.headers.set('X-Tenant-Theme', JSON.stringify(tenant.theme));
+    }
+    if (tenant.logo_url) {
+      response.headers.set('X-Tenant-Logo-Url', tenant.logo_url);
+    }
+
+    return response;
   }
 
   // 3. If no tenant found, redirect to a generic page or show an error

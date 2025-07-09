@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
+import Link from 'next/link';
 import {
   HomeIcon,
   CalendarDaysIcon,
@@ -11,7 +11,20 @@ import {
   UserGroupIcon,
   CreditCardIcon,
   CubeIcon,
-} from '@heroicons/react/24/outline'
+} from '@heroicons/react/24/outline';
+import BrandingInjector from '../components/Branding/BrandingInjector';
+import { headers } from 'next/headers';
+
+const Logo = () => {
+  const headersList = headers();
+  const logoUrl = headersList.get('X-Tenant-Logo-Url');
+
+  if (!logoUrl) {
+    return null;
+  }
+
+  return <img src={logoUrl} alt="Salon Logo" className="h-10 w-auto" />;
+};
 
 async function getSalonForUser(supabase, userId) {
   const { data: salon, error } = await supabase
@@ -101,8 +114,10 @@ export default async function DashboardLayout({ children }) {
 
   return (
     <div className="min-h-screen flex bg-gray-100">
+      <BrandingInjector />
       <aside className="w-64 bg-white shadow-md flex-shrink-0 flex flex-col">
-        <div className="p-6 border-b">
+        <div className="p-6 border-b flex items-center space-x-4">
+          <Logo />
           <Link href="/dashboard" className="text-2xl font-bold text-indigo-600 truncate">
             {salon.name}
           </Link>
