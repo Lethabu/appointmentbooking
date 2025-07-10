@@ -1,3 +1,10 @@
+export default function Home() {
+  return (
+    &lt;main className="min-h-screen flex flex-col"&gt;
+      {/* Content will be added incrementally */}
+    &lt;/main&gt;
+  );
+}
 export default function HomePage() {
   return (
     <div className="container mx-auto px-4 py-8">
