@@ -56,7 +56,7 @@ export default function InStyleSalonPage({ params }) {
     } catch (error) {
       console.error('Error loading services:', error);
     }
-  });
+  }, [salonIdentifier]);
 
   const loadSocialMedia = useCallback(async () => {
     try {
@@ -75,7 +75,7 @@ export default function InStyleSalonPage({ params }) {
     } finally {
       setLoading(false);
     }
-  });
+  }, []);
 
   if (loading) {
     return (
