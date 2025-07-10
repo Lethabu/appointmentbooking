@@ -2,10 +2,6 @@ import { createClient } from '@supabase/supabase-js';
 
 // Helper: get available appointments
 export async function getAvailableAppointments() {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
   // Simplified availability - in production use calendar integration
   const slots = [];
   for (let hour = 9; hour <= 17; hour++) {
@@ -16,7 +12,7 @@ export async function getAvailableAppointments() {
 }
 
 // Helper: book appointment
-export async function bookAppointment({ service_id, datetime, client_name, client_phone }) {
+export async function bookAppointment({ salonId, service_id, datetime, client_name, client_phone }) {
   if (!service_id || !datetime || !client_name) {
     return { error: 'Missing required fields: service_id, datetime, and client_name are required.' };
   }

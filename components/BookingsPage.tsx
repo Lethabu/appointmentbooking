@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import SimpleCalendar from './SimpleCalendar';
 import BookingForm from './BookingForm';
 import { Booking, Service, RawAppointmentData, Staff } from './types';
-import { useQuery, useMutation, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 // Create a QueryClient instance

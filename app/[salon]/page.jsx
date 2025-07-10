@@ -46,7 +46,7 @@ export default function InStyleSalonPage({ params }) {
     }
   }, [salonIdentifier, loadServices, loadSocialMedia]);
 
-  const loadServices = async () => {
+  const loadServices = useCallback(async () => {
     try {
       const response = await fetch(`/api/public/services?salon=${salonIdentifier}`);
       if (response.ok) {
@@ -56,11 +56,9 @@ export default function InStyleSalonPage({ params }) {
     } catch (error) {
       console.error('Error loading services:', error);
     }
-  };
+  }
 
-  
-
-  const loadSocialMedia = async () => {
+  const loadSocialMedia = useCallback(async () => {
     try {
       const response = await fetch('/api/scrape-social', {
         method: 'POST',
@@ -77,7 +75,7 @@ export default function InStyleSalonPage({ params }) {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   if (loading) {
     return (

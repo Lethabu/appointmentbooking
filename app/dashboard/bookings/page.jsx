@@ -47,27 +47,7 @@ export default function BookingsPage() {
     fetchAppointments(selectedDate)
   }, [selectedDate, fetchAppointments])
 
-  const handleConfirm = async (id) => {
-    const { error } = await supabase
-      .from('appointments')
-      .update({ status: 'confirmed' })
-      .eq('id', id)
-    if (error) {
-      setNotification({ message: error.message, type: 'error' });
-    } else {
-      fetchAppointments(selectedDate) // Refresh list
-    }
-  }
-
-  const handleSendWhatsApp = async (id) => {
-    // This calls the webhook we designed earlier
-    await fetch(`/api/webhooks/booking-confirmed`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ appointment_id: id })
-    })
-    setNotification({ message: 'WhatsApp reminder queued!', type: 'success' });
-  }
+  
 
   return (
     <>

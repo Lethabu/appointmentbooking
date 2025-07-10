@@ -5,9 +5,10 @@ import { createBrowserClient } from '@supabase/ssr'
 
 export default function ProfilePage() {
   const supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-  const [user, setUser] = useState(null)
+  
   const [fullName, setFullName] = useState(null)
   const [phone, setPhone] = useState(null)
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     async function getProfile() {
@@ -15,7 +16,6 @@ export default function ProfilePage() {
         setLoading(true)
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) throw new Error('No user')
-        setUser(user)
 
         let { data, error, status } = await supabase
           .from('profiles')
