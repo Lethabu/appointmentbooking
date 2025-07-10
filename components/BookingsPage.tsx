@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import SimpleCalendar from './SimpleCalendar';
 import BookingForm from './BookingForm';
-import { Booking, Service, RawAppointmentData } from './types';
+import { Booking, Service, RawAppointmentData, Staff } from './types';
 import { useQuery, useMutation, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
@@ -68,17 +68,22 @@ const BookingsPage: React.FC = () => {
       return [];
     }
 
-    return data.map((appt: RawAppointmentData) => ({
-      id: appt.id,
-      clientName: appt.client_name,
-      clientPhone: appt.client_phone,
-      service: appt.services as Service,
-      dateTime: new Date(appt.start_time),
-      status: appt.status as 'pending' | 'confirmed' | 'cancelled' | 'scheduled' | 'in_progress' | 'completed' | 'no_show',
-      staffId: appt.staff?.id || null,
-      recurrence_rule: appt.recurrence_rule || null,
-      staff: appt.staff && appt.staff.length > 0 ? { id: appt.staff[0].id, name: appt.staff[0].name } : null,
-    }));
+    return data.map((appt: RawAppointmentData) => {
+      const mappedService: Service = appt.services && appt.services.length > 0 ? appt.services[0] : {} as Service; // Ensure it's a single Service object
+      const mappedStaff: Staff | null = appt.staff && appt.staff.length > 0 ? appt.staff[0] : null; // Ensure it's a single Staff object
+
+      return {
+        id: appt.id,
+        clientName: appt.client_name,
+        clientPhone: appt.client_phone,
+        service: mappedService,
+        dateTime: new Date(appt.start_time),
+        status: appt.status as 'pending' | 'confirmed' | 'cancelled' | 'scheduled' | 'in_progress' | 'completed' | 'no_show',
+        staffId: mappedStaff?.id || null, // Access id from the mappedStaff object
+        recurrence_rule: appt.recurrence_rule || null,
+        staff: mappedStaff,
+      };
+    });
   }, [salonId, selectedDate, supabase]);
 
   const { isLoading, error, data: bookingsData, refetch } = useQuery({

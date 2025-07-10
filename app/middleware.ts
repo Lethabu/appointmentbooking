@@ -70,18 +70,9 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  // 3. If no tenant found, redirect to a generic page or show an error
-  // For now, we'll just continue to the requested path.
-  // This could be a marketing page, a 404, or a tenant signup page.
-  if (pathname === '/') {
-     return NextResponse.next();
-  }
-
-  // Avoid redirect loops for non-existent tenants
-  if (!pathname.startsWith('/_tenant')) {
-      const notFoundUrl = new URL('/404', request.url); // Or a dedicated "tenant not found" page
-      return NextResponse.rewrite(notFoundUrl);
-  }
+  // 3. If no tenant was found, this is a request to the main marketing site
+  // (e.g., appointmentbookings.co.za/login). We'll allow it to proceed.
+  // The page/layout itself will handle authentication or redirection.
 
   return NextResponse.next();
 }
