@@ -12,7 +12,7 @@ import {
   CreditCardIcon,
   CubeIcon,
 } from '@heroicons/react/24/outline';
-import BrandingInjector from '../components/Branding/BrandingInjector';
+import ThemeInjector from './ThemeInjector';
 
 async function getSalonForUser(supabase, userId) {
   const { data: salon, error } = await supabase
