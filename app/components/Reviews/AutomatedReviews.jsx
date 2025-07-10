@@ -3,14 +3,7 @@
 
 import { useState, useEffect } from 'react';
 
-export default function AutomatedReviews({ salonId }) {
-  const [reviews, setReviews] = useState([]);
-  const [showReviewPrompt, setShowReviewPrompt] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [reviewText, setReviewText] = useState('');
-
-  // Mock reviews for demonstration
-  const mockReviews = [
+const mockReviews = [
     {
       id: 1,
       client_name: "Sarah M.",
@@ -39,6 +32,12 @@ export default function AutomatedReviews({ salonId }) {
       automated: true
     }
   ];
+
+export default function AutomatedReviews() {
+  const [reviews, setReviews] = useState([]);
+  const [showReviewPrompt, setShowReviewPrompt] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState('');
 
   useEffect(() => {
     setReviews(mockReviews);

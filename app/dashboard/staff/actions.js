@@ -2,7 +2,6 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-import { cookies } from 'next/headers'
 import crypto from 'crypto'
 
 // This is a simplified version of the hasPermission logic for server actions

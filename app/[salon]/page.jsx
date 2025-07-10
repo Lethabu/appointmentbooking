@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Suspense } from 'react';
 import VirtualReceptionist from '../components/AI/VirtualReceptionist';
 import AutomatedReviews from '../components/Reviews/AutomatedReviews';
 import Link from 'next/link';
@@ -10,7 +9,7 @@ import Link from 'next/link';
 export default function InStyleSalonPage({ params }) {
   const [salonData, setSalonData] = useState(null);
   const [services, setServices] = useState([]);
-  const [products, setProducts] = useState([]);
+  
   const [socialData, setSocialData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -42,10 +41,10 @@ export default function InStyleSalonPage({ params }) {
 
       setSalonData(instyleData);
       loadServices();
-      loadProducts();
+      
       loadSocialMedia();
     }
-  }, [salonIdentifier]);
+  }, [salonIdentifier, loadServices, loadSocialMedia]);
 
   const loadServices = async () => {
     try {
@@ -59,17 +58,7 @@ export default function InStyleSalonPage({ params }) {
     }
   };
 
-  const loadProducts = async () => {
-    try {
-      const response = await fetch(`/api/public/products?salon=${salonIdentifier}`);
-      if (response.ok) {
-        const data = await response.json();
-        setProducts(data.products || []);
-      }
-    } catch (error) {
-      console.error('Error loading products:', error);
-    }
-  };
+  
 
   const loadSocialMedia = async () => {
     try {

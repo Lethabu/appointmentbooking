@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getSessionAndSalon } from '@/app/lib/api-helpers'
 
-export async function GET(req) {
+export async function GET() {
   const { salon, supabase, error: authError } = await getSessionAndSalon()
   if (authError) return authError
   const { data: services, error } = await supabase

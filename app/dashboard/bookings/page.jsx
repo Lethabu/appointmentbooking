@@ -6,8 +6,8 @@ import Notification from '@/app/components/UI/Notification';
 
 export default function BookingsPage() {
   const supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-  const [loading, setLoading] = useState(true)
-  const [appointments, setAppointments] = useState([])
+  
+  
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
   const [notification, setNotification] = useState({ message: '', type: '' });
 

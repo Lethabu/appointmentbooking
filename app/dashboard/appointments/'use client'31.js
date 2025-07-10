@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -8,7 +8,6 @@ import { useCart } from '../../context/CartContext'
 
 export default function ShopPage() {
   const params = useParams()
-  const router = useRouter()
   const { addToCart } = useCart()
   const { salon: salonIdentifier } = params
   const [salon, setSalon] = useState(null)

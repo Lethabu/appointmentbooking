@@ -1,6 +1,6 @@
 'use client'
 
-export default function AppointmentLiveView({ salonId }) {
+export default function AppointmentLiveView() {
   return (
     <div className="p-4 bg-white rounded-lg shadow">
       <h3 className="font-semibold mb-2">Live Appointments</h3>

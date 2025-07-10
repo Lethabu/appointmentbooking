@@ -3,11 +3,7 @@
 
 import { useState, useEffect } from 'react';
 
-export default function SmartInventory() {
-  const [inventory, setInventory] = useState([]);
-  const [alerts, setAlerts] = useState([]);
-
-  const mockInventory = [
+const mockInventory = [
     {
       id: 1,
       name: "Professional Shampoo",
@@ -89,6 +85,10 @@ export default function SmartInventory() {
 
     return alerts;
   };
+
+export default function SmartInventory() {
+  const [inventory, setInventory] = useState([]);
+  const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
     setInventory(mockInventory);

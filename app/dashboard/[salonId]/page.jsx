@@ -10,7 +10,6 @@ export default function SalonDashboardPage({ params }) {
     const router = useRouter();
     const { salonId } = params;
 
-    const [user, setUser] = useState(null);
     const [salon, setSalon] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -23,7 +22,6 @@ export default function SalonDashboardPage({ params }) {
                 router.push('/login');
                 return;
             }
-            setUser(user);
 
             if (!salonId) {
                 setLoading(false);

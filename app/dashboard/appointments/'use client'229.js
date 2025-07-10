@@ -7,7 +7,6 @@ import Link from 'next/link'
 
 export default function ShopPage() {
   const params = useParams()
-  const router = useRouter()
   const { salon: salonIdentifier } = params
   const [salon, setSalon] = useState(null)
   const [products, setProducts] = useState([])

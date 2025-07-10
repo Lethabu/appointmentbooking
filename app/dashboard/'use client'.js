@@ -1,9 +1,9 @@
 'use client'
 
-import { supabase } from './supabaseClient'
+
 
 // Placeholder for real-time subscription logic
-export function subscribeToAppointments(salonId, callback) {
+export function subscribeToAppointments(salonId) {
   console.log(`Subscribing to real-time updates for salon ${salonId}`)
   // In a real implementation, you would use supabase.channel().on().subscribe()
   // For now, we'll just return a mock subscription object.

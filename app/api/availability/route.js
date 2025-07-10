@@ -60,7 +60,7 @@ export async function GET(req) {
     const requiredResourceIds = service.service_resources.map(sr => sr.resource_id);
 
     // 2. Fetch staff schedules for the given salon and day
-    const dayOfWeek = queryDate.getDay(); // 0 for Sunday, 1 for Monday, etc.
+    
     
 
     // 3. Fetch existing appointments for the given salon and date
@@ -130,7 +130,7 @@ export async function GET(req) {
       return NextResponse.json({ error: 'Salon not found or hours not set' }, { status: 404 });
     }
 
-    const [openHour, openMinute] = salonData.opening_time.split(':').map(Number);
+    const [openHour] = salonData.opening_time.split(':').map(Number);
     const [closeHour, closeMinute] = salonData.closing_time.split(':').map(Number);
 
     const intervalMinutes = 30; // Check every 30 minutes
@@ -187,11 +187,6 @@ export async function GET(req) {
               // and check for overlaps with that specific appointment's end time.
               const apptStartTime = new Date(appt.start_time);
               const existingApptDuration = appt.services?.duration_minutes || serviceDuration;
-              const existingApptBufferBefore = appt.services?.buffer_before_minutes || 0;
-              const existingApptBufferAfter = appt.services?.buffer_after_minutes || 0;
-
-              const apptStartWithBuffer = new Date(apptStartTime.getTime() - existingApptBufferBefore * 60 * 1000);
-              const apptEndWithBuffer = new Date(apptStartTime.getTime() + existingApptDuration * 60 * 1000 + existingApptBufferAfter * 60 * 1000);
 
               return (
                 (slotStart < apptEndTime && slotEnd > apptStartTime)

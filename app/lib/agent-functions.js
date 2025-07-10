@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Helper: get available appointments
-export async function getAvailableAppointments(salonId, { service_id, date }) {
+export async function getAvailableAppointments() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -16,7 +16,7 @@ export async function getAvailableAppointments(salonId, { service_id, date }) {
 }
 
 // Helper: book appointment
-export async function bookAppointment(salonId, { service_id, datetime, client_name, client_phone }) {
+export async function bookAppointment({ service_id, datetime, client_name, client_phone }) {
   if (!service_id || !datetime || !client_name) {
     return { error: 'Missing required fields: service_id, datetime, and client_name are required.' };
   }

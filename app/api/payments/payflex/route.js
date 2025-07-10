@@ -8,7 +8,7 @@ const PAYFLEX_BASE_URL = process.env.PAYFLEX_BASE_URL || 'https://api.payflex.co
 
 export async function POST(req) {
   try {
-    const { salon_id, user_id, amount, reference, return_url } = await req.json();
+    const { amount, reference, return_url } = await req.json();
     // Validate required fields
     if (!amount || !reference || !return_url) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
