@@ -130,10 +130,14 @@ export default async function DashboardLayout({ children }) {
         <nav className="mt-6 flex-grow px-4 space-y-2">
           <NavLink href="/dashboard" icon={HomeIcon}>Overview</NavLink>
           <NavLink href="/dashboard/appointments" icon={CalendarDaysIcon}>Appointments</NavLink>
+          <NavLink href="/dashboard/services" icon={Cog6ToothIcon}>Services</NavLink>
+          <NavLink href="/dashboard/staff" icon={UserGroupIcon}>Staff</NavLink>
+          <NavLink href="/dashboard/staff-schedules" icon={CalendarDaysIcon}>Staff Schedules</NavLink>
+          <NavLink href="/dashboard/resources" icon={CubeIcon}>Resources</NavLink>
+          <NavLink href="/dashboard/service-resources" icon={Cog6ToothIcon}>Service Resources</NavLink>
+          <NavLink href="/dashboard/clients" icon={UsersIcon}>Clients</NavLink>
           <NavLink href="/dashboard/orders" icon={ShoppingBagIcon}>Orders</NavLink>
           <NavLink href="/dashboard/products" icon={CubeIcon}>Products</NavLink>
-          <NavLink href="/dashboard/clients" icon={UsersIcon}>Clients</NavLink>
-          <NavLink href="/dashboard/staff" icon={UserGroupIcon}>Staff</NavLink>
           <NavLink href="/dashboard/billing" icon={CreditCardIcon}>Billing</NavLink>
           <NavLink href="/dashboard/settings" icon={Cog6ToothIcon}>Settings</NavLink>
         </nav>

@@ -56,49 +56,51 @@ export async function GET(req) {
   const { authorized, response } = await authorizeUser(supabase, salonId);
   if (!authorized) return response;
 
-  const { data: services, error } = await supabase
-    .from('services')
-    .select('id, name, description, duration_minutes, price, is_active, buffer_before_minutes, buffer_after_minutes')
+  const { data: clients, error } = await supabase
+    .from('profiles') // Assuming 'profiles' table stores client information
+    .select('id, full_name, phone, email, created_at')
     .eq('salon_id', salonId)
-    .order('name', { ascending: true });
+    .order('full_name', { ascending: true });
 
   if (error) {
-    console.error('Error fetching services:', error);
+    console.error('Error fetching clients:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(services);
+  return NextResponse.json(clients);
 }
 
 export async function POST(req) {
   const supabase = await getSupabaseClient();
-  const serviceData = await req.json();
-  const { salon_id, name, description, duration_minutes, price, is_active, buffer_before_minutes, buffer_after_minutes } = serviceData;
+  const clientData = await req.json();
+  const { salon_id, full_name, phone, email } = clientData;
 
-  if (!salon_id || !name || !duration_minutes || !price) {
-    return NextResponse.json({ error: 'Missing required service fields' }, { status: 400 });
+  if (!salon_id || !full_name) {
+    return NextResponse.json({ error: 'Missing required client fields' }, { status: 400 });
   }
 
   const { authorized, response } = await authorizeUser(supabase, salon_id);
   if (!authorized) return response;
 
+  // For new clients, we might need to create a new auth.users entry if they don't exist
+  // For simplicity, this example assumes clients are managed within the profiles table directly
+  // without necessarily having a full auth.users entry unless they sign up.
+  // In a real app, you'd link to auth.users or create a dummy user if needed.
+
   const { data, error } = await supabase
-    .from('services')
+    .from('profiles')
     .insert({
       salon_id,
-      name,
-      description,
-      duration_minutes,
-      price,
-      is_active: is_active !== undefined ? is_active : true,
-      buffer_before_minutes: buffer_before_minutes !== undefined ? buffer_before_minutes : 0,
-      buffer_after_minutes: buffer_after_minutes !== undefined ? buffer_after_minutes : 0,
+      full_name,
+      phone,
+      email,
+      // role: 'client', // Assuming default role is client
     })
     .select()
     .single();
 
   if (error) {
-    console.error('Error creating service:', error);
+    console.error('Error creating client:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -107,34 +109,30 @@ export async function POST(req) {
 
 export async function PUT(req) {
   const supabase = await getSupabaseClient();
-  const serviceData = await req.json();
-  const { id, salon_id, name, description, duration_minutes, price, is_active, buffer_before_minutes, buffer_after_minutes } = serviceData;
+  const clientData = await req.json();
+  const { id, salon_id, full_name, phone, email } = clientData;
 
   if (!id || !salon_id) {
-    return NextResponse.json({ error: 'Missing service ID or salon ID' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing client ID or salon ID' }, { status: 400 });
   }
 
   const { authorized, response } = await authorizeUser(supabase, salon_id);
   if (!authorized) return response;
 
   const { data, error } = await supabase
-    .from('services')
+    .from('profiles')
     .update({
-      name,
-      description,
-      duration_minutes,
-      price,
-      is_active,
-      buffer_before_minutes,
-      buffer_after_minutes,
+      full_name,
+      phone,
+      email,
     })
     .eq('id', id)
-    .eq('salon_id', salon_id) // Ensure the service belongs to the salon
+    .eq('salon_id', salon_id) // Ensure the client belongs to the salon
     .select()
     .single();
 
   if (error) {
-    console.error('Error updating service:', error);
+    console.error('Error updating client:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -148,22 +146,22 @@ export async function DELETE(req) {
   const salonId = searchParams.get('salon_id');
 
   if (!id || !salonId) {
-    return NextResponse.json({ error: 'Missing service ID or salon ID' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing client ID or salon ID' }, { status: 400 });
   }
 
   const { authorized, response } = await authorizeUser(supabase, salonId);
   if (!authorized) return response;
 
   const { error } = await supabase
-    .from('services')
+    .from('profiles')
     .delete()
     .eq('id', id)
-    .eq('salon_id', salonId); // Ensure the service belongs to the salon
+    .eq('salon_id', salonId); // Ensure the client belongs to the salon
 
   if (error) {
-    console.error('Error deleting service:', error);
+    console.error('Error deleting client:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ message: 'Service deleted successfully' }, { status: 204 });
+  return NextResponse.json({ message: 'Client deleted successfully' }, { status: 204 });
 }

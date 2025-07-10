@@ -56,49 +56,45 @@ export async function GET(req) {
   const { authorized, response } = await authorizeUser(supabase, salonId);
   if (!authorized) return response;
 
-  const { data: services, error } = await supabase
-    .from('services')
-    .select('id, name, description, duration_minutes, price, is_active, buffer_before_minutes, buffer_after_minutes')
+  const { data: resources, error } = await supabase
+    .from('resources')
+    .select('id, name, description, is_active')
     .eq('salon_id', salonId)
     .order('name', { ascending: true });
 
   if (error) {
-    console.error('Error fetching services:', error);
+    console.error('Error fetching resources:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(services);
+  return NextResponse.json(resources);
 }
 
 export async function POST(req) {
   const supabase = await getSupabaseClient();
-  const serviceData = await req.json();
-  const { salon_id, name, description, duration_minutes, price, is_active, buffer_before_minutes, buffer_after_minutes } = serviceData;
+  const resourceData = await req.json();
+  const { salon_id, name, description, is_active } = resourceData;
 
-  if (!salon_id || !name || !duration_minutes || !price) {
-    return NextResponse.json({ error: 'Missing required service fields' }, { status: 400 });
+  if (!salon_id || !name) {
+    return NextResponse.json({ error: 'Missing required resource fields' }, { status: 400 });
   }
 
   const { authorized, response } = await authorizeUser(supabase, salon_id);
   if (!authorized) return response;
 
   const { data, error } = await supabase
-    .from('services')
+    .from('resources')
     .insert({
       salon_id,
       name,
       description,
-      duration_minutes,
-      price,
       is_active: is_active !== undefined ? is_active : true,
-      buffer_before_minutes: buffer_before_minutes !== undefined ? buffer_before_minutes : 0,
-      buffer_after_minutes: buffer_after_minutes !== undefined ? buffer_after_minutes : 0,
     })
     .select()
     .single();
 
   if (error) {
-    console.error('Error creating service:', error);
+    console.error('Error creating resource:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -107,34 +103,30 @@ export async function POST(req) {
 
 export async function PUT(req) {
   const supabase = await getSupabaseClient();
-  const serviceData = await req.json();
-  const { id, salon_id, name, description, duration_minutes, price, is_active, buffer_before_minutes, buffer_after_minutes } = serviceData;
+  const resourceData = await req.json();
+  const { id, salon_id, name, description, is_active } = resourceData;
 
   if (!id || !salon_id) {
-    return NextResponse.json({ error: 'Missing service ID or salon ID' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing resource ID or salon ID' }, { status: 400 });
   }
 
   const { authorized, response } = await authorizeUser(supabase, salon_id);
   if (!authorized) return response;
 
   const { data, error } = await supabase
-    .from('services')
+    .from('resources')
     .update({
       name,
       description,
-      duration_minutes,
-      price,
       is_active,
-      buffer_before_minutes,
-      buffer_after_minutes,
     })
     .eq('id', id)
-    .eq('salon_id', salon_id) // Ensure the service belongs to the salon
+    .eq('salon_id', salon_id) // Ensure the resource belongs to the salon
     .select()
     .single();
 
   if (error) {
-    console.error('Error updating service:', error);
+    console.error('Error updating resource:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -148,22 +140,22 @@ export async function DELETE(req) {
   const salonId = searchParams.get('salon_id');
 
   if (!id || !salonId) {
-    return NextResponse.json({ error: 'Missing service ID or salon ID' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing resource ID or salon ID' }, { status: 400 });
   }
 
   const { authorized, response } = await authorizeUser(supabase, salonId);
   if (!authorized) return response;
 
   const { error } = await supabase
-    .from('services')
+    .from('resources')
     .delete()
     .eq('id', id)
-    .eq('salon_id', salonId); // Ensure the service belongs to the salon
+    .eq('salon_id', salonId); // Ensure the resource belongs to the salon
 
   if (error) {
-    console.error('Error deleting service:', error);
+    console.error('Error deleting resource:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ message: 'Service deleted successfully' }, { status: 204 });
+  return NextResponse.json({ message: 'Resource deleted successfully' }, { status: 204 });
 }

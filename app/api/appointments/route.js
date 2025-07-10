@@ -48,6 +48,8 @@ export async function GET(req) {
 
   const { searchParams } = new URL(req.url);
   const salonId = searchParams.get('salon_id');
+  const startDate = searchParams.get('start_date');
+  const endDate = searchParams.get('end_date');
 
   if (!salonId) {
     return NextResponse.json({ error: 'Missing salon_id parameter' }, { status: 400 });
@@ -56,49 +58,57 @@ export async function GET(req) {
   const { authorized, response } = await authorizeUser(supabase, salonId);
   if (!authorized) return response;
 
-  const { data: services, error } = await supabase
-    .from('services')
-    .select('id, name, description, duration_minutes, price, is_active, buffer_before_minutes, buffer_after_minutes')
-    .eq('salon_id', salonId)
-    .order('name', { ascending: true });
+  let query = supabase
+    .from('appointments')
+    .select('id, start_time, client_name, client_phone, status, services(name), staff(name)')
+    .eq('salon_id', salonId);
+
+  if (startDate) {
+    query = query.gte('start_time', startDate);
+  }
+  if (endDate) {
+    query = query.lte('start_time', endDate);
+  }
+
+  const { data: appointments, error } = await query.order('start_time', { ascending: true });
 
   if (error) {
-    console.error('Error fetching services:', error);
+    console.error('Error fetching appointments:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(services);
+  return NextResponse.json(appointments);
 }
 
 export async function POST(req) {
   const supabase = await getSupabaseClient();
-  const serviceData = await req.json();
-  const { salon_id, name, description, duration_minutes, price, is_active, buffer_before_minutes, buffer_after_minutes } = serviceData;
+  const appointmentData = await req.json();
+  const { salon_id, service_id, start_time, client_name, client_phone, staff_id, status, recurrence_rule } = appointmentData;
 
-  if (!salon_id || !name || !duration_minutes || !price) {
-    return NextResponse.json({ error: 'Missing required service fields' }, { status: 400 });
+  if (!salon_id || !service_id || !start_time || !client_name) {
+    return NextResponse.json({ error: 'Missing required appointment fields' }, { status: 400 });
   }
 
   const { authorized, response } = await authorizeUser(supabase, salon_id);
   if (!authorized) return response;
 
   const { data, error } = await supabase
-    .from('services')
+    .from('appointments')
     .insert({
       salon_id,
-      name,
-      description,
-      duration_minutes,
-      price,
-      is_active: is_active !== undefined ? is_active : true,
-      buffer_before_minutes: buffer_before_minutes !== undefined ? buffer_before_minutes : 0,
-      buffer_after_minutes: buffer_after_minutes !== undefined ? buffer_after_minutes : 0,
+      service_id,
+      start_time,
+      client_name,
+      client_phone,
+      staff_id,
+      status: status || 'scheduled',
+      recurrence_rule,
     })
     .select()
     .single();
 
   if (error) {
-    console.error('Error creating service:', error);
+    console.error('Error creating appointment:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -107,34 +117,34 @@ export async function POST(req) {
 
 export async function PUT(req) {
   const supabase = await getSupabaseClient();
-  const serviceData = await req.json();
-  const { id, salon_id, name, description, duration_minutes, price, is_active, buffer_before_minutes, buffer_after_minutes } = serviceData;
+  const appointmentData = await req.json();
+  const { id, salon_id, service_id, start_time, client_name, client_phone, staff_id, status, recurrence_rule } = appointmentData;
 
   if (!id || !salon_id) {
-    return NextResponse.json({ error: 'Missing service ID or salon ID' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing appointment ID or salon ID' }, { status: 400 });
   }
 
   const { authorized, response } = await authorizeUser(supabase, salon_id);
   if (!authorized) return response;
 
   const { data, error } = await supabase
-    .from('services')
+    .from('appointments')
     .update({
-      name,
-      description,
-      duration_minutes,
-      price,
-      is_active,
-      buffer_before_minutes,
-      buffer_after_minutes,
+      service_id,
+      start_time,
+      client_name,
+      client_phone,
+      staff_id,
+      status,
+      recurrence_rule,
     })
     .eq('id', id)
-    .eq('salon_id', salon_id) // Ensure the service belongs to the salon
+    .eq('salon_id', salon_id) // Ensure the appointment belongs to the salon
     .select()
     .single();
 
   if (error) {
-    console.error('Error updating service:', error);
+    console.error('Error updating appointment:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -148,22 +158,22 @@ export async function DELETE(req) {
   const salonId = searchParams.get('salon_id');
 
   if (!id || !salonId) {
-    return NextResponse.json({ error: 'Missing service ID or salon ID' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing appointment ID or salon ID' }, { status: 400 });
   }
 
   const { authorized, response } = await authorizeUser(supabase, salonId);
   if (!authorized) return response;
 
   const { error } = await supabase
-    .from('services')
+    .from('appointments')
     .delete()
     .eq('id', id)
-    .eq('salon_id', salonId); // Ensure the service belongs to the salon
+    .eq('salon_id', salonId); // Ensure the appointment belongs to the salon
 
   if (error) {
-    console.error('Error deleting service:', error);
+    console.error('Error deleting appointment:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ message: 'Service deleted successfully' }, { status: 204 });
+  return NextResponse.json({ message: 'Appointment deleted successfully' }, { status: 204 });
 }

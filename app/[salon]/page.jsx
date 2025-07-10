@@ -246,11 +246,7 @@ export default function InStyleSalonPage({ params }) {
       {/* AI Virtual Receptionist */}
       <VirtualReceptionist salonData={{ name: 'InStyle Hair Boutique', subdomain: 'instylehairboutique' }} />
 
-      {/* SuperSaaS Integration */}
-      <script src="https://cdn.supersaas.net/widget.js"></script>
-      <script dangerouslySetInnerHTML={{
-        __html: `var supersaas_695384 = new SuperSaaS("517890:InStyle_Hair_Boutique","695384:Instyle_Hair_Boutique",{})`
-      }} />
+      
     </div>
   );
 }
