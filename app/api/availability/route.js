@@ -187,9 +187,14 @@ export async function GET(req) {
               // and check for overlaps with that specific appointment's end time.
               const apptStartTime = new Date(appt.start_time);
               const existingApptDuration = appt.services?.duration_minutes || serviceDuration;
+              const existingApptBufferBefore = appt.services?.buffer_before_minutes || 0;
+              const existingApptBufferAfter = appt.services?.buffer_after_minutes || 0;
+
+              const apptStartWithBuffer = new Date(apptStartTime.getTime() - existingApptBufferBefore * 60 * 1000);
+              const apptEndWithBuffer = new Date(apptStartTime.getTime() + existingApptDuration * 60 * 1000 + existingApptBufferAfter * 60 * 1000);
 
               return (
-                (slotStart < apptEndTime && slotEnd > apptStartTime)
+                (slotStart < apptEndWithBuffer && slotEnd > apptStartWithBuffer)
               );
             });
 
