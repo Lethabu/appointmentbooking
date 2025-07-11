@@ -1,18 +1,29 @@
-
 import React from 'react';
-import { IconUserCircle } from './icons';
+import Link from 'next/link';
 
-const Header: React.FC = () => {
-  // In a real app, you'd get the current page title or breadcrumbs from routing context
-  const pageTitle = "Salon Dashboard"; 
-
+const Header = () => {
   return (
-    <header className="bg-white shadow-md p-4 flex justify-between items-center h-16 border-b border-neutral-200">
-      <h2 className="text-xl font-semibold text-neutral-700">{pageTitle}</h2>
-      <div className="flex items-center space-x-3">
-        <span className="text-neutral-600">Salon Admin</span>
-        <IconUserCircle className="h-8 w-8 text-neutral-500" />
-      </div>
+    <header className="bg-white shadow-sm">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 items-center">
+          <div className="flex-shrink-0">
+            <Link href="/" className="text-2xl font-bold text-gray-900">
+              Instyle Hair Boutique
+            </Link>
+          </div>
+          <div className="hidden md:flex space-x-8">
+            <Link href="/book" className="text-gray-700 hover:text-gray-900 transition-colors">
+              Book
+            </Link>
+            <Link href="/services" className="text-gray-700 hover:text-gray-900 transition-colors">
+              Services
+            </Link>
+            <Link href="/contact" className="text-gray-700 hover:text-gray-900 transition-colors">
+              Contact
+            </Link>
+          </div>
+        </div>
+      </nav>
     </header>
   );
 };
