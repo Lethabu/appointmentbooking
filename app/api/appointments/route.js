@@ -1,6 +1,8 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { withErrorHandler } from '@/lib/api/withErrorHandler';
+import { appointmentSchema } from '@/lib/validators/appointmentValidator';
 
 async function getSupabaseClient() {
   const cookieStore = cookies();
@@ -80,78 +82,63 @@ export async function GET(req) {
   return NextResponse.json(appointments);
 }
 
-export async function POST(req) {
+export const POST = withErrorHandler(async (req) => {
   const supabase = await getSupabaseClient();
-  const appointmentData = await req.json();
-  const { salon_id, service_id, start_time, client_name, client_phone, staff_id, status, recurrence_rule } = appointmentData;
+  const json = await req.json();
+  const body = appointmentSchema.parse(json);
 
-  if (!salon_id || !service_id || !start_time || !client_name) {
-    return NextResponse.json({ error: 'Missing required appointment fields' }, { status: 400 });
-  }
-
-  const { authorized, response } = await authorizeUser(supabase, salon_id);
+  const { authorized, response } = await authorizeUser(supabase, body.salon_id);
   if (!authorized) return response;
 
   const { data, error } = await supabase
     .from('appointments')
-    .insert({
-      salon_id,
-      service_id,
-      start_time,
-      client_name,
-      client_phone,
-      staff_id,
-      status: status || 'scheduled',
-      recurrence_rule,
-    })
+    .insert(body)
     .select()
     .single();
 
   if (error) {
     console.error('Error creating appointment:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    // The withErrorHandler will catch this and return a 500
+    throw error;
   }
 
   return NextResponse.json(data, { status: 201 });
-}
+});
 
-export async function PUT(req) {
+export const PUT = withErrorHandler(async (req) => {
   const supabase = await getSupabaseClient();
-  const appointmentData = await req.json();
-  const { id, salon_id, service_id, start_time, client_name, client_phone, staff_id, status, recurrence_rule } = appointmentData;
+  const json = await req.json();
+  // For PUT, we'll make all fields optional except the id
+  const body = appointmentSchema.partial().extend({ id: z.string().uuid() }).parse(json);
+  const { id, ...updateData } = body;
 
-  if (!id || !salon_id) {
-    return NextResponse.json({ error: 'Missing appointment ID or salon ID' }, { status: 400 });
+  if (!updateData.salon_id) {
+      const { data: existingAppointment } = await supabase.from('appointments').select('salon_id').eq('id', id).single();
+      if (!existingAppointment) {
+          return NextResponse.json({ error: 'Appointment not found' }, { status: 404 });
+      }
+      updateData.salon_id = existingAppointment.salon_id;
   }
 
-  const { authorized, response } = await authorizeUser(supabase, salon_id);
+  const { authorized, response } = await authorizeUser(supabase, updateData.salon_id);
   if (!authorized) return response;
 
   const { data, error } = await supabase
     .from('appointments')
-    .update({
-      service_id,
-      start_time,
-      client_name,
-      client_phone,
-      staff_id,
-      status,
-      recurrence_rule,
-    })
+    .update(updateData)
     .eq('id', id)
-    .eq('salon_id', salon_id) // Ensure the appointment belongs to the salon
     .select()
     .single();
 
   if (error) {
     console.error('Error updating appointment:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    throw error;
   }
 
   return NextResponse.json(data);
-}
+});
 
-export async function DELETE(req) {
+export const DELETE = withErrorHandler(async (req) => {
   const supabase = await getSupabaseClient();
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
@@ -168,12 +155,12 @@ export async function DELETE(req) {
     .from('appointments')
     .delete()
     .eq('id', id)
-    .eq('salon_id', salonId); // Ensure the appointment belongs to the salon
+    .eq('salon_id', salonId);
 
   if (error) {
     console.error('Error deleting appointment:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    throw error;
   }
 
-  return NextResponse.json({ message: 'Appointment deleted successfully' }, { status: 204 });
-}
+  return new NextResponse(null, { status: 204 });
+});

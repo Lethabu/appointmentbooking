@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Header from '../components/Header';
+import Navbar from './components/layout/Navbar';
 import Footer from '../components/Footer';
 import SimpleCalendar from '../components/SimpleCalendar';
 import BookingForm from '../components/BookingForm';
@@ -38,7 +38,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <Header />
+      <Navbar salonName="Instyle Hair Boutique" />
       
       <main className="flex-1">
         <div className="container mx-auto px-4 py-12">

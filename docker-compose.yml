@@ -1,10 +1,49 @@
+version: '3.8'
+
 services:
-  appointmentbookingssaas:
-    image: appointmentbookingssaas
+  frontend:
     build:
-      context: .
-      dockerfile: ./Dockerfile
-    environment:
-      NODE_ENV: production
+      context: . # Assumes this file is in the 'appointmentbooking' directory
+      dockerfile: Dockerfile
+    # Override the production command with the development script for hot-reloading
+    command: npm run dev
     ports:
-      - 3000:3000
+      - "3000:3000"
+    volumes:
+      # Syncs your local code with the container for live updates
+      - .:/app
+      # Use anonymous volumes to prevent local node_modules/ and .next/ from overwriting the container's
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      # Make the backend URL available to the Next.js app
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+    depends_on:
+      - ai-service
+    networks:
+      - app-network
+
+  ai-service:
+    build:
+      # Relative path to your FastAPI microservice
+      context: ../../services/ai-microservice
+      dockerfile: Dockerfile
+    # Use --reload flag for FastAPI hot-reloading
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    volumes:
+      # Sync your local Python source code for live updates
+      - ../../services/ai-microservice/src:/app/src
+    environment:
+      # Pass environment variables needed for the AI service
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
