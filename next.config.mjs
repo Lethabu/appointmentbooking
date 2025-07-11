@@ -1,3 +1,6 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -41,33 +44,11 @@ const nextConfig = {
       }
     ],
   },
-  experimental: {
-    serverActions: {
-      allowedOrigins: [
-        'localhost:3000',
-        '*.replit.dev',
-        '*.repl.co',
-        '*.replit.app',
-        'appointmentbookings.co.za',
-        'instylehairboutique.co.za',
-        'www.instylehairboutique.co.za'
-      ]
-    }
+  webpack: (config) => {
+    config.resolve.alias['@'] = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
+    return config;
   },
-  async rewrites() {
-    return [
-      {
-        source: '/:path*',
-        destination: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'instylehairboutique.co.za',
-          },
-        ],
-      },
-    ];
-  },
+  
   async headers() {
     return [
       {

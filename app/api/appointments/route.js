@@ -1,8 +1,8 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { withErrorHandler } from '@/lib/api/withErrorHandler';
-import { appointmentSchema } from '@/lib/validators/appointmentValidator';
+import { withErrorHandler } from '../../lib/api/withErrorHandler';
+import { appointmentSchema } from '../../lib/validators/appointmentValidator';
 
 async function getSupabaseClient() {
   const cookieStore = cookies();

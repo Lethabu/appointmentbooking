@@ -1,5 +1,5 @@
 // app/api/payments/create/route.js
-import { createPayment } from '@/lib/services/paymentService';
+import { createPayment } from '../../../lib/services/paymentService';
 import { NextResponse } from 'next/server';
 
 export async function POST(req) {

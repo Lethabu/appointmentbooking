@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { navLinks } from '@/config/navigation';
+import { navLinks } from '../../config/navigation';
 // import { useUser } from '@/hooks/useUser'; // Placeholder for user state
 
 export default function Navbar({ salonName }) {

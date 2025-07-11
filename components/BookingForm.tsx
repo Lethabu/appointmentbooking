@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Booking, Service } from './types';
-import { IconChat } from './icons';
+import { IconChat } from './icons/index';
 
 interface BookingFormProps {
   selectedDate: Date | null;

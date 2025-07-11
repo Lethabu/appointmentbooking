@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/instyle",
+      "has": [
+        {
+          "type": "host",
+          "value": "instylehairboutique.co.za"
+        }
+      ]
+    }
+  ]
+}
