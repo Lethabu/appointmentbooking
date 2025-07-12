@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "../../utils/supabaseClient";
-import Link from "next/link";
 import { useCartStore } from "../../utils/cartStore";
 
 export default function ShopPage() {

@@ -6,7 +6,7 @@ const supabase = createClient(
 );
 
 export async function getOrCreateClient(phone: string) {
-  let { data } = await supabase
+  const { data } = await supabase
     .from('clients')
     .select('*')
     .eq('phone', phone)

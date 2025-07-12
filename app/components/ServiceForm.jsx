@@ -1,6 +1,6 @@
 'use client'
 
-export default function ServiceForm({ onServiceAdded }) {
+export default function ServiceForm() {
   return (
     <div className="p-4 bg-white rounded-lg shadow">
       <h3 className="font-semibold mb-2">Add a New Service</h3>

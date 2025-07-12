@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/ssr';
+import { createClient } from '@/utils/supabase/client';
 import Notification from '@/app/components/UI/Notification';
 
 export default function LoginPage() {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const router = useRouter();
   const [notification, setNotification] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);

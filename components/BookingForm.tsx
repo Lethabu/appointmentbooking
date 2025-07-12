@@ -1,51 +1,137 @@
 import React, { useState, useEffect } from 'react';
 import { Booking, Service } from './types';
-import { MockServices } from './constants';
-import { IconChat } from './icons';
+import { IconChat } from './icons/index';
+
 interface BookingFormProps {
   selectedDate: Date | null;
-  onBookingSubmit: (booking: Omit<Booking, 'id' | 'status'>) => Promise<void>; // Assuming it might be async
+  onBookingSubmit: (booking: Omit<Booking, 'id' | 'status'>) => Promise<void>;
+  salonId: string; // Add salonId prop
 }
 
-const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit }) => {
+const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit, salonId }) => {
   const [clientName, setClientName] = useState('');
-  const [selectedServiceId, setSelectedServiceId] = useState<string>(MockServices[0]?.id || '');
-  const [bookingTime, setBookingTime] = useState('09:00'); // Default time
+  const [services, setServices] = useState<Service[]>([]); // State to store fetched services
+  const [selectedServiceId, setSelectedServiceId] = useState<string>('');
+  const [bookingTime, setBookingTime] = useState(''); // Initialize with empty string
   const [clientPhone, setClientPhone] = useState('');
-
+  const [recurrenceRule, setRecurrenceRule] = useState<string>('none'); // 'none', 'daily', 'weekly', 'monthly'
+  const [recurrenceEndDate, setRecurrenceEndDate] = useState<string>('');
+  const [availableSlots, setAvailableSlots] = useState<{ time: string; staff_id: string }[]>([]); // State to store available slots with staff_id
 
   useEffect(() => {
-    // Reset form or update based on selectedDate if needed
-  }, [selectedDate]);
+    const fetchServices = async () => {
+      if (!salonId) return;
+      try {
+        const response = await fetch(`/api/services?salon_id=${salonId}`);
+        if (!response.ok) {
+          throw new Error(`Error fetching services: ${response.statusText}`);
+        }
+        const data: Service[] = await response.json();
+        setServices(data);
+        if (data.length > 0) {
+          setSelectedServiceId(data[0].id); // Select the first service by default
+        }
+      } catch (error) {
+        console.error("Failed to fetch services:", error);
+        // Handle error (e.g., display a message to the user)
+      }
+    };
 
-  const handleSubmit = async (e: React.FormEvent) => { // Make handleSubmit async
+    fetchServices();
+  }, [salonId]); // Re-fetch services when salonId changes
+
+  useEffect(() => {
+    const fetchAvailableSlots = async () => {
+      if (!selectedDate || !salonId || !selectedServiceId) {
+        setAvailableSlots([]);
+        return;
+      }
+      try {
+        const formattedDate = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
+        const response = await fetch(`/api/availability?salon_id=${salonId}&service_id=${selectedServiceId}&date=${formattedDate}`);
+        if (!response.ok) {
+          throw new Error(`Error fetching available slots: ${response.statusText}`);
+        }
+        const data: { available_slots: { time: string; staff_id: string }[] } = await response.json();
+        setAvailableSlots(data.available_slots);
+        if (data.available_slots.length > 0) {
+          setBookingTime(new Date(data.available_slots[0].time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        } else {
+          setBookingTime('');
+        }
+      } catch (error) {
+        console.error("Failed to fetch available slots:", error);
+        setAvailableSlots([]);
+        setBookingTime('');
+      }
+    };
+
+    fetchAvailableSlots();
+  }, [selectedDate, salonId, selectedServiceId]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedDate || !selectedServiceId) {
-      alert('Please select a date and service.');
+    if (!selectedDate || !selectedServiceId || !bookingTime) {
+      alert('Please select a date, service, and time.');
       return;
     }
-    const service = MockServices.find(s => s.id === selectedServiceId);
+    const service = services.find(s => s.id === selectedServiceId);
     if (!service) {
       alert('Selected service not found.');
       return;
     }
 
-    const [hours, minutes] = bookingTime.split(':').map(Number);
-    const bookingDateTime = new Date(selectedDate);
-    bookingDateTime.setHours(hours, minutes, 0, 0);
+    const selectedSlot = availableSlots.find(slot => new Date(slot.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) === bookingTime);
+    if (!selectedSlot) {
+      alert('Selected time slot is invalid.');
+      return;
+    }
+
+    const bookingDateTime = new Date(selectedSlot.time);
 
     try {
-      await onBookingSubmit({
-        clientName,
-        service,
-        dateTime: bookingDateTime,
-        clientPhone,
-      });
+      if (recurrenceRule !== 'none') {
+        // Handle recurring appointment submission
+        const response = await fetch('/api/recurring-appointments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            baseAppointment: {
+              salon_id: salonId,
+              service_id: selectedServiceId,
+              start_time: bookingDateTime.toISOString(),
+              client_name: clientName,
+              client_phone: clientPhone,
+              staff_id: selectedSlot.staff_id,
+            },
+            recurrenceRule,
+            endDate: recurrenceEndDate,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create recurring appointments.');
+        }
+        alert('Recurring appointments created successfully!');
+      } else {
+        // Handle single appointment submission
+        await onBookingSubmit({
+          clientName,
+          service,
+          dateTime: bookingDateTime,
+          clientPhone,
+          staffId: selectedSlot.staff_id,
+        });
+        alert('Appointment booked successfully!');
+      }
+
       // Reset form (optional)
       setClientName('');
-      setSelectedServiceId(MockServices[0]?.id || '');
-      setBookingTime('09:00');
+      setSelectedServiceId(services[0]?.id || '');
+      setBookingTime('');
       setClientPhone('');
+      setRecurrenceRule('none');
+      setRecurrenceEndDate('');
     } catch (error) {
       console.error("Booking submission failed:", error);
       // Handle error appropriately, e.g., display an error message to the user.
@@ -59,12 +145,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
     }
     alert(`(Simulated) WhatsApp reminder would be sent to ${clientPhone} for this booking if it were confirmed.`);
   };
-
-  const availableTimes = Array.from({ length: 18 }, (_, i) => { // 9 AM to 5:30 PM in 30 min intervals
-    const hour = Math.floor(i / 2) + 9;
-    const minute = (i % 2) * 30;
-    return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-  })
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg space-y-4">
@@ -106,11 +186,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
           onChange={(e) => setSelectedServiceId(e.target.value)}
           className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white"
           required
-          disabled={!selectedDate}
+          disabled={!selectedDate || services.length === 0}
         >
-          {MockServices.map(service => (
-            <option key={service.id} value={service.id}>{service.name} - {service.durationMinutes}min (R{service.price})</option>
-          ))}
+          {services.length > 0 ? (
+            services.map(service => (
+              <option key={service.id} value={service.id}>{service.name} - {service.duration_minutes}min (R{service.price})</option>
+            ))
+          ) : (
+            <option value="">Loading services...</option>
+          )}
         </select>
       
 
@@ -122,16 +206,52 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
           onChange={(e) => setBookingTime(e.target.value)}
           className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white"
           required
-          disabled={!selectedDate}
+          disabled={!selectedDate || availableSlots.length === 0}
         >
-          {availableTimes.map(time => <option key={time} value={time}>{time}</option>)}
+          {availableSlots.length > 0 ? (
+            availableSlots.map(slot => (
+              <option key={slot.time + slot.staff_id} value={new Date(slot.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}>
+                {new Date(slot.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} (Staff: {slot.staff_id})
+              </option>
+            ))
+          ) : (
+            <option value="">No slots available</option>
+          )}
         </select>
       
+
+      <label htmlFor="recurrenceRule" className="block text-sm font-medium text-neutral-700">Recurrence</label>
+      <select
+        id="recurrenceRule"
+        value={recurrenceRule}
+        onChange={(e) => setRecurrenceRule(e.target.value)}
+        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white"
+        disabled={!selectedDate}
+      >
+        <option value="none">None</option>
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+      </select>
+
+      {recurrenceRule !== 'none' && (
+        <div className="mt-4">
+          <label htmlFor="recurrenceEndDate" className="block text-sm font-medium text-neutral-700">Recurrence End Date</label>
+          <input
+            type="date"
+            id="recurrenceEndDate"
+            value={recurrenceEndDate}
+            onChange={(e) => setRecurrenceEndDate(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-neutral-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+            required
+          />
+        </div>
+      )}
 
       <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0 pt-2 ">
         <button className="w-full sm:w-auto flex-grow justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-light disabled:opacity-50"
             type="submit"
-            disabled={!selectedDate}
+            disabled={!selectedDate || availableSlots.length === 0}
         >
             Add Booking
         </button>
@@ -146,6 +266,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
         </button>
       </div>
     </form>
-  )
+  );
 };
+
 export default BookingForm;

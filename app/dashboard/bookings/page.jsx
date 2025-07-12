@@ -6,10 +6,11 @@ import Notification from '@/app/components/UI/Notification';
 
 export default function BookingsPage() {
   const supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-  const [loading, setLoading] = useState(true)
+  
   const [appointments, setAppointments] = useState([])
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
   const [notification, setNotification] = useState({ message: '', type: '' });
+  const [loading, setLoading] = useState(false)
 
   const fetchAppointments = useCallback(async (date) => {
     try {
@@ -47,27 +48,7 @@ export default function BookingsPage() {
     fetchAppointments(selectedDate)
   }, [selectedDate, fetchAppointments])
 
-  const handleConfirm = async (id) => {
-    const { error } = await supabase
-      .from('appointments')
-      .update({ status: 'confirmed' })
-      .eq('id', id)
-    if (error) {
-      setNotification({ message: error.message, type: 'error' });
-    } else {
-      fetchAppointments(selectedDate) // Refresh list
-    }
-  }
-
-  const handleSendWhatsApp = async (id) => {
-    // This calls the webhook we designed earlier
-    await fetch(`/api/webhooks/booking-confirmed`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ appointment_id: id })
-    })
-    setNotification({ message: 'WhatsApp reminder queued!', type: 'success' });
-  }
+  
 
   return (
     <>
@@ -81,7 +62,28 @@ export default function BookingsPage() {
           className="border border-gray-300 rounded-md px-3 py-2"
         />
       </div>
-      {/* The rest of your JSX remains the same, just wrapped in a fragment */}
+      {loading ? (
+        <div className="text-center py-4">Loading appointments...</div>
+      ) : (
+        <div className="space-y-4">
+          {appointments.map((appointment) => (
+            <div key={appointment.id} className="border rounded-md p-4">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">
+                  {new Date(appointment.scheduled_time).toLocaleTimeString()}
+                </span>
+                <span className={`badge-${appointment.status}`}>
+                  {appointment.status}
+                </span>
+              </div>
+              <div className="mt-2">
+                <p>Service: {appointment.services?.name}</p>
+                <p>Client: {appointment.profiles?.full_name}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </>
   )
 }

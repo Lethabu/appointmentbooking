@@ -10,7 +10,7 @@ export default function PerformanceObserver() {
 
     const observer = new PerformanceObserver((entryList) => {
       for (const entry of entryList.getEntries()) {
-        // @ts-ignore - `element` is not on the type def
+        // @ts-expect-error - `element` is not on the type def
         const element = entry.element
         if (element) {
           // Check if it's a Next.js Image component that is not marked as priority

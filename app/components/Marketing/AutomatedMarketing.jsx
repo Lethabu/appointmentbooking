@@ -3,11 +3,7 @@
 
 import { useState, useEffect } from 'react';
 
-export default function AutomatedMarketing() {
-  const [campaigns, setCampaigns] = useState([]);
-  const [showCampaignBuilder, setShowCampaignBuilder] = useState(false);
-
-  const activeCampaigns = [
+const activeCampaigns = [
     {
       id: 1,
       name: "Birthday Discount Campaign",
@@ -46,6 +42,9 @@ export default function AutomatedMarketing() {
     }
   ];
 
+export default function AutomatedMarketing() {
+  const [campaigns, setCampaigns] = useState([]);
+
   useEffect(() => {
     setCampaigns(activeCampaigns);
   }, []);
@@ -80,7 +79,6 @@ export default function AutomatedMarketing() {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Automated Marketing</h2>
           <button
-            onClick={() => setShowCampaignBuilder(true)}
             className="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600"
           >
             Create Campaign

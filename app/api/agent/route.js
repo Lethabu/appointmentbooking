@@ -1,13 +1,9 @@
 // pages/api/agent/route.js
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-// We'll also need the regular createClient for service_role access later
-import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
 import { getAvailableAppointments, bookAppointment, searchProducts } from '../../lib/agent-functions';
 import { z } from 'zod';
-
-const openai = new OpenAI(process.env.OPENAI_API_KEY)
 
 // Zod schemas defined at the module level
 const BookAppointmentArgsSchema = z.object({
@@ -23,6 +19,50 @@ const GetAvailableAppointmentsArgsSchema = z.object({
 const SearchProductsArgsSchema = z.object({
   query: z.string()
 });
+
+// Define the functions available to the AI agents
+const functions = {
+  nia: [
+    {
+      name: 'get_available_appointments',
+      description: 'Get available appointment slots for a specific service and optional date.',
+      parameters: {
+        type: 'object',
+        properties: {
+          service_id: { type: 'string', description: 'The ID of the service to check for appointments.' },
+          date: { type: 'string', description: "The date to check for appointments, in YYYY-MM-DD format. Defaults to today if not provided." },
+        },
+        required: ['service_id'],
+      },
+    },
+    {
+      name: 'book_appointment',
+      description: 'Book a new appointment for a client.',
+      parameters: {
+        type: 'object',
+        properties: {
+          service_id: { type: 'string', description: 'The ID of the service for the appointment.' },
+          datetime: { type: 'string', description: "The specific date and time for the appointment in ISO 8601 format (e.g., '2024-05-20T14:30:00')." },
+          client_name: { type: 'string', description: 'The full name of the client.' },
+          client_phone: { type: 'string', description: 'The phone number of the client (optional).' },
+        },
+        required: ['service_id', 'datetime', 'client_name'],
+      },
+    },
+  ],
+  orion: [
+    {
+      name: 'search_products',
+      description: 'Search for products based on a query.',
+      parameters: {
+        type: 'object',
+        properties: { query: { type: 'string', description: 'The search term for products.' } },
+        required: ['query'],
+      },
+    },
+  ],
+  blaze: [], // No functions defined for the 'blaze' agent yet
+};
 
 export async function POST(req) {
   const cookieStore = cookies()
@@ -97,6 +137,9 @@ export async function POST(req) {
   };
 
   try {
+    // Instantiate the OpenAI client inside the handler to ensure
+    // process.env.OPENAI_API_KEY is available at runtime.
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     // Initial AI call
     const response = await openai.chat.completions.create({
       model: 'gpt-4-turbo',

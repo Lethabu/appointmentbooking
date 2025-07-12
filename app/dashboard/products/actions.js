@@ -32,7 +32,7 @@ export async function createProduct(formData) {
   let imageUrl = null
   if (imageFile && imageFile.size > 0) {
     const fileName = `${salon.id}/${Date.now()}-${imageFile.name}`
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('product-images') // Ensure you have a 'product-images' bucket in Supabase Storage
       .upload(fileName, imageFile)
 

@@ -1,53 +1,108 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import SimpleCalendar from './SimpleCalendar';
 import BookingForm from './BookingForm';
-import { Booking, Service } from './types';
-import { useQuery, useMutation, QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
+import { Booking, Service, RawAppointmentData, Staff } from './types';
+import { useQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 // Create a QueryClient instance
 const queryClient = new QueryClient();
 
-
 const BookingsPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [salonId, setSalonId] = useState<string | null>(null);
+  const supabase = createClientComponentClient();
+
+  useEffect(() => {
+    const getSalonId = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: salon, error } = await supabase
+          .from('salons')
+          .select('id')
+          .eq('owner_id', session.user.id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching salon ID:", error);
+        } else if (salon) {
+          setSalonId(salon.id);
+        }
+      }
+    };
+    getSalonId();
+  }, [supabase]);
 
   const handleDateSelect = useCallback((date: Date) => {
     setSelectedDate(date);
   }, []);
-  // Mock API call to fetch bookings
-  const fetchBookings = async (): Promise<Booking[]> => {
-    // Replace this with your actual API call
-    console.log("Fetching bookings...");
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network latency
-    return []; // Return an empty array or fetch from a mock data source
-  };
 
-  const { isLoading, error, data: bookingsData } = useQuery({
-    queryKey: ['bookings'],
+  const fetchBookings = useCallback(async (): Promise<Booking[]> => {
+    if (!salonId || !selectedDate) return [];
+
+    const startOfDay = new Date(selectedDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(selectedDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const { data, error } = await supabase
+      .from('appointments')
+      .select(`
+        id,
+        start_time,
+        status,
+        client_name,
+        client_phone,
+        recurrence_rule,
+        services ( id, name, description, price, duration_minutes ),
+        staff ( id, name )
+      `)
+      .eq('salon_id', salonId)
+      .gte('start_time', startOfDay.toISOString())
+      .lte('start_time', endOfDay.toISOString())
+      .order('start_time', { ascending: true });
+
+    if (error) {
+      console.error("Error fetching bookings:", error);
+      return [];
+    }
+
+    return data.map((appt: RawAppointmentData) => {
+      const mappedService: Service = appt.services && appt.services.length > 0 ? appt.services[0] : {} as Service; // Ensure it's a single Service object
+      const mappedStaff: Staff | null = appt.staff && appt.staff.length > 0 ? appt.staff[0] : null; // Ensure it's a single Staff object
+
+      return {
+        id: appt.id,
+        clientName: appt.client_name,
+        clientPhone: appt.client_phone,
+        service: mappedService,
+        dateTime: new Date(appt.start_time),
+        status: appt.status as 'pending' | 'confirmed' | 'cancelled' | 'scheduled' | 'in_progress' | 'completed' | 'no_show',
+        staffId: mappedStaff?.id || null, // Access id from the mappedStaff object
+        recurrence_rule: appt.recurrence_rule || null,
+        staff: mappedStaff,
+      };
+    });
+  }, [salonId, selectedDate, supabase]);
+
+  const { isLoading, error, data: bookingsData, refetch } = useQuery({
+    queryKey: ['bookings', salonId, selectedDate?.toDateString()],
     queryFn: fetchBookings,
-    initialData: [], // Provide an initial empty array to avoid loading states on initial mount
-    // TanStack Query automatically retries failed requests 3 times with exponential backoff.
-    // You can customize this. For example, to retry only once:
-    retry: 1,
+    enabled: !!salonId && !!selectedDate, // Only run query if salonId and selectedDate are available
+    initialData: [],
   });
 
-
+  // Refetch bookings when a new one is submitted
   const handleBookingSubmit = useCallback(async (newBookingData: Omit<Booking, 'id' | 'status'>) => {
-    const newBooking: Booking = {
-      ...newBookingData,
-      id: `booking-${Date.now()}`, // Simple unique ID
-      status: 'pending',
-    };
-    // Simulate adding booking to the server
+    // This part will be handled by the agent-functions.js bookAppointment
+    // and the webhook will trigger a refetch if needed.
+    // For now, we'll just refetch after a simulated delay.
     await new Promise(resolve => setTimeout(resolve, 500));
-    // Update the local state
-    // Invalidate and refetch bookings
     queryClient.invalidateQueries({ queryKey: ['bookings'] });
-    alert(`Booking for ${newBooking.clientName} on ${newBooking.dateTime.toLocaleDateString()} at ${newBooking.dateTime.toLocaleTimeString()} added! Status: Pending.`);
-    // You could also clear selectedDate or give other feedback
-  }, []);
+    refetch(); // Manually refetch after a booking submission
+    alert(`Booking for ${newBookingData.clientName} on ${newBookingData.dateTime.toLocaleDateString()} at ${newBookingData.dateTime.toLocaleTimeString()} added! Status: Pending.`);
+  }, [refetch]);
 
   const bookingsForSelectedDate = selectedDate 
     ? bookingsData.filter(b => b.dateTime.toDateString() === selectedDate.toDateString())
@@ -92,7 +147,11 @@ const BookingsPage: React.FC = () => {
       )}
       </div>
       <div className="lg:col-span-1">
-        <BookingForm selectedDate={selectedDate} onBookingSubmit={handleBookingSubmit} />
+        {salonId ? (
+          <BookingForm selectedDate={selectedDate} onBookingSubmit={handleBookingSubmit} salonId={salonId} />
+        ) : (
+          <p>Loading salon information...</p>
+        )}
       </div>
     </div> 
   );

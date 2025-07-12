@@ -1,10 +1,9 @@
 'use client'
 
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
+
 import { useEffect, useState } from 'react'
 
 export default function ServicesPage() {
-  const supabase = useSupabaseClient()
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(null) // will hold service id

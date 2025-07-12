@@ -11,7 +11,7 @@ async function getSalonForOwner(supabase, userId) {
   return salon
 }
 
-export async function GET(req) {
+export async function GET() {
   const supabase = createRouteHandlerClient({ cookies })
   const { data: { session } } = await supabase.auth.getSession()
 
