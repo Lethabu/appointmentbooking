@@ -1,6 +1,6 @@
 'use client';
 import { useEffect } from 'react';
-import { fetchAppointments, fetchDashboardStats } from '@/lib/api/mock';
+import { fetchAppointments, fetchDashboardStats } from '@/app/lib/api/mock';
 
 const ModernSalonDashboard = () => {
   const [appointments, setAppointments] = useState([]);
