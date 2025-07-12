@@ -5,6 +5,11 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Explicitly allow root path to bypass tenant logic
+  if (pathname === '/') {
+    return NextResponse.next();
+  }
+
   // Skip middleware for static assets and API routes
   if (
     pathname.startsWith('/_next') ||
