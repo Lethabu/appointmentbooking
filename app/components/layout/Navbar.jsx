@@ -6,11 +6,11 @@ import { usePathname } from 'next/navigation';
 import { navLinks } from '../../config/navigation';
 // import { useUser } from '@/hooks/useUser'; // Placeholder for user state
 
-export default function Navbar({ salonName }) {
+export default function Navbar({ salon }) {
   const pathname = usePathname();
   // const { user } = useUser(); // Placeholder for user state
   const user = null; // For demonstration purposes
-  const links = salonName ? [] : user ? navLinks.authenticated : navLinks.public;
+  const links = salon ? [] : user ? navLinks.authenticated : navLinks.public;
 
   // A more robust way to hide the navbar on specific pages
   const hiddenPaths = ['/instylehairboutique'];
@@ -24,7 +24,7 @@ export default function Navbar({ salonName }) {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="text-xl font-bold text-gray-900">
-              {salonName || 'AppointmentBookings'}
+              {salon ? salon.name : 'AppointmentBookings'}
             </Link>
           </div>
           <div className="flex items-center space-x-4">
@@ -33,12 +33,12 @@ export default function Navbar({ salonName }) {
                 {link.name}
               </Link>
             ))}
-            {salonName && (
+            {salon && (
               <>
-                <Link href="/book/instylehairboutique" className="text-gray-700 hover:text-gray-900 transition-colors">
+                <Link href={`/book/${salon.slug}`} className="text-gray-700 hover:text-gray-900 transition-colors">
                   Book
                 </Link>
-                <Link href="/services" className="text-gray-700 hover:text-gray-900 transition-colors">
+                <Link href={`/${salon.slug}/services`} className="text-gray-700 hover:text-gray-900 transition-colors">
                   Services
                 </Link>
                 <Link href="/contact" className="text-gray-700 hover:text-gray-900 transition-colors">
