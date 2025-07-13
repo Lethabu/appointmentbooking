@@ -35,7 +35,7 @@ export default function Navbar({ salonName }) {
             ))}
             {salonName && (
               <>
-                <Link href="/book" className="text-gray-700 hover:text-gray-900 transition-colors">
+                <Link href="/book/instylehairboutique" className="text-gray-700 hover:text-gray-900 transition-colors">
                   Book
                 </Link>
                 <Link href="/services" className="text-gray-700 hover:text-gray-900 transition-colors">
