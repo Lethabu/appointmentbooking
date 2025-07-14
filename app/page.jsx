@@ -9,8 +9,11 @@ import { instyle_data } from './instyle-hair-boutique/data.js';
 
 export default function HomePage() {
   const { addItem } = useCart();
-  const { name, booking_link, services, socials } = instyle_data;
+  const { name, booking_link, socials } = instyle_data;
   const [products, setProducts] = useState([]);
+  const [services, setServices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [notification, setNotification] = useState('');
 
   const handleAddItem = (product) => {
@@ -31,7 +34,25 @@ export default function HomePage() {
         console.error('Error loading products:', error);
       }
     };
+    
+    const fetchServices = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/public/services');
+        if (!response.ok) {
+          throw new Error('Failed to fetch services');
+        }
+        const data = await response.json();
+        setServices(data.services);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchProducts();
+    fetchServices();
   }, []);
 
   return (
@@ -92,7 +113,9 @@ export default function HomePage() {
             </p>
           </div>
           <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => (
+            {isLoading && <p>Loading services...</p>}
+            {error && <p className="text-red-500">{error}</p>}
+            {!isLoading && !error && services.map((service) => (
               <div key={service.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
                 <div className="p-8">
                   <div className="uppercase tracking-wide text-sm text-pink-500 font-semibold">{service.name}</div>
