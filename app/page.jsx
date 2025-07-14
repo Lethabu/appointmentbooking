@@ -9,11 +9,8 @@ import { instyle_data } from './instyle-hair-boutique/data.js';
 
 export default function HomePage() {
   const { addItem } = useCart();
-  const { name, booking_link, socials } = instyle_data;
+  const { name, booking_link, services, socials } = instyle_data;
   const [products, setProducts] = useState([]);
-  const [services, setServices] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [notification, setNotification] = useState('');
 
   const handleAddItem = (product) => {
@@ -34,25 +31,7 @@ export default function HomePage() {
         console.error('Error loading products:', error);
       }
     };
-    
-    const fetchServices = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch('/api/public/services');
-        if (!response.ok) {
-          throw new Error('Failed to fetch services');
-        }
-        const data = await response.json();
-        setServices(data.services);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchProducts();
-    fetchServices();
   }, []);
 
   return (
@@ -113,9 +92,7 @@ export default function HomePage() {
             </p>
           </div>
           <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {isLoading && <p>Loading services...</p>}
-            {error && <p className="text-red-500">{error}</p>}
-            {!isLoading && !error && services.map((service) => (
+            {services.map((service) => (
               <div key={service.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
                 <div className="p-8">
                   <div className="uppercase tracking-wide text-sm text-pink-500 font-semibold">{service.name}</div>
@@ -241,7 +218,7 @@ export default function HomePage() {
                <a href={socials.instagram} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">
                  <span className="sr-only">Instagram</span>
                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                   <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427.465C9.53 2.013 9.884 2 12.315 2zm0 1.622c-2.403 0-2.741.01-3.72.058-.975.045-1.504.207-1.857.344-.467.182-.86.399-1.242.781a3.27 3.27 0 00-.781 1.242c-.137.353-.3.882-.344 1.857-.048.98-.058 1.318-.058 3.72s.01 2.74.058 3.72c.045.975.207 1.504.344 1.857.182.466.399.86.781 1.242a3.27 3.27 0 001.242.781c.353.137.882.3 1.857.344.98.048 1.318.058 3.72.058s2.74-.01 3.72-.058c.975-.045 1.504-.207 1.857-.344.467-.182.86-.399 1.242-.781a3.27 3.27 0 00.781-1.242c.137-.353.3-.882.344-1.857.048-.98.058-1.318.058-3.72s-.01-2.74-.058-3.72c-.045-.975-.207-1.504-.344-1.857a3.27 3.27 0 00-.781-1.242 3.27 3.27 0 00-1.242-.781c-.353-.137-.882-.3-1.857-.344-.98-.048-1.318-.058-3.72-.058z" clipRule="evenodd" />
+                   <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427.465C9.53 2.013 9.884 2 12.315 2zm0 1.622c-2.403 0-2.741.01-3.72.058-.975.045-1.504.207-1.857.344-.467.182-.86.399-1.242.781a3.27 3.27 0 00-.781 1.242c-.137.353-.3.882-.344 1.857-.048.98-.058 1.318-.058 3.72s.01 2.74.058 3.72c.045.975.207 1.504.344 1.857.182.466.399.86.781 1.242a3.27 3.27 0 001.242.781c.353.137.882.3 1.857.344.98.048 1.318.058 3.72.058s2.74-.01 3.72-.058c.975-.045 1.504-.207 1.857-.344.467-.182.86-.399 1.242-.781a3.27 3.27 0 00.781-1.242c.137-.353.3-.882.344-1.857.048-.98.058-1.318-.058-3.72s-.01-2.74-.058-3.72c-.045-.975-.207-1.504-.344-1.857a3.27 3.27 0 00-.781-1.242 3.27 3.27 0 00-1.242-.781c-.353-.137-.882-.3-1.857-.344-.98-.048-1.318-.058-3.72-.058z" clipRule="evenodd" />
                    <path d="M12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5zM8.25 12a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0z" />
                  </svg>
                </a>
