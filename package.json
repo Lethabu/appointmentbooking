@@ -37,25 +37,6 @@
     "zod": "^3.25.67",
     "zustand": "^4.5.7"
   },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "jsdom",
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/app/$1"
-    },
-    "transform": {
-      "^.+[.](ts|tsx|js|jsx)$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "components/**/*.{ts,tsx}",
-      "!components/**/*.test.{ts,tsx}",
-      "!components/**/index.ts"
-    ],
-    "coverageReporters": [
-      "text",
-      "lcov"
-    ]
-  },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/react": "^18",
