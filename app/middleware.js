@@ -1,21 +1,45 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
-import { NextResponse } from 'next/server'
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { NextResponse } from 'next/server';
+import { getTenantBySubdomain, getTenantByCustomDomain } from '@/lib/services/tenant';
 
-const PUBLIC_PATHS = ['/', '/login', '/signup', '/auth/callback']
+const PUBLIC_PATHS = ['/', '/login', '/signup', '/auth/callback'];
 
 export async function middleware(req) {
-  const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res })
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
 
   const {
     data: { session },
-  } = await supabase.auth.getSession()
+  } = await supabase.auth.getSession();
 
-  const { pathname } = req.nextUrl
+  const { pathname } = req.nextUrl;
+
+  // Tenant resolution
+  const host = req.headers.get('host');
+  const subdomain = host.split('.')[0];
+  let tenant = null;
+
+  try {
+    tenant = await getTenantBySubdomain(subdomain);
+  } catch {
+    try {
+      tenant = await getTenantByCustomDomain(host);
+    } catch {
+      // Tenant not found
+    }
+  }
+
+  if (!tenant && !PUBLIC_PATHS.includes(pathname)) {
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
+
+  if (tenant) {
+    req.headers.set('X-Tenant-ID', tenant.id);
+  }
 
   // If user is not signed in and is trying to access a protected route
   if (!session && !PUBLIC_PATHS.includes(pathname)) {
-    return NextResponse.redirect(new URL('/login', req.url))
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
   // If user is signed in
@@ -25,22 +49,22 @@ export async function middleware(req) {
       .from('salons')
       .select('id')
       .eq('owner_id', session.user.id)
-      .single()
+      .single();
 
     // If they are on a public page but have a salon, redirect to dashboard
     if (salon && (pathname === '/login' || pathname === '/signup')) {
-      return NextResponse.redirect(new URL('/dashboard', req.url))
+      return NextResponse.redirect(new URL('/dashboard', req.url));
     }
 
     // If they don't have a salon and are not on the creation page, redirect them
     if (!salon && pathname !== '/dashboard/create-salon') {
-      return NextResponse.redirect(new URL('/dashboard/create-salon', req.url))
+      return NextResponse.redirect(new URL('/dashboard/create-salon', req.url));
     }
   }
 
-  return res
+  return res;
 }
 
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
-}
+};
