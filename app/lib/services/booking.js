@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import prisma from '../../../lib/prisma';
 import { appointmentSchema } from '@/lib/validators';
 
 export async function createAppointment(data) {
