@@ -12,7 +12,7 @@ Always try to respond in the language the user primarily uses.
 Be polite and use common South African greetings where appropriate.`;
 };
 
-export async function POST(req: Request) {
+export async function POST(req) {
   // 1. Authenticate the webhook request
   const secret = req.headers.get('X-Webhook-Secret');
   if (secret !== process.env.YOUR_WEBHOOK_SECRET) {

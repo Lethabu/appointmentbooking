@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createPaystackPayment } from '@/lib/services/payment';
+import { createPaystackPayment } from '@/app/lib/services/payment';
 
 export async function POST(req) {
   try {
