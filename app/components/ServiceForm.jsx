@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { createService } from '@/lib/services/service';
+import { createService } from 'app/lib/services/service';
 
 const ServiceSchema = Yup.object().shape({
   name: Yup.string().required('Service name is required'),
