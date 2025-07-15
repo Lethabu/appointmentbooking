@@ -6,7 +6,8 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/app/$1',
   },
   transform: {
-    '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
+    '^.+\.(ts|tsx)$': 'ts-jest',
+    '^.+\.(js|jsx)$': 'babel-jest',
   },
   collectCoverageFrom: [
     'components/**/*.{ts,tsx}',
