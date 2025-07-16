@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { getDashboardStats } from '../lib/services/dashboard';
 
 export default function OwnerDashboard() {
-  const supabase = createClientComponentClient();
+  const supabase = process.env.NEXT_PUBLIC_SUPABASE_URL ? createClientComponentClient() : null;
   const router = useRouter();
   const [session, setSession] = useState(null);
   const [salon, setSalon] = useState(null);

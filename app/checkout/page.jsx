@@ -3,8 +3,17 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/app/context/CartContext'
+import { CartProvider } from '@/app/context/CartContext'
 
 export default function CheckoutPage() {
+  return (
+    <CartProvider>
+      <CheckoutPageContent />
+    </CartProvider>
+  );
+}
+
+function CheckoutPageContent() {
   const { items, clearCart } = useCart()
   const router = useRouter()
   const [client, setClient] = useState({ name: '', email: '', phone: '', address: '' })

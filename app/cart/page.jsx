@@ -3,8 +3,17 @@
 import { useCart } from '@/app/context/CartContext'
 import Link from 'next/link'
 import Image from 'next/image'
+import { CartProvider } from '@/app/context/CartContext'
 
 export default function CartPage() {
+  return (
+    <CartProvider>
+      <CartPageContent />
+    </CartProvider>
+  );
+}
+
+function CartPageContent() {
   const { items, removeFromCart, updateQuantity } = useCart()
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)

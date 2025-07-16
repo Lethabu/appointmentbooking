@@ -3,21 +3,15 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCart } from './context/CartContext.js';
+
 import AutomatedReviews from './components/Reviews/AutomatedReviews';
 import { instyle_data } from './instyle-hair-boutique/data.js';
 
 export default function HomePage() {
-  const { addItem } = useCart();
   const { name, booking_link, services, socials } = instyle_data;
   const [products, setProducts] = useState([]);
-  const [notification, setNotification] = useState('');
 
-  const handleAddItem = (product) => {
-    addItem(product);
-    setNotification(`${product.name} added to cart!`);
-    setTimeout(() => setNotification(''), 3000);
-  };
+  
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -36,11 +30,7 @@ export default function HomePage() {
 
   return (
     <div className="bg-white">
-      {notification && (
-        <div className="fixed top-5 right-5 bg-pink-600 text-white py-2 px-4 rounded-lg shadow-lg z-50 animate-fade-in-down">
-          {notification}
-        </div>
-      )}
+      
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-pink-100 to-purple-100 text-gray-800 py-20">
         <div className="absolute inset-0">

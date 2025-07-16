@@ -1,9 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { getServices } from 'app/lib/services/service';
-import { getStaff } from 'app/lib/services/staff';
-import { getAvailableSlots } from 'app/lib/services/availability';
-import { createAppointment } from 'app/lib/services/appointments';
+import { getServices } from '@/app/lib/services/service';
+import { getStaff } from '@/app/lib/services/staff';
+import { getAvailableSlots } from '@/app/lib/services/availability';
+import { createAppointment } from '@/app/lib/services/appointments';
 
 export default function BookingWidget({ businessId }) {
   const [step, setStep] = useState(1);

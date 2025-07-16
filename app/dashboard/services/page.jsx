@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 // API fetching functions
 const fetchServices = async () => {
@@ -10,7 +10,17 @@ const fetchServices = async () => {
   return res.json()
 }
 
+const queryClient = new QueryClient();
+
 export default function ServicesPage() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ServicesPageContent />
+    </QueryClientProvider>
+  );
+}
+
+function ServicesPageContent() {
   const [isEditing, setIsEditing] = useState(null) // will hold service id
   const [formData, setFormData] = useState({
     name: '',
