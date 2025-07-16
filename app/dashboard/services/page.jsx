@@ -1,4 +1,6 @@
-'use client';
+'use client'
+
+export const dynamic = 'force-dynamic';;
 
 import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from '@tanstack/react-query'

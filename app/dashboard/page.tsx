@@ -10,8 +10,20 @@ import { useTenantContext } from "@/contexts/tenant-context"
 import { useTheme } from "@/contexts/theme-context"
 import { formatCurrency } from "@/utils/format-currency"
 import type { Appointment } from "@/types"
+import { TenantProvider } from "@/contexts/tenant-context"
+import { ThemeProvider } from "@/contexts/theme-context"
 
 export default function DashboardPage() {
+  return (
+    <TenantProvider>
+      <ThemeProvider>
+        <DashboardPageContent />
+      </ThemeProvider>
+    </TenantProvider>
+  )
+}
+
+function DashboardPageContent() {
   const { tenant } = useTenantContext()
   const { tenantName } = useTheme()
 

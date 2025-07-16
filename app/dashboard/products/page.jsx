@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createProduct, deleteProduct } from './actions'
 import Image from 'next/image'
 import { useRef } from 'react'
@@ -14,7 +14,17 @@ const fetchProducts = async () => {
   return res.json()
 }
 
+const queryClient = new QueryClient();
+
 export default function ProductsPage() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ProductsPageContent />
+    </QueryClientProvider>
+  );
+}
+
+function ProductsPageContent() {
   const queryClient = useQueryClient()
   const formRef = useRef(null)
 
