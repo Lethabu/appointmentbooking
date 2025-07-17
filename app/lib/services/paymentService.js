@@ -1,9 +1,9 @@
 // lib/services/paymentService.js
-import { StripeProvider } from './providers/stripeProvider';
+
 import { NetcashProvider } from './providers/netcashProvider';
 
 const paymentProviders = {
-  stripe: new StripeProvider(),
+  
   netcash: new NetcashProvider(),
 };
 
