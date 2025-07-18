@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "sprint-0:init",
+      "detail": "Install deps & seed InStyle data",
+      "command": "pnpm install && pnpm db:reset && pnpm db:seed-instyle"
+    },
+    {
+      "label": "sprint-0:start-stack",
+      "detail": "Start local dev (Supabase, Next, N8N, Agent)",
+      "command": "docker compose up --build -d && pnpm dev"
+    },
+    {
+      "label": "sprint-0:deploy-staging",
+      "detail": "Push to staging branch → Vercel + Supabase",
+      "dependsOrder": "sequence",
+      "dependsOn": ["sprint-0:init", "sprint-0:start-stack"]
+    },
+    {
+      "label": "ai:train-nia",
+      "detail": "Fine-tune intent classifier on InStyle chat logs",
+      "command": "python services/agent/fine_tune.py --tenant=instyle"
+    },
+    {
+      "label": "payfast:test-integration",
+      "detail": "Test PayFast sandbox payment flow",
+      "command": "pnpm test:payfast"
+    }
+  ]
+}
