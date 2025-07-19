@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/app/utils/supabaseClient'; // This path is correct
-import Calendar from "@/app/components/Booking/Calendar";
+import ModernCalendar from "@/app/components/Booking/ModernCalendar";
 
 export default function BookingPage() {
   const router = useRouter();
@@ -73,7 +73,7 @@ export default function BookingPage() {
         </div>
       )}
       {step === 2 && selectedService && (
-        <Calendar
+        <ModernCalendar
           salonId={salon.id}
           serviceId={selectedService.id}
           onBookingConfirmed={handleBookingConfirmed}
