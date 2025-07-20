@@ -40,7 +40,7 @@ export async function middleware(request: NextRequest) {
 
   // 1. Check for custom domain
   const { data: customDomainTenant } = await supabase
-    .from('tenants')
+    .from('salons')
     .select('*, tenant_id:id, theme, logo_url')
     .eq('custom_domain', host)
     .single();
@@ -50,7 +50,7 @@ export async function middleware(request: NextRequest) {
   } else if (subdomain && subdomain !== 'www') {
     // 2. Fallback to subdomain
     const { data: subdomainTenant } = await supabase
-      .from('tenants')
+      .from('salons')
       .select('*, tenant_id:id, theme, logo_url')
       .eq('subdomain', subdomain)
       .single();

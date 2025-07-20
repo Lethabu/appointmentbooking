@@ -15,17 +15,12 @@ export default function BookingPage() {
   const [step, setStep] = useState(1);
   const [booking, setBooking] = useState(null);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!salonSlug) {
-        setLoading(false);
         return;
       }
-
-      console.log("Fetching data for slug:", salonSlug);
-      setLoading(true);
 
       const { data: salonData, error: salonError } = await supabase
         .from("salons")
@@ -34,28 +29,24 @@ export default function BookingPage() {
         .single();
 
       if (salonError) {
-        console.error("Error fetching salon:", salonError);
         setError("Salon not found");
-        setLoading(false);
         return;
       }
       
-      console.log("Salon data:", salonData);
       setSalon(salonData);
 
-      const { data: servicesData, error: servicesError } = await supabase
-        .from("services")
-        .select("id, name, price")
-        .eq("salon_id", salonData.id);
+      if (salonData) {
+        const { data: servicesData, error: servicesError } = await supabase
+          .from("services")
+          .select("id, name, price")
+          .eq("salon_id", salonData.id);
 
-      if (servicesError) {
-        console.error("Error fetching services:", servicesError);
-      } else {
-        console.log("Services data:", servicesData);
-        setServices(servicesData || []);
+        if (servicesError) {
+          setError("Error fetching services");
+        } else {
+          setServices(servicesData || []);
+        }
       }
-
-      setLoading(false);
     };
 
     fetchData();
@@ -71,9 +62,8 @@ export default function BookingPage() {
     setStep(3);
   };
 
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
   if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
-  if (!salon) return <div className="p-8 text-center">Salon not found.</div>;
+  if (!salon) return <div className="p-8 text-center">Loading salon...</div>;
 
   return (
     <div className="max-w-xl mx-auto p-6">
