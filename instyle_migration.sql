@@ -2,6 +2,11 @@ DO $$
 DECLARE
   v_salon_id UUID := 'ccb12b4d-ade6-467d-a614-7c9d198ddc70';
 BEGIN
+  -- Insert the salon first
+  INSERT INTO salons (id, name, subdomain, owner_id, plan)
+  VALUES (v_salon_id, 'InStyle Hair Boutique', 'instylehairboutique', '00000000-0000-0000-0000-000000000000', 'elite') -- Replace with a valid owner_id if available, or a placeholder
+  ON CONFLICT (id) DO NOTHING; -- Prevents error if salon already exists
+
   INSERT INTO profiles (salon_id, full_name, email, phone, address, role) VALUES (v_salon_id, 'Olerato ', 'aobakwe.modise@icloud.com', 'Modise', '4582 Block B Mabopane 
 Pretoria
 0190', 'client');

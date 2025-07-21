@@ -29,10 +29,12 @@ export default function BookingPage() {
         .single();
 
       if (salonError) {
+        console.error("Error fetching salon:", salonError);
         setError("Salon not found");
         return;
       }
       
+      console.log("Salon Data:", salonData);
       setSalon(salonData);
 
       if (salonData) {
@@ -42,8 +44,10 @@ export default function BookingPage() {
           .eq("salon_id", salonData.id);
 
         if (servicesError) {
+          console.error("Error fetching services:", servicesError);
           setError("Error fetching services");
         } else {
+          console.log("Services Data:", servicesData);
           setServices(servicesData || []);
         }
       }
