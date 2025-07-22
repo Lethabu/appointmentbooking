@@ -29,11 +29,11 @@ BEGIN
   INSERT INTO services (salon_id, category_id, name, description, price_cents, duration_minutes, is_active)
   SELECT v_salon_id, sc.id, s.name, s.description, s.price, s.duration, true
   FROM (VALUES
-    ('Middle & Side Installation', 'Professional middle-part weave', 5000, 60),
-    ('Maphondo & Lines Installation', 'Intricate Maphondo braids', 5000, 60),
+    ('Middle & Side Installation', 'Professional middle-part weave', 30000, 60),
+    ('Maphondo & Lines Installation', 'Intricate Maphondo braids', 35000, 60),
     ('Full Head Foils', 'Complete colour transformation', 12000, 180),
-    ('Brazilian Blowout', 'Keratin smoothing treatment', 15000, 180),
-    ('Hair Treatment', 'Rejuvenating mask & shine', 2500, 45)
+    ('Brazilian Blowout', 'Keratin smoothing treatment', 15000, 180)
+    
   ) AS s(name, description, price, duration)
   JOIN service_categories sc ON sc.name = 'Installation' AND sc.salon_id = v_salon_id
   ON CONFLICT DO NOTHING;
@@ -49,6 +49,12 @@ ON CONFLICT DO NOTHING;
   INSERT INTO profiles (salon_id, full_name, email, phone, role, staff)
 VALUES
 (v_salon_id, 'Zanele Langa (Owner)', 'zanele@instyle.co.za', '0647696159', 'admin', true)
+ON CONFLICT DO NOTHING;
+
+  -- Insert staff member for booking
+  INSERT INTO staff (salon_id, name, is_active)
+VALUES
+(v_salon_id, 'Noma', true)
 ON CONFLICT DO NOTHING;
 
   -- Insert client profiles (from previous script, ensure no duplicates)

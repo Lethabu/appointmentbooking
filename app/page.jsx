@@ -32,7 +32,7 @@ export default function HomePage() {
     <div className="bg-white">
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-pink-100 to-purple-100 text-gray-800 py-20">
+      <section className="relative bg-gradient-to-r from-pink-100 to-purple-100 text-gray-800 py-20" role="img" aria-label="Woman with stylish hair">
         <div className="absolute inset-0">
           {/* Placeholder for a background image */}
           <div className="absolute inset-0 bg-black opacity-20"></div>
@@ -44,12 +44,9 @@ export default function HomePage() {
           <p className="mt-6 text-xl max-w-3xl mx-auto">
             Where Style is Perfected. Premium hair treatments, professional styling, and color services.
           </p>
-          <div className="mt-10 flex justify-center gap-4">
+          <div className="mt-10">
             <Link href={booking_link} className="inline-block bg-pink-600 text-white font-bold py-4 px-8 rounded-lg text-lg hover:bg-pink-700 transition-colors shadow-lg">
-              Book an Appointment
-            </Link>
-            <Link href="/instyle-hair-boutique/shop" className="inline-block bg-purple-600 text-white font-bold py-4 px-8 rounded-lg text-lg hover:bg-purple-700 transition-colors shadow-lg">
-              Shop Hair Products
+              Book Now
             </Link>
           </div>
         </div>
@@ -83,16 +80,18 @@ export default function HomePage() {
           </div>
           <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => (
-              <div key={service.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
-                <div className="p-8">
-                  <div className="uppercase tracking-wide text-sm text-pink-500 font-semibold">{service.name}</div>
-                  <p className="mt-2 text-gray-500">{service.description}</p>
-                  <div className="mt-4 flex items-center justify-between">
-                    <p className="text-lg font-bold text-gray-900">R{(service.price / 100).toFixed(2)}</p>
-                    <p className="text-sm text-gray-600">{service.duration_minutes} min</p>
+              <Link href={booking_link} key={service.id}>
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 cursor-pointer h-full">
+                  <div className="p-8">
+                    <div className="uppercase tracking-wide text-sm text-pink-500 font-semibold">{service.name}</div>
+                    <p className="mt-2 text-gray-500">{service.description}</p>
+                    <div className="mt-4 flex items-center justify-between">
+                      <p className="text-lg font-bold text-gray-900">R{(service.price / 100).toFixed(2)}</p>
+                      <p className="text-sm text-gray-600">{service.duration_minutes} min</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
           <div className="mt-12 text-center">

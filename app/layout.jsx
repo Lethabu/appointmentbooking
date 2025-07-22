@@ -1,6 +1,7 @@
 import { GeistSans } from 'geist/font/sans';
 import { CartProvider } from '@/app/context/CartContext';
 import './globals.css';
+import Header from '@/app/components/layout/Header';
 
 import { SpeedInsights } from "@vercel/speed-insights/next";
 export const metadata = {
@@ -13,6 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={GeistSans.className}>
       <body>
         <CartProvider>
+          <Header />
           {children}
         </CartProvider>
         <SpeedInsights />

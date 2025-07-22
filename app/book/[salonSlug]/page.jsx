@@ -40,7 +40,7 @@ export default function BookingPage() {
 
       const { data: servicesData, error: servicesError } = await supabase
         .from("services")
-        .select("id, name, price")
+        .select("id, name, price_cents")
         .eq("salon_id", salonData.id);
 
       if (servicesError) {
@@ -80,7 +80,7 @@ export default function BookingPage() {
                   className="w-full text-left p-3 border rounded hover:bg-gray-50"
                   onClick={() => handleServiceSelect(service)}
                 >
-                  {service.name} <span className="float-right">R{service.price}</span>
+                  {service.name} <span className="float-right">R{service.price_cents / 100}</span>
                 </button>
               </li>
             ))}
