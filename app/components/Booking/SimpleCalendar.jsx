@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { supabase } from '@/app/utils/supabaseClient';
 import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon } from 'lucide-react';
 
@@ -10,13 +11,22 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
   const [availableSlots, setAvailableSlots] = useState([]);
   const [stylistId, setStylistId] = useState(null);
   const [stylistName, setStylistName] = useState('Zanele Langa');
+  const [servicePrice, setServicePrice] = useState(0); // State for service price
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const router = useRouter(); // Initialize useRouter
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   useEffect(() => {
     fetchStylist();
   }, [salonId]);
+
+  // Fetch service price when serviceId changes
+  useEffect(() => {
+    if (serviceId) {
+      fetchServicePrice();
+    }
+  }, [serviceId]);
 
   useEffect(() => {
     if (selectedDate && stylistId) {
@@ -111,29 +121,50 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
         return;
       }
 
-      const bookingData = {
-        user_id: user.id,
-        salon_id: salonId,
-        service_id: serviceId,
-        staff_id: stylistId,
-        date: selectedDate.toISOString().split('T')[0],
-        time: selectedTime,
-        status: 'confirmed'
-      };
+      // Initiate payment
+      const response = await fetch('/api/paystack/initialize-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-email': user.email
+        },
+        body: JSON.stringify({
+          serviceDetails: { id: serviceId, price: servicePrice }, // Use fetched service price
+          salonId
+        })
+      });
 
-      const { data, error } = await supabase
-        .from('appointments')
-        .insert([bookingData])
-        .select()
-        .single();
+      const data = await response.json();
 
-      if (error) throw error;
-      
-      onBookingConfirmed(data);
+      if (response.ok) {
+        // Redirect to Paystack for payment using Next.js router
+        router.push(data.authorization_url);
+      } else {
+        setError(data.error || 'Payment initialization failed');
+      }
     } catch (err) {
       setError(err.message || 'An unexpected error occurred while creating the booking.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchServicePrice = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('services')
+        .select('price')
+        .eq('id', serviceId)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+      setServicePrice(data.price);
+    } catch (err) {
+      console.error('Error fetching service price:', err);
+      setError('Failed to fetch service price.');
+      setServicePrice(0); // Reset price on error
     }
   };
 
@@ -239,15 +270,15 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
               {loading && <p className="text-gray-500">Loading times...</p>}
               {!loading && availableSlots.length > 0 && (
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                  {availableSlots.map(time => (
-                    <button
-                      key={time}
-                      onClick={() => setSelectedTime(time)}
-                      className={`p-2 rounded-lg border text-center transition-colors ${selectedTime === time ? 'bg-purple-600 text-white border-purple-600' : 'border-gray-300 hover:bg-purple-100'}`}
-                    >
-                      {time}
-                    </button>
-                  ))}
+              {availableSlots.map((time, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedTime(time)}
+                  className={`p-2 rounded-lg border text-center transition-colors ${selectedTime === time ? 'bg-purple-600 text-white border-purple-600' : 'border-gray-300 hover:bg-purple-100'}`}
+                >
+                  {time}
+                </button>
+              ))}
                 </div>
               )}
               {!loading && availableSlots.length === 0 && selectedDate && (
