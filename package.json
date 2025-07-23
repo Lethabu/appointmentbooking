@@ -66,6 +66,7 @@
     "react-hook-form": "^7.54.1",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.0",
+    "paystack-node": "^0.1.0",
     "sonner": "^1.7.4",
     "stripe": "^18.3.0",
     "tailwind-merge": "^2.5.5",
