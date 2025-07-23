@@ -37,23 +37,21 @@ export async function GET(request) {
     }
 
     // Fetch the active, in-stock products for that salon
+    // Removed 'is_active' and 'stock_quantity' filters/selection as 'is_active' column does not exist.
+    // If 'is_active' functionality is desired, the column must be added to the 'products' table in Supabase.
     const { data: products, error: productsError } = await supabase
       .from('products')
-      .select('id, name, description, price, image_urls, stock_quantity, is_active')
+      .select('id, name, description, price, image_urls') // Removed stock_quantity and is_active
       .eq('salon_id', salon.id)
-      .eq('is_active', true)
-      .gt('stock_quantity', 0)
       .order('name', { ascending: true });
 
     if (productsError) {
-      console.error('Products query error:', productsError);
       return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
     }
 
     // Return both salon details and its products
     return NextResponse.json({ salon, products: products || [] });
   } catch (error) {
-    console.error('Products API error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
