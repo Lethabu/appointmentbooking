@@ -15,9 +15,6 @@
         "ghcr.io/github/github-mcp-server"
       ],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "REMOVED_GITHUB_TOKEN",
-        "GITHUB_TOOLSETS": "",
-        "GITHUB_READ_ONLY": ""
       }
     },
     "notion": {
@@ -27,7 +24,6 @@
         "@notionhq/notion-mcp-server"
       ],
       "env": {
-        "OPENAPI_MCP_HEADERS": "{\"Authorization\": \"Bearer REMOVED_NOTION_TOKEN\", \"Notion-Version\": \"2022-06-28\"}"
       }
     }
   }
