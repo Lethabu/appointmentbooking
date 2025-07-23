@@ -6,12 +6,14 @@ import { supabase } from '@/app/utils/supabaseClient';
 import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon } from 'lucide-react';
 
 export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed, onBack }) {
+  console.log('Salon ID prop:', salonId); // Log salonId to check availability
+
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [stylistId, setStylistId] = useState(null);
-  const [stylistName, setStylistName] = useState('Zanele Langa');
-  const [servicePrice, setServicePrice] = useState(0); // State for service price
+  const [stylistName, setStylistName] = useState('Please select a stylist'); // Updated default
+  const [servicePrice, setServicePrice] = useState(null); // State for service price, initialized to null
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter(); // Initialize useRouter
@@ -23,24 +25,30 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
 
   // Fetch service price when serviceId changes
   useEffect(() => {
+    console.log('Service ID changed:', serviceId); // Log serviceId
     if (serviceId) {
       fetchServicePrice();
+    } else {
+      setServicePrice(null); // Reset price if serviceId is null/undefined
     }
   }, [serviceId]);
 
   useEffect(() => {
+    // Only fetch slots if a date and a valid stylist are selected
     if (selectedDate && stylistId) {
+      console.log('Fetching slots for date:', selectedDate, 'and stylist:', stylistId); // Log for debugging
       fetchAvailableSlots();
+    } else {
+      setAvailableSlots([]); // Clear slots if conditions are not met
     }
   }, [selectedDate, stylistId]);
 
   const fetchStylist = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      // For InStyle, we'll use a hardcoded stylist ID approach
-      // This bypasses the staff table issues
-      console.log('Fetching stylist for salon:', salonId);
+      console.log('Fetching stylist for salon with ID:', salonId); // Log salonId
       
-      // Try to fetch staff, but don't fail if it doesn't work
       const { data, error } = await supabase
         .from('staff')
         .select('id, name')
@@ -48,27 +56,36 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
         .eq('is_active', true)
         .limit(1);
 
+      if (error) {
+        console.error('Supabase error fetching stylist:', error.message); // Log Supabase error
+        throw error; // Re-throw to be caught by the catch block
+      }
+
       if (data && data.length > 0) {
+        console.log('Stylist found:', data[0]); // Log found stylist
         setStylistId(data[0].id);
         setStylistName(data[0].name);
       } else {
-        // Use a fallback approach - we'll use salon owner as default
-        console.log('No staff found, using fallback');
-        setStylistId('fallback-stylist-' + salonId);
-        setStylistName('Zanele Langa');
+        // If no staff found, set stylistId to null and inform the user
+        console.log('No active staff found for salon.');
+        setStylistId(null); // Set to null if no staff found
+        setStylistName('Please select a stylist'); // Inform user
       }
-      
-      // Clear any previous errors
-      setError(null);
     } catch (err) {
-      console.error('Error fetching stylist:', err);
-      // Don't set error for stylist fetch - we'll use fallback
-      setStylistId('fallback-stylist-' + salonId);
-      setStylistName('Zanele Langa');
+      console.error('Error in fetchStylist:', err); // Log the caught error
+      setError('Failed to load stylist information.');
+      setStylistId(null); // Ensure stylistId is null on error
+      setStylistName('Error loading stylist');
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchAvailableSlots = async () => {
+    if (!stylistId) { // Only fetch slots if a stylist is selected
+      setAvailableSlots([]); // Clear slots if no stylist is selected
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -129,42 +146,47 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
           'x-user-email': user.email
         },
         body: JSON.stringify({
-          serviceDetails: { id: serviceId, price: servicePrice }, // Use fetched service price
+          serviceId, // Pass only serviceId and salonId
           salonId
         })
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        // Redirect to Paystack for payment using Next.js router
-        router.push(data.authorization_url);
+      if (response.ok && data.authorization_url) {
+        // Redirect to Paystack for payment
+        window.location.href = data.authorization_url;
       } else {
-        setError(data.error || 'Payment initialization failed');
+        setError(data.error || 'Payment initialization failed. Please try again.');
       }
     } catch (err) {
-      setError(err.message || 'An unexpected error occurred while creating the booking.');
+      setError(err.message || 'An unexpected error occurred while initiating payment.');
     } finally {
       setLoading(false);
     }
   };
 
   const fetchServicePrice = async () => {
+    // This function is no longer directly needed for payment initiation as price is handled in the API route
+    // but kept here in case it's used elsewhere or for future reference.
     try {
       const { data, error } = await supabase
         .from('services')
-        .select('price')
+        .select('price_cents') // Fetch price in cents
         .eq('id', serviceId)
         .single();
 
       if (error) {
-        throw error;
+        console.error('Error fetching service price:', error);
+        setError('Failed to fetch service price.');
+        setServicePrice(0);
+        return;
       }
-      setServicePrice(data.price);
+      setServicePrice(data.price_cents); // Store price in cents
     } catch (err) {
       console.error('Error fetching service price:', err);
       setError('Failed to fetch service price.');
-      setServicePrice(0); // Reset price on error
+      setServicePrice(0);
     }
   };
 
@@ -204,6 +226,9 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
         <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
           <h2 className="text-2xl font-bold">Book Your Appointment</h2>
           <p className="text-purple-100">With {stylistName}</p>
+          {servicePrice !== null && ( // Display service price if available
+            <p className="text-purple-100">Price: R {servicePrice.toFixed(2)}</p>
+          )}
         </div>
 
         <div className="p-6">
@@ -268,11 +293,11 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
                 Select Time
               </h3>
               {loading && <p className="text-gray-500">Loading times...</p>}
-              {!loading && availableSlots.length > 0 && (
+            {!loading && availableSlots.length > 0 && stylistId && ( // Only show slots if stylistId is available
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-              {availableSlots.map((time, index) => (
+              {availableSlots.map((time) => ( // Use time as key
                 <button
-                  key={index}
+                  key={time} // Use time as the key
                   onClick={() => setSelectedTime(time)}
                   className={`p-2 rounded-lg border text-center transition-colors ${selectedTime === time ? 'bg-purple-600 text-white border-purple-600' : 'border-gray-300 hover:bg-purple-100'}`}
                 >
@@ -281,8 +306,8 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
               ))}
                 </div>
               )}
-              {!loading && availableSlots.length === 0 && selectedDate && (
-                <p className="text-gray-500 bg-gray-100 p-3 rounded-lg">No available slots for this day.</p>
+              {!loading && (!availableSlots.length || !stylistId) && selectedDate && ( // Show message if no slots or no stylist
+                <p className="text-gray-500 bg-gray-100 p-3 rounded-lg">{stylistId ? 'No available slots for this day.' : 'Please select a stylist to see available times.'}</p>
               )}
               {!selectedDate && (
                 <p className="text-gray-400 text-sm">Please select a date to see available times.</p>
@@ -293,7 +318,7 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
             <div>
               <button
                 onClick={handleBooking}
-                disabled={!selectedDate || !selectedTime || loading}
+                disabled={!selectedDate || !selectedTime || !stylistId || loading} // Ensure stylistId is also checked
                 className="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 {loading ? 'Booking...' : 'Confirm Appointment'}

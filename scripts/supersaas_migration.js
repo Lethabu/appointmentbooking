@@ -1,98 +1,203 @@
-import { createClient } from '@supabase/supabase-js';
+'use strict';
 
-// This script will handle the migration of data from SuperSaaS to Supabase.
+console.log('Migration script started.'); // Added for confirmation
 
-async function fetchSuperSaaSData() {
-  const apiKey = 'IyPY-A-EHZ3PDKRCJzu54Q';
-  // Note: The schedule_id is a placeholder and needs to be replaced with the actual schedule ID from your SuperSaaS account.
-  const scheduleId = '12345';
-  const url = `https://www.supersaas.com/api/bookings.json?schedule_id=${scheduleId}&api_key=${apiKey}`;
+// Load environment variables from .env file
+require('dotenv').config();
 
-  console.log('Fetching data from SuperSaaS...');
+const axios = require('axios');
+const { createClient } = require('@supabase/supabase-js');
 
+// --- Configuration ---
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const SUPERSAAS_API_KEY = process.env.SUPERSAAS_API_KEY; // Ensure this is set in your environment
+const SUPERSAAS_API_URL = 'https://www.supersaas.com/api';
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !SUPERSAAS_API_KEY) {
+  console.error('Missing environment variables. Please ensure SUPABASE_URL, SUPABASE_ANON_KEY, and SUPERSAAS_API_KEY are set.');
+  process.exit(1);
+}
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// --- Helper Functions ---
+
+// Function to fetch bookings from SuperSaaS
+async function fetchSuperSaasBookings() {
+  console.log('Fetching bookings from SuperSaaS...');
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    console.log('Successfully fetched data from SuperSaaS.');
-    return data;
+    const response = await axios.get(`${SUPERSAAS_API_URL}/bookings`, {
+      headers: {
+        'Authorization': `Bearer ${SUPERSAAS_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log(`Successfully fetched ${response.data.length} bookings from SuperSaaS.`);
+    return response.data;
   } catch (error) {
-    console.error('Error fetching data from SuperSaaS:', error);
+    console.error('Error fetching SuperSaaS bookings:', error.response?.data || error.message);
+    throw new Error('Failed to fetch bookings from SuperSaaS.');
+  }
+}
+
+// Function to get Supabase user ID by email
+async function getSupabaseUserId(email) {
+  if (!email) return null;
+  try {
+    const { data, error } = await supabase
+      .from('auth.users') // Assuming user emails are in auth.users table
+      .select('id')
+      .eq('email', email)
+      .single();
+    
+    if (error) {
+      console.warn(`Could not find Supabase user for email: ${email}`, error.message);
+      return null;
+    }
+    return data.id;
+  } catch (error) {
+    console.error(`Error finding Supabase user for email ${email}:`, error.message);
     return null;
   }
 }
 
-async function mapDataToSupabaseSchema(supersaasData) {
-  if (!supersaasData) {
-    console.log('No data from SuperSaaS to map.');
-    return [];
-  }
-
-  console.log('Mapping data to Supabase schema...');
-
-  // This is a placeholder. Replace with the actual salon_id for your tenant.
-  const salonId = '67890';
-
-  const mappedData = supersaasData.map(booking => {
-    // TODO: Resolve SuperSaaS user/service/staff IDs to Supabase UUIDs.
-    // This will likely require querying your Supabase tables.
-    const clientId = null; // Placeholder for resolved Supabase client UUID
-    const serviceId = null; // Placeholder for resolved Supabase service UUID
-    const staffId = null; // Placeholder for resolved Supabase staff UUID
-
-    return {
-      salon_id: salonId,
-      client_id: clientId,
-      service_id: serviceId,
-      staff_id: staffId,
-      start_time: booking.start, // Assuming 'start' field in SuperSaaS data
-      end_time: booking.finish, // Assuming 'finish' field in SuperSaaS data
-      status: 'completed', // Or map from SuperSaaS status if available
-      created_at: booking.created_on, // Assuming 'created_on' field
-    };
-  });
-
-  console.log('Data mapping complete.');
-  return mappedData;
-}
-
-async function importDataIntoSupabase(mappedData) {
-  if (!mappedData || mappedData.length === 0) {
-    console.log('No mapped data to import.');
-    return;
-  }
-
-  console.log('Importing data into Supabase...');
-
-  // It's recommended to use a service role key for admin-level operations like this migration.
-  // This should be stored securely in your environment variables.
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY; // Ensure this is set in your .env.local
-
-  if (!supabaseUrl || !supabaseServiceKey) {
-    console.error('Supabase URL or Service Key is not defined. Please check your .env.local file.');
-    return;
-  }
-
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-
-  const { data, error } = await supabaseAdmin
-    .from('appointments')
-    .insert(mappedData);
-
-  if (error) {
-    console.error('Error importing data into Supabase:', error);
-  } else {
-    console.log('Successfully imported data into Supabase:', data);
+// Function to get Supabase service ID by name (or other identifier)
+async function getSupabaseServiceId(serviceName) {
+  if (!serviceName) return null;
+  try {
+    const { data, error } = await supabase
+      .from('services')
+      .select('id')
+      .ilike('name', `%${serviceName}%`) // Using ilike for partial match, adjust as needed
+      .single();
+    
+    if (error) {
+      console.warn(`Could not find Supabase service for name: ${serviceName}`, error.message);
+      return null;
+    }
+    return data.id;
+  } catch (error) {
+    console.error(`Error finding Supabase service for name ${serviceName}:`, error.message);
+    return null;
   }
 }
 
-async function runMigration() {
-  const supersaasData = await fetchSuperSaaSData();
-  const mappedData = await mapDataToSupabaseSchema(supersaasData);
-  await importDataIntoSupabase(mappedData);
+// Function to get Supabase staff ID by name (or other identifier)
+async function getSupabaseStaffId(staffName) {
+  if (!staffName) return null;
+  try {
+    const { data, error } = await supabase
+      .from('staff')
+      .select('id')
+      .ilike('name', `%${staffName}%`) // Using ilike for partial match, adjust as needed
+      .single();
+    
+    if (error) {
+      console.warn(`Could not find Supabase staff for name: ${staffName}`, error.message);
+      return null;
+    }
+    return data.id;
+  } catch (error) {
+    console.error(`Error finding Supabase staff for name ${staffName}:`, error.message);
+    return null;
+  }
 }
 
-runMigration();
+// Function to transform SuperSaaS booking data to Supabase format
+async function transformBooking(ssBooking) {
+  // --- IMPORTANT: Adjust these mappings based on actual SuperSaaS data structure ---
+  // You'll need to inspect the data from fetchSuperSaasBookings() to know the exact field names.
+  
+  const userId = await getSupabaseUserId(ssBooking.customer_email); // Assuming SuperSaaS provides customer email
+  const serviceId = await getSupabaseServiceId(ssBooking.service_name); // Assuming SuperSaaS provides service name
+  const staffId = await getSupabaseStaffId(ssBooking.staff_name); // Assuming SuperSaaS provides staff name
+
+  // Basic validation: Ensure we have at least a user and a service to create a booking
+  if (!userId || !serviceId) {
+    console.warn(`Skipping booking ${ssBooking.id} due to missing user or service mapping.`);
+    return null;
+  }
+
+  return {
+    user_id: userId,
+    salon_id: ssBooking.salon_id, // Assuming salon_id is available or can be inferred
+    service_id: serviceId,
+    staff_id: staffId, // This might be null if staff mapping fails
+    date: ssBooking.booking_date, // Assuming date format is compatible or needs parsing
+    time: ssBooking.booking_time, // Assuming time format is compatible
+    status: ssBooking.status || 'confirmed', // Map SuperSaaS status or default
+    supersaas_booking_id: ssBooking.id, // Store original ID for reference
+    payment_status: 'pending', // Default to pending, will be updated by Paystack flow
+  };
+}
+
+// Function to insert bookings into Supabase
+async function insertBookingsIntoSupabase(bookings) {
+  console.log(`Attempting to insert ${bookings.length} bookings into Supabase...`);
+  let insertedCount = 0;
+  let skippedCount = 0;
+
+  for (const booking of bookings) {
+    try {
+      const { error } = await supabase
+        .from('appointments')
+        .insert([booking]);
+
+      if (error) {
+        console.error(`Error inserting booking ${booking.supersaas_booking_id}:`, error.message);
+        skippedCount++;
+      } else {
+        insertedCount++;
+      }
+    } catch (error) {
+      console.error(`Unexpected error inserting booking ${booking.supersaas_booking_id}:`, error.message);
+      skippedCount++;
+    }
+  }
+
+  console.log(`Migration complete. Inserted: ${insertedCount}, Skipped: ${skippedCount}`);
+}
+
+// --- Main Migration Logic ---
+async function migrate() {
+  try {
+    const superSaasBookings = await fetchSuperSaasBookings();
+    
+    if (!superSaasBookings || superSaasBookings.length === 0) {
+      console.log('No bookings found in SuperSaaS to migrate.');
+      return;
+    }
+
+    const supabaseBookings = [];
+    for (const ssBooking of superSaasBookings) {
+      const supabaseBooking = await transformBooking(ssBooking);
+      if (supabaseBooking) {
+        supabaseBookings.push(supabaseBooking);
+      }
+    }
+
+    if (supabaseBookings.length > 0) {
+      await insertBookingsIntoSupabase(supabaseBookings);
+    } else {
+      console.log('No valid bookings found after transformation to insert into Supabase.');
+    }
+
+  } catch (error) {
+    console.error('Migration process failed:', error.message);
+  }
+}
+
+// --- Execute Migration ---
+// To run this script:
+// 1. Make sure you have Node.js installed.
+// 2. Install dependencies: npm install axios @supabase/supabase-js
+// 3. Set your environment variables:
+//    export NEXT_PUBLIC_SUPABASE_URL='YOUR_SUPABASE_URL'
+//    export NEXT_PUBLIC_SUPABASE_ANON_KEY='YOUR_SUPABASE_ANON_KEY'
+//    export SUPERSAAS_API_KEY='YOUR_SUPERSAAS_API_KEY'
+// 4. Run the script: node scripts/supersaas_migration.js
+
+// For now, we'll just call migrate. In a real scenario, you might want to add command-line arguments
+// to control the process (e.g., --dry-run, --limit).
+migrate();
