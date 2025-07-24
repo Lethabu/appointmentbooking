@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { createClientComponentClient } from '@supabase/ssr';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import StatCard from './StatCard';
 
 const TimeframeSelector = ({ timeframe, setTimeframe }) => {

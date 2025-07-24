@@ -5,40 +5,43 @@ export async function GET() {
   try {
     const { salon, supabase, error: authError } = await getSessionAndSalon()
     if (authError) return authError
-    const { data: services, error } = await supabase
-      .from('services')
+    const { data: settings, error } = await supabase
+      .from('settings')
       .select('*')
       .eq('salon_id', salon.id)
-      .order('name', { ascending: true })
 
     if (error) {
-      console.error('Error fetching services:', error)
+      console.error('Error fetching settings:', error)
       return new NextResponse(JSON.stringify({ error: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } })
     }
 
-    return NextResponse.json(services)
+    return NextResponse.json(settings)
   } catch (e) {
-    console.error('Unhandled error in GET /api/dashboard/services:', e)
+    console.error('Unhandled error in GET /api/dashboard/settings:', e)
     return new NextResponse(JSON.stringify({ error: 'An unexpected error occurred.' }), { status: 500, headers: { 'Content-Type': 'application/json' } })
   }
 }
 
-export async function POST(req) {
+export async function PUT(req) {
   try {
     const { salon, supabase, error: authError } = await getSessionAndSalon()
     if (authError) return authError
 
     const body = await req.json()
-    const { data, error } = await supabase.from('services').insert({ ...body, salon_id: salon.id }).select().single()
+    const { data, error } = await supabase
+      .from('settings')
+      .update(body)
+      .eq('salon_id', salon.id)
+      .select()
 
     if (error) {
-      console.error('Error creating service:', error)
+      console.error('Error updating settings:', error)
       return new NextResponse(JSON.stringify({ error: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } })
     }
 
-    return NextResponse.json(data, { status: 201 })
+    return NextResponse.json(data)
   } catch (e) {
-    console.error('Unhandled error in POST /api/dashboard/services:', e)
+    console.error('Unhandled error in PUT /api/dashboard/settings:', e)
     return new NextResponse(JSON.stringify({ error: 'An unexpected error occurred.' }), { status: 500, headers: { 'Content-Type': 'application/json' } })
   }
 }
