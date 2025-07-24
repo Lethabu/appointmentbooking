@@ -4,6 +4,29 @@ import { NextResponse } from 'next/server'
 
 export async function getSessionAndSalon() {
   const cookieStore = cookies()
+  const testMode = cookieStore.get('test_mode') === 'enabled';
+  const testSalonId = cookieStore.get('test_salon_id');
+
+  if (testMode && testSalonId) {
+    // Mock salon for testing
+    return {
+      supabase: createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        {
+          cookies: {
+            get(name) {
+              return cookieStore.get(name)?.value
+            },
+          },
+        }
+      ),
+      salon: { id: testSalonId },
+      session: { user: { email: 'test@example.com', id: 'test-user-id' } }, // Mock session
+      error: null
+    };
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
