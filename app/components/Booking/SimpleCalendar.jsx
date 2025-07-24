@@ -47,30 +47,30 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
     setLoading(true);
     setError(null);
     try {
-      console.log('Fetching stylist for salon with ID:', salonId); // Log salonId
+      console.log('Fetching stylist for salon with ID:', salonId);
       
       const { data, error } = await supabase
         .from('staff')
         .select('id, name')
         .eq('salon_id', salonId)
-        // Removed 'is_active' filter as the column might not exist or be populated.
-        // If 'is_active' functionality is desired, the column must be added to the 'staff' table in Supabase.
         .limit(1);
 
+      console.log('Supabase staff query result - data:', data);
+      console.log('Supabase staff query result - error:', error);
+
       if (error) {
-        console.error('Supabase error fetching stylist:', error.message); // Log Supabase error
-        throw error; // Re-throw to be caught by the catch block
+        console.error('Supabase error fetching stylist:', error.message);
+        throw error;
       }
 
       if (data && data.length > 0) {
-        console.log('Stylist found:', data[0]); // Log found stylist
+        console.log('Stylist found:', data[0]);
         setStylistId(data[0].id);
         setStylistName(data[0].name);
       } else {
-        // If no staff found, set stylistId to null and inform the user
-        console.log('No active staff found for salon.');
-        setStylistId(null); // Set to null if no staff found
-        setStylistName('Please select a stylist'); // Inform user
+        console.log('No staff found for salon with ID:', salonId);
+        setStylistId(null);
+        setStylistName('No stylist available'); // Changed message for clarity
       }
     } catch (err) {
       console.error('Error in fetchStylist:', err); // Log the caught error
