@@ -94,11 +94,7 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
       
       // For demo purposes, we'll create some default available slots
       // In a real app, you'd fetch from availability table
-      const defaultSlots = [
-        '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-        '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
-        '15:00', '15:30', '16:00', '16:30', '17:00'
-      ];
+      const defaultSlots = generateHourlySlots(); // Use the new hourly slot generator
       
       // Filter out past times for today
       const now = new Date();
@@ -110,6 +106,8 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
         const currentMinute = now.getMinutes();
         slots = defaultSlots.filter(time => {
           const [hour, minute] = time.split(':').map(Number);
+          // Keep slots that are in the future (hour > currentHour)
+          // or if it's the current hour, keep slots where minute > currentMinute
           return hour > currentHour || (hour === currentHour && minute > currentMinute);
         });
       }
@@ -123,23 +121,38 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
   };
 
   const handleBooking = async () => {
+    console.log("handleBooking called."); // Debug log
     if (!selectedDate || !selectedTime || !stylistId) {
       setError('Please select a date and time to proceed.');
+      console.log("Booking validation failed: missing date, time, or stylist."); // Debug log
       return;
     }
 
     setLoading(true);
     setError(null);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      console.log("Attempting to get user session."); // Debug log
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
       
-      if (!user) {
-        setError('You must be logged in to book an appointment.');
+      if (userError) {
+        console.error("Error getting user:", userError.message); // Debug log
+        setError('Error checking login status. Please try again.');
         setLoading(false);
         return;
       }
 
+      if (!user) {
+        console.log("User not logged in, redirecting to login."); // Debug log
+        setError('You must be logged in to book an appointment.');
+        setLoading(false);
+        // Redirect to login page, passing current path as redirect param
+        router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+        return;
+      }
+      console.log("User logged in:", user.email); // Debug log
+
       // Initiate payment
+      console.log("Initiating payment with serviceId:", serviceId, "salonId:", salonId); // Debug log
       const response = await fetch('/api/paystack/initialize-payment', {
         method: 'POST',
         headers: {
@@ -153,17 +166,22 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
       });
 
       const data = await response.json();
+      console.log("Payment initialization response:", data); // Debug log
 
       if (response.ok && data.authorization_url) {
+        console.log("Redirecting to Paystack:", data.authorization_url); // Debug log
         // Redirect to Paystack for payment
         window.location.href = data.authorization_url;
       } else {
+        console.error("Payment initialization failed:", data.error); // Debug log
         setError(data.error || 'Payment initialization failed. Please try again.');
       }
     } catch (err) {
+      console.error('Error in handleBooking:', err.message); // Debug log
       setError(err.message || 'An unexpected error occurred while initiating payment.');
     } finally {
       setLoading(false);
+      console.log("handleBooking finished, loading set to false."); // Debug log
     }
   };
 
@@ -211,6 +229,15 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return date < today;
+  };
+
+  // Function to generate hourly time slots
+  const generateHourlySlots = () => {
+    const slots = [];
+    for (let hour = 9; hour <= 17; hour++) { // From 9 AM to 5 PM
+      slots.push(`${hour.toString().padStart(2, '0')}:00`);
+    }
+    return slots;
   };
 
   return (
