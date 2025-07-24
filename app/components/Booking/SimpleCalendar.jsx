@@ -53,7 +53,8 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
         .from('staff')
         .select('id, name')
         .eq('salon_id', salonId)
-        .eq('is_active', true)
+        // Removed 'is_active' filter as the column might not exist or be populated.
+        // If 'is_active' functionality is desired, the column must be added to the 'staff' table in Supabase.
         .limit(1);
 
       if (error) {
