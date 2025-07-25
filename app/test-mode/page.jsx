@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import Link from 'next/link';
 
 export default function TestModePage() {
   const [testMode, setTestMode] = useState(false);
@@ -53,9 +54,18 @@ export default function TestModePage() {
       <p style={{ marginTop: '1rem' }}>
         <strong>Current Status:</strong> {testMode ? `Enabled for Salon ID: ${Cookies.get('test_salon_id')}` : 'Disabled'}
       </p>
-      <p style={{ marginTop: '2rem', fontStyle: 'italic' }}>
-        After enabling, you can navigate directly to any dashboard page (e.g., `/dashboard/services`) to view the data for the specified tenant.
-      </p>
+      {testMode && (
+        <div style={{ marginTop: '2rem' }}>
+          <h2>Dashboard Links</h2>
+          <ul>
+            <li><Link href="/dashboard/services">Services</Link></li>
+            <li><Link href="/dashboard/clients">Clients</Link></li>
+            <li><Link href="/dashboard/marketing">Marketing</Link></li>
+            <li><Link href="/dashboard/settings">Settings</Link></li>
+            <li><Link href="/dashboard/products">Products</Link></li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
