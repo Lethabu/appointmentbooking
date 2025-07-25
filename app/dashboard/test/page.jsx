@@ -1,9 +1,10 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useSession } from '@supabase/auth-helpers-react';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { cookies } from 'next/headers';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 export default function TestDashboardPage() {
   const supabase = createClientComponentClient();
@@ -11,7 +12,7 @@ export default function TestDashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const testMode = cookies().get('test_mode') === 'enabled';
+    const testMode = Cookies.get('test_mode') === 'enabled';
     if (!testMode) {
       router.push('/');
     }
