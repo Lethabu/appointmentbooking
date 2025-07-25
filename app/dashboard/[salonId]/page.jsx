@@ -78,12 +78,13 @@ export default function SalonDashboardPage({ params }) {
                     .order('scheduled_time', { ascending: true });
 
                 if (error) {
+                    console.error('Supabase error fetching upcoming appointments:', error); // More detailed logging
                     throw error;
                 }
                 setUpcomingAppointments(data || []);
             } catch (err) {
                 setAppointmentError('Failed to load upcoming appointments.');
-                console.error('Error fetching upcoming appointments:', err);
+                console.error('Caught error fetching upcoming appointments:', err); // More detailed logging
             } finally {
                 setLoadingAppointments(false);
             }
