@@ -132,37 +132,25 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
     setError(null);
     try {
       console.log("Attempting to get user session."); // Debug log
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError) {
-        console.error("Error getting user:", userError.message); // Debug log
-        setError('Error checking login status. Please try again.');
-        setLoading(false);
-        return;
-      }
+      const { data: { session } } = await supabase.auth.getSession();
 
-      if (!user) {
-        console.log("User not logged in, redirecting to login."); // Debug log
-        setError('You must be logged in to book an appointment.');
-        setLoading(false);
-        // Redirect to login page, passing current path as redirect param
-        router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      if (!session) {
+        router.push('/login');
         return;
       }
-      console.log("User logged in:", user.email); // Debug log
 
       // Initiate payment
-      console.log("Initiating payment with serviceId:", serviceId, "salonId:", salonId); // Debug log
       const response = await fetch('/api/paystack/initialize-payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-user-email': user.email
         },
         body: JSON.stringify({
-          serviceId, // Pass only serviceId and salonId
-          salonId
-        })
+          serviceDetails: {
+            id: serviceId,
+            price: servicePrice,
+          },
+        }),
       });
 
       const data = await response.json();
