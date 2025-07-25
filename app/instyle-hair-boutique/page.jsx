@@ -4,7 +4,8 @@ import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { CalendarIcon, ClockIcon, UserIcon, CalendarDaysIcon } from 'lucide-react'; // Added icons
+import { CalendarIcon, ClockIcon, UserIcon, CalendarDaysIcon, CheckCircleIcon, XCircleIcon } from 'lucide-react'; // Added icons
+import axios from 'axios'; // Import axios for API calls
 
 export default function InstyleBooking() {
   const [services, setServices] = useState([]);
@@ -13,6 +14,16 @@ export default function InstyleBooking() {
   const [futureAppointments, setFutureAppointments] = useState([]); // State for future appointments
   const [loadingAppointments, setLoadingAppointments] = useState(true); // Loading state for appointments
   const [appointmentError, setAppointmentError] = useState(null); // Error state for appointments
+
+  // State for booking form
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [selectedServiceId, setSelectedServiceId] = useState('');
+  const [scheduledDate, setScheduledDate] = useState('');
+  const [scheduledTime, setScheduledTime] = useState('');
+  const [bookingStatus, setBookingStatus] = useState(null); // 'success', 'error', 'loading'
+  const [bookingMessage, setBookingMessage] = useState('');
 
   useEffect(() => {
     async function fetchData() {
@@ -197,14 +208,157 @@ export default function InstyleBooking() {
       </section>
 
       {/* Book CTA */}
-      <section id="book" className="py-16 bg-[#C0392B] text-white text-center">
-        <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Look?</h2>
-        <button className="mt-4 bg-white text-[#C0392B] font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition">
-          Choose Your Slot
-        </button>
+      <section id="book" className="py-16 bg-[#C0392B] text-white">
+        <div className="max-w-md mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-8 text-center">Ready to Transform Your Look?</h2>
+          <form onSubmit={handleBookingSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="fullName" className="block text-sm font-medium text-white mb-1">Full Name</label>
+              <input
+                type="text"
+                id="fullName"
+                className="w-full p-3 rounded-lg text-gray-900 focus:ring-[#C0392B] focus:border-[#C0392B]"
+                placeholder="Your Full Name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-white mb-1">Email</label>
+              <input
+                type="email"
+                id="email"
+                className="w-full p-3 rounded-lg text-gray-900 focus:ring-[#C0392B] focus:border-[#C0392B]"
+                placeholder="your@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-white mb-1">Phone Number</label>
+              <input
+                type="tel"
+                id="phone"
+                className="w-full p-3 rounded-lg text-gray-900 focus:ring-[#C0392B] focus:border-[#C0392B]"
+                placeholder="+27 12 345 6789"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="service" className="block text-sm font-medium text-white mb-1">Select Service</label>
+              <select
+                id="service"
+                className="w-full p-3 rounded-lg text-gray-900 focus:ring-[#C0392B] focus:border-[#C0392B]"
+                value={selectedServiceId}
+                onChange={(e) => setSelectedServiceId(e.target.value)}
+                required
+              >
+                <option value="">-- Choose a Service --</option>
+                {services.map(service => (
+                  <option key={service.id} value={service.id}>{service.name} - R{(service.price_cents / 100).toFixed(2)}</option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="scheduledDate" className="block text-sm font-medium text-white mb-1">Date</label>
+                <input
+                  type="date"
+                  id="scheduledDate"
+                  className="w-full p-3 rounded-lg text-gray-900 focus:ring-[#C0392B] focus:border-[#C0392B]"
+                  value={scheduledDate}
+                  onChange={(e) => setScheduledDate(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="scheduledTime" className="block text-sm font-medium text-white mb-1">Time</label>
+                <input
+                  type="time"
+                  id="scheduledTime"
+                  className="w-full p-3 rounded-lg text-gray-900 focus:ring-[#C0392B] focus:border-[#C0392B]"
+                  value={scheduledTime}
+                  onChange={(e) => setScheduledTime(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="w-full mt-6 bg-white text-[#C0392B] font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={bookingStatus === 'loading'}
+            >
+              {bookingStatus === 'loading' ? 'Requesting Booking...' : 'Request My Booking'}
+            </button>
+            {bookingStatus === 'success' && (
+              <div className="mt-4 flex items-center text-green-200">
+                <CheckCircleIcon className="w-5 h-5 mr-2" />
+                <span>{bookingMessage}</span>
+              </div>
+            )}
+            {bookingStatus === 'error' && (
+              <div className="mt-4 flex items-center text-red-200">
+                <XCircleIcon className="w-5 h-5 mr-2" />
+                <span>{bookingMessage}</span>
+              </div>
+            )}
+          </form>
+        </div>
       </section>
     </div>
   );
+
+  async function handleBookingSubmit(e) {
+    e.preventDefault();
+    setBookingStatus('loading');
+    setBookingMessage('');
+
+    // Find the selected service name based on selectedServiceId
+    const selectedService = services.find(s => s.id === selectedServiceId);
+    if (!selectedService) {
+      setBookingStatus('error');
+      setBookingMessage('Invalid service selected.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('/api/book', {
+        full_name: fullName,
+        email: email,
+        phone: phone,
+        service_name: selectedService.name, // Pass service name to API
+        scheduled_time: `${scheduledDate}T${scheduledTime}:00.000Z`, // ISO 8601 format
+        salon_id: process.env.NEXT_PUBLIC_INSTYLE_SALON_ID,
+      });
+
+      if (response.status === 201) {
+        setBookingStatus('success');
+        setBookingMessage('Booking requested successfully! We will confirm shortly.');
+        // Clear form
+        setFullName('');
+        setEmail('');
+        setPhone('');
+        setSelectedServiceId('');
+        setScheduledDate('');
+        setScheduledTime('');
+        // Re-fetch appointments to update the list
+        // This part needs to be implemented if you want to see the new booking immediately
+        // You might need to move the fetchAppointments logic into a separate function
+        // and call it here. For now, it will update on next page load.
+      } else {
+        setBookingStatus('error');
+        setBookingMessage(response.data.message || 'Failed to request booking.');
+      }
+    } catch (error) {
+      console.error('Booking submission error:', error.response?.data || error.message);
+      setBookingStatus('error');
+      setBookingMessage(error.response?.data?.message || 'An unexpected error occurred during booking.');
+    }
+  }
 }
 
 /* ---------- Re-usable card components ---------- */
