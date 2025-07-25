@@ -1,93 +1,100 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import AppointmentCard from './AppointmentCard'
+'use client';
 
-async function getSalonForUser(supabase, userId) {
-  const { data: salon, error } = await supabase
-    .from('salons')
-    .select('id')
-    .eq('owner_id', userId)
-    .single()
+import { useState, useEffect } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
+import AppointmentCard from './AppointmentCard';
+import Cookies from 'js-cookie';
 
-  if (error) {
-    console.error('Error fetching salon for appointments page:', error)
-    return null
-  }
-  return salon
-}
+export default function AppointmentsPage() {
+  const router = useRouter();
+  const supabase = createClientComponentClient();
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [pastAppointments, setPastAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-async function getUpcomingAppointments(supabase, salonId) {
-  const { data, error } = await supabase
-    .from('appointments')
-    .select(`
-      id,
-      scheduled_time,
-      status,
-      profiles ( full_name ),
-      services ( name, price )
-    `)
-    .eq('salon_id', salonId)
-    .gte('scheduled_time', new Date().toISOString())
-    .order('scheduled_time', { ascending: true })
+  useEffect(() => {
+    async function fetchAppointments() {
+      setLoading(true);
+      setError(null);
+      try {
+        const testMode = Cookies.get('test_mode') === 'enabled';
+        const testSalonId = Cookies.get('test_salon_id');
 
-  if (error) {
-    console.error('Error fetching upcoming appointments:', error)
-    return []
-  }
-  return data
-}
+        let salonId;
+        if (testMode && testSalonId) {
+          salonId = testSalonId;
+        } else {
+          const { data: { user }, error: userError } = await supabase.auth.getUser();
+          if (userError || !user) {
+            router.push('/login');
+            return;
+          }
 
-async function getPastAppointments(supabase, salonId) {
-  const { data, error } = await supabase
-    .from('appointments')
-    .select(`
-      id,
-      scheduled_time,
-      status,
-      profiles ( full_name ),
-      services ( name, price )
-    `)
-    .eq('salon_id', salonId)
-    .lt('scheduled_time', new Date().toISOString())
-    .order('scheduled_time', { ascending: false })
+          const { data: salonData, error: salonError } = await supabase
+            .from('salons')
+            .select('id')
+            .eq('owner_id', user.id)
+            .single();
 
-  if (error) {
-    console.error('Error fetching past appointments:', error)
-    return []
-  }
-  return data
-}
+          if (salonError || !salonData) {
+            router.push('/dashboard/create-salon');
+            return;
+          }
+          salonId = salonData.id;
+        }
 
-export default async function AppointmentsPage() {
-  const cookieStore = cookies()
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
-      cookies: {
-        get: (name) => cookieStore.get(name)?.value,
-      },
+        // Fetch upcoming appointments
+        const { data: upcomingData, error: upcomingError } = await supabase
+          .from('appointments')
+          .select(`
+            id,
+            scheduled_time,
+            status,
+            profiles ( full_name ),
+            services ( name, price_cents )
+          `)
+          .eq('salon_id', salonId)
+          .gte('scheduled_time', new Date().toISOString())
+          .order('scheduled_time', { ascending: true });
+
+        if (upcomingError) throw upcomingError;
+        setUpcomingAppointments(upcomingData);
+
+        // Fetch past appointments
+        const { data: pastData, error: pastError } = await supabase
+          .from('appointments')
+          .select(`
+            id,
+            scheduled_time,
+            status,
+            profiles ( full_name ),
+            services ( name, price_cents )
+          `)
+          .eq('salon_id', salonId)
+          .lt('scheduled_time', new Date().toISOString())
+          .order('scheduled_time', { ascending: false });
+
+        if (pastError) throw pastError;
+        setPastAppointments(pastData);
+
+      } catch (err) {
+        console.error('Error fetching appointments:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     }
-  )
-  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect('/login')
-  }
+    fetchAppointments();
+  }, [supabase, router]);
 
-  const salon = await getSalonForUser(supabase, user.id)
-
-  if (!salon) {
-    // This case is handled by layout, but good to have as a safeguard
-    redirect('/dashboard/create-salon')
-  }
-
-  const upcomingAppointments = await getUpcomingAppointments(supabase, salon.id)
-  const pastAppointments = await getPastAppointments(supabase, salon.id)
+  if (loading) return <div className="p-8 text-center">Loading appointments...</div>;
+  if (error) return <div className="p-8 text-center text-red-600">Error: {error}</div>;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-8">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Appointments</h1>
         <p className="mt-1 text-sm text-gray-600">

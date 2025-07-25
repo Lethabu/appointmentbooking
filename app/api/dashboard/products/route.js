@@ -1,40 +1,25 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
+import { getSessionAndSalon } from '@/app/lib/api-helpers';
 
 export async function GET() {
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
-      cookies: {
-        get: (name) => cookies().get(name)?.value
-      }
+  try {
+    const { salon, supabase, authError } = await getSessionAndSalon();
+    if (authError) return authError;
+
+    const { data: products, error } = await supabase
+      .from('products')
+      .select('id, name, description, price, stock_quantity, image_urls')
+      .eq('salon_id', salon.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching products:', error);
+      return new NextResponse(JSON.stringify({ error: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
-  );
-  const { data: { session } } = await supabase.auth.getSession()
 
-  if (!session) {
-    return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+    return NextResponse.json(products);
+  } catch (e) {
+    console.error('Unhandled error in GET /api/dashboard/products:', e);
+    return new NextResponse(JSON.stringify({ error: 'An unexpected error occurred.' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
-
-  const { data: salon } = await supabase
-    .from('salons')
-    .select('id')
-    .eq('owner_id', session.user.id)
-    .single()
-
-  if (!salon) {
-    return new NextResponse(JSON.stringify({ error: 'Salon not found' }), { status: 404 })
-  }
-
-  const { data: products, error } = await supabase
-    .from('products')
-    .select('id, name, description, price, stock_quantity, image_urls')
-    .eq('salon_id', salon.id)
-    .order('created_at', { ascending: false })
-
-  if (error) return new NextResponse(JSON.stringify({ error: error.message }), { status: 500 })
-
-  return NextResponse.json(products)
 }

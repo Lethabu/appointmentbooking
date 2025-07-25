@@ -7,8 +7,8 @@ export async function getSessionAndSalon() {
   const testMode = cookieStore.get('test_mode') === 'enabled';
   const testSalonId = cookieStore.get('test_salon_id');
 
-  if (testMode && testSalonId) {
-    // Mock salon for testing
+  if (testMode) {
+    // Always mock salon and session if test mode is enabled
     return {
       supabase: createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -21,7 +21,7 @@ export async function getSessionAndSalon() {
           },
         }
       ),
-      salon: { id: testSalonId },
+      salon: { id: testSalonId || 'test-salon-id' }, // Use provided ID or a default
       session: { user: { email: 'test@example.com', id: 'test-user-id' } }, // Mock session
       error: null
     };

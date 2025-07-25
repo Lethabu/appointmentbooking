@@ -58,6 +58,7 @@ export default function TestModePage() {
         <div style={{ marginTop: '2rem' }}>
           <h2>Dashboard Links</h2>
           <ul>
+            <li><Link href="/dashboard/appointments">Appointments</Link></li>
             <li><Link href="/dashboard/services">Services</Link></li>
             <li><Link href="/dashboard/clients">Clients</Link></li>
             <li><Link href="/dashboard/marketing">Marketing</Link></li>
