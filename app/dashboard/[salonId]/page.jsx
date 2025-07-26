@@ -68,9 +68,7 @@ export default function SalonDashboardPage({ params }) {
                         id,
                         scheduled_time,
                         status,
-                        full_name,
-                        email,
-                        phone,
+                        profiles (full_name, email, phone),
                         services (name, duration_minutes, price_cents)
                     `)
                     .eq('salon_id', salonId)
@@ -151,7 +149,7 @@ function AppointmentDisplayCard({ appointment }) {
                 <h3 className="text-xl font-semibold text-gray-800">{appointment.services?.name || 'N/A Service'}</h3>
                 <p className="text-gray-600 flex items-center mt-1">
                     <UserIcon className="w-4 h-4 mr-2 text-gray-500" />
-                    {appointment.full_name} ({appointment.email})
+                    {appointment.profiles?.full_name} ({appointment.profiles?.email})
                 </p>
                 <p className="text-gray-600 flex items-center mt-1">
                     <ClockIcon className="w-4 h-4 mr-2 text-gray-500" />

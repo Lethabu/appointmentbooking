@@ -20,21 +20,49 @@ export default async function handler(req, res) {
     full_name,
     email,
     phone,
-    service_name, // This will be used to find the service_id
+    service_name,
     scheduled_time,
-    salon_id, // Assuming this comes from the frontend
+    salon_id,
   } = req.body;
 
-  // Basic validation
   if (!full_name || !email || !phone || !service_name || !scheduled_time || !salon_id) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
   try {
-    // 1. Find the service_id from our database using service_name
+    // 1. Find or create client profile
+    let profileId;
+    const { data: existingProfile, error: profileFetchError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('email', email)
+      .single();
+
+    if (profileFetchError && profileFetchError.code !== 'PGRST116') { // PGRST116 means "no rows found"
+      console.error('Error fetching profile:', profileFetchError.message);
+      return res.status(500).json({ message: 'Failed to check client profile', error: profileFetchError.message });
+    }
+
+    if (existingProfile) {
+      profileId = existingProfile.id;
+    } else {
+      const { data: newProfile, error: profileInsertError } = await supabase
+        .from('profiles')
+        .insert([{ full_name, email, phone, salon_id }])
+        .select('id')
+        .single();
+
+      if (profileInsertError) {
+        console.error('Error creating new profile:', profileInsertError.message);
+        return res.status(500).json({ message: 'Failed to create client profile', error: profileInsertError.message });
+      }
+      profileId = newProfile.id;
+    }
+
+    // 2. Find the service_id
     const { data: serviceData, error: serviceError } = await supabase
       .from('services')
-      .select('id, duration_minutes') // Fetch duration_minutes for SuperSaaS finish time calculation
+      .select('id, duration_minutes')
       .eq('name', service_name)
       .eq('salon_id', salon_id)
       .single();
@@ -46,18 +74,16 @@ export default async function handler(req, res) {
 
     const service_id = serviceData.id;
 
-    // 2. Insert the new booking into our Supabase 'appointments' table
+    // 3. Insert the new booking into our Supabase 'appointments' table
     const { data: appointment, error: supabaseError } = await supabase
       .from('appointments')
       .insert([
         {
-          full_name,
-          email,
-          phone,
+          profile_id: profileId, // Use the profile_id here
           service_id,
           scheduled_time,
           salon_id,
-          status: 'pending', // Default status
+          status: 'pending',
         },
       ])
       .select()
@@ -70,7 +96,7 @@ export default async function handler(req, res) {
 
     console.log('Appointment successfully created in Supabase:', appointment);
 
-    // 3. Make a POST request to the SuperSaaS API to create a corresponding "blocker" appointment
+    // 4. Make a POST request to the SuperSaaS API
     try {
       const supersaasResponse = await axios.post(
         `${supersaasApiUrl}/bookings.json`,
@@ -80,22 +106,21 @@ export default async function handler(req, res) {
             name: full_name,
             email: email,
             phone: phone,
-            description: `Blocked by Instyle Platform: ${service_name}`, // Custom description
-            start: scheduled_time, // Use the same scheduled time
+            description: `Blocked by Instyle Platform: ${service_name}`,
+            start: scheduled_time,
             finish: new Date(new Date(scheduled_time).getTime() + (serviceData.duration_minutes || 60) * 60 * 1000).toISOString(),
           },
         },
         {
           auth: {
             username: supersaasApiKey,
-            password: 'x', // SuperSaaS uses 'x' as password when using API key as username
+            password: 'x',
           },
         }
       );
 
       console.log('SuperSaaS booking created:', supersaasResponse.data);
 
-      // Optionally, update our appointment record with the SuperSaaS booking ID
       await supabase
         .from('appointments')
         .update({ supersaas_id: supersaasResponse.data.booking.id })
@@ -103,7 +128,6 @@ export default async function handler(req, res) {
 
     } catch (supersaasError) {
       console.error('Error creating booking in SuperSaaS:', supersaasError.response?.data || supersaasError.message);
-      // Mark Supabase booking as 'supersaas_sync_failed'
       await supabase
         .from('appointments')
         .update({ status: 'supersaas_sync_failed' })
