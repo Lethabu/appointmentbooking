@@ -7,7 +7,7 @@ export async function GET() {
     if (authError) return authError
     const { data: services, error } = await supabase
       .from('services')
-      .select('*')
+      .select('*, service_categories(name)') // Fetch category name
       .eq('salon_id', salon.id)
       .order('name', { ascending: true })
 

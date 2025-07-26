@@ -6,10 +6,10 @@ export async function GET() {
     const { salon, supabase, error: authError } = await getSessionAndSalon()
     if (authError) return authError
     const { data: clients, error } = await supabase
-      .from('clients')
+      .from('profiles')
       .select('*')
       .eq('salon_id', salon.id)
-      .order('name', { ascending: true })
+      .order('full_name', { ascending: true })
 
     if (error) {
       console.error('Error fetching clients:', error)
@@ -29,7 +29,7 @@ export async function POST(req) {
     if (authError) return authError
 
     const body = await req.json()
-    const { data, error } = await supabase.from('clients').insert({ ...body, salon_id: salon.id }).select().single()
+    const { data, error } = await supabase.from('profiles').insert({ ...body, salon_id: salon.id }).select().single()
 
     if (error) {
       console.error('Error creating client:', error)

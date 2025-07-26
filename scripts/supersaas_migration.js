@@ -8,13 +8,14 @@
 import axios from 'axios';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ path: './.env.local' });
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const SALON_ID = process.env.INSTYLE_SALON_ID;
 const SSA_KEY = process.env.SUPERSAAS_API_KEY;
 const SSA_SCHEDULE = process.env.SUPERSAAS_SCHEDULE_ID;
+const SSA_ACCOUNT_NAME = process.env.SUPERSAAS_ACCOUNT_NAME;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const baseUrl = 'https://www.supersaas.com/api';
@@ -25,7 +26,7 @@ const baseUrl = 'https://www.supersaas.com/api';
 async function fetchBookings() {
   const res = await axios.get(`${baseUrl}/bookings.json`, {
     params: { schedule_id: SSA_SCHEDULE, limit: 5000 },
-    auth: { username: SSA_KEY, password: 'x' },
+    auth: { username: SSA_ACCOUNT_NAME, password: SSA_KEY },
   });
   return res.data;
 }
