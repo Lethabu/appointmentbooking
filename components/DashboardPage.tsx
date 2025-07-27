@@ -1,9 +1,45 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import StatCard from './StatCard';
 import { IconCalendar, IconChat, IconSparkles } from './icons';
+import { api } from '@/lib/api';
+import { useTenant } from '@/hooks/use-tenant';
 
 const DashboardPage: React.FC = () => {
+  const [upcomingAppointments, setUpcomingAppointments] = useState<number | null>(null);
+  const [recentActivity, setRecentActivity] = useState<string[]>([]);
+  const { tenant } = useTenant(process.env.NEXT_PUBLIC_VERCEL_URL || 'localhost'); // Assuming subdomain from VERCEL_URL or localhost
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (tenant?.id) {
+        try {
+          // Fetch upcoming appointments
+          const today = new Date().toISOString().split('T')[0];
+          const upcoming = await api.getAppointments(tenant.id, { date: today, status: 'PENDING' });
+          setUpcomingAppointments(upcoming.length);
+
+          // Fetch recent activity (e.g., last 5 appointments)
+          const allAppointments = await api.getAppointments(tenant.id);
+          const sortedAppointments = allAppointments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          const latestAppointments = sortedAppointments.slice(0, 5);
+
+          const activityMessages = latestAppointments.map(app => 
+            `New booking: ${app.client_name} - ${app.service_name} - ${new Date(app.datetime).toLocaleString()}`
+          );
+          setRecentActivity(activityMessages);
+
+        } catch (error) {
+          console.error('Error fetching dashboard data:', error);
+          setUpcomingAppointments(0);
+          setRecentActivity(['Failed to load recent activity.']);
+        }
+      }
+    };
+
+    fetchData();
+  }, [tenant]);
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-neutral-800">Welcome to Smart Salon HQ!</h1>
@@ -12,7 +48,7 @@ const DashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <StatCard 
           title="Upcoming Appointments" 
-          value="12" 
+          value={upcomingAppointments !== null ? String(upcomingAppointments) : 'Loading...'} 
           icon={<IconCalendar />}
           color="text-blue-500"
         />
