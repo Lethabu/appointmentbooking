@@ -1,44 +1,67 @@
-import { NextResponse } from 'next/server'
-import { getSessionAndSalon } from '@/app/lib/api-helpers'
+// 2. API ROUTES FIXES
 
-export async function GET() {
+// app/api/dashboard/services/route.ts
+import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from 'next/server';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+export async function GET(request: NextRequest) {
   try {
-    const { salon, supabase, error: authError } = await getSessionAndSalon()
-    if (authError) return authError
+    const { searchParams } = new URL(request.url);
+    const salonId = searchParams.get('salon_id') || 'ccb12b4d-ade6-467d-a614-7c9d198ddc70';
+
+    console.log(`Fetching services for salon: ${salonId}`);
+
     const { data: services, error } = await supabase
       .from('services')
-      .select('*, service_categories(name)') // Fetch category name
-      .eq('salon_id', salon.id)
-      .order('name', { ascending: true })
+      .select(`
+        id,
+        name,
+        description,
+        duration_minutes,
+        price_cents,
+        category,
+        is_active,
+        created_at
+      `)
+      .eq('salon_id', salonId)
+      .eq('is_active', true)
+      .order('category', { ascending: true })
+      .order('name', { ascending: true });
 
     if (error) {
-      console.error('Error fetching services:', error)
-      return new NextResponse(JSON.stringify({ error: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } })
+      console.error('Supabase error:', error);
+      return NextResponse.json(
+        { 
+          error: 'Failed to fetch services', 
+          details: error.message,
+          services: [] 
+        },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json(services)
-  } catch (e) {
-    console.error('Unhandled error in GET /api/dashboard/services:', e)
-    return new NextResponse(JSON.stringify({ error: 'An unexpected error occurred.' }), { status: 500, headers: { 'Content-Type': 'application/json' } })
-  }
-}
+    console.log(`Found ${services?.length || 0} services`);
 
-export async function POST(req) {
-  try {
-    const { salon, supabase, error: authError } = await getSessionAndSalon()
-    if (authError) return authError
+    return NextResponse.json({
+      success: true,
+      services: services || [],
+      count: services?.length || 0
+    });
 
-    const body = await req.json()
-    const { data, error } = await supabase.from('services').insert({ ...body, salon_id: salon.id }).select().single()
-
-    if (error) {
-      console.error('Error creating service:', error)
-      return new NextResponse(JSON.stringify({ error: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } })
-    }
-
-    return NextResponse.json(data, { status: 201 })
-  } catch (e) {
-    console.error('Unhandled error in POST /api/dashboard/services:', e)
-    return new NextResponse(JSON.stringify({ error: 'An unexpected error occurred.' }), { status: 500, headers: { 'Content-Type': 'application/json' } })
+  } catch (error) {
+    console.error('Unexpected error in services API:', error);
+    return NextResponse.json(
+      { 
+        error: 'Internal server error', 
+        services: [],
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    );
   }
 }

@@ -1,167 +1,216 @@
-"use client"
+// 3. DASHBOARD COMPONENT WITH ERROR HANDLING
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Clock, DollarSign } from "lucide-react"
-import { ServiceForm } from "./service-form"
-import type { Service } from "@/types"
+// components/dashboard/ServicesManager.tsx
+'use client';
 
-// Mock services data
-const mockServices: Service[] = [
-  {
-    id: "1",
-    name: "Signature Cut & Style",
-    description: "Premium haircut with personalized styling consultation",
-    category: "Styling",
-    duration_minutes: 90,
-    price: 450,
-  },
-  {
-    id: "2",
-    name: "Luxury Blowout",
-    description: "Professional blow-dry with premium products",
-    category: "Styling",
-    duration_minutes: 45,
-    price: 280,
-  },
-  {
-    id: "3",
-    name: "Full Color Transformation",
-    description: "Complete color service with consultation and aftercare",
-    category: "Colour",
-    duration_minutes: 180,
-    price: 850,
-  },
-]
+import React, { useState, useEffect, useCallback } from 'react';
+import { AlertCircle, RefreshCw, Plus, Edit, Trash2 } from 'lucide-react';
 
-export function ServiceManagement() {
-  const [services, setServices] = useState<Service[]>(mockServices)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingService, setEditingService] = useState<Service | null>(null)
+interface Service {
+  id: string;
+  name: string;
+  description: string;
+  duration_minutes: number;
+  price_cents: number;
+  category: string;
+  is_active: boolean;
+  created_at: string;
+}
 
-  const handleAddService = (serviceData: Omit<Service, "id">) => {
-    const newService = {
-      ...serviceData,
-      id: Date.now().toString(),
+interface ApiResponse {
+  success: boolean;
+  services: Service[];
+  count: number;
+  error?: string;
+  details?: string;
+}
+
+export const ServicesManager: React.FC = () => {
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const [lastFetch, setLastFetch] = useState<Date | null>(null);
+
+  const fetchServices = useCallback(async (isRetry = false) => {
+    try {
+      if (!isRetry) {
+        setLoading(true);
+      }
+      setError(null);
+
+      const salonId = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70';
+      const response = await fetch(`/api/dashboard/services?salon_id=${salonId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data: ApiResponse = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error + (data.details ? ` - ${data.details}` : ''));
+      }
+
+      setServices(data.services || []);
+      setRetryCount(0);
+      setLastFetch(new Date());
+      
+      console.log(`Successfully loaded ${data.services?.length || 0} services`);
+
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      console.error('Failed to fetch services:', errorMessage);
+      setError(errorMessage);
+
+      // Implement exponential backoff for retries
+      if (retryCount < 3) {
+        const delay = Math.min(1000 * Math.pow(2, retryCount), 10000);
+        console.log(`Retrying in ${delay}ms... (attempt ${retryCount + 1}/3)`);
+        
+        setTimeout(() => {
+          setRetryCount(prev => prev + 1);
+          fetchServices(true);
+        }, delay);
+      }
+    } finally {
+      setLoading(false);
     }
-    setServices([...services, newService])
-    setIsDialogOpen(false)
-  }
+  }, [retryCount]);
 
-  const handleEditService = (service: Service) => {
-    setEditingService(service)
-    setIsDialogOpen(true)
-  }
+  useEffect(() => {
+    fetchServices();
+  }, []);
 
-  const handleDeleteService = (serviceId: string) => {
-    setServices(services.filter((s) => s.id !== serviceId))
-  }
+  const formatPrice = (priceCents: number): string => {
+    return `R${(priceCents / 100).toFixed(2)}`;
+  };
 
-  const getCategoryColor = (category: string) => {
-    switch (category.toLowerCase()) {
-      case "styling":
-        return "bg-blue-100 text-blue-800"
-      case "colour":
-        return "bg-purple-100 text-purple-800"
-      case "treatments":
-        return "bg-green-100 text-green-800"
-      default:
-        return "bg-gray-100 text-gray-800"
+  const formatDuration = (minutes: number): string => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    
+    if (hours > 0) {
+      return `${hours}h ${mins > 0 ? `${mins}m` : ''}`.trim();
     }
+    return `${mins}m`;
+  };
+
+  const groupedServices = services.reduce((acc, service) => {
+    const category = service.category || 'Other';
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(service);
+    return acc;
+  }, {} as Record<string, Service[]>);
+
+  if (loading && services.length === 0) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="flex items-center space-x-2">
+          <RefreshCw className="h-5 w-5 animate-spin" />
+          <span>Loading services...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && services.length === 0) {
+    return (
+      <div className="p-6 bg-red-50 border border-red-200 rounded-lg">
+        <div className="flex items-start space-x-3">
+          <AlertCircle className="h-5 w-5 text-red-500 mt-0.5" />
+          <div className="flex-1">
+            <h3 className="text-sm font-medium text-red-800">
+              Unable to load services
+            </h3>
+            <p className="mt-1 text-sm text-red-700">{error}</p>
+            {retryCount < 3 && (
+              <p className="mt-1 text-xs text-red-600">
+                Retrying automatically... (attempt {retryCount + 1}/3)
+              </p>
+            )}
+            <button
+              onClick={() => {
+                setRetryCount(0);
+                fetchServices();
+              }}
+              className="mt-3 inline-flex items-center px-3 py-1.5 border border-red-300 text-xs font-medium rounded text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              <RefreshCw className="h-3 w-3 mr-1" />
+              Retry Now
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Manage Services</CardTitle>
-            <CardDescription>Add, edit, or remove your salon services</CardDescription>
-          </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setEditingService(null)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add New Service
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>{editingService ? "Edit Service" : "Add New Service"}</DialogTitle>
-                <DialogDescription>
-                  {editingService ? "Update the service details below." : "Fill in the details for your new service."}
-                </DialogDescription>
-              </DialogHeader>
-              <ServiceForm
-                service={editingService}
-                onSubmit={handleAddService}
-                onCancel={() => setIsDialogOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Services</h1>
+          <p className="mt-1 text-sm text-gray-600">
+            Manage your salon services and pricing
+            {lastFetch && (
+              <span className="ml-2 text-xs text-gray-400">
+                Last updated: {lastFetch.toLocaleTimeString()}
+              </span>
+            )}
+          </p>
         </div>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Duration</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {services.map((service) => (
-              <TableRow key={service.id}>
-                <TableCell>
-                  <div>
-                    <div className="font-medium">{service.name}</div>
-                    <div className="text-sm text-gray-500">{service.description}</div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge className={getCategoryColor(service.category)}>{service.category}</Badge>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4 text-gray-500" />
-                    <span>{service.duration_minutes} min</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1">
-                    <DollarSign className="h-4 w-4 text-gray-500" />
-                    <span>R {service.price}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleEditService(service)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleDeleteService(service.id)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
-  )
-}
+        <div className="flex space-x-3">
+          <button
+            onClick={() => fetchServices()}
+            disabled={loading}
+            className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+          <button
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Service
+          </button>
+        </div>
+      </div>
+
+      {/* Error Banner (if there are services but also an error) */}
+      {error && services.length > 0 && (
+        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="flex items-center space-x-2">
+            <AlertCircle className="h-4 w-4 text-yellow-600" />
+            <span className="text-sm text-yellow-800">
+              Warning: {error}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Services Grid */}
+      {Object.keys(groupedServices).length === 0 ? (
+        <div className="text-center py-12">
+          <div className="mx-auto h-12 w-12 text-gray-400">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">No services found</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Get started by adding your first service.
+          </p>
+          <div className="mt-6">
+            <button
+              type="button"
+              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus
