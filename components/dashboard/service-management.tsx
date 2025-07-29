@@ -154,7 +154,7 @@ export const ServicesManager: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -220,5 +220,70 @@ export const ServicesManager: React.FC = () => {
             </button>
           </div>
         </div>
+      ) : (
+        <div className="mt-8 flow-root">
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+              {Object.entries(groupedServices).map(([category, servicesInCategory]) => (
+                <div key={category} className="mb-8">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">{category}</h2>
+                  <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+                    <table className="min-w-full divide-y divide-gray-300">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                            Name
+                          </th>
+                          <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                            Description
+                          </th>
+                          <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                            Duration
+                          </th>
+                          <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                            Price
+                          </th>
+                          <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                            <span className="sr-only">Edit</span>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200 bg-white">
+                        {servicesInCategory.map((service) => (
+                          <tr key={service.id}>
+                            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                              {service.name}
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              {service.description}
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              {formatDuration(service.duration_minutes)}
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              {formatPrice(service.price_cents)}
+                            </td>
+                            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                              <button className="text-indigo-600 hover:text-indigo-900 mr-4">
+                                <Edit className="h-4 w-4 inline" />
+                                <span className="ml-1">Edit</span>
+                              </button>
+                              <button className="text-red-600 hover:text-red-900">
+                                <Trash2 className="h-4 w-4 inline" />
+                                <span className="ml-1">Delete</span>
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
     </div>
+  );
+};
