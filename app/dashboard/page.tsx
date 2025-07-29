@@ -2,7 +2,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar, DollarSign, Users, Clock } from "lucide-react"
 import { AppointmentLiveView } from "@/components/dashboard/appointment-live-view"
-import { ServiceManagement } from "@/components/dashboard/service-management"
+import { ServiceManagement } from '@/components/dashboard/service-management';
 import { AIChat } from "@/components/dashboard/ai-chat"
 import { KPIWidget } from "@/components/dashboard/kpi-widget"
 import { useRealtime } from "@/hooks/use-realtime"

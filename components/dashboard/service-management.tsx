@@ -25,7 +25,7 @@ interface ApiResponse {
   details?: string;
 }
 
-export const ServicesManager: React.FC = () => {
+export const ServiceManagement: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -287,3 +287,5 @@ export const ServicesManager: React.FC = () => {
     </div>
   );
 };
+
+export default ServiceManagement;
