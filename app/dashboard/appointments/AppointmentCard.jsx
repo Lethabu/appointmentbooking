@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline'
 
 export default function AppointmentCard({ appointment }) {
-  const appointmentDate = new Date(appointment.start_time)
+  const appointmentDate = new Date(appointment.scheduled_time)
   const isPast = appointmentDate < new Date()
 
   const statusStyles = {

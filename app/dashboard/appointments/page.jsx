@@ -52,7 +52,7 @@ export default function AppointmentsPage() {
             id,
             scheduled_time,
             status,
-            profiles ( full_name ),
+            clientEmail,
             services ( name, price_cents )
           `)
           .eq('salon_id', salonId)
@@ -69,7 +69,7 @@ export default function AppointmentsPage() {
             id,
             scheduled_time,
             status,
-            profiles ( full_name ),
+            clientEmail,
             services ( name, price_cents )
           `)
           .eq('salon_id', salonId)
