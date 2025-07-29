@@ -57,8 +57,7 @@ export default function InstyleBooking() {
           .from('bookings')
           .select(`
             id,
-            booking_date,
-            booking_time,
+            scheduled_time,
             status,
             services (name),
             staff (name),
@@ -77,9 +76,9 @@ export default function InstyleBooking() {
         const future = [];
 
         data.forEach(booking => {
-          // Combine date and time for comparison
-          const bookingDateTime = new Date(`${booking.booking_date}T${booking.booking_time}`);
-          if (bookingDateTime < now) {
+          // Use scheduled_time for comparison
+          const scheduledTime = new Date(booking.scheduled_time);
+          if (scheduledTime < now) {
             history.push(booking);
           } else {
             future.push(booking);
@@ -403,11 +402,11 @@ function ProductCard({ product }) {
 
 /* ---------- Appointment Card Component ---------- */
 function AppointmentCard({ appointment }) {
-  const bookingDateTime = new Date(`${appointment.booking_date}T${appointment.booking_time}`);
-  const formattedDate = bookingDateTime.toLocaleDateString('en-ZA', {
+  const scheduledTime = new Date(appointment.scheduled_time);
+  const formattedDate = scheduledTime.toLocaleDateString('en-ZA', {
     year: 'numeric', month: 'long', day: 'numeric'
   });
-  const formattedTime = bookingDateTime.toLocaleTimeString('en-ZA', {
+  const formattedTime = scheduledTime.toLocaleTimeString('en-ZA', {
     hour: '2-digit', minute: '2-digit', hour12: false
   });
 

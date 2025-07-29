@@ -20,8 +20,8 @@ export function formatTime(time: string | Date, locale = "en-ZA"): string {
   }).format(timeObj)
 }
 
-export function formatDateTime(datetime: string | Date, locale = "en-ZA"): string {
-  const dateObj = typeof datetime === "string" ? new Date(datetime) : datetime
+export function formatDateTime(scheduled_time: string | Date, locale = "en-ZA"): string {
+  const dateObj = typeof scheduled_time === "string" ? new Date(scheduled_time) : scheduled_time
 
   return new Intl.DateTimeFormat(locale, {
     day: "2-digit",

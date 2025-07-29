@@ -12,9 +12,9 @@ export async function getAvailableAppointments() {
 }
 
 // Helper: book appointment
-export async function bookAppointment({ salonId, service_id, datetime, client_name, client_phone }) {
-  if (!service_id || !datetime || !client_name) {
-    return { error: 'Missing required fields: service_id, datetime, and client_name are required.' };
+export async function bookAppointment({ salonId, service_id, scheduled_time, client_name, client_phone }) {
+  if (!service_id || !scheduled_time || !client_name) {
+    return { error: 'Missing required fields: service_id, scheduled_time, and client_name are required.' };
   }
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -25,7 +25,7 @@ export async function bookAppointment({ salonId, service_id, datetime, client_na
     .insert({
       salon_id: salonId,
       service_id,
-      start_time: datetime,
+      start_time: scheduled_time,
       client_name,
       client_phone,
       status: 'confirmed'
@@ -55,7 +55,7 @@ export async function bookAppointment({ salonId, service_id, datetime, client_na
   }
   return {
     success: true,
-    confirmation: `Booked for ${new Date(datetime).toLocaleString()}`
+    confirmation: `Booked for ${new Date(scheduled_time).toLocaleString()}`
   };
 }
 

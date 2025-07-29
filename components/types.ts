@@ -38,7 +38,7 @@ export interface Booking {
   clientName: string;
   clientPhone: string | null;
   service: Service;
-  dateTime: Date;
+  scheduled_time: Date;
   status: 'pending' | 'confirmed' | 'cancelled' | 'scheduled' | 'in_progress' | 'completed' | 'no_show';
   staffId?: string | null;
   recurrence_rule?: string | null;

@@ -50,7 +50,7 @@ const BookingsPage: React.FC = () => {
       .from('appointments')
       .select(`
         id,
-        start_time,
+        scheduled_time,
         status,
         client_name,
         client_phone,
@@ -59,9 +59,9 @@ const BookingsPage: React.FC = () => {
         staff ( id, name )
       `)
       .eq('salon_id', salonId)
-      .gte('start_time', startOfDay.toISOString())
-      .lte('start_time', endOfDay.toISOString())
-      .order('start_time', { ascending: true });
+      .gte('scheduled_time', startOfDay.toISOString())
+      .lte('scheduled_time', endOfDay.toISOString())
+      .order('scheduled_time', { ascending: true });
 
     if (error) {
       console.error("Error fetching bookings:", error);
@@ -77,7 +77,7 @@ const BookingsPage: React.FC = () => {
         clientName: appt.client_name,
         clientPhone: appt.client_phone,
         service: mappedService,
-        dateTime: new Date(appt.start_time),
+        scheduled_time: new Date(appt.scheduled_time),
         status: appt.status as 'pending' | 'confirmed' | 'cancelled' | 'scheduled' | 'in_progress' | 'completed' | 'no_show',
         staffId: mappedStaff?.id || null, // Access id from the mappedStaff object
         recurrence_rule: appt.recurrence_rule || null,
@@ -101,11 +101,11 @@ const BookingsPage: React.FC = () => {
     await new Promise(resolve => setTimeout(resolve, 500));
     queryClient.invalidateQueries({ queryKey: ['bookings'] });
     refetch(); // Manually refetch after a booking submission
-    alert(`Booking for ${newBookingData.clientName} on ${newBookingData.dateTime.toLocaleDateString()} at ${newBookingData.dateTime.toLocaleTimeString()} added! Status: Pending.`);
+    alert(`Booking for ${newBookingData.clientName} on ${newBookingData.scheduled_time.toLocaleDateString()} at ${newBookingData.scheduled_time.toLocaleTimeString()} added! Status: Pending.`);
   }, [refetch]);
 
   const bookingsForSelectedDate = selectedDate 
-    ? bookingsData.filter(b => b.dateTime.toDateString() === selectedDate.toDateString())
+    ? bookingsData.filter(b => b.scheduled_time.toDateString() === selectedDate.toDateString())
     : [];
 
   return (
@@ -126,7 +126,7 @@ const BookingsPage: React.FC = () => {
                 <li key={booking.id} className="p-3 bg-neutral-50 rounded-md shadow-sm">
                   <p className="font-medium text-neutral-800">{booking.clientName} - {booking.service.name}</p>
                   <p className="text-sm text-neutral-600">
-                    Time: {booking.dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - Status: {booking.status}
+                    Time: {booking.scheduled_time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - Status: {booking.status}
                   </p>
                 </li>
               ))}

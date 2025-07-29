@@ -76,7 +76,7 @@ const ModernSalonDashboard = () => {
             <h3 className="font-semibold text-lg">{appointment.client}</h3>
             <p className="text-gray-600">{appointment.service}</p>
             <p className="text-sm text-gray-500 mt-2">
-              {new Date(appointment.datetime).toLocaleString()}
+              {new Date(appointment.scheduled_time).toLocaleString()}
             </p>
             <div className="mt-3 flex justify-between items-center">
               <span className="font-medium">R{appointment.price}</span>

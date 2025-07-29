@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const appointmentSchema = z.object({
   serviceId: z.string().uuid(),
   staffId: z.string().uuid(),
-  datetime: z.string().datetime(),
+  scheduled_time: z.string().datetime(),
   duration: z.number().int().positive(),
   clientEmail: z.string().email(),
 });

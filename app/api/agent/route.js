@@ -8,7 +8,7 @@ import { z } from 'zod';
 // Zod schemas defined at the module level
 const BookAppointmentArgsSchema = z.object({
   service_id: z.string(),
-  datetime: z.string(),
+  scheduled_time: z.string(),
   client_name: z.string(),
   client_phone: z.string().optional(),
 });
@@ -42,11 +42,11 @@ const functions = {
         type: 'object',
         properties: {
           service_id: { type: 'string', description: 'The ID of the service for the appointment.' },
-          datetime: { type: 'string', description: "The specific date and time for the appointment in ISO 8601 format (e.g., '2024-05-20T14:30:00')." },
+          scheduled_time: { type: 'string', description: "The specific date and time for the appointment in ISO 8601 format (e.g., '2024-05-20T14:30:00')." },
           client_name: { type: 'string', description: 'The full name of the client.' },
           client_phone: { type: 'string', description: 'The phone number of the client (optional).' },
         },
-        required: ['service_id', 'datetime', 'client_name'],
+        required: ['service_id', 'scheduled_time', 'client_name'],
       },
     },
   ],

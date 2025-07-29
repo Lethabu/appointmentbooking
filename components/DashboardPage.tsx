@@ -25,7 +25,7 @@ const DashboardPage: React.FC = () => {
           const latestAppointments = sortedAppointments.slice(0, 5);
 
           const activityMessages = latestAppointments.map(app => 
-            `New booking: ${app.client_name} - ${app.service_name} - ${new Date(app.datetime).toLocaleString()}`
+            `New booking: ${app.client_name} - ${app.service_name} - ${new Date(app.scheduled_time).toLocaleString()}`
           );
           setRecentActivity(activityMessages);
 

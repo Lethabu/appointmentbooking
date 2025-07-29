@@ -9,7 +9,7 @@ import { Fragment } from 'react';
 
 interface Appointment {
   id: string;
-  start_time: string;
+  scheduled_time: string;
   client_name: string;
   client_phone: string | null;
   status: string;
@@ -245,7 +245,7 @@ export default function AppointmentsPage() {
               appointments?.map((appointment) => (
                 <tr key={appointment.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {new Date(appointment.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(appointment.scheduled_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.client_name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.services?.name || 'N/A'}</td>

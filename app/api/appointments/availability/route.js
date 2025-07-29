@@ -35,13 +35,13 @@ export async function GET(request) {
     const appointments = await prisma.appointment.findMany({
       where: {
         serviceId,
-        datetime: {
+        scheduled_time: {
           gte: startOfDay,
           lte: endOfDay
         }
       },
       select: {
-        datetime: true,
+        scheduled_time: true,
         duration: true
       }
     })
@@ -54,10 +54,10 @@ export async function GET(request) {
       const slotEnd = new Date(currentTime.getTime() + service.duration * 60000)
       
       const conflict = appointments.some(appt => {
-        const apptEnd = new Date(appt.datetime.getTime() + appt.duration * 60000)
+        const apptEnd = new Date(appt.scheduled_time.getTime() + appt.duration * 60000)
         return (
           currentTime < apptEnd &&
-          slotEnd > appt.datetime
+          slotEnd > appt.scheduled_time
         )
       })
 

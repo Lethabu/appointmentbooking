@@ -8,7 +8,11 @@ import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient
 // API fetching functions
 const fetchServices = async () => {
   const res = await fetch('/api/dashboard/services')
-  if (!res.ok) throw new Error((await res.json()).error || 'Failed to fetch services.')
+  if (!res.ok) {
+    const errorData = await res.json();
+    console.error("Error fetching services:", errorData);
+    throw new Error(errorData.error || 'Failed to fetch services.');
+  }
   return res.json()
 }
 

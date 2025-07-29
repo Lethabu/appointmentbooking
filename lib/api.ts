@@ -1,6 +1,16 @@
 import { createClient } from "./supabase"
 import type { Service, Appointment, Product, BookingFormData } from "@/types"
 
+interface ChatResponse {
+  reply: string;
+  agent: string;
+}
+
+interface AgentSuggestion {
+  id: string;
+  text: string;
+}
+
 class ApiClient {
   private supabase = createClient()
 
@@ -113,7 +123,7 @@ class ApiClient {
   }
 
   // AI Agent Integration
-  async sendChatMessage(message: string, agentId: string, tenantId: string): Promise<any> {
+  async sendChatMessage(message: string, agentId: string, tenantId: string): Promise<ChatResponse> {
     const response = await fetch("/api/agent/chat", {
       method: "POST",
       headers: {
@@ -133,7 +143,7 @@ class ApiClient {
     return response.json()
   }
 
-  async getAgentSuggestions(tenantId: string): Promise<any> {
+  async getAgentSuggestions(tenantId: string): Promise<AgentSuggestion[]> {
     const response = await fetch(`/api/agent/suggest?tenant_id=${tenantId}`)
 
     if (!response.ok) {

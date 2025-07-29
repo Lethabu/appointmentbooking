@@ -10,7 +10,7 @@ datasource db {
 
 model Appointment {
   id           String      @id @default(uuid())
-  datetime     DateTime
+  scheduled_time     DateTime
   duration     Int
   clientEmail  String
   serviceId    String

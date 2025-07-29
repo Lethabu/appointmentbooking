@@ -26,9 +26,9 @@ export async function createAppointment(data) {
     const conflictingAppointment = await tx.appointment.findFirst({
       where: {
         staffId: data.staffId,
-        datetime: {
-          lte: new Date(new Date(data.datetime).getTime() + data.duration * 60000),
-          gte: data.datetime,
+        scheduled_time: {
+          lte: new Date(new Date(data.scheduled_time).getTime() + data.duration * 60000),
+          gte: data.scheduled_time,
         },
       },
     });

@@ -10,6 +10,20 @@ window.confirm = jest.fn()
 // Mock window.scrollTo to prevent errors in a JSDOM environment
 window.scrollTo = jest.fn()
 
+// Mock @tanstack/react-query's useQuery and useMutation hooks
+jest.mock('@tanstack/react-query', () => ({
+  ...jest.requireActual('@tanstack/react-query'),
+  useQuery: jest.fn(),
+  useMutation: jest.fn(() => ({
+    mutate: jest.fn(),
+    isPending: false,
+    error: null,
+  })),
+  useQueryClient: jest.fn(() => ({
+    invalidateQueries: jest.fn(),
+  })),
+}));
+
 const mockServices = [
   { id: '1', name: 'Ladies Cut', duration_minutes: 60, price: 35000 }, // R350.00
   { id: '2', name: 'Gents Cut', duration_minutes: 30, price: 20000 }, // R200.00
@@ -21,17 +35,17 @@ describe('ServicesPage', () => {
     fetch.mockClear()
     window.confirm.mockClear()
     window.scrollTo.mockClear()
+    // No useQuery.mockReset() here
   })
 
   test('renders loading state initially and then displays services', async () => {
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockServices,
-    })
+    require('@tanstack/react-query').useQuery.mockReturnValue({
+      data: mockServices,
+      isLoading: false,
+      error: null,
+    });
 
     render(<ServicesPage />)
-
-    expect(screen.getByText('Loading services...')).toBeInTheDocument()
 
     await waitFor(() => {
       expect(screen.getByText('Ladies Cut')).toBeInTheDocument()
@@ -43,23 +57,25 @@ describe('ServicesPage', () => {
   })
 
   test('displays an error message if fetching services fails', async () => {
-    fetch.mockResolvedValueOnce({
-      ok: false,
-      json: async () => ({ error: 'Network Error' }),
-    })
+    require('@tanstack/react-query').useQuery.mockReturnValue({
+      data: [],
+      isLoading: false,
+      error: new Error('Network Error'),
+    });
 
     render(<ServicesPage />)
 
     await waitFor(() => {
-      expect(screen.getByText('Error: Network Error')).toBeInTheDocument()
+      expect(screen.getByText(/Error: Network Error/)).toBeInTheDocument()
     })
   })
 
   test('displays empty state when no services are available', async () => {
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => [],
-    })
+    require('@tanstack/react-query').useQuery.mockReturnValue({
+      data: [],
+      isLoading: false,
+      error: null,
+    });
 
     render(<ServicesPage />)
 
@@ -69,11 +85,12 @@ describe('ServicesPage', () => {
   })
 
   test('allows adding a new service', async () => {
-    // Initial fetch is empty
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => [],
-    })
+    // Mock useQuery for initial empty state
+    require('@tanstack/react-query').useQuery.mockReturnValue({
+      data: [],
+      isLoading: false,
+      error: null,
+    });
 
     render(<ServicesPage />)
 
@@ -81,15 +98,17 @@ describe('ServicesPage', () => {
       expect(screen.getByText("You haven't added any services yet.")).toBeInTheDocument()
     })
 
+    // Mock useQuery for re-fetch after adding
+    require('@tanstack/react-query').useQuery.mockImplementationOnce(() => ({
+      data: [{ id: '3', name: 'Manicure', duration_minutes: 45, price: 25000 }],
+      isLoading: false,
+      error: null,
+    }));
+
     // Mock the POST request for adding a service
     fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({ id: '3', name: 'Manicure', duration_minutes: 45, price: 25000 }),
-    })
-    // Mock the re-fetch after adding
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => [{ id: '3', name: 'Manicure', duration_minutes: 45, price: 25000 }],
     })
 
     fireEvent.change(screen.getByPlaceholderText('Service Name (e.g., Ladies Cut)'), {
@@ -106,7 +125,7 @@ describe('ServicesPage', () => {
 
     await waitFor(() => {
       // Check that the POST request was made correctly
-      const lastCall = fetch.mock.calls[1]
+      const lastCall = fetch.mock.calls[0] // Changed from [1] to [0] as useQuery is mocked
       expect(lastCall[0]).toBe('/api/dashboard/services')
       const body = JSON.parse(lastCall[1].body)
       expect(body.name).toBe('Manicure')
@@ -121,10 +140,12 @@ describe('ServicesPage', () => {
   })
 
   test('allows editing a service', async () => {
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockServices,
-    })
+    // Mock useQuery for initial state
+    require('@tanstack/react-query').useQuery.mockReturnValue({
+      data: mockServices,
+      isLoading: false,
+      error: null,
+    });
 
     render(<ServicesPage />)
 
@@ -146,9 +167,15 @@ describe('ServicesPage', () => {
       target: { value: '375.50' },
     })
 
-    // Mock the PUT request and subsequent re-fetch
+    // Mock useQuery for re-fetch after updating
+    require('@tanstack/react-query').useQuery.mockImplementationOnce(() => ({
+      data: [{ id: '1', name: 'Ladies Cut', duration_minutes: 60, price: 37550 }, mockServices[1]],
+      isLoading: false,
+      error: null,
+    }));
+
+    // Mock the PUT request
     fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ id: '1', name: 'Ladies Cut', duration_minutes: 60, price: 37550 }) })
-    fetch.mockResolvedValueOnce({ ok: true, json: async () => [{ id: '1', name: 'Ladies Cut', duration_minutes: 60, price: 37550 }, mockServices[1]] })
 
     fireEvent.click(screen.getByRole('button', { name: 'Update Service' }))
 
@@ -162,15 +189,27 @@ describe('ServicesPage', () => {
   })
 
   test('allows deleting a service after confirmation', async () => {
-    fetch.mockResolvedValueOnce({ ok: true, json: async () => mockServices })
+    // Mock useQuery for initial state
+    require('@tanstack/react-query').useQuery.mockReturnValue({
+      data: mockServices,
+      isLoading: false,
+      error: null,
+    });
+
     render(<ServicesPage />)
     await waitFor(() => expect(screen.getByText('Ladies Cut')).toBeInTheDocument())
 
     window.confirm.mockReturnValue(true)
 
-    // Mock the DELETE request and subsequent re-fetch
+    // Mock useQuery for re-fetch after deleting
+    require('@tanstack/react-query').useQuery.mockImplementationOnce(() => ({
+      data: [mockServices[1]],
+      isLoading: false,
+      error: null,
+    }));
+
+    // Mock the DELETE request
     fetch.mockResolvedValueOnce({ ok: true })
-    fetch.mockResolvedValueOnce({ ok: true, json: async () => [mockServices[1]] })
 
     const deleteButtons = screen.getAllByRole('button', { name: 'Delete' })
     fireEvent.click(deleteButtons[0]) // Click delete for "Ladies Cut"

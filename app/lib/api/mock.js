@@ -15,7 +15,7 @@ export const fetchAppointments = async () => {
       id: 1,
       client: 'John Doe',
       service: 'Haircut',
-      datetime: '2025-07-15 10:00',
+      scheduled_time: '2025-07-15 10:00',
       status: 'confirmed',
       price: 150
     },
@@ -23,7 +23,7 @@ export const fetchAppointments = async () => {
       id: 2,
       client: 'Jane Smith',
       service: 'Coloring',
-      datetime: '2025-07-15 14:30',
+      scheduled_time: '2025-07-15 14:30',
       status: 'pending',
       price: 450
     },

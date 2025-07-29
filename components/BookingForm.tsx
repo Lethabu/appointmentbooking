@@ -99,7 +99,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
             baseAppointment: {
               salon_id: salonId,
               service_id: selectedServiceId,
-              start_time: bookingDateTime.toISOString(),
+              scheduled_time: bookingDateTime.toISOString(),
               client_name: clientName,
               client_phone: clientPhone,
               staff_id: selectedSlot.staff_id,
@@ -118,7 +118,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
         await onBookingSubmit({
           clientName,
           service,
-          dateTime: bookingDateTime,
+          scheduled_time: bookingDateTime,
           clientPhone,
           staffId: selectedSlot.staff_id,
         });
