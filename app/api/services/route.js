@@ -11,46 +11,48 @@ const serviceSchema = z.object({
 
 export async function POST(request) {
   try {
-    const body = await request.json()
-    const validation = serviceSchema.safeParse(body)
-    
+    const body = await request.json();
+    const validation = serviceSchema.safeParse(body);
+
     if (!validation.success) {
       return NextResponse.json(
         { error: validation.error.format() },
         { status: 400 }
-      )
+      );
     }
 
+    // Map incoming fields to match Prisma schema
+    const { name, description, duration, price } = validation.data;
     const service = await prisma.service.create({
-      data: validation.data
-    })
+      data: {
+        name,
+        description,
+        duration_minutes: duration, // map duration to duration_minutes
+        price_cents: price,         // map price to price_cents
+      }
+    });
 
-    return NextResponse.json(service, { status: 201 })
+    return NextResponse.json(service, { status: 201 });
   } catch (error) {
-    console.error('Service creation failed:', error)
+    console.error('Service creation failed:', error?.message || error, error?.stack);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
-    )
+    );
   }
 }
 
 export async function GET() {
   try {
     const services = await prisma.service.findMany({
-      include: {
-        staff: true
-      },
       select: {
         id: true,
         name: true,
-        duration: true,
-        staff: {
-          select: {
-            id: true,
-            name: true
-          }
-        }
+        description: true,
+        duration_minutes: true,
+        price_cents: true,
+        category: true,
+        is_active: true,
       }
     })
     return NextResponse.json(services)

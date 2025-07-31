@@ -1,6 +1,6 @@
 -- Create the staff table
 CREATE TABLE public.staff (
-    id UUID PRIMARY PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     salon_id UUID REFERENCES public.salons(id) ON DELETE CASCADE NOT NULL,
     name TEXT NOT NULL,
