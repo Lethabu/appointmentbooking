@@ -68,3 +68,61 @@ enum AppointmentStatus {
   CANCELLED
   COMPLETED
 }
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String?
+  email        String   @unique
+  passwordHash String
+  role         String   @default("member")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  deletedAt    DateTime?
+  teamMembers  TeamMember[]
+  invitationsSent Invitation[] @relation("sent_invitations")
+  activityLogs ActivityLog[]
+}
+
+model Team {
+  id           Int      @id @default(autoincrement())
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  teamMembers  TeamMember[]
+  activityLogs ActivityLog[]
+  invitations  Invitation[]
+}
+
+model TeamMember {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  teamId    Int
+  role      String
+  joinedAt  DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  team      Team     @relation(fields: [teamId], references: [id])
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  teamId    Int
+  userId    Int?
+  action    String
+  timestamp DateTime @default(now())
+  ipAddress String?
+  team      Team     @relation(fields: [teamId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+model Invitation {
+  id        Int      @id @default(autoincrement())
+  teamId    Int
+  email     String
+  role      String
+  invitedBy Int
+  invitedAt DateTime @default(now())
+  status    String   @default("pending")
+  team      Team     @relation(fields: [teamId], references: [id])
+  invitedByUser User   @relation("sent_invitations", fields: [invitedBy], references: [id])
+}
+
