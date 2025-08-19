@@ -1,11 +1,6 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "next.config.mjs",
-      "use": "@vercel/next"
-    }
-  ],
+
   "routes": [
     {
       "src": "/instyle",
@@ -28,12 +23,7 @@
     "NEXT_PUBLIC_SUPABASE_URL": "@next_public_supabase_url",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@next_public_supabase_anon_key"
   },
-  "crons": [
-    {
-      "path": "/api/whatsapp/reminder",
-      "schedule": "0 */2 * * *"
-    }
-  ],
+
   "functions": {
     "app/api/*/route.js": {
       "maxDuration": 30
