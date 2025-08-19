@@ -22,7 +22,7 @@ export default function DashboardPage() {
       </section>
       <aside className="space-y-6">
         <StatsCards bookings={bookings} />
-        <LoyaltyWidget points={points} />
+        
       </aside>
     </div>
   );

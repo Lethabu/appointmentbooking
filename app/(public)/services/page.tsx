@@ -9,7 +9,7 @@ export default function ServicesPage() {
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {services?.map(s => <ServiceCard key={s._id} service={s} />)}
-      <BundleSelector />
+      
     </section>
   );
 }
