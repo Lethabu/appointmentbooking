@@ -1,8 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import ClientInsights from './ClientInsights';
-import RealTimeMetrics from '../Analytics/RealTimeMetrics';
-import InstagramFeed from '../Social/InstagramFeed';
+import LiveTenantDashboard from './LiveTenantDashboard';
 
 export default function InstyleDashboard() {
   const [stats, setStats] = useState({
@@ -128,12 +126,8 @@ export default function InstyleDashboard() {
           </div>
         </div>
         
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ClientInsights />
-          <div className="space-y-6">
-            <RealTimeMetrics />
-            <InstagramFeed />
-          </div>
+        <div className="mt-8">
+          <LiveTenantDashboard tenantId="ccb12b4d-ade6-467d-a614-7c9d198ddc70" />
         </div>
       </div>
     </div>
