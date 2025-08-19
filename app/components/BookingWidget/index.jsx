@@ -1,172 +1,78 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { getServices } from '@/app/lib/services/service';
-import { getStaff } from '@/app/lib/services/staff';
-import { getAvailableSlots } from '@/app/lib/services/availability';
-import { createAppointment } from '@/app/lib/services/appointments';
+import { useState } from 'react';
 
-export default function BookingWidget({ businessId }) {
-  const [step, setStep] = useState(1);
-  const [services, setServices] = useState([]);
-  const [staff, setStaff] = useState([]);
+export default function BookingWidget({ salon }) {
   const [selectedService, setSelectedService] = useState(null);
-  const [selectedStaff, setSelectedStaff] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [availableSlots, setAvailableSlots] = useState([]);
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [clientDetails, setClientDetails] = useState({
-    name: '',
-    email: '',
-    phone: '',
-  });
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      const services = await getServices(businessId);
-      setServices(services);
-    };
-    if (businessId) {
-      fetchServices();
-    }
-  }, [businessId]);
+  const services = [
+    { id: 1, name: 'Middle & Side Installation', price: 1500, duration: 60 },
+    { id: 2, name: 'Maphondo & Lines Installation', price: 1500, duration: 60 }
+  ];
 
-  useEffect(() => {
-    if (selectedService) {
-      const fetchStaff = async () => {
-        const staff = await getStaff(businessId);
-        setStaff(staff);
-      };
-      fetchStaff();
-    }
-  }, [selectedService, businessId]);
-
-  useEffect(() => {
-    if (selectedService && selectedStaff && selectedDate) {
-      const fetchSlots = async () => {
-        const slots = await getAvailableSlots(
-          selectedStaff.id,
-          selectedService.id,
-          selectedDate
-        );
-        setAvailableSlots(slots);
-      };
-      fetchSlots();
-    }
-  }, [selectedService, selectedStaff, selectedDate]);
-
-  const handleServiceSelect = (service) => {
-    setSelectedService(service);
-    setStep(2);
-  };
-
-  const handleStaffSelect = (staff) => {
-    setSelectedStaff(staff);
-    setStep(3);
-  };
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  const handleSlotSelect = (slot) => {
-    setSelectedSlot(slot);
-    setStep(4);
-  };
-
-  const handleClientDetailsChange = (e) => {
-    setClientDetails({
-      ...clientDetails,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleBooking = async () => {
-    try {
-      await createAppointment({
-        serviceId: selectedService.id,
-        staffId: selectedStaff.id,
-        startTime: selectedSlot.startTime,
-        clientName: clientDetails.name,
-        clientEmail: clientDetails.email,
-        clientPhone: clientDetails.phone,
-      });
-      setStep(5);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const timeSlots = [
+    '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'
+  ];
 
   return (
-    <div>
-      {step === 1 && (
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
+      <h2 className="text-2xl font-bold mb-6 text-center">Book Appointment</h2>
+      
+      <div className="space-y-4">
         <div>
-          <h2>Select a service</h2>
-          <ul>
-            {services.map((service) => (
-              <li key={service.id} onClick={() => handleServiceSelect(service)}>
-                {service.name}
-              </li>
+          <label className="block text-sm font-medium mb-2">Select Service</label>
+          <select 
+            value={selectedService?.id || ''}
+            onChange={(e) => setSelectedService(services.find(s => s.id === parseInt(e.target.value)))}
+            className="w-full p-3 border rounded-lg"
+          >
+            <option value="">Choose a service</option>
+            {services.map(service => (
+              <option key={service.id} value={service.id}>
+                {service.name} - R{service.price}
+              </option>
             ))}
-          </ul>
+          </select>
         </div>
-      )}
-      {step === 2 && (
+
         <div>
-          <h2>Select a staff member</h2>
-          <ul>
-            {staff.map((s) => (
-              <li key={s.id} onClick={() => handleStaffSelect(s)}>
-                {s.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {step === 3 && (
-        <div>
-          <h2>Select a date and time</h2>
+          <label className="block text-sm font-medium mb-2">Select Date</label>
           <input
             type="date"
-            onChange={(e) => handleDateChange(new Date(e.target.value))}
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="w-full p-3 border rounded-lg"
+            min={new Date().toISOString().split('T')[0]}
           />
-          <ul>
-            {availableSlots.map((slot) => (
-              <li key={slot.startTime} onClick={() => handleSlotSelect(slot)}>
-                {new Date(slot.startTime).toLocaleTimeString()}
-              </li>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Select Time</label>
+          <div className="grid grid-cols-2 gap-2">
+            {timeSlots.map(time => (
+              <button
+                key={time}
+                onClick={() => setSelectedTime(time)}
+                className={`p-2 border rounded ${
+                  selectedTime === time 
+                    ? 'bg-purple-600 text-white' 
+                    : 'bg-gray-50 hover:bg-gray-100'
+                }`}
+              >
+                {time}
+              </button>
             ))}
-          </ul>
+          </div>
         </div>
-      )}
-      {step === 4 && (
-        <div>
-          <h2>Enter your details</h2>
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            onChange={handleClientDetailsChange}
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            onChange={handleClientDetailsChange}
-          />
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone"
-            onChange={handleClientDetailsChange}
-          />
-          <button onClick={handleBooking}>Book now</button>
-        </div>
-      )}
-      {step === 5 && (
-        <div>
-          <h2>Booking confirmed!</h2>
-        </div>
-      )}
+
+        <button
+          disabled={!selectedService || !selectedDate || !selectedTime}
+          className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 disabled:opacity-50"
+        >
+          Book Now
+        </button>
+      </div>
     </div>
   );
 }
