@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/app/context/CartContext'
 import { CartProvider } from '@/app/context/CartContext'
+import { PaymentSelector } from '@/app/components/Booking/PaymentSelector'
 
 export default function CheckoutPage() {
   return (
@@ -104,8 +105,23 @@ function CheckoutPageContent() {
             <span>R{(total / 100).toFixed(2)}</span>
           </div>
           {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
-          <button type="submit" disabled={isProcessing} className="w-full mt-6 bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 disabled:opacity-50">
-            {isProcessing ? 'Processing...' : 'Proceed to Payment'}
+          
+          <div className="mt-6">
+            <PaymentSelector
+              amount={total / 100}
+              email={client.email}
+              appointmentId={`order-${Date.now()}`}
+              tenantId={process.env.NEXT_PUBLIC_INSTYLE_TENANT_ID || "instyle"}
+              onPaymentSuccess={(transaction) => {
+                console.log('Payment success:', transaction)
+                clearCart()
+                router.push('/booking-success')
+              }}
+            />
+          </div>
+          
+          <button type="submit" disabled={isProcessing} className="w-full mt-4 bg-gray-600 text-white py-3 rounded-lg font-bold hover:bg-gray-700 disabled:opacity-50">
+            {isProcessing ? 'Processing...' : 'Pay with PayFast (Original)'}
           </button>
         </div>
       </form>

@@ -5,6 +5,7 @@ import { BookingHeader } from "@/components/booking/booking-header"
 import { ServiceList } from "@/components/booking/service-list"
 import { ProductShowcase } from "@/components/booking/product-showcase"
 import { AppointmentSummary } from "@/components/booking/appointment-summary"
+import { LiveBookingStatus } from "@/app/components/BookingWidget/LiveBookingStatus"
 import type { Service, Product } from "@/types"
 
 // Mock data for Instyle Hair Boutique
@@ -127,12 +128,18 @@ export default function BookingPage() {
 
           {/* Right Column - Appointment Summary */}
           <div className="lg:col-span-1">
-            <div className="sticky top-8">
+            <div className="sticky top-8 space-y-4">
               <AppointmentSummary
                 selectedServices={selectedServices}
                 formData={formData}
                 onFormChange={handleFormChange}
                 onSubmit={handleBookingSubmit}
+              />
+              
+              {/* Real-time booking status */}
+              <LiveBookingStatus 
+                appointmentId="demo-123"
+                tenantId={process.env.NEXT_PUBLIC_INSTYLE_TENANT_ID || "instyle"}
               />
             </div>
           </div>
