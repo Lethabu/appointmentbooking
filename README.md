@@ -22,7 +22,15 @@ This project is a multi-tenant AI-powered SaaS platform for appointment bookings
 
 ## Getting Started:
 
-(Instructions for setting up the project locally will go here)
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Copy `.env.example` to `.env.local` and fill in your environment variables
+4. Run the development server: `npm run dev`
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Environment Variables:
+
+See `.env.example` for required environment variables. Never commit actual API keys to the repository.
 
 ## Roadmap:
 

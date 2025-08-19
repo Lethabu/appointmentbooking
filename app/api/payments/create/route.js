@@ -1,5 +1,5 @@
 // app/api/payments/create/route.js
-import { createPayment } from '../../../lib/services/paymentService';
+import { PaymentService } from '../../../lib/services/paymentService';
 import { NextResponse } from 'next/server';
 
 export async function POST(req) {
@@ -10,7 +10,8 @@ export async function POST(req) {
   }
 
   try {
-    const result = await createPayment(provider, paymentDetails);
+    const paymentService = new PaymentService(provider);
+    const result = await paymentService.createPaymentIntent(paymentDetails.amount, paymentDetails.currency, paymentDetails.metadata);
     return new NextResponse(JSON.stringify(result), { status: 200 });
   } catch (error) {
     return new NextResponse(error.message, { status: 500 });
