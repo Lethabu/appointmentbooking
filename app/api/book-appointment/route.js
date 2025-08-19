@@ -1,87 +1,67 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js';
+import { NextResponse } from 'next/server';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 export async function POST(request) {
-  const cookieStore = cookies()
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY,
-    {
-      cookies: {
-        get(name) {
-          return cookieStore.get(name)?.value
-        },
-        set(name, value, options) {
-          cookieStore.set({ name, value, ...options })
-        },
-        remove(name, options) {
-          cookieStore.set({ name, value: '', ...options })
-        },
-      },
-    }
-  )
-
   try {
-    const body = await request.json()
-    const { service_id, datetime, client_name, client_phone, tenant_id } = body
-    const finalTenantId = tenant_id || 'ccb12b4d-ade6-467d-a614-7c9d198ddc70'
+    const { tenant_id, service_id, customer_name, customer_email, customer_phone, appointment_date, start_time } = await request.json();
 
-    let customerId = null
-    if (client_phone) {
-      const { data: existingCustomer } = await supabase
-        .from('customers')
-        .select('id')
-        .eq('tenant_id', finalTenantId)
-        .eq('phone', client_phone)
-        .single()
-
-      if (existingCustomer) {
-        customerId = existingCustomer.id
-      } else {
-        const { data: newCustomer } = await supabase
-          .from('customers')
-          .insert({
-            tenant_id: finalTenantId,
-            name: client_name,
-            phone: client_phone
-          })
-          .select('id')
-          .single()
-        customerId = newCustomer?.id
-      }
+    if (!service_id || !appointment_date || !start_time || !customer_name || !customer_email) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    // Create or get customer
+    const { data: customer, error: customerError } = await supabase
+      .from('customers')
+      .upsert({
+        tenant_id,
+        name: customer_name,
+        email: customer_email,
+        phone: customer_phone
+      }, { onConflict: 'tenant_id,email' })
+      .select()
+      .single();
+
+    if (customerError) {
+      return NextResponse.json({ error: customerError.message }, { status: 500 });
+    }
+
+    // Get service details for end time calculation
     const { data: service } = await supabase
       .from('services')
-      .select('price')
+      .select('duration')
       .eq('id', service_id)
-      .eq('tenant_id', finalTenantId)
-      .single()
+      .single();
 
-    const { data: appointment } = await supabase
+    const startDateTime = new Date(`${appointment_date}T${start_time}`);
+    const endDateTime = new Date(startDateTime.getTime() + (service.duration * 60000));
+    const end_time = endDateTime.toTimeString().slice(0, 5);
+
+    // Create appointment
+    const { data: appointment, error: appointmentError } = await supabase
       .from('appointments')
       .insert({
-        tenant_id: finalTenantId,
+        tenant_id,
+        customer_id: customer.id,
         service_id,
-        customer_id: customerId,
-        datetime,
-        price: service?.price || 0,
+        appointment_date,
+        start_time,
+        end_time,
         status: 'confirmed'
       })
-      .select('*')
-      .single()
+      .select()
+      .single();
 
-    return NextResponse.json({
-      success: true,
-      appointment_id: appointment?.id,
-      message: 'Appointment booked successfully'
-    })
+    if (appointmentError) {
+      return NextResponse.json({ error: appointmentError.message }, { status: 500 });
+    }
 
+    return NextResponse.json({ success: true, appointment }, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: 'Failed to book appointment' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

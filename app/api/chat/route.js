@@ -1,31 +1,37 @@
 import { NextResponse } from 'next/server';
 
-export async function POST(req) {
+export async function POST(request) {
   try {
-    const body = await req.json();
-    const { message } = body;
+    const { query, tenant_id = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70' } = await request.json();
 
-    // In a real application, you would add authentication and authorization checks here.
-    // For now, we will just forward the message to the orchestrator.
+    // For now, use local AI logic until FastAPI is deployed
+    const queryLower = query.toLowerCase();
+    let response;
 
-    const orchestratorUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/orchestrator`;
-
-    const response = await fetch(orchestratorUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to get response from orchestrator');
+    if (queryLower.includes('book') || queryLower.includes('appointment')) {
+      response = {
+        response: "I can help you book an appointment! What service would you like to book?",
+        action: "booking_intent"
+      };
+    } else if (queryLower.includes('price') || queryLower.includes('cost')) {
+      response = {
+        response: "Our services range from R180 for wash & blowdry to R450 for full color. Would you like to see our full price list?",
+        action: "pricing_info"
+      };
+    } else if (queryLower.includes('hours') || queryLower.includes('open')) {
+      response = {
+        response: "We're open Monday to Saturday, 9 AM to 6 PM. Would you like to book an appointment?",
+        action: "hours_info"
+      };
+    } else {
+      response = {
+        response: `AI handled: ${query}. How can I help you with your hair appointment today?`,
+        action: "general_response"
+      };
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json(response);
   } catch (error) {
-    console.error('Error in chat proxy:', error);
-    return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

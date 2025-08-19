@@ -23,12 +23,18 @@ export default function InstylePage() {
     setLoading(true)
 
     try {
+      const [date, time] = formData.datetime.split('T')
       const response = await fetch('/api/book-appointment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          tenant_id: 'ccb12b4d-ade6-467d-a614-7c9d198ddc70'
+          tenant_id: 'ccb12b4d-ade6-467d-a614-7c9d198ddc70',
+          service_id: formData.service_id,
+          customer_name: formData.client_name,
+          customer_email: formData.client_email,
+          customer_phone: formData.client_phone,
+          appointment_date: date,
+          start_time: time
         })
       })
 
