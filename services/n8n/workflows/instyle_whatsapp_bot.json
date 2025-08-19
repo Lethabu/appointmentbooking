@@ -58,24 +58,24 @@
       "typeVersion": 3,
       "position": [680, 200]
     },
-    {
+        {
       "parameters": {
-        "url": "https://api.twilio.com/2010-04-01/Accounts/{{$env.TWILIO_ACCOUNT_SID}}/Messages.json",
+        "url": "{{$env.AISENSY_API_URL}}/messages",
         "authentication": "genericCredentialType",
-        "genericAuthType": "httpBasicAuth",
+        "genericAuthType": "httpHeaderAuth",
+        "headerAuth": {
+          "name": "Authorization",
+          "value": "Bearer {{$env.AISENSY_API_KEY}}"
+        },
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
             {
-              "name": "From",
-              "value": "{{$env.TWILIO_WHATSAPP_FROM}}"
-            },
-            {
-              "name": "To",
+              "name": "to",
               "value": "={{$json.From}}"
             },
             {
-              "name": "Body",
+              "name": "message",
               "value": "={{$node['AI Response'].json.response}}"
             }
           ]

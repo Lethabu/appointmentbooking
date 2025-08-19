@@ -1,12 +1,15 @@
 import os
-from fastapi import APIRouter, Form, Response
-from twilio.twiml.messaging_response import MessagingResponse
+import requests
+from fastapi import APIRouter, Body, Response
+from pydantic import BaseModel
 
 # In-memory store for conversation state.
 # WARNING: This is for demonstration only. For production, use a persistent
 # database like Redis or a SQL database to store conversation states.
 conversation_state = {}
 
+AISENSY_API_URL = os.environ.get("AISENSY_API_URL")
+AISENSY_API_KEY = os.environ.get("AISENSY_API_KEY")
 
 def get_ai_response(user_id: str, message: str, state: dict) -> str:
     """
@@ -51,34 +54,66 @@ def get_ai_response(user_id: str, message: str, state: dict) -> str:
     return "I'm sorry, I didn't understand that. Can you please rephrase?"
 
 
+def send_aisensy_message(to: str, message: str):
+    """
+    Sends a message using the Aisensy API.
+    """
+    if not AISENSY_API_URL or not AISENSY_API_KEY:
+        print("Aisensy API URL or API Key not configured.")
+        return
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {AISENSY_API_KEY}"
+    }
+    payload = {
+        "to": to,
+        "message": message
+    }
+    try:
+        response = requests.post(f"{AISENSY_API_URL}/messages", headers=headers, json=payload)
+        response.raise_for_status()
+        print(f"Message sent to {to}: {message}")
+    except requests.exceptions.RequestException as e:
+        print(f"Error sending message to {to}: {e}")
+
+
 # Create a router to be included in your main FastAPI application
 router = APIRouter()
 
-@router.post("/whatsapp/webhook", response_class=Response)
-async def handle_whatsapp_message(
-    From: str = Form(...),  # User's WhatsApp number, e.g., "whatsapp:+14155238886"
-    Body: str = Form(...)   # The message text from the user
-):
+class AisensyWebhook(BaseModel):
+    topic: str
+    data: dict
+
+@router.post("/whatsapp/webhook", status_code=204)
+async def handle_whatsapp_message(payload: AisensyWebhook = Body(...)):
     """
-    This endpoint receives incoming messages from Twilio for WhatsApp.
-    Twilio will POST to this URL every time a user sends a message.
+    This endpoint receives incoming messages from Aisensy for WhatsApp.
     """
-    print(f"Received message from {From}: {Body}")
+    print(f"Received webhook from Aisensy: {payload}")
 
-    user_id = From  # Use the user's number as a unique identifier for state
+    if payload.topic in ["message.created", "message.sender.user"]:
+        # Assuming the payload.data contains sender and message info
+        # This part might need adjustment based on the actual payload structure
+        sender_info = payload.data.get("sender", {})
+        user_id = sender_info.get("id") # or "phone" or "number"
+        message_info = payload.data.get("message", {})
+        message_body = message_info.get("text")
 
-    # Retrieve or initialize the user's conversation state
-    if user_id not in conversation_state:
-        conversation_state[user_id] = {"step": "initial"}
+        if not user_id or not message_body:
+            print("Could not extract user_id or message_body from payload.")
+            return Response(status_code=400)
 
-    user_state = conversation_state[user_id]
+        # Retrieve or initialize the user's conversation state
+        if user_id not in conversation_state:
+            conversation_state[user_id] = {"step": "initial"}
 
-    # Get the AI-generated response based on the conversation flow
-    bot_reply = get_ai_response(user_id, Body, user_state)
+        user_state = conversation_state[user_id]
 
-    # Create a TwiML (Twilio Markup Language) response to send back to the user
-    twiml_response = MessagingResponse()
-    twiml_response.message(bot_reply)
+        # Get the AI-generated response based on the conversation flow
+        bot_reply = get_ai_response(user_id, message_body, user_state)
 
-    # Return the TwiML as an XML response, which Twilio understands
-    return Response(content=str(twiml_response), media_type="application/xml")
+        # Send the reply using Aisensy
+        send_aisensy_message(user_id, bot_reply)
+
+    return Response(status_code=204)

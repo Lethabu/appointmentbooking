@@ -936,6 +936,6 @@ NEXT_PUBLIC_APP_NAME=InStyle Hair Boutique
 
 # Email/SMS Configuration
 SENDGRID_API_KEY=your_sendgrid_key
-TWILIO_ACCOUNT_SID=your_twilio_sid
-TWILIO_AUTH_TOKEN=your_twilio_token
+AISENSY_API_URL=your_aisensy_api_url
+AISENSY_API_KEY=your_aisensy_api_key
 */

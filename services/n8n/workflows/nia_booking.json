@@ -59,13 +59,30 @@
     },
     {
       "parameters": {
-        "from": "Instyle Bot",
-        "to": "={{$json.From}}",
-        "message": "={{$json.reply}}"
+        "url": "{{$env.AISENSY_API_URL}}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "headerAuth": {
+          "name": "Authorization",
+          "value": "Bearer {{$env.AISENSY_API_KEY}}"
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{$json.From}}"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.reply}}"
+            }
+          ]
+        }
       },
-      "name": "Twilio WhatsApp Reply",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
+      "name": "Aisensy WhatsApp Reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
       "position": [1050, 300]
     }
   ],
@@ -74,6 +91,6 @@
     "OpenAI Nia": { "main": [["GetTenantId"]] },
     "GetTenantId": { "main": [["Supabase Get Services"]] },
     "Supabase Get Services": { "main": [["Google Calendar FreeBusy"]] },
-    "Google Calendar FreeBusy": { "main": [["Twilio WhatsApp Reply"]] }
+    "Google Calendar FreeBusy": { "main": [["Aisensy WhatsApp Reply"]] }
   }
 }
