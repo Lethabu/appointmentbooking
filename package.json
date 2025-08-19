@@ -16,7 +16,9 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "deploy": "vercel --prod",
-    "deploy:ai": "docker build -t booking-ai ./ai-agent"
+    "deploy:ai": "docker build -t booking-ai ./ai-agent",
+    "sync-instyle": "node scripts/sync-instyle-data.cjs",
+    "migrate": "supabase db push"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
