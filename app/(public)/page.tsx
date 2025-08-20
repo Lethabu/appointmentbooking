@@ -10,7 +10,7 @@ const VideoHero = dynamic(() => import('@/components/marketing/VideoHero'), { ss
 export default function HomePage() {
   return (
     <main className="isolate">
-      <VideoHero /> {/* autoplay muted, 3 s load, LCP < 1.8 s */}
+      {/* <VideoHero /> {/* autoplay muted, 3 s load, LCP < 1.8 s */}
       <ServiceHighlights /> {/* skeleton while fetching */}
       <ReviewsCarousel />
       <CTASection />

@@ -51,7 +51,7 @@ function CheckoutPageContent() {
         body: JSON.stringify({
           orderId: orderData.order.id,
           amount: total,
-          returnUrl: `${window.location.origin}/order/complete?order_id=${orderData.order.id}`
+          returnUrl: typeof window !== 'undefined' ? `${window.location.origin}/order/complete?order_id=${orderData.order.id}` : ''
         })
       })
 
