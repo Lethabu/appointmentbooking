@@ -1,23 +1,24 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-export function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host') || '';
-  
-  // Handle custom domains for tenants
-  if (hostname.includes('instylehairboutique.co.za')) {
-    return NextResponse.rewrite(new URL('/instyle', request.url));
-  }
-  
-  // Handle subdomain routing
-  if (hostname.includes('.appointmentbookings.co.za')) {
-    const subdomain = hostname.split('.')[0];
-    return NextResponse.rewrite(new URL(`/${subdomain}`, request.url));
-  }
+const isProtectedRoute = createRouteMatcher([
+  '/dashboard(.*)',
+  '/admin(.*)',
+  '/salon/(.*)/dashboard',
+]);
 
-  return NextResponse.next();
-}
+const isTenantRoute = createRouteMatcher(['/salon/(.*)']);
+
+export default clerkMiddleware((auth, req) => {
+  // require auth for protected routes
+  if (isProtectedRoute(req)) auth().protect();
+
+  // inject tenant slug into header for downstream use
+  const tenantMatch = req.nextUrl.pathname.match(/\/salon\/([^\/]+)/);
+  if (tenantMatch) {
+    req.headers.set('x-tenant-slug', tenantMatch[1]);
+  }
+});
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };
