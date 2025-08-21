@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Step1_Services } from '@/components/booking/Step1_Services';
 import { Step2_DateTime } from '@/components/booking/Step2_DateTime';
 import { Step3_Upsells } from '@/components/booking/Step3_Upsells';
@@ -10,9 +10,9 @@ import { api } from '@/convex/_generated/api';
 import { useAuth } from '@clerk/nextjs';
 import { useSearchParams } from 'next/navigation';
 
-const steps = ['Services', 'Date & Time', 'Add-ons', 'Payment'];
+const steps = ['Services', 'Date & Time', 'Add-ons', 'Payment', 'Success'];
 
-export default function BookPage() {
+function BookingFlow() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<any>({});
   const [referralCode, setReferralCode] = useState<string | null>(null);
@@ -50,10 +50,15 @@ export default function BookPage() {
     }
   };
 
+  // A simple confetti component, replace with a library if you want something fancier
+  const Confetti = () => {
+    return <div className="text-2xl">🎉 Booking Successful! 🎉</div>;
+  };
+
   return (
     <div className="max-w-3xl mx-auto">
       <Progress value={(step + 1) * 25} />
-      <h1 className="text-3xl font-bold">{steps[step]}</h1>
+      <h1 className="text-3xl font-bold my-4">{steps[step]}</h1>
       {step === 0 && <Step1_Services onNext={d => {setData({...data, ...d}); setStep(1)}} />}
       {step === 1 && <Step2_DateTime onNext={d => {setData({...data, ...d}); setStep(2)}} />}
       {step === 2 && <Step3_Upsells onNext={d => {setData({...data, ...d}); setStep(3)}} />}
@@ -61,4 +66,12 @@ export default function BookPage() {
       {step === 4 && <Confetti />}
     </div>
   );
+}
+
+export default function BookPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <BookingFlow />
+        </Suspense>
+    )
 }
