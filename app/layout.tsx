@@ -4,7 +4,6 @@ import './globals.css'
 import { ConvexClientProvider } from './providers'
 import { ClerkProvider } from '@clerk/nextjs'
 import { CSPostHogProvider } from '@/components/PostHogProvider'
-export { reportWebVitals } from './vitals';
 
 const inter = Inter({ subsets: ['latin'] });
 
