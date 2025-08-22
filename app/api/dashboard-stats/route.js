@@ -1,28 +1,42 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import prisma from '@/lib/prisma';
 
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const tenant_id = searchParams.get('tenant_id') || 'ccb12b4d-ade6-467d-a614-7c9d198ddc70';
+    const tenant_id = searchParams.get('tenant_id');
 
-    const { data, error } = await supabase
-      .rpc('get_dashboard_stats', { tenant_uuid: tenant_id });
+    const todaysBookings = await prisma.appointment.count({
+      where: {
+        createdAt: {
+          gte: new Date(new Date().setHours(0, 0, 0, 0)),
+          lt: new Date(new Date().setHours(23, 59, 59, 999)),
+        },
+      },
+    });
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const weeklyAppointments = await prisma.appointment.findMany({
+      where: {
+        createdAt: {
+          gte: sevenDaysAgo,
+        },
+      },
+      include: {
+        service: true,
+      },
+    });
 
-    return NextResponse.json(data[0] || {
-      todays_bookings: 0,
-      weekly_revenue: 0,
-      total_clients: 0,
-      avg_rating: 4.8
+    const weeklyRevenue = weeklyAppointments.reduce((total, appointment) => {
+      return total + (appointment.service?.price_cents || 0);
+    }, 0);
+
+    const totalClients = await prisma.client.count();
+
+    return NextResponse.json({
+      todays_bookings: todaysBookings,
+      weekly_revenue: weeklyRevenue,
+      total_clients: totalClients,
     });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
