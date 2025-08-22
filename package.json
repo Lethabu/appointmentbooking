@@ -23,7 +23,7 @@
     "migrate": "supabase db push"
   },
   "dependencies": {
-    "@clerk/clerk-sdk-node": "^4.13.23",
+    "@clerk/clerk-sdk-node": "^5.1.6",
     "@clerk/nextjs": "^6.31.2",
     "@google/generative-ai": "^0.24.1",
     "@heroicons/react": "^2.2.0",
