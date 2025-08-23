@@ -8,7 +8,13 @@ import { useTenant } from '@/hooks/use-tenant';
 const DashboardPage: React.FC = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState<number | null>(null);
   const [recentActivity, setRecentActivity] = useState<string[]>([]);
-  const { tenant } = useTenant(process.env.NEXT_PUBLIC_VERCEL_URL || 'localhost'); // Assuming subdomain from VERCEL_URL or localhost
+  const [host, setHost] = useState('');
+
+  useEffect(() => {
+    setHost(window.location.host);
+  }, []);
+
+  const { tenant } = useTenant(host || 'localhost'); // Assuming subdomain from VERCEL_URL or localhost
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,8 +43,10 @@ const DashboardPage: React.FC = () => {
       }
     };
 
-    fetchData();
-  }, [tenant]);
+    if (host) {
+      fetchData();
+    }
+  }, [tenant, host]);
 
   return (
     <div className="space-y-6">

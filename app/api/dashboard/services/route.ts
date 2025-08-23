@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 // 2. API ROUTES FIXES
 
 // app/api/dashboard/services/route.ts

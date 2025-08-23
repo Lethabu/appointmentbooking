@@ -19,6 +19,7 @@ const nextConfig = {
       };
       config.externals.push('pg');
     }
+    config.cache = false;
     return config;
   },
 };

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/app/context/CartContext'
 import { CartProvider } from '@/app/context/CartContext'
@@ -20,6 +20,11 @@ function CheckoutPageContent() {
   const [client, setClient] = useState({ name: '', email: '', phone: '', address: '' })
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState(null)
+  const [returnUrl, setReturnUrl] = useState('');
+
+  useEffect(() => {
+    setReturnUrl(`${window.location.origin}/order/complete`);
+  }, []);
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
@@ -51,7 +56,7 @@ function CheckoutPageContent() {
         body: JSON.stringify({
           orderId: orderData.order.id,
           amount: total,
-          returnUrl: typeof window !== 'undefined' ? `${window.location.origin}/order/complete?order_id=${orderData.order.id}` : ''
+          returnUrl: `${returnUrl}?order_id=${orderData.order.id}`
         })
       })
 

@@ -1,8 +1,9 @@
+import { ROIWidget } from '@/components/marketing/ROIWidget';
+import { ExitIntentModal } from '@/components/marketing/ExitIntentModal';
 import Link from 'next/link'
 import { WebSite, FAQPage, HowTo, VideoObject, SpeakableSpecification } from 'schema-dts';
 import { jsonLd } from '@/lib/jsonLd';
-import { ROIWidget } from '@/components/marketing/ROIWidget';
-import { ExitIntentModal } from '@/components/marketing/ExitIntentModal';
+
 
 const faqQuestions = [
   {
@@ -76,6 +77,11 @@ export function HomePage() {
               </div>
             </div>
             
+            {/* ROI Widget */}
+            <div className="mt-16">
+              <ROIWidget />
+            </div>
+            
             <div className="mt-16 grid md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -107,14 +113,12 @@ export function HomePage() {
                 <p className="text-gray-600">24/7 customer support automation</p>
               </div>
             </div>
-            {/* ROI Widget */}
-            <div className="mt-16">
-              <ROIWidget />
-            </div>
+            
           </div>
         </div>
       </div>
-      <ExitIntentModal />
+      
+    <ExitIntentModal />
     </>
   )
 }
