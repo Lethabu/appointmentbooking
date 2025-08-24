@@ -1,11 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   images: {
     unoptimized: true,
   },
@@ -19,9 +13,8 @@ const nextConfig = {
       };
       config.externals.push('pg');
     }
-    config.cache = false;
     return config;
   },
 };
 
-export default nextConfig
+export default nextConfig;
