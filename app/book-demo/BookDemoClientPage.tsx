@@ -1,7 +1,6 @@
 'use client';
 
-import { usePreloadedQuery } from "convex/nextjs";
-import { Preloaded } from "convex/nextjs";
+import { usePreloadedQuery, Preloaded } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 export default function BookDemoClientPage({ preloadedEvents }: { preloadedEvents: Preloaded<typeof api.events.list> }) {

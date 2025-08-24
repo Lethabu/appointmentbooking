@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { jsonLd } from "@/lib/jsonLd";
