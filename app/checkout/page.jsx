@@ -20,13 +20,7 @@ function CheckoutPageContent() {
   const [client, setClient] = useState({ name: '', email: '', phone: '', address: '' })
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState(null)
-  const [returnUrl, setReturnUrl] = useState('');
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setReturnUrl(`${window.location.origin}/order/complete`);
-    }
-  }, []);
+  const [returnUrl, setReturnUrl] = useState('/order/complete');
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
