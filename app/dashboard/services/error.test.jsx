@@ -20,7 +20,7 @@ jest.mock('@tanstack/react-query', () => ({
 describe('ServicesPageContent Error Rendering', () => {
   test('displays the error message when an error occurs', () => {
     // Mock useQuery to return an error state
-    require('@tanstack/react-query').useQuery.mockReturnValue({
+    useQuery.mockReturnValue({
       data: [],
       isLoading: false,
       error: new Error('Test Network Error'),

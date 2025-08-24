@@ -9,8 +9,8 @@ window.confirm = jest.fn()
 window.scrollTo = jest.fn()
 
 // Import the mocked modules directly for easier access to their mock functions
-const { useQuery } = require('convex/react');
-const { api } = require('../../../convex/_generated/api');
+import { useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 
 const mockServices = [
   { _id: '1', name: 'Ladies Cut', duration: 60, price: 35000 }, // R350.00

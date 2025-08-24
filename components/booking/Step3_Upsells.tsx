@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 interface Step3_UpsellsProps {
-  onNext: (data: any) => void;
+  onNext: (data: { scalpTreatmentAdded: boolean }) => void;
 }
 
 export function Step3_Upsells({ onNext }: Step3_UpsellsProps) {

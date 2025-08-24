@@ -1,6 +1,6 @@
 import { loadStripe } from '@stripe/stripe-js';
 
-export async function createCheckoutSession(data: any) {
+export async function createCheckoutSession(data: unknown) {
   // This is a dummy function.
   // In a real application, this would create a checkout session with Stripe.
   console.log('Creating checkout session with data:', data);

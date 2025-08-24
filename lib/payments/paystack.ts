@@ -1,11 +1,9 @@
-import PaystackPop from '@paystack/inline-js';
-
 interface PaystackProps {
   email: string;
   amount: number;
   appointmentId: string;
   tenantId: string;
-  onSuccess: (transaction: any) => void;
+  onSuccess: (transaction: PaystackResponse) => void;
 }
 
 export function usePaystack() {
@@ -25,4 +23,15 @@ export function usePaystack() {
   };
   
   return { payWithPaystack };
+}
+
+interface PaystackResponse {
+  status: string;
+  message: string;
+  reference: string;
+  transaction: string;
+  trxref: string;
+  data?: {
+    access_code: string;
+  };
 }

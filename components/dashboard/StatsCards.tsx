@@ -1,14 +1,11 @@
-'use client';
-import React from 'react';
-
 interface StatsCardsProps {
-  bookings: any[]; // Replace 'any' with a proper Booking type later
+  bookings: Booking[]; // Replace 'any' with a proper Booking type later
 }
 
 export const StatsCards: React.FC<StatsCardsProps> = ({ bookings }) => {
   // Dummy data for demonstration
   const totalBookings = bookings ? bookings.length : 0;
-  const revenue = bookings ? bookings.reduce((sum: number, booking: any) => sum + (booking.amount || 0), 0) : 0;
+  const revenue = bookings ? bookings.reduce((sum: number, booking: Booking) => sum + (booking.amount || 0), 0) : 0;
   const avgBookingValue = totalBookings > 0 ? revenue / totalBookings : 0;
 
   return (
@@ -28,3 +25,8 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ bookings }) => {
     </div>
   );
 };
+
+interface Booking {
+  amount?: number; // Assuming amount is a number and optional
+  // Add other properties as they are used in the component
+}

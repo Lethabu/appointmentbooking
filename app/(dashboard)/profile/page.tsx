@@ -37,7 +37,7 @@ export default function ProfilePage() {
       const discount = await redeemLoyaltyPoints({ userId, pointsToRedeem });
       alert(`Successfully redeemed ${pointsToRedeem} points for a discount of R${discount}.`);
       setPointsToRedeem(0);
-    } catch (error: any) {
+    } catch (error) {
       alert(`Error redeeming points: ${error.message}`);
     }
   };

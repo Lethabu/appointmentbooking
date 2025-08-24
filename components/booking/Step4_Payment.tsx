@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 
 interface Step4PaymentProps {
-  data: any; // This would typically be more specific, e.g., { totalAmount: number, ... }
-  onSuccess: (paymentData: any) => void;
+  data: { totalAmount: number };
+  onSuccess: (paymentData: { status: string, method: string, amount: number }) => void;
 }
 
 export const Step4_Payment: React.FC<Step4PaymentProps> = ({ data, onSuccess }) => {

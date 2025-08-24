@@ -14,7 +14,7 @@ const steps = ['Services', 'Date & Time', 'Add-ons', 'Payment', 'Success'];
 
 function BookingFlow() {
   const [step, setStep] = useState(0);
-  const [data, setData] = useState<any>({});
+  const [data, setData] = useState<BookingData>({});
   const [referralCode, setReferralCode] = useState<string | null>(null);
 
   const createBooking = useMutation(api.bookings.createBooking);
@@ -28,7 +28,7 @@ function BookingFlow() {
     }
   }, [searchParams]);
 
-  const handleBookingSuccess = async (paymentData: any) => {
+  const handleBookingSuccess = async (paymentData: unknown) => {
     if (!userId) {
       alert("User not authenticated.");
       return;
@@ -74,4 +74,10 @@ export default function BookPage() {
             <BookingFlow />
         </Suspense>
     )
+}
+
+interface BookingData {
+  serviceIds?: string[];
+  startTime?: string;
+  totalAmount?: number;
 }

@@ -1,8 +1,5 @@
-'use client';
-import React from 'react';
-
 interface CalendarViewProps {
-  bookings: any[]; // Replace 'any' with a proper Booking type later
+  bookings: Booking[]; // Replace 'any' with a proper Booking type later
 }
 
 export const CalendarView: React.FC<CalendarViewProps> = ({ bookings }) => {
@@ -15,7 +12,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ bookings }) => {
         <p>Displaying {bookings ? bookings.length : 0} bookings.</p>
         {bookings && bookings.length > 0 && (
           <ul className="mt-4 text-left">
-            {bookings.map((booking: any, index: number) => (
+            {bookings.map((booking: Booking, index: number) => (
               <li key={index} className="text-sm">Booking ID: {booking.id || 'N/A'}</li>
             ))}
           </ul>
@@ -24,3 +21,8 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ bookings }) => {
     </div>
   );
 };
+
+interface Booking {
+  id: string; // Assuming id is a string
+  // Add other properties as they are used in the component
+}
