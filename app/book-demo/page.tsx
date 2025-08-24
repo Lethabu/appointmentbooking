@@ -1,13 +1,13 @@
-import { convex } from "@/lib/convexClient";
+import { preloadQuery, fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { jsonLd } from "@/lib/jsonLd";
-import { Event, EventReservation } from 'schema-dts';
+import { Event } from 'schema-dts';
+import BookDemoClientPage from "./BookDemoClientPage";
 
 export async function generateMetadata() {
   try {
-    const events = await convex.query(api.events.list);
+    const events = await fetchQuery(api.events.list);
 
-    // Assuming the first event is the one for the demo
     if (events.length === 0) {
       return {
         title: "Book a Demo - AppointmentBooking.co.za",
@@ -43,28 +43,7 @@ export async function generateMetadata() {
   }
 }
 
-async function BookDemoPage() {
-  try {
-    const events = await convex.query(api.events.list);
-
-    if (events.length === 0) {
-      return <div>No demo event found.</div>
-    }
-    const demoEvent = events[0];
-
-    return (
-      <div>
-        <h1>{demoEvent.name}</h1>
-        <p>{demoEvent.description}</p>
-        <p>Date: {new Date(demoEvent.startDate).toLocaleDateString()}</p>
-        <p>Time: {new Date(demoEvent.startDate).toLocaleTimeString()} - {new Date(demoEvent.endDate).toLocaleTimeString()}</p>
-        <p>Location: {demoEvent.location}</p>
-      </div>
-    );
-  } catch (error) {
-    console.error("Error fetching data for book-demo page:", error);
-    return <div>Error loading demo event.</div>
-  }
+export default async function BookDemoPage() {
+  const preloadedEvents = await preloadQuery(api.events.list);
+  return <BookDemoClientPage preloadedEvents={preloadedEvents} />;
 }
-
-export default BookDemoPage;

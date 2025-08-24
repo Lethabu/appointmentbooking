@@ -23,7 +23,9 @@ function CheckoutPageContent() {
   const [returnUrl, setReturnUrl] = useState('');
 
   useEffect(() => {
-    setReturnUrl(`${window.location.origin}/order/complete`);
+    if (typeof window !== 'undefined') {
+      setReturnUrl(`${window.location.origin}/order/complete`);
+    }
   }, []);
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)

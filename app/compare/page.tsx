@@ -1,11 +1,12 @@
-import { convex } from "@/lib/convexClient";
+import { preloadQuery, fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { jsonLd } from "@/lib/jsonLd";
-import { ItemList, Thing } from 'schema-dts';
+import { ItemList } from 'schema-dts';
+import CompareClientPage from "./CompareClientPage";
 
 export async function generateMetadata() {
   try {
-    const items = await convex.query(api.comparisonItems.list);
+    const items = await fetchQuery(api.comparisonItems.list);
 
     const itemListElement = items.map((item, index) => ({
       '@type': 'ListItem',
@@ -37,43 +38,7 @@ export async function generateMetadata() {
   }
 }
 
-async function ComparePage() {
-  try {
-    const items = await convex.query(api.comparisonItems.list);
-
-    if (items.length === 0) {
-      return <div>No comparison items found.</div>
-    }
-
-    return (
-      <div>
-        <h1>Compare Features</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>Feature</th>
-              {items.map(item => <th key={item.name}>{item.name}</th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {items[0]?.features.map((feature, index) => (
-              <tr key={feature.name}>
-                <td>{feature.name}</td>
-                {items.map(item => (
-                  <td key={item.name}>
-                    {item.features[index].supported ? '✅' : '❌'}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  } catch (error) {
-    console.error("Error fetching data for compare page:", error);
-    return <div>Error loading comparison items.</div>
-  }
+export default async function ComparePage() {
+  const preloadedItems = await preloadQuery(api.comparisonItems.list);
+  return <CompareClientPage preloadedItems={preloadedItems} />;
 }
-
-export default ComparePage;

@@ -1,11 +1,11 @@
-import { convex } from "@/lib/convexClient";
+import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { jsonLd } from "@/lib/jsonLd";
-import { Product, Offer, AggregateOffer } from 'schema-dts';
+import { Offer, AggregateOffer } from 'schema-dts';
 
 export async function generateMetadata() {
   try {
-    const tiers = await convex.query(api.pricingTiers.list);
+    const tiers = await fetchQuery(api.pricingTiers.list);
 
     const offers = tiers.map(tier => ({
       '@type': 'Offer',
