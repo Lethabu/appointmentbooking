@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, Suspense } from 'react';
 import { Step1_Services } from '@/components/booking/Step1_Services';
-import { Step2_DateTime }m '@/components/booking/Step2_DateTime';
+import { Step2_DateTime } from '@/components/booking/Step2_DateTime';
 import { Step3_Upsells } from '@/components/booking/Step3_Upsells';
 import { Step4_Payment } from '@/components/booking/Step4_Payment';
 import { Progress } from '@/components/ui/progress';
