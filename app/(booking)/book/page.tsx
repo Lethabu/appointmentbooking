@@ -21,10 +21,12 @@ function BookingFlow() {
   const { userId } = useAuth();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    const ref = searchParams.get('ref');
-    if (ref) {
-      setReferralCode(ref);
+    useEffect(() => {
+    if (searchParams) {
+      const ref = searchParams.get('ref');
+      if (ref) {
+        setReferralCode(ref);
+      }
     }
   }, [searchParams]);
 
