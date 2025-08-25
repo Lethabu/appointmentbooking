@@ -9,12 +9,12 @@ export type ActionState = {
   [key: string]: unknown; // This allows for additional properties
 };
 
-type ValidatedActionFunction<S extends z.ZodType<any, z.ZodTypeDef, any>, T> = (
+type ValidatedActionFunction<S extends z.ZodType<any, any, any>, T> = (
   data: z.infer<S>,
   formData: FormData
 ) => Promise<T>;
 
-export function validatedAction<S extends z.ZodType<any, z.ZodTypeDef, any>, T>(
+export function validatedAction<S extends z.ZodType<any, any, any>, T>(
   schema: S,
   action: ValidatedActionFunction<S, T>
 ) {
@@ -28,13 +28,13 @@ export function validatedAction<S extends z.ZodType<any, z.ZodTypeDef, any>, T>(
   };
 }
 
-type ValidatedActionWithUserFunction<S extends z.ZodType<any, z.ZodTypeDef, any>, T> = (
+type ValidatedActionWithUserFunction<S extends z.ZodType<any, any, any>, T> = (
   data: z.infer<S>,
   formData: FormData,
   user: User
 ) => Promise<T>;
 
-export function validatedActionWithUser<S extends z.ZodType<any, z.ZodTypeDef, any>, T>(
+export function validatedActionWithUser<S extends z.ZodType<any, any, any>, T>(
   schema: S,
   action: ValidatedActionWithUserFunction<S, T>
 ) {
