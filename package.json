@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "22.x"
+    "node": "18.x"
   },
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next build",
@@ -20,7 +20,8 @@
     
     "deploy:ai": "docker build -t booking-ai ./ai-agent",
     "sync-instyle": "node scripts/sync-instyle-data.cjs",
-    "migrate": "supabase db push"
+    "migrate": "supabase db push",
+    "postinstall": "npm install typescript@5.3.3 --force"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.23",
@@ -118,7 +119,8 @@
     "postcss": "^8.5",
     "supabase": "^2.33.7",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5",
+    "typescript": "5.3.3",
     "webpack": "^5.101.2"
-  }
+  },
+  "packageManager": "npm@10.5.0"
 }
