@@ -28,7 +28,7 @@ export default function BookingForm({ tenantId = 'ccb12b4d-ade6-467d-a614-7c9d19
     setLoading(true);
     
     try {
-      const response = await fetch('/api/book-appointment', {
+      const response = await fetch(process.env.NEXT_PUBLIC_BOOKING_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, tenant_id: tenantId })

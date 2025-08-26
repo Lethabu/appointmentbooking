@@ -12,8 +12,6 @@
 - [x] Live booking engine deployed
 - [x] Instyle tenant configured (ID: ccb12b4d-ade6-467d-a614-7c9d198ddc70)
 - [x] Dashboard with real-time stats
-- [x] AI chat assistant functional
-- [x] Payment integration ready (Paystack)
 
 ### Data & Analytics
 - [x] Customer data migrated (450+ clients)
@@ -22,6 +20,10 @@
 - [x] POPIA compliance framework
 
 ## 🔄 **IMMEDIATE ACTIONS REQUIRED**
+
+### AI & Payments
+- [ ] AI chat assistant functional
+- [ ] Payment integration ready (Netcash)
 
 ### Domain Configuration
 - [ ] Point instylehairboutique.co.za to Vercel deployment
