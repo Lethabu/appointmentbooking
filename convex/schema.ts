@@ -52,3 +52,7 @@ export default defineSchema({
     redeemedBy: v.optional(v.array(v.string())),
   }).index("by_code", ["code"]),
 });
+import { defineSchema, defineTable } from "convex/server";
+export default defineSchema({
+  _placeholder: defineTable({}).index("_placeholder")
+});
