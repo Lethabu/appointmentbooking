@@ -37,11 +37,16 @@ function BookingFlow() {
       return;
     }
 
+    if (!data.startTime || !data.totalAmount) {
+      alert("Booking details are incomplete.");
+      return;
+    }
+
     try {
       await createBooking({
         tenantId: "instyle" as Id<"tenants">, // Placeholder, should be dynamic
         userId: userId,
-        serviceIds: data.serviceIds,
+        serviceIds: (data.serviceIds || []) as Id<"services">[],
         start: data.startTime,
         amount: data.totalAmount,
         ...(referralCode && { referralCode }), // Pass referralCode if available
@@ -65,7 +70,7 @@ function BookingFlow() {
       {step === 0 && <Step1_Services onNext={d => {setData({...data, ...d}); setStep(1)}} />}
       {step === 1 && <Step2_DateTime onNext={d => {setData({...data, ...d}); setStep(2)}} />}
       {step === 2 && <Step3_Upsells onNext={d => {setData({...data, ...d}); setStep(3)}} />}
-      {step === 3 && <Step4_Payment data={data} onSuccess={handleBookingSuccess} />}
+      {step === 3 && <Step4_Payment data={{...data, totalAmount: data.totalAmount || 0}} onSuccess={handleBookingSuccess} />}
       {step === 4 && <Confetti />}
     </div>
   );
@@ -81,6 +86,6 @@ export default function BookPage() {
 
 interface BookingData {
   serviceIds?: string[];
-  startTime?: string;
+  startTime?: number;
   totalAmount?: number;
 }

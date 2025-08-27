@@ -4,13 +4,14 @@ import { jsonLd } from "@/lib/jsonLd";
 import { Article, BreadcrumbList, Person, ImageObject, SpeakableSpecification } from 'schema-dts';
 
 type PageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
 export async function generateMetadata({ params }: PageProps) {
-  const post = await convex.query(api.posts.getBySlug, { slug: params.slug });
+  const { slug } = await params;
+  const post = await convex.query(api.posts.getBySlug, { slug });
 
   if (!post) {
     return {
@@ -53,7 +54,8 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 async function BlogPostPage({ params }: PageProps) {
-  const post = await convex.query(api.posts.getBySlug, { slug: params.slug });
+  const { slug } = await params;
+  const post = await convex.query(api.posts.getBySlug, { slug });
 
   if (!post) {
     return <div>Post not found</div>

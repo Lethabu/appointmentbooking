@@ -3,8 +3,15 @@ import { api } from "@/convex/_generated/api";
 import { jsonLd } from "@/lib/jsonLd";
 import { LocalBusiness } from 'schema-dts';
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const salon = await convex.query(api.tenants.getBySlug, { slug: params.slug });
+type PageProps = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
+export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params;
+  const salon = await convex.query(api.tenants.getBySlug, { slug });
 
   if (!salon) {
     return {
@@ -36,10 +43,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function SalonPage({ params }: { params: { slug: string } }) {
+export default async function SalonPage({ params }: PageProps) {
+  const { slug } = await params;
   return (
     <div>
-      <h1>Salon: {params.slug}</h1>
+      <h1>Salon: {slug}</h1>
     </div>
   );
 }
