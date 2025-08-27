@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": "20.x" },
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "codegen": "convex codegen",
     "prebuild": "npm run codegen",
@@ -63,6 +65,7 @@
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.52.1",
     "@tanstack/react-query": "^5.83.0",
+    "@types/react-datepicker": "^6.2.0",
     "autoprefixer": "^10.4.20",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
@@ -84,6 +87,7 @@
     "paystack-node": "^0.1.0",
     "posthog-js": "^1.260.1",
     "react": "^19",
+    "react-datepicker": "^8.7.0",
     "react-day-picker": "^9.6.7",
     "react-dom": "^19",
     "react-hook-form": "^7.54.1",
@@ -102,17 +106,15 @@
     "zustand": "^5.0.6"
   },
   "devDependencies": {
-    "typescript": "^5.9.2",
-    "ts-node": "^10.9.2",
-    "@types/node": "^22",
-    "convex": "^1.25.4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.5.2",
+    "@types/node": "^22",
     "@types/pg": "^8.15.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "convex": "^1.25.4",
     "drizzle-kit": "^0.31.4",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.4",
@@ -121,6 +123,8 @@
     "postcss": "^8.5",
     "supabase": "^2.33.7",
     "tailwindcss": "^3.4.17",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
     "webpack": "^5.101.2"
   },
   "packageManager": "npm@10.5.0"

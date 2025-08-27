@@ -32,6 +32,14 @@ export interface Service {
   updated_at: string
 }
 
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image_url: string;
+}
+
 export interface Appointment {
   id: string
   tenant_id: string

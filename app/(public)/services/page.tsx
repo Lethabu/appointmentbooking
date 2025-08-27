@@ -1,8 +1,6 @@
 'use client';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { ServiceCard } from '@/components/service/ServiceCard';
-import { BundleSelector } from '@/components/service/BundleSelector';
 
 export default function ServicesPage() {
   const services = useQuery(api.services.list, { tenantName: 'instyle' });

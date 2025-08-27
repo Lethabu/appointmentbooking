@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: PageProps) {
             '/html/head/meta[@name="description"]/@content'
           ]
         }
-      } as Article),
+      } as unknown as Article),
     }
   };
 }

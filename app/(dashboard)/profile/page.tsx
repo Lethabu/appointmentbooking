@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useMutation, useQuery } from 'convex/react';
+import { useAction, useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@clerk/nextjs';
 
@@ -10,7 +10,7 @@ export default function ProfilePage() {
   const [chatHistory, setChatHistory] = useState<string[]>([]);
   const [pointsToRedeem, setPointsToRedeem] = useState(0);
 
-  const sendChatMessage = useMutation(api.ai.chat);
+  const sendChatMessage = useAction(api.ai.chat);
   const redeemLoyaltyPoints = useMutation(api.loyalty.redeemLoyaltyPoints);
 
   const { userId } = useAuth();
@@ -38,7 +38,11 @@ export default function ProfilePage() {
       alert(`Successfully redeemed ${pointsToRedeem} points for a discount of R${discount}.`);
       setPointsToRedeem(0);
     } catch (error) {
-      alert(`Error redeeming points: ${error.message}`);
+      if (error instanceof Error) {
+        alert(`Error redeeming points: ${error.message}`);
+      } else {
+        alert("An unknown error occurred while redeeming points.");
+      }
     }
   };
 

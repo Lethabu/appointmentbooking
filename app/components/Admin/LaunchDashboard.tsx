@@ -1,21 +1,23 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { CheckCircle, Clock, TrendingUp } from 'lucide-react'
+import { LaunchMetrics, LaunchStage as LaunchStageType } from '@/types'
 
 export default function LaunchDashboard() {
-  const [metrics, setMetrics] = useState({
+  const [metrics, setMetrics] = useState<LaunchMetrics>({
     traffic_percent: 0,
     request_rate: 0,
     total_requests: 0,
     error_rate: 0,
+    error_count: 0,
     p95_latency: 0,
     regions: []
   })
   
-  const [stages] = useState([
-    { id: 1, name: 'Database Migration', status: 'completed', progress: 100 },
-    { id: 2, name: 'API Deployment', status: 'in_progress', progress: 75 },
-    { id: 3, name: 'Frontend Build', status: 'pending', progress: 0 }
+  const [stages] = useState<LaunchStageType[]>([
+    { id: 1, name: 'Database Migration', status: 'completed', progress: 100, sequence: 1 },
+    { id: 2, name: 'API Deployment', status: 'in_progress', progress: 75, sequence: 2 },
+    { id: 3, name: 'Frontend Build', status: 'pending', progress: 0, sequence: 3 }
   ])
 
   useEffect(() => {
@@ -37,18 +39,20 @@ export default function LaunchDashboard() {
     return () => clearInterval(interval)
   }, [])
 
-  const getStageStatus = (status) => {
+  const getStageStatus = (status: 'completed' | 'in_progress' | 'pending' | 'failed') => {
     switch (status) {
       case 'completed':
         return { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle }
       case 'in_progress':
         return { bg: 'bg-blue-100', text: 'text-blue-700', icon: Clock }
+      case 'failed':
+        return { bg: 'bg-red-100', text: 'text-red-700', icon: Clock }
       default:
         return { bg: 'bg-gray-100', text: 'text-gray-700', icon: Clock }
     }
   }
 
-  const LaunchStage = ({ stage }) => {
+  const LaunchStage = ({ stage }:{ stage: LaunchStageType }) => {
     const statusConfig = getStageStatus(stage.status)
     const StatusIcon = statusConfig.icon
 
