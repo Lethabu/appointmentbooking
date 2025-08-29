@@ -18,7 +18,7 @@ export function usePaystack() {
       email,
       amount: amount * 100, // Convert to kobo
       currency: 'ZAR',
-      ref: `${tenantId}_${appointmentId}_${Date.now()}`,
+      reference: `${tenantId}_${appointmentId}_${Date.now()}`,
       onSuccess,
       onCancel: () => console.log('Payment cancelled'),
     });

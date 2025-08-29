@@ -1,12 +1,12 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import Paystack from "paystack-node";
-import { Clerk } from "@clerk/clerk-sdk-node";
+import * as Clerk from "@clerk/clerk-sdk-node";
 import { Resend } from "resend";
 import { api } from "./_generated/api"; // Import api to call other actions
 
 const paystack = new Paystack(process.env.PAYSTACK_SECRET_KEY!)
-const clerk = new Clerk({ secretKey: process.env.CLERK_SECRET_KEY! });
+const clerk = new (Clerk as any).Clerk({ secretKey: process.env.CLERK_SECRET_KEY! });
 
 export const getBySlug = query({
   args: { slug: v.string() },

@@ -1,5 +1,8 @@
 {
+  "project": "appointment-booking",
+  "team": "instyle",
+  "prodUrl": "https://instyle-hair-boutique.convex.cloud",
   "node": {
-    "18": true
+    "version": "20.15.1"
   }
 }
