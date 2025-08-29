@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { Id } from "./_generated/dataModel";
 
 export const get = query({
   args: { userId: v.string() },
@@ -63,7 +64,7 @@ export const redeemReferralCode = mutation({
     } else {
       // Create new loyalty record for inviter if it doesn't exist
       await ctx.db.insert("loyalty", {
-        tenantId: "instyle", // Placeholder, needs to be dynamic
+        tenantId: "instyle" as Id<"tenants">, // Placeholder, needs to be dynamic
         userId: referral.inviterId,
         points: 500,
       });

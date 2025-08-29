@@ -1,11 +1,21 @@
 import { useState } from 'react'
 import { Calendar, Clock, User, Check, ChevronRight, ChevronLeft, Star, Scissors, Palette, Sparkles } from 'lucide-react'
 
+interface ModernService {
+  id: number;
+  name: string;
+  duration: string;
+  price: number;
+  description: string;
+  icon: React.ElementType;
+  popular?: boolean;
+}
+
 export default function ModernBookingPage() {
   const [currentStep, setCurrentStep] = useState(1)
-  const [selectedService, setSelectedService] = useState(null)
-  const [selectedDate, setSelectedDate] = useState(null)
-  const [selectedTime, setSelectedTime] = useState(null)
+  const [selectedService, setSelectedService] = useState<ModernService | null>(null)
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [customerDetails, setCustomerDetails] = useState({
     name: '',
     email: '',
@@ -87,7 +97,7 @@ export default function ModernBookingPage() {
     </div>
   )
 
-  const ServiceCard = ({ service }) => (
+  const ServiceCard = ({ service }: { service: ModernService }) => (
     <div
       onClick={() => setSelectedService(service)}
       className={`relative p-6 rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:shadow-lg ${

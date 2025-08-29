@@ -27,11 +27,11 @@ const DashboardPage: React.FC = () => {
 
           // Fetch recent activity (e.g., last 5 appointments)
           const allAppointments = await api.getAppointments(tenant.id);
-          const sortedAppointments = allAppointments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          const sortedAppointments = allAppointments.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
           const latestAppointments = sortedAppointments.slice(0, 5);
 
           const activityMessages = latestAppointments.map(app => 
-            `New booking: ${app.client_name} - ${app.service_name} - ${new Date(app.scheduled_time).toLocaleString()}`
+            `New booking: ${app.client_name} - ${app.service_name} - ${new Date(app.datetime).toLocaleString()}`
           );
           setRecentActivity(activityMessages);
 

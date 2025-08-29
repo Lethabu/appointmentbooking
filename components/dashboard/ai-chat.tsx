@@ -88,11 +88,10 @@ export function AIChat() {
 
       const aiMessage: ChatMessage = {
         id: `ai-${Date.now()}`,
-        content: response.message || "I apologize, but I encountered an issue processing your request.",
+        content: response.reply || "I apologize, but I encountered an issue processing your request.",
         sender: "ai",
         agent_id: selectedAgent,
         timestamp: new Date(),
-        metadata: response.metadata,
       }
 
       setMessages((prev) => [...prev, aiMessage])

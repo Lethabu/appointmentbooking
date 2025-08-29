@@ -35,7 +35,7 @@ export function ServiceCard({ service, isSelected, onToggle }: ServiceCardProps)
         <div className="flex justify-between items-center text-sm">
           <div className="flex items-center text-gray-500">
             <Clock className="h-4 w-4 mr-1" />
-            <span>{service.duration_minutes} min</span>
+            <span>{service.duration} min</span>
           </div>
           <div className="flex items-center font-semibold text-gray-900">
             <DollarSign className="h-4 w-4 mr-1" />

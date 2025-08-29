@@ -53,14 +53,14 @@ export const createTenant = mutation({
     });
 
     // 4. Send welcome email (Day 0 drip)
-    await ctx.runAction(api.emails.sendDripEmail, {
+    await ctx.scheduler.runAfter(0, api.emails.sendDripEmail, {
       to: args.email,
       subject: "Welcome to AppointmentBooking.co.za",
       html: `<h1>Welcome, ${args.name}!</h1><p>Thank you for signing up. We are excited to have you on board!</p>`,
     });
 
     // 5. Send Sanity CMS invite email
-    await ctx.runAction(api.emails.sendDripEmail, {
+    await ctx.scheduler.runAfter(0, api.emails.sendDripEmail, {
       to: args.email,
       subject: "Your Sanity CMS Invitation",
       html: `<h1>Sanity CMS Invitation for ${args.name}</h1><p>Here is your link to the Sanity CMS: ...</p>`,

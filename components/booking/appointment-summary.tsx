@@ -20,7 +20,7 @@ interface AppointmentSummaryProps {
 
 export function AppointmentSummary({ selectedServices, formData, onFormChange, onSubmit }: AppointmentSummaryProps) {
   const totalPrice = selectedServices.reduce((sum, service) => sum + service.price, 0)
-  const totalDuration = selectedServices.reduce((sum, service) => sum + service.duration_minutes, 0)
+  const totalDuration = selectedServices.reduce((sum, service) => sum + service.duration, 0)
 
   const isFormValid =
     selectedServices.length > 0 && formData.full_name.trim() !== "" && formData.phone_number.trim() !== ""

@@ -1,8 +1,27 @@
 import { useState } from 'react'
 import { Calendar, DollarSign, Users, Star, Phone, Clock, CheckCircle, XCircle, Edit3, MessageCircle, TrendingUp, Zap, Brain, Target } from 'lucide-react'
 
+interface ModernAppointment {
+  id: number;
+  clientName: string;
+  service: string;
+  time: string;
+  duration: string;
+  status: 'confirmed' | 'pending';
+  phone: string;
+  price: number;
+}
+
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  icon: React.ElementType;
+  color: string;
+  trend?: string;
+}
+
 export default function ModernSalonDashboard() {
-  const [appointments] = useState([
+  const [appointments] = useState<ModernAppointment[]>([
     {
       id: 1,
       clientName: 'Sarah Johnson',
@@ -32,7 +51,7 @@ export default function ModernSalonDashboard() {
     avgRating: 4.8
   })
 
-  const getStatusConfig = (status) => {
+  const getStatusConfig = (status: ModernAppointment['status']) => {
     switch (status) {
       case 'confirmed': 
         return { 
@@ -58,7 +77,7 @@ export default function ModernSalonDashboard() {
     }
   }
 
-  const StatCard = ({ title, value, icon: Icon, color, trend }) => (
+  const StatCard = ({ title, value, icon: Icon, color, trend }: StatCardProps) => (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
       <div className="flex items-center justify-between">
         <div>
@@ -78,7 +97,7 @@ export default function ModernSalonDashboard() {
     </div>
   )
 
-  const AppointmentCard = ({ appointment }) => {
+  const AppointmentCard = ({ appointment }: { appointment: ModernAppointment }) => {
     const statusConfig = getStatusConfig(appointment.status)
     const StatusIcon = statusConfig.icon
 

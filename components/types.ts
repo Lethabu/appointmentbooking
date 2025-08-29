@@ -15,7 +15,7 @@ export interface Staff {
 
 export interface RawAppointmentData {
   id: string;
-  start_time: string;
+  scheduled_time: string;
   status: string;
   client_name: string;
   client_phone: string | null;

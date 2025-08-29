@@ -10,7 +10,7 @@ export interface BookingSummary {
 
 export function calcSummary(services: Service[], currency: "ZAR" | "USD" | "EUR" = "ZAR"): BookingSummary {
   const totalPrice = services.reduce((sum, service) => sum + service.price, 0)
-  const totalDuration = services.reduce((sum, service) => sum + service.duration_minutes, 0)
+  const totalDuration = services.reduce((sum, service) => sum + service.duration, 0)
 
   const hours = Math.floor(totalDuration / 60)
   const minutes = totalDuration % 60

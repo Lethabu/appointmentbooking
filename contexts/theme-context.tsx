@@ -20,12 +20,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (tenant) {
-      setPrimaryColor(tenant.primary_color)
-      setSecondaryColor(tenant.secondary_color)
+      const primary = tenant.config?.branding?.primary_color || "#3b82f6";
+      const secondary = tenant.config?.branding?.secondary_color || "#1e40af";
+      setPrimaryColor(primary)
+      setSecondaryColor(secondary)
 
       // Apply CSS custom properties for dynamic theming
-      document.documentElement.style.setProperty("--primary-color", tenant.primary_color)
-      document.documentElement.style.setProperty("--secondary-color", tenant.secondary_color)
+      document.documentElement.style.setProperty("--primary-color", primary)
+      document.documentElement.style.setProperty("--secondary-color", secondary)
     }
   }, [tenant])
 
@@ -41,7 +43,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       value={{
         primaryColor,
         secondaryColor,
-        logoUrl: tenant?.logo_url,
+        logoUrl: tenant?.config?.branding?.logo_url,
         tenantName: tenant?.name || "",
         updateTheme,
       }}

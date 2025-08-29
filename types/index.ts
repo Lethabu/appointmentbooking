@@ -17,6 +17,15 @@ export interface Tenant {
   }
   created_at: string
   updated_at: string
+  settings?: {
+    currency: string;
+  }
+}
+
+export interface Salon {
+  id: string;
+  name: string;
+  logo_url?: string;
 }
 
 export interface Service {
@@ -52,6 +61,10 @@ export interface Appointment {
   price: number
   created_at: string
   updated_at: string
+  client_name: string
+  service_name: string
+  client_phone?: string
+  time?: string
 }
 
 export interface Customer {
@@ -96,4 +109,31 @@ export interface LaunchMetrics {
     name: string
     status: 'operational' | 'degraded' | 'down'
   }>
+}
+
+export interface BookingFormData {
+  selected_services: Service[];
+  full_name: string;
+  phone_number: string;
+  email: string;
+  preferred_date: string;
+  preferred_time: string;
+  notes: string;
+}
+
+export interface AIAgent {
+  id: string;
+  name: string;
+  description: string;
+  avatar_url: string;
+  capabilities: string[];
+}
+
+export interface ChatMessage {
+  id: string;
+  content: string;
+  sender: 'user' | 'ai';
+  agent_id?: string;
+  timestamp: Date;
+  metadata?: any;
 }

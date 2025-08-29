@@ -18,7 +18,7 @@ export default function InstylePage() {
     { id: '3', name: 'Hair Treatment', price: 350, duration: '90 min' }
   ]
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 

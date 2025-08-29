@@ -98,7 +98,7 @@ class ApiClient {
       service_name: service.name,
       date: bookingData.preferred_date || new Date().toISOString().split("T")[0],
       time: bookingData.preferred_time || "09:00",
-      duration_minutes: service.duration_minutes,
+      duration_minutes: service.duration,
       price: service.price,
       status: "pending" as const,
       notes: bookingData.notes,

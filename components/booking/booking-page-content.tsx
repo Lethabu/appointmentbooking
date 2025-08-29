@@ -147,7 +147,6 @@ export function BookingPageContent() {
                     formData={formData}
                     onFormChange={handleFormChange}
                     onSubmit={handleBookingSubmit}
-                    currency={tenant.settings.currency}
                   />
                 </div>
               </div>

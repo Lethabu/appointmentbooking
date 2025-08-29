@@ -1,3 +1,5 @@
+import PaystackPop from '@paystack/inline-js';
+
 interface PaystackProps {
   email: string;
   amount: number;

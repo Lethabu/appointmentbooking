@@ -4,11 +4,11 @@ import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import BookingFlow from '@/components/BookingFlow';
 import { notFound } from 'next/navigation';
-import { Database, Tenant } from '@/types';
+import { Tenant } from '@/types';
+import { Database } from '@/types/database';
 
 // Helper to create a server client for components
-function createServerSupabaseClient() {
-  const cookieStore = cookies();
+function createServerSupabaseClient(cookieStore: ReturnType<typeof cookies>) {
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -17,11 +17,23 @@ function createServerSupabaseClient() {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        async set(name: string, value: string, options: CookieOptions) {
-          cookieStore.set({ name, value, ...options });
+        set(name: string, value: string, options: CookieOptions) {
+          try {
+            cookieStore.set({ name, value, ...options });
+          } catch (error) {
+            // The `set` method was called from a Server Component.
+            // This can be ignored if you have middleware refreshing
+            // user sessions.
+          }
         },
-        async remove(name: string, options: CookieOptions) {
-          cookieStore.set({ name, value: '', ...options });
+        remove(name: string, options: CookieOptions) {
+          try {
+            cookieStore.set({ name, value: '', ...options });
+          } catch (error) {
+            // The `delete` method was called from a Server Component.
+            // This can be ignored if you have middleware refreshing
+            // user sessions.
+          }
         },
       },
     }
@@ -56,7 +68,8 @@ export async function generateMetadata({ params }: { params: { tenant: string } 
 }
 
 export default async function TenantHome({ params }: { params: { tenant: string } }) {
-  const supabase = createServerSupabaseClient();
+  const cookieStore = cookies();
+  const supabase = createServerSupabaseClient(cookieStore);
   const tenant = await getTenant(params.tenant);
 
   if (!tenant) {

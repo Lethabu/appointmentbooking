@@ -12,7 +12,7 @@ import type { Service } from "@/types"
 
 interface ServiceFormProps {
   service?: Service | null
-  onSubmit: (service: Omit<Service, "id">) => void
+  onSubmit: (service: Partial<Service>) => void
   onCancel: () => void
 }
 
@@ -21,7 +21,7 @@ export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
     name: "",
     description: "",
     category: "",
-    duration_minutes: 0,
+    duration: 0,
     price: 0,
   })
 
@@ -29,9 +29,9 @@ export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
     if (service) {
       setFormData({
         name: service.name,
-        description: service.description,
-        category: service.category,
-        duration_minutes: service.duration_minutes,
+        description: service.description || '',
+        category: service.category || '',
+        duration: service.duration,
         price: service.price,
       })
     }
@@ -91,8 +91,8 @@ export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
           <Input
             id="duration"
             type="number"
-            value={formData.duration_minutes}
-            onChange={(e) => handleChange("duration_minutes", Number.parseInt(e.target.value))}
+            value={formData.duration}
+            onChange={(e) => handleChange("duration", Number.parseInt(e.target.value))}
             placeholder="90"
             required
           />

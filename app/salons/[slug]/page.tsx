@@ -1,7 +1,7 @@
 import { convex } from "@/lib/convexClient";
 import { api } from "@/convex/_generated/api";
 import { jsonLd } from "@/lib/jsonLd";
-import { LocalBusiness } from 'schema-dts';
+import { LocalBusiness, WithContext } from 'schema-dts';
 
 type PageProps = {
   params: Promise<{
@@ -21,6 +21,21 @@ export async function generateMetadata({ params }: PageProps) {
 
   const services = await convex.query(api.services.list, { tenantName: salon.name });
 
+  const ld: WithContext<LocalBusiness> = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: salon.name,
+    image: salon.logo,
+    address: salon.address,
+    telephone: salon.phone,
+    openingHours: salon.openingHours?.map(o => o.schema),
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: salon.rating,
+      reviewCount: salon.reviewCount
+    },
+  }
+
   return {
     title: `${salon.name} – Online Booking`,
     description: `Book ${services.length} services instantly. Rated ${salon.rating}/5 by ${salon.reviewCount} clients.`,
@@ -29,16 +44,7 @@ export async function generateMetadata({ params }: PageProps) {
       type: 'website',
     },
     other: {
-      'script[type="application/ld+json"]': jsonLd({
-        '@context': 'https://schema.org',
-        '@type': 'LocalBusiness',
-        name: salon.name,
-        image: salon.logo,
-        address: salon.address,
-        telephone: salon.phone,
-        openingHours: salon.openingHours?.map(o => o.schema),
-        aggregateRating: { ratingValue: salon.rating, reviewCount: salon.reviewCount },
-      } as LocalBusiness),
+      'script[type="application/ld+json"]': jsonLd(ld),
     }
   };
 }

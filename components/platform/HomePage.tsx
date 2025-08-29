@@ -1,7 +1,7 @@
 import { ROIWidget } from '@/components/marketing/ROIWidget';
 import { ExitIntentModal } from '@/components/marketing/ExitIntentModal';
 import Link from 'next/link'
-import { WebSite, FAQPage, HowTo, VideoObject, SpeakableSpecification } from 'schema-dts';
+import { WithContext, WebSite, FAQPage, HowTo, VideoObject, SpeakableSpecification } from 'schema-dts';
 import { jsonLd } from '@/lib/jsonLd';
 
 
@@ -26,7 +26,7 @@ export function HomePage() {
           '@type': 'WebSite',
           name: 'AppointmentBooking.co.za',
           url: 'https://appointmentbooking.co.za',
-        })}}
+        } as WithContext<WebSite>)}}
       />
       <script
         type="application/ld+json"
@@ -41,7 +41,7 @@ export function HomePage() {
               text: item.answer,
             },
           })),
-        })}}
+        } as WithContext<FAQPage>)}}
       />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="container mx-auto px-4 py-16">

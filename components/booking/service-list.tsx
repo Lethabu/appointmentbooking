@@ -13,10 +13,11 @@ export function ServiceList({ services, selectedServices, onServiceToggle }: Ser
   // Group services by category
   const servicesByCategory = services.reduce(
     (acc, service) => {
-      if (!acc[service.category]) {
-        acc[service.category] = []
+      const category = service.category || 'Uncategorized';
+      if (!acc[category]) {
+        acc[category] = []
       }
-      acc[service.category].push(service)
+      acc[category].push(service)
       return acc
     },
     {} as Record<string, Service[]>,

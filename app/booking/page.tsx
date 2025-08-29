@@ -6,7 +6,7 @@ import { ServiceList } from "@/components/booking/service-list"
 import { ProductShowcase } from "@/components/booking/product-showcase"
 import { AppointmentSummary } from "@/components/booking/appointment-summary"
 import { LiveBookingStatus } from "@/app/components/BookingWidget/LiveBookingStatus"
-import type { Service, Product } from "@/types"
+import type { Service, Product, Tenant } from "@/types"
 
 // Mock data for Instyle Hair Boutique
 const mockServices: Service[] = [
@@ -96,11 +96,17 @@ const mockProducts: Product[] = [
   },
 ]
 
-const salon = {
+const tenant: Tenant = {
   id: "1",
   name: "Instyle Hair Boutique",
-  logo_url: "/placeholder.svg?height=60&width=200",
   subdomain: "instyle",
+  config: {
+    branding: {
+      logo_url: "/placeholder.svg?height=60&width=200",
+    },
+  },
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
 }
 
 export default function BookingPage() {
@@ -132,7 +138,7 @@ export default function BookingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <BookingHeader salon={salon} />
+      <BookingHeader tenant={tenant} />
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
