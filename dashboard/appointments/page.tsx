@@ -6,19 +6,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { PlusIcon, PencilIcon, TrashIcon, CalendarIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 import { Fragment } from 'react';
-
-interface Appointment {
-  id: string;
-  scheduled_time: string;
-  client_name: string;
-  client_phone: string | null;
-  status: string;
-  service_id: string;
-  staff_id: string | null;
-  recurrence_rule: string | null;
-  services: { name: string } | null;
-  staff: { name: string } | null;
-}
+import type { Appointment } from '@/types';
 
 interface Service {
   id: string;
@@ -107,7 +95,7 @@ export default function AppointmentsPage() {
   });
 
   const addAppointmentMutation = useMutation({
-    mutationFn: async (newAppointment: Omit<Appointment, 'id' | 'services' | 'staff'>) => {
+    mutationFn: async (newAppointment: Omit<Appointment, 'id'>) => {
       const response = await fetch('/api/appointments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -245,11 +233,11 @@ export default function AppointmentsPage() {
               appointments?.map((appointment) => (
                 <tr key={appointment.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {new Date(appointment.scheduled_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(appointment.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.client_name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.services?.name || 'N/A'}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.staff?.name || 'N/A'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.service_name || 'N/A'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.staff_id || 'N/A'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.status}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
@@ -305,6 +293,7 @@ export default function AppointmentsPage() {
                     initialData={editingAppointment}
                     servicesList={servicesList || []}
                     staffList={staffList || []}
+                    salonId={salonId}
                     onSave={(appointmentData) => {
                       if (editingAppointment) {
                         updateAppointmentMutation.mutate({ ...editingAppointment, ...appointmentData });
@@ -328,34 +317,38 @@ interface AppointmentFormProps {
   initialData?: Appointment | null;
   servicesList: Service[];
   staffList: Staff[];
-  onSave: (appointment: Omit<Appointment, 'id' | 'services' | 'staff'> | Appointment) => void;
+  salonId: string | null;
+  onSave: (appointment: Omit<Appointment, 'id'> | Appointment) => void;
   onCancel: () => void;
 }
 
-const AppointmentForm: React.FC<AppointmentFormProps> = ({ initialData, servicesList, staffList, onSave, onCancel }) => {
+const AppointmentForm: React.FC<AppointmentFormProps> = ({ initialData, servicesList, staffList, salonId, onSave, onCancel }) => {
   const [client_name, setClientName] = useState(initialData?.client_name || '');
   const [client_phone, setClientPhone] = useState(initialData?.client_phone || '');
   const [service_id, setServiceId] = useState(initialData?.service_id || '');
   const [staff_id, setStaffId] = useState(initialData?.staff_id || '');
-  const [start_time, setStartTime] = useState(initialData?.start_time ? new Date(initialData.start_time).toISOString().substring(0, 16) : '');
-  const [status, setStatus] = useState(initialData?.status || 'scheduled');
-  const [recurrence_rule, setRecurrenceRule] = useState(initialData?.recurrence_rule || 'none');
+  const [datetime, setDatetime] = useState(initialData?.datetime ? new Date(initialData.datetime).toISOString().substring(0, 16) : '');
+  const [status, setStatus] = useState(initialData?.status || 'pending');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const service = servicesList.find(s => s.id === service_id);
     onSave({
       client_name,
       client_phone,
       service_id,
       staff_id,
-      start_time,
-      status,
-      recurrence_rule: recurrence_rule === 'none' ? null : recurrence_rule,
+      datetime,
+      status: status as 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'no_show',
+      price: service?.price || 0,
+      service_name: service?.name || '',
+      tenant_id: salonId || '',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     });
   };
 
-  const appointmentStatuses = ['scheduled', 'in_progress', 'completed', 'cancelled', 'no_show'];
-  const recurrenceOptions = ['none', 'daily', 'weekly', 'monthly'];
+  const appointmentStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'no_show'];
 
   return (
     <form onSubmit={handleSubmit} className="mt-4 space-y-4">
@@ -410,12 +403,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ initialData, services
         </select>
       </div>
       <div>
-        <label htmlFor="start_time" className="block text-sm font-medium text-gray-700">Start Time</label>
+        <label htmlFor="datetime" className="block text-sm font-medium text-gray-700">Start Time</label>
         <input
           type="datetime-local"
-          id="start_time"
-          value={start_time}
-          onChange={(e) => setStartTime(e.target.value)}
+          id="datetime"
+          value={datetime}
+          onChange={(e) => setDatetime(e.target.value)}
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           required
         />
@@ -425,25 +418,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ initialData, services
         <select
           id="status"
           value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          onChange={(e) => setStatus(e.target.value as 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'no_show')}
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           required
         >
           {appointmentStatuses.map((s) => (
             <option key={s} value={s}>{s.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label htmlFor="recurrence_rule" className="block text-sm font-medium text-gray-700">Recurrence Rule</label>
-        <select
-          id="recurrence_rule"
-          value={recurrence_rule || 'none'}
-          onChange={(e) => setRecurrenceRule(e.target.value)}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        >
-          {recurrenceOptions.map((rule) => (
-            <option key={rule} value={rule}>{rule.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>
           ))}
         </select>
       </div>
