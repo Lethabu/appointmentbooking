@@ -1,7 +1,41 @@
-from fastapi import FastAPI
+import boto3
+import os
+import google.generativeai as genai
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI()
+
+def get_gemini_api_key():
+    secret_name = "GEMINI_API_KEY"
+    region_name = os.environ.get("AWS_REGION", "us-east-1")
+
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except Exception as e:
+        # For local development, you can fall back to an environment variable
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            raise e
+        return api_key
+    else:
+        # Decrypts secret using the associated KMS CMK.
+        # Depending on whether the secret is a string or binary, one of these fields will be populated.
+        if 'SecretString' in get_secret_value_response:
+            secret = get_secret_value_response['SecretString']
+            return secret
+        else:
+            # Handle binary secret if needed
+            return None
 
 class ChatRequest(BaseModel):
     query: str
@@ -9,29 +43,26 @@ class ChatRequest(BaseModel):
 
 @app.post("/chat")
 async def chat(request: ChatRequest):
-    # Simple AI responses for booking queries
-    query_lower = request.query.lower()
-    
-    if "book" in query_lower or "appointment" in query_lower:
+    try:
+        # Get the Gemini API key
+        gemini_api_key = get_gemini_api_key()
+        
+        genai.configure(api_key=gemini_api_key)
+        
+        # Create the model
+        model = genai.GenerativeModel('gemini-pro')
+        
+        # Generate content
+        prompt = f"You are a helpful assistant for a hair salon. The user's query is: {request.query}. Be friendly and helpful."
+        response = model.generate_content(prompt)
+        
         return {
-            "response": "I can help you book an appointment! What service would you like to book?",
-            "action": "booking_intent"
-        }
-    elif "price" in query_lower or "cost" in query_lower:
-        return {
-            "response": "Our services range from R180 for wash & blowdry to R450 for full color. Would you like to see our full price list?",
-            "action": "pricing_info"
-        }
-    elif "hours" in query_lower or "open" in query_lower:
-        return {
-            "response": "We're open Monday to Saturday, 9 AM to 6 PM. Would you like to book an appointment?",
-            "action": "hours_info"
-        }
-    else:
-        return {
-            "response": f"AI handled: {request.query}. How can I help you with your hair appointment today?",
+            "response": response.text,
             "action": "general_response"
         }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/health")
 async def health():
