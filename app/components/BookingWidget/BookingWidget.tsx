@@ -1,9 +1,9 @@
+"use client";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 import { useState, useEffect } from 'react'
 import DatePicker from 'react-datepicker'
 import axios from 'axios'
-import 'react-datepicker/dist/react-datepicker.css'
 
 interface Staff {
   id: string

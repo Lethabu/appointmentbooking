@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "20.x"
+    "node": ">=20.x"
   },
   "scripts": {
     "codegen": "convex codegen",
@@ -81,15 +81,15 @@
     "input-otp": "1.4.1",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.454.0",
-    "next": "^15.5.0",
+    "next": "^15.5.1-canary.18",
     "next-themes": "^0.4.4",
     "openai": "^5.10.0",
     "paystack-node": "^0.1.0",
     "posthog-js": "^1.260.1",
-    "react": "^19",
+    "react": "^19.1.1",
     "react-datepicker": "^8.7.0",
     "react-day-picker": "^9.6.7",
-    "react-dom": "^19",
+    "react-dom": "^19.1.1",
     "react-hook-form": "^7.54.1",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.0",
@@ -118,7 +118,7 @@
     "convex": "^1.25.4",
     "drizzle-kit": "^0.31.4",
     "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.4",
+    "eslint-config-next": "15.1.6",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
     "postcss": "^8.5",
