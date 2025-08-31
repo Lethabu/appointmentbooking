@@ -11,8 +11,6 @@ export default function HomePage() {
   const { name, booking_link, services, socials } = instyle_data;
   const [products, setProducts] = useState([]);
 
-  
-
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -30,7 +28,6 @@ export default function HomePage() {
 
   return (
     <div className="bg-white">
-      
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-pink-100 to-purple-100 text-gray-800 py-20" role="img" aria-label="Woman with stylish hair">
         <div className="absolute inset-0">
@@ -65,7 +62,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
       {/* Services Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -101,7 +97,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
       {/* Products Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -148,7 +143,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
       {/* Testimonials and Social Proof Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -193,7 +187,6 @@ export default function HomePage() {
          </div>
        </div>
      </section>
-
      {/* Footer */}
      <footer className="bg-gray-800 text-white">
        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
