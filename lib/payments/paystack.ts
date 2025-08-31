@@ -1,5 +1,3 @@
-import PaystackPop from '@paystack/inline-js';
-
 interface PaystackProps {
   email: string;
   amount: number;
@@ -9,9 +7,10 @@ interface PaystackProps {
 }
 
 export function usePaystack() {
-  const payWithPaystack = ({
+  const payWithPaystack = async ({
     email, amount, appointmentId, tenantId, onSuccess
   }: PaystackProps) => {
+    const PaystackPop = (await import('@paystack/inline-js')).default;
     const handler = new PaystackPop();
     handler.newTransaction({
       key: process.env.NEXT_PUBLIC_PAYSTACK_KEY!,
