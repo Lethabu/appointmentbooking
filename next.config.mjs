@@ -1,10 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    css: {
-      enableCssManifestDebug: true
-    }
-  },
   output: 'standalone',
   images: {
     unoptimized: true,

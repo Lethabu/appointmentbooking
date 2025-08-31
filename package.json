@@ -14,8 +14,6 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
     "seed:blog": "node scripts/seed-blog.js",
     "seed:compare": "node scripts/seed-compare.js",
     "seed:events": "node scripts/seed-events.js",
