@@ -1,28 +1,27 @@
-import type { Metadata } from 'next'
+import './globals.css';
+import { ClerkProvider } from '@clerk/nextjs';
+import { CSPostHogProvider } from '@/components/PostHogProvider';
+import { ConvexClientProvider } from './providers';
 import { Inter } from 'next/font/google';
-import './globals.css'
-import 'react-datepicker/dist/react-datepicker.css'
-import Providers from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
-
-export const metadata: Metadata = {
-  title: 'InStyle Hair Boutique - Appointment Booking',
-  description: 'Professional hair salon appointment booking system',
-}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>
-          {children}
-        </Providers>
+        <ClerkProvider>
+          <CSPostHogProvider>
+            <ConvexClientProvider>
+              {children}
+            </ConvexClientProvider>
+          </CSPostHogProvider>
+        </ClerkProvider>
       </body>
     </html>
-  )
+  );
 }
