@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-import AutomatedReviews from './components/Reviews/AutomatedReviews';
 import { instyle_data } from './instyle-hair-boutique/data.js';
+import dynamic from 'next/dynamic';
+
+const AutomatedReviews = dynamic(() => import('./components/Reviews/AutomatedReviews'), { ssr: false });
 
 export default function HomePage() {
   const { name, booking_link, services, socials } = instyle_data;
