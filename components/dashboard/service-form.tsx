@@ -72,7 +72,7 @@ export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
 
       <div className="space-y-2">
         <Label htmlFor="category">Category</Label>
-        <Select value={formData.category} onValueChange={(value) => handleChange("category", value)}>
+        <Select value={formData.category} onValueChange={(value: string) => handleChange("category", value)}>
           <SelectTrigger>
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
