@@ -1,4 +1,4 @@
-import './globals.css'; // Global CSS only here
+import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { ConvexClientProvider } from './providers';

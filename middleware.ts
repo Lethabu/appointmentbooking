@@ -10,7 +10,7 @@ const isTenantRoute = createRouteMatcher(['/salon/(.*)']);
 
 export default clerkMiddleware((auth, req) => {
   // require auth for protected routes
-  if (isProtectedRoute(req)) auth().protect();
+  if (isProtectedRoute(req)) auth.protect();
 
   // inject tenant slug into header for downstream use
   const tenantMatch = req.nextUrl.pathname.match(/\/salon\/([^\/]+)/);
