@@ -7,7 +7,7 @@
 - Validates builds before deployment.
 
 ### 2. **Deployment Agent**
-- Handles Vercel + AWS integration.
+- Handles AWS integration.
 - Automates domain mapping for tenants.
 
 ### 3. **Database Agent**

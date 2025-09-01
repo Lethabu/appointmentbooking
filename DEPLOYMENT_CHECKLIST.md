@@ -7,11 +7,7 @@
 - [x] Dashboard created
 - [x] AI agent foundation ready
 
-## Vercel Deployment
-- [ ] Connect GitHub repository to Vercel
-- [ ] Configure environment variables in Vercel dashboard
-- [ ] Set up custom domain: instylehairboutique.co.za
-- [ ] Configure DNS records
+
 
 ## Database Setup
 - [ ] Run Supabase migrations

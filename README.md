@@ -14,7 +14,6 @@ A multi-tenant appointment booking SaaS platform built with **Next.js**, **Supab
 - Multi-tenant booking system
 - AI-powered appointment management
 - Supabase + RDS integration
-- Vercel deployment pipeline
 
 ## Status
 🚧 In active development, undergoing audit and debugging.
