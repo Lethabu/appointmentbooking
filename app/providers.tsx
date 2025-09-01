@@ -8,6 +8,14 @@ import { useEffect, ReactNode } from "react";
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
+export function ConvexClientProvider({ children }: { children: ReactNode }) {
+  return (
+    <ConvexProvider client={convex}>
+      {children}
+    </ConvexProvider>
+  );
+}
+
 export default function Providers({ children }: { children: ReactNode }) {
   useEffect(() => {
     posthog.init(process.env.NEXT_PUBLIC_POSTHOG_HOST!, {
