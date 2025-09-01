@@ -20,8 +20,9 @@ export async function sendWhatsAppMessage(phone: string, templateName: string, p
       }
     );
     return response.data;
-  } catch (err: any) {
-    console.error('AiSensy API error:', err.response?.data || err.message);
+  } catch (err: unknown) {
+    const error = err as { response?: { data?: unknown }; message?: string };
+    console.error('AiSensy API error:', error.response?.data || error.message);
     throw new Error('Failed to send WhatsApp message');
   }
 }
