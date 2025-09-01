@@ -2,7 +2,7 @@
 
 ## ✅ Platform Deployed
 
-**Live URL**: https://appointmentbooking-fi6ahzbbj-lethabu-0769a911.vercel.app
+**Live URL**: [URL of the deployed application]
 
 ### Available Endpoints:
 - **Instyle Booking**: `/instyle`
@@ -16,7 +16,7 @@
 
 ## 🔧 Next Steps:
 1. Configure custom domain
-2. Set up environment variables in Vercel
+2. Set up environment variables
 3. Deploy AI agent to cloud provider
 4. Test booking flow end-to-end
 

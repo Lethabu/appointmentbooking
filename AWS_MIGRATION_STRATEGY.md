@@ -5,11 +5,6 @@ Migration plan to AWS Cape Town (af-south-1) region for full POPIA compliance an
 
 ## Current vs Future Architecture
 
-### Current (Vercel + Supabase)
-- **Frontend**: Vercel (Global CDN)
-- **Database**: Supabase (International servers)
-- **Compliance**: Cross-border data transfer agreements required
-
 ### Future (AWS Cape Town)
 - **Frontend**: AWS Amplify + CloudFront
 - **Database**: RDS PostgreSQL (af-south-1)
@@ -60,13 +55,13 @@ aws rds create-db-instance \
 
 ### Phase 2: Database Migration (Week 2)
 ```sql
--- Export current Supabase data
-pg_dump $SUPABASE_DB_URL > instyle_backup.sql
+# Export current database data
+pg_dump $PREVIOUS_DB_URL > instyle_backup.sql
 
--- Import to AWS RDS
+# Import to AWS RDS
 psql $AWS_RDS_URL < instyle_backup.sql
 
--- Verify data integrity
+# Verify data integrity
 SELECT COUNT(*) FROM customers;
 SELECT COUNT(*) FROM appointments;
 SELECT COUNT(*) FROM services;
@@ -119,11 +114,6 @@ frontend:
 
 ## Cost Analysis
 
-### Current Monthly Costs
-- **Vercel Pro**: $20/month
-- **Supabase Pro**: $25/month
-- **Total**: $45/month
-
 ### AWS Projected Costs (Production)
 - **RDS PostgreSQL (db.t3.small)**: $30/month
 - **Lambda (10M requests)**: $20/month
@@ -146,7 +136,7 @@ frontend:
 - **Downtime**: Blue-green deployment strategy
 - **Data Loss**: Automated backups every 6 hours
 - **Performance**: Load testing before cutover
-- **Rollback Plan**: Keep Supabase active for 30 days
+- **Rollback Plan**: Keep the previous database active for 30 days
 
 ### Business Risks
 - **Cost Overrun**: Set up billing alerts and budgets
@@ -190,7 +180,7 @@ frontend:
 
 ### Business KPIs
 - **POPIA Compliance**: 100% data residency
-- **Cost Efficiency**: < 20% cost increase
+- **Cost Efficiency**: < 20% increase
 - **User Satisfaction**: No degradation in UX
 - **Sales Impact**: Enable enterprise client acquisition
 

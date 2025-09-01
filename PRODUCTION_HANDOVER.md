@@ -2,7 +2,7 @@
 
 ## ✅ **CURRENT STATUS: LIVE & OPERATIONAL**
 
-**Production URL**: https://appointmentbooking-c1op5drtj-lethabu-0769a911.vercel.app
+**Production URL**: [URL of the deployed application]
 
 ### **Instyle Endpoints**
 - **Booking Page**: `/instyle`
@@ -44,9 +44,9 @@
 
 ### 1. Domain Configuration (15 minutes)
 ```bash
-# Point instylehairboutique.co.za to Vercel
-# DNS A Record: 76.76.19.61
-# CNAME: appointmentbooking-c1op5drtj-lethabu-0769a911.vercel.app
+# Point instylehairboutique.co.za to the deployment
+# DNS A Record: [IP address of the server]
+# CNAME: [CNAME of the deployment]
 ```
 
 ### 2. Final Testing (30 minutes)
@@ -64,7 +64,7 @@
 ## 📈 **BUSINESS METRICS - READY TO TRACK**
 
 ### Technical KPIs
-- **Uptime**: 99.9% (Vercel SLA)
+- **Uptime**: 99.9% (hosting provider SLA)
 - **Load Time**: <2s (optimized build)
 - **Mobile Score**: 95+ (responsive design)
 - **Security**: A+ (POPIA compliant)
@@ -112,7 +112,7 @@
 ## 🎉 **HANDOVER DELIVERABLES**
 
 ### 1. Live Platform
-- **URL**: https://appointmentbooking-c1op5drtj-lethabu-0769a911.vercel.app
+- **URL**: [URL of the deployed application]
 - **Status**: Production ready
 - **Performance**: Optimized for mobile
 
@@ -135,7 +135,7 @@
 npm run build && npm run deploy
 
 # Verify production
-curl https://appointmentbooking-c1op5drtj-lethabu-0769a911.vercel.app/api/dashboard-stats
+curl [URL of the deployed application]/api/dashboard-stats
 
 # Success response expected:
 # {"todays_bookings":3,"weekly_revenue":450000,"total_clients":450}

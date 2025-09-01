@@ -26,7 +26,7 @@
 - [ ] Payment integration ready (Netcash)
 
 ### Domain Configuration
-- [ ] Point instylehairboutique.co.za to Vercel deployment
+- [ ] Point instylehairboutique.co.za to the deployment
 - [ ] Configure SSL certificate
 - [ ] Test custom domain routing
 
@@ -39,7 +39,7 @@
 ## 📊 **HANDOVER METRICS**
 
 ### Technical KPIs
-- **Uptime**: 99.9% (Vercel SLA)
+- **Uptime**: 99.9% (hosting provider SLA)
 - **Load Time**: <2s (optimized build)
 - **Security Score**: A+ (POPIA compliant)
 - **Mobile Responsive**: ✅
@@ -52,7 +52,7 @@
 
 ## 🎯 **HANDOVER DELIVERABLES**
 
-1. **Live Platform**: https://appointmentbooking-c1op5drtj-lethabu-0769a911.vercel.app/instyle
+1. **Live Platform**: [URL of the deployed application]
 2. **Admin Dashboard**: /dashboard/instyle
 3. **Documentation**: Complete setup and user guides
 4. **Support**: 30-day technical support included
