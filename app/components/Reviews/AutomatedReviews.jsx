@@ -1,3 +1,4 @@
+"use client";
 
 'use client';
 
@@ -42,12 +43,14 @@ export default function AutomatedReviews() {
   useEffect(() => {
     setReviews(mockReviews);
     
-    // Simulate automated review prompt after service
-    const timer = setTimeout(() => {
-      setShowReviewPrompt(true);
-    }, 3000);
+    if (typeof window !== 'undefined') {
+      // Simulate automated review prompt after service
+      const timer = setTimeout(() => {
+        setShowReviewPrompt(true);
+      }, 3000);
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   const StarRating = ({ rating, onRatingChange, readonly = false }) => {
@@ -91,16 +94,18 @@ export default function AutomatedReviews() {
     setReviewText('');
 
     // Simulate automated follow-up
-    if (rating >= 4) {
-      // High rating - encourage to post on Google/Facebook
-      setTimeout(() => {
-        alert('Thank you for the great review! Would you mind sharing your experience on Google or Facebook to help other clients find us?');
-      }, 1000);
-    } else if (rating <= 2) {
-      // Low rating - direct to management
-      setTimeout(() => {
-        alert('We\'re sorry your experience wasn\'t perfect. Our manager will contact you within 24 hours to make this right.');
-      }, 1000);
+    if (typeof window !== 'undefined') {
+      if (rating >= 4) {
+        // High rating - encourage to post on Google/Facebook
+        setTimeout(() => {
+          alert('Thank you for the great review! Would you mind sharing your experience on Google or Facebook to help other clients find us?');
+        }, 1000);
+      } else if (rating <= 2) {
+        // Low rating - direct to management
+        setTimeout(() => {
+          alert('We\'re sorry your experience wasn\'t perfect. Our manager will contact you within 24 hours to make this right.');
+        }, 1000);
+      }
     }
   };
 

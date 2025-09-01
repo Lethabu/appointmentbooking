@@ -1,3 +1,4 @@
+"use client";
 'use client'
 import { useState, useEffect } from 'react'
 import { CheckCircle, Clock, TrendingUp } from 'lucide-react'
