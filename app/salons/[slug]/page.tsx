@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SalonPage({ params }: Props) {
   const { slug } = await params;
   const salon = await convex.query(api.tenants.getBySlug, { slug });
-  const services = await convex.query(api.services.list, { tenantId: salon?._id });
+  const services = salon?._id ? await convex.query(api.services.list, { tenantId: salon._id }) : [];
 
   if (!salon) {
     notFound();

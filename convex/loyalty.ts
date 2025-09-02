@@ -47,7 +47,7 @@ export const redeemReferralCode = mutation({
       throw new Error("Invalid referral code.");
     }
 
-    if (referral.redeemedBy && referral.redeemedBy.includes(args.newUserId)) {
+    if (referral.redeemedBy && referral.redeemedBy === args.newUserId) {
       throw new Error("Referral code already redeemed by this user.");
     }
 
@@ -72,7 +72,7 @@ export const redeemReferralCode = mutation({
 
     // Mark the referral code as used by the new user
     await ctx.db.patch(referral._id, {
-      redeemedBy: [...(referral.redeemedBy || []), args.newUserId],
+      redeemedBy: args.newUserId,
     });
 
     return true;

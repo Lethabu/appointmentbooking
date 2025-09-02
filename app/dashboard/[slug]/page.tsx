@@ -12,8 +12,8 @@ import Link from 'next/link';
 export default function TenantDashboard({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const tenant = useQuery(api.tenants.getBySlug, { slug });
-  const services = useQuery(api.services.list, { tenantId: tenant?._id });
-  const bookings = useQuery(api.bookings.list, { tenantId: tenant?._id });
+  const services = useQuery(api.services.list, tenant?._id ? { tenantId: tenant._id } : 'skip');
+  const bookings = useQuery(api.bookings.list, tenant?._id ? { tenantId: tenant._id } : 'skip');
 
   if (!tenant) {
     return <div className="p-8">Loading...</div>;
