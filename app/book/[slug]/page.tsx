@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,8 @@ interface BookingData {
 
 const steps = ['Services', 'Date & Time', 'Add-ons', 'Payment'];
 
-export default function BookPage({ params }: { params: { slug: string } }) {
+export default function BookPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const [step, setStep] = useState(0);
   const [data, setData] = useState<BookingData>({
     services: [],
@@ -28,7 +29,7 @@ export default function BookPage({ params }: { params: { slug: string } }) {
     total: 0,
   });
 
-  const salon = useQuery(api.tenants.getBySlug, { slug: params.slug });
+  const salon = useQuery(api.tenants.getBySlug, { slug });
   const services = useQuery(api.services.list, { tenantId: salon?._id });
 
   const updateData = (newData: Partial<BookingData>) => {
