@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  trailingSlash: false,
-  experimental: {
-    esmExternals: 'loose'
-  }
+  trailingSlash: false
 };
 
 export default nextConfig; 
