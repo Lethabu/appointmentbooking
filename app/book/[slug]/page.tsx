@@ -109,14 +109,14 @@ export default function BookPage({ params }: { params: { slug: string } }) {
   );
 }
 
-function Step1Services({ services, data, updateData }: any) {
-  const toggleService = (serviceId: string, price: number) => {
+function Step1Services({ services, data, updateData }: { services: any[] | undefined, data: BookingData, updateData: (data: Partial<BookingData>) => void }) {
+  const toggleService = (serviceId: string) => {
     const newServices = data.services.includes(serviceId)
       ? data.services.filter((id: string) => id !== serviceId)
       : [...data.services, serviceId];
     
     const total = newServices.reduce((sum: number, id: string) => {
-      const service = services?.find((s: any) => s._id === id);
+      const service = services?.find((s) => s._id === id);
       return sum + (service?.price || 0);
     }, 0);
     
@@ -125,13 +125,13 @@ function Step1Services({ services, data, updateData }: any) {
 
   return (
     <div className="space-y-4">
-      {services?.map((service: any) => (
+      {services?.map((service) => (
         <Card 
           key={service._id}
           className={`cursor-pointer transition-colors ${
             data.services.includes(service._id) ? 'border-purple-500 bg-purple-50' : ''
           }`}
-          onClick={() => toggleService(service._id, service.price)}
+          onClick={() => toggleService(service._id)}
         >
           <CardContent className="p-4">
             <div className="flex justify-between items-center">
@@ -159,7 +159,7 @@ function Step1Services({ services, data, updateData }: any) {
   );
 }
 
-function Step2DateTime({ data, updateData }: any) {
+function Step2DateTime({ data, updateData }: { data: BookingData, updateData: (data: Partial<BookingData>) => void }) {
   const timeSlots = [
     '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
     '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
@@ -202,14 +202,14 @@ function Step2DateTime({ data, updateData }: any) {
   );
 }
 
-function Step3AddOns({ data, updateData }: any) {
+function Step3AddOns({ data, updateData }: { data: BookingData, updateData: (data: Partial<BookingData>) => void }) {
   const addOns = [
     { id: 'scalp-treatment', name: 'Scalp Treatment', price: 50 },
     { id: 'hair-mask', name: 'Deep Conditioning Mask', price: 30 },
     { id: 'styling', name: 'Premium Styling', price: 40 },
   ];
 
-  const toggleAddOn = (addOnId: string, price: number) => {
+  const toggleAddOn = (addOnId: string) => {
     const newAddOns = data.addOns.includes(addOnId)
       ? data.addOns.filter((id: string) => id !== addOnId)
       : [...data.addOns, addOnId];
@@ -235,7 +235,7 @@ function Step3AddOns({ data, updateData }: any) {
           className={`cursor-pointer transition-colors ${
             data.addOns.includes(addOn.id) ? 'border-purple-500 bg-purple-50' : ''
           }`}
-          onClick={() => toggleAddOn(addOn.id, addOn.price)}
+          onClick={() => toggleAddOn(addOn.id)}
         >
           <CardContent className="p-4">
             <div className="flex justify-between items-center">
@@ -261,7 +261,7 @@ function Step3AddOns({ data, updateData }: any) {
   );
 }
 
-function Step4Payment({ salon, data }: any) {
+function Step4Payment({ salon, data }: { salon: any, data: BookingData }) {
   const handlePayment = () => {
     checkout({
       tier: 'booking',
