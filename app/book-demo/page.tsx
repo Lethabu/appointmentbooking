@@ -42,7 +42,7 @@ export default function BookDemoPage() {
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-2">Demo Booked!</h2>
             <p className="text-gray-600 mb-4">
-              Thank you for your interest! We'll contact you within 24 hours to schedule your personalized demo.
+              Thank you for your interest! We&apos;ll contact you within 24 hours to schedule your personalized demo.
             </p>
             <Button onClick={() => setIsSubmitted(false)} variant="outline">
               Book Another Demo
@@ -75,7 +75,7 @@ export default function BookDemoPage() {
             <CardHeader>
               <CardTitle>Book Your Free Demo</CardTitle>
               <CardDescription>
-                Fill out the form below and we'll show you exactly how AppointmentBooking can help your salon grow.
+                Fill out the form below and we&apos;ll show you exactly how AppointmentBooking can help your salon grow.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -176,7 +176,7 @@ export default function BookDemoPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-purple-600" />
-                  What you'll see in the demo
+                  What you&apos;ll see in the demo
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -243,7 +243,7 @@ export default function BookDemoPage() {
               </CardHeader>
               <CardContent>
                 <blockquote className="text-sm italic text-gray-600 mb-3">
-                  "AppointmentBooking transformed our salon operations. We've seen a 300% increase in online bookings and our customers love the convenience!"
+                  &quot;AppointmentBooking transformed our salon operations. We&apos;ve seen a 300% increase in online bookings and our customers love the convenience!&quot;
                 </blockquote>
                 <div className="flex items-center gap-2">
                   <div className="flex">
