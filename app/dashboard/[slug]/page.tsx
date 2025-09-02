@@ -1,6 +1,7 @@
 'use client';
 
-import { use } from 'react';
+
+import { useState, useEffect } from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,8 +11,12 @@ import { Calendar, Users, TrendingUp, DollarSign, Clock, Star } from 'lucide-rea
 import Link from 'next/link';
 
 export default function TenantDashboard({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params);
-  const tenant = useQuery(api.tenants.getBySlug, { slug });
+  const [slug, setSlug] = useState<string>('');
+  
+  useEffect(() => {
+    params.then(p => setSlug(p.slug));
+  }, [params]);
+  const tenant = useQuery(api.tenants.getBySlug, slug ? { slug } : 'skip');
   const services = useQuery(api.services.list, tenant?._id ? { tenantId: tenant._id } : 'skip');
   const bookings = useQuery(api.bookings.list, tenant?._id ? { tenantId: tenant._id } : 'skip');
 
