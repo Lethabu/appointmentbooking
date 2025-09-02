@@ -9,8 +9,6 @@ import dynamic from 'next/dynamic';
 
 const AutomatedReviews = dynamic(() => import('./components/Reviews/AutomatedReviews'), { ssr: false });
 
-export const dynamic = 'force-dynamic';
-
 export default function HomePage() {
   const { name, booking_link, services, socials } = instyle_data;
   const [products, setProducts] = useState([]);

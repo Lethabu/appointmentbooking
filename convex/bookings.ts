@@ -24,6 +24,17 @@ export const getByTenantIdAndDateRange = query({
   },
 });
 
+export const list = query({
+  args: { tenantId: v.id("tenants") },
+  handler: async (ctx, { tenantId }) => {
+    return await ctx.db
+      .query("bookings")
+      .withIndex("by_tenantId_start", (q) => q.eq("tenantId", tenantId))
+      .order("desc")
+      .collect();
+  },
+});
+
 export const createBooking = mutation({
   args: {
     tenantId: v.id("tenants"),
