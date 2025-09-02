@@ -3,7 +3,7 @@ import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
 export default function ServicesPage() {
-  const services = useQuery(api.services.list, { tenantName: 'instyle' });
+  const services = useQuery(api.services.list, { tenantId: 'instyle' as any });
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       
