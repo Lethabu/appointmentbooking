@@ -8,7 +8,7 @@ export const checkLowBookingActivity = internalAction({
     const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
 
     // Get all tenants
-    const tenants = await ctx.runQuery(api.tenants.listAll);
+    const tenants = await ctx.runQuery(api.tenants.list);
 
     for (const tenant of tenants) {
       const bookings = await ctx.runQuery(api.bookings.getByTenantIdAndDateRange, {

@@ -26,15 +26,18 @@ export function checkout({ tier, tenantId, email }: CheckoutParams) {
     email,
     amount,
     currency: 'ZAR',
-    ref: `sub_${tenantId}_${Date.now()}`,
+    reference: `sub_${tenantId}_${Date.now()}`,
     metadata: { 
-      tier, 
-      tenantId,
       custom_fields: [
         {
           display_name: "Subscription Tier",
           variable_name: "tier",
           value: tier
+        },
+        {
+          display_name: "Tenant ID",
+          variable_name: "tenantId",
+          value: tenantId
         }
       ]
     },

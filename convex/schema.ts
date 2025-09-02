@@ -54,6 +54,7 @@ export default defineSchema({
     inviterId: v.string(),
     used: v.optional(v.boolean()),
     newTenantId: v.optional(v.id('tenants')),
+    redeemedBy: v.optional(v.string()),
   }).index("by_code", ["code"]),
   
   // Analytics & Performance
