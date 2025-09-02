@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Star, Users, Calendar, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 
-const VideoHero = dynamic(() => import('@/components/marketing/VideoHero'), { ssr: false });
+// VideoHero component will be added later
 
 export default function HomePage() {
   return (
