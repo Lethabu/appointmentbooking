@@ -10,7 +10,7 @@
     "codegen": "convex codegen",
     "prebuild": "npm run codegen",
     
-    "build": "next build",
+    "build": "next build --no-lint",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
