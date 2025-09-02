@@ -30,7 +30,7 @@ export default function BookPage({ params }: { params: Promise<{ slug: string }>
   });
 
   const salon = useQuery(api.tenants.getBySlug, { slug });
-  const services = useQuery(api.services.list, { tenantId: salon?._id });
+  const services = useQuery(api.services.list, salon?._id ? { tenantId: salon._id } : 'skip');
 
   const updateData = (newData: Partial<BookingData>) => {
     setData(prev => ({ ...prev, ...newData }));
