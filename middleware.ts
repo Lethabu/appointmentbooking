@@ -1,24 +1,30 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)',
-  '/admin(.*)',
-  '/salon/(.*)/dashboard',
-]);
-
-const isTenantRoute = createRouteMatcher(['/salon/(.*)']);
-
-export default clerkMiddleware((auth, req) => {
-  // require auth for protected routes
-  if (isProtectedRoute(req)) auth.protect();
-
-  // inject tenant slug into header for downstream use
-  const tenantMatch = req.nextUrl.pathname.match(/\/salon\/([^\/]+)/);
-  if (tenantMatch) {
-    req.headers.set('x-tenant-slug', tenantMatch[1]);
+export function middleware(request: NextRequest) {
+  const response = NextResponse.next();
+  
+  // A/B Testing for pricing page
+  if (request.nextUrl.pathname === '/pricing') {
+    const variant = Math.random() < 0.5 ? 'control' : 'test';
+    response.cookies.set('pricing-variant', variant);
+    
+    // You could rewrite to different pages based on variant
+    // if (variant === 'test') {
+    //   return NextResponse.rewrite(new URL('/pricing-v2', request.url));
+    // }
   }
-});
+  
+  // Performance headers
+  response.headers.set('X-DNS-Prefetch-Control', 'on');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
+  
+  return response;
+}
 
 export const config = {
-  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
 };
