@@ -6,16 +6,20 @@ import { useState } from 'react';
 
 export default function AddSalonPage() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const createTenant = useMutation(api.tenants.createTenant);
+  const [slug, setSlug] = useState('');
+  const createTenant = useMutation(api.tenants.create);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createTenant({ name, email });
+      await createTenant({ 
+        name, 
+        slug: slug || name.toLowerCase().replace(/\s+/g, '-'),
+        paystackKey: 'pk_test_default' 
+      });
       alert('Salon created successfully!');
       setName('');
-      setEmail('');
+      setSlug('');
     } catch (error) {
       console.error(error);
       alert('Error creating salon');
@@ -37,13 +41,13 @@ export default function AddSalonPage() {
           />
         </div>
         <div>
-          <label htmlFor="email">Email</label>
+          <label htmlFor="slug">Slug (optional)</label>
           <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            id="slug"
+            type="text"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            placeholder="Auto-generated from name if empty"
           />
         </div>
         <button type="submit">Add Salon</button>
