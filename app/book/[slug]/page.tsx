@@ -188,6 +188,7 @@ function Step2DateTime({ data, updateData }: { data: BookingData, updateData: (d
               variant="outline"
               className="h-12"
               onClick={() => {
+                if (!data.dateTime) return;
                 const [hours, minutes] = time.split(':');
                 const dateTime = new Date(data.dateTime);
                 dateTime.setHours(parseInt(hours), parseInt(minutes));
