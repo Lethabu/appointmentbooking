@@ -8,7 +8,7 @@
   },
   "scripts": {
     "codegen": "convex codegen",
-    "prebuild": "npm run codegen",
+
     
     "build": "next build",
     "dev": "next dev",
@@ -23,7 +23,7 @@
     "deploy:ai": "docker build -t booking-ai ./ai-agent",
     "sync-instyle": "node scripts/sync-instyle-data.cjs",
     "migrate": "supabase db push",
-    "postinstall": "convex codegen"
+
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.23",

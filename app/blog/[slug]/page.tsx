@@ -4,9 +4,7 @@ import { jsonLd } from "@/lib/jsonLd";
 import { Article, BreadcrumbList, Person, ImageObject, SpeakableSpecification } from 'schema-dts';
 
 type PageProps = {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: PageProps) {
