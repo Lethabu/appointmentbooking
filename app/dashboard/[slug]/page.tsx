@@ -9,8 +9,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Users, TrendingUp, DollarSign, Clock, Star } from 'lucide-react';
 import Link from 'next/link';
+import { PageProps } from '@/types';
 
-export default function TenantDashboard({ params }: { params: { slug: string } }) {
+export default function TenantDashboard({ params }: PageProps<{ slug: string }>) {
   const { slug } = params;
   const tenant = useQuery(api.tenants.getBySlug, slug ? { slug } : 'skip');
   const services = useQuery(api.services.list, tenant?._id ? { tenantId: tenant._id } : 'skip');
