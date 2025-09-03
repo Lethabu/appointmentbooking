@@ -1,11 +1,14 @@
 'use client';
 
 import React from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createBrowserClient } from '@supabase/ssr';
 import { useEffect, useState } from 'react';
 
 export default function MarketingPage() {
-  const supabase = createClientComponentClient();
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
   const [marketingData, setMarketingData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

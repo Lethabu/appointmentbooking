@@ -2,9 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   trailingSlash: false,
-  experimental: {
-    serverComponentsExternalPackages: ['@clerk/nextjs']
-  }
+  serverExternalPackages: ['@clerk/nextjs']
 };
 
 export default nextConfig; 
