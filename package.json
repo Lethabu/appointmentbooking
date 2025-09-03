@@ -8,8 +8,6 @@
   },
   "scripts": {
     "codegen": "convex codegen",
-
-    
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
@@ -22,8 +20,7 @@
     "test:coverage": "jest --coverage",
     "deploy:ai": "docker build -t booking-ai ./ai-agent",
     "sync-instyle": "node scripts/sync-instyle-data.cjs",
-    "migrate": "supabase db push",
-
+    "migrate": "supabase db push"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.23",
@@ -77,9 +74,11 @@
     "date-fns-tz": "^3.2.0",
     "dotenv": "^17.2.1",
     "embla-carousel-react": "8.5.1",
+    "formik": "^2.4.6",
     "input-otp": "1.4.1",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.454.0",
+    "nanoid": "^5.1.5",
     "next": "^15.0.0",
     "next-themes": "^0.4.4",
     "openai": "^5.10.0",
@@ -92,6 +91,7 @@
     "react-hook-form": "^7.54.1",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.0",
+    "redis": "^5.8.2",
     "resend": "^6.0.1",
     "schema-dts": "^1.1.5",
     "sonner": "^1.7.4",
@@ -101,6 +101,7 @@
     "tailwindcss-animate": "^1.0.7",
     "use-debounce": "^10.0.5",
     "vaul": "^0.9.9",
+    "yup": "^1.7.0",
     "zod": "^3.24.1",
     "zustand": "^5.0.6"
   },

@@ -7,14 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Star, MapPin, Phone, Clock } from 'lucide-react';
 import Link from 'next/link';
+import { PageProps } from '@/types';
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
-interface Props {
-  params: Promise<{ slug: string }>;
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<{ slug: string }>): Promise<Metadata> {
   const { slug } = await params;
   const salon = await convex.query(api.tenants.getBySlug, { slug });
   
@@ -45,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function SalonPage({ params }: Props) {
+export default async function SalonPage({ params }: PageProps<{ slug: string }>) {
   const { slug } = await params;
   const salon = await convex.query(api.tenants.getBySlug, { slug });
   const services = salon?._id ? await convex.query(api.services.list, { tenantId: salon._id }) : [];

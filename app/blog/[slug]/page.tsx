@@ -2,12 +2,9 @@ import { convex } from "@/lib/convexClient";
 import { api } from "@/convex/_generated/api";
 import { jsonLd } from "@/lib/jsonLd";
 import { Article, BreadcrumbList, Person, ImageObject, SpeakableSpecification } from 'schema-dts';
+import { PageProps } from '@/types';
 
-type PageProps = {
-  params: Promise<{ slug: string }>;
-};
-
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps<{ slug: string }>) {
   const { slug } = await params;
   const post = await convex.query(api.posts.getBySlug, { slug });
 
@@ -51,7 +48,7 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-async function BlogPostPage({ params }: PageProps) {
+async function BlogPostPage({ params }: PageProps<{ slug: string }>) {
   const { slug } = await params;
   const post = await convex.query(api.posts.getBySlug, { slug });
 
