@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { useQuery } from '@tanstack/react-query';
 import '@testing-library/jest-dom';
 import ServicesPageContent from './page'; // Assuming ServicesPageContent is exported
 
