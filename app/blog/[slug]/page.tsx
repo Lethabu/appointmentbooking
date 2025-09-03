@@ -3,13 +3,13 @@ import { api } from "@/convex/_generated/api";
 import { jsonLd } from "@/lib/jsonLd";
 import { Article, BreadcrumbList, Person, ImageObject, SpeakableSpecification } from 'schema-dts';
 
-type PageProps = {
+type BlogPostPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const post = await convex.query(api.posts.getBySlug, { slug });
 
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-async function BlogPostPage({ params }: PageProps) {
+async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const post = await convex.query(api.posts.getBySlug, { slug });
 
