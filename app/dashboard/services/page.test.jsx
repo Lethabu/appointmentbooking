@@ -25,8 +25,8 @@ jest.mock('@tanstack/react-query', () => ({
 }));
 
 const mockServices = [
-  { id: '1', name: 'Ladies Cut', duration_minutes: 60, price: 35000 }, // R350.00
-  { id: '2', name: 'Gents Cut', duration_minutes: 30, price: 20000 }, // R200.00
+  { id: '1', name: 'Ladies Cut', duration_minutes: 60, price_cents: 35000 }, // R350.00
+  { id: '2', name: 'Gents Cut', duration_minutes: 30, price_cents: 20000 }, // R200.00
 ]
 
 describe('ServicesPage', () => {
