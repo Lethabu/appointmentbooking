@@ -3,19 +3,30 @@ import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import ServicesPage from './page'
+import { useQuery } from '@tanstack/react-query'
 
 // Mock window.confirm
 window.confirm = jest.fn()
 // Mock window.scrollTo to prevent errors in a JSDOM environment
 window.scrollTo = jest.fn()
 
-// Import the mocked modules directly for easier access to their mock functions
-import { useQuery } from 'convex/react';
-import { api } from '../../../convex/_generated/api';
+// Mock @tanstack/react-query's useQuery and useMutation hooks
+jest.mock('@tanstack/react-query', () => ({
+  ...jest.requireActual('@tanstack/react-query'),
+  useQuery: jest.fn(),
+  useMutation: jest.fn(() => ({
+    mutate: jest.fn(),
+    isPending: false,
+    error: null,
+  })),
+  useQueryClient: jest.fn(() => ({
+    invalidateQueries: jest.fn(),
+  })),
+}));
 
 const mockServices = [
-  { _id: '1', name: 'Ladies Cut', duration: 60, price: 35000 }, // R350.00
-  { _id: '2', name: 'Gents Cut', duration: 30, price: 20000 }, // R200.00
+  { id: '1', name: 'Ladies Cut', duration_minutes: 60, price: 35000 }, // R350.00
+  { id: '2', name: 'Gents Cut', duration_minutes: 30, price: 20000 }, // R200.00
 ]
 
 describe('ServicesPage', () => {
@@ -27,7 +38,6 @@ describe('ServicesPage', () => {
   })
 
   test('renders loading state initially and then displays services', async () => {
-    api.services.list.mockReturnValue(mockServices);
     useQuery.mockReturnValue({
       data: mockServices,
       isLoading: false,
