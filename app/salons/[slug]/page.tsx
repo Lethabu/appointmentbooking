@@ -11,11 +11,11 @@ import Link from 'next/link';
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = params;
   const salon = await convex.query(api.tenants.getBySlug, { slug });
   
   if (!salon) return { title: 'Salon Not Found' };
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function SalonPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug } = params;
   const salon = await convex.query(api.tenants.getBySlug, { slug });
   const services = salon?._id ? await convex.query(api.services.list, { tenantId: salon._id }) : [];
 
