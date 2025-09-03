@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/app/utils/supabaseClient';
 import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon } from 'lucide-react';
+import { nanoid } from 'nanoid';
 
 export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed, onBack }) {
   console.log('Salon ID prop:', salonId); // Log salonId to check availability
@@ -139,17 +140,19 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
         return;
       }
 
+      const order_id = `booking_${nanoid(10)}`;
+
       // Initiate payment
-      const response = await fetch('/api/paystack/initialize-payment', {
+      const response = await fetch('/api/payments/paystack/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          serviceDetails: {
-            id: serviceId,
-            price: servicePrice,
-          },
+          order_id: order_id,
+          amount: servicePrice,
+          email: session.user.email,
+          currency: 'ZAR',
         }),
       });
 
@@ -280,8 +283,8 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
                   </button>
                 </div>
                 <div className="grid grid-cols-7 gap-1 text-center text-sm">
-                  {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                    <div key={day} className="font-medium text-gray-500 py-2">{day}</div>
+                  {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+                    <div key={`${day}-${index}`} className="font-medium text-gray-500 py-2">{day}</div>
                   ))}
                   {getDaysInMonth().map((date, index) => (
                     <button
