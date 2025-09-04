@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { supabase } from '@/app/utils/supabaseClient';
 import { ChevronLeft, ChevronRight, Clock, User, Calendar as CalendarIcon } from 'lucide-react';
 
@@ -14,17 +15,7 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
   const [error, setError] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  useEffect(() => {
-    fetchStaff();
-  }, [salonId]);
-
-  useEffect(() => {
-    if (selectedDate && selectedStaff) {
-      fetchAvailableSlots();
-    }
-  }, [selectedDate, selectedStaff]);
-
-  const fetchStaff = async () => {
+  const fetchStaff = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('staff')
@@ -37,9 +28,14 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
     } catch (err) {
       setError('Failed to load staff');
     }
-  };
+  }, [salonId]);
 
-  const fetchAvailableSlots = async () => {
+  useEffect(() => {
+    fetchStaff();
+  }, [fetchStaff]);
+
+  const fetchAvailableSlots = useCallback(async () => {
+    if (!selectedDate || !selectedStaff) return;
     setLoading(true);
     setError(null);
     try {
@@ -74,7 +70,11 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedDate, selectedStaff]);
+
+  useEffect(() => {
+      fetchAvailableSlots();
+  }, [fetchAvailableSlots]);
 
   const handleBooking = async () => {
     if (!selectedDate || !selectedTime || !selectedStaff) {
@@ -228,9 +228,9 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
                       className={`w-full p-3 rounded-lg border-2 transition-all text-left ${selectedStaff === stylist.id ? 'border-purple-600 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+                        <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden relative">
                           {stylist.image_url ? (
-                            <img src={stylist.image_url} alt={stylist.name} className="w-full h-full object-cover" />
+                            <Image src={stylist.image_url} alt={stylist.name} layout="fill" objectFit="cover" />
                           ) : (
                             <User className="w-6 h-6 text-gray-400" />
                           )}

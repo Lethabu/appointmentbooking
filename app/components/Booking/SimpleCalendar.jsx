@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation'; // Import useRouter
 import { supabase } from '@/app/utils/supabaseClient';
 import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon } from 'lucide-react';
@@ -19,31 +19,7 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
   const router = useRouter(); // Initialize useRouter
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  useEffect(() => {
-    fetchStylist();
-  }, [salonId]);
-
-  // Fetch service price when serviceId changes
-  useEffect(() => {
-    console.log('Service ID changed:', serviceId); // Log serviceId
-    if (serviceId) {
-      fetchServicePrice();
-    } else {
-      setServicePrice(null); // Reset price if serviceId is null/undefined
-    }
-  }, [serviceId]);
-
-  useEffect(() => {
-    // Only fetch slots if a date and a valid stylist are selected
-    if (selectedDate && stylistId) {
-      console.log('Fetching slots for date:', selectedDate, 'and stylist:', stylistId); // Log for debugging
-      fetchAvailableSlots();
-    } else {
-      setAvailableSlots([]); // Clear slots if conditions are not met
-    }
-  }, [selectedDate, stylistId]);
-
-  const fetchStylist = async () => {
+  const fetchStylist = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -80,10 +56,49 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
     } finally {
       setLoading(false);
     }
-  };
+  }, [salonId]);
 
-  const fetchAvailableSlots = async () => {
-    if (!stylistId) { // Only fetch slots if a stylist is selected
+  useEffect(() => {
+    fetchStylist();
+  }, [fetchStylist]);
+
+  const fetchServicePrice = useCallback(async () => {
+    // This function is no longer directly needed for payment initiation as price is handled in the API route
+    // but kept here in case it's used elsewhere or for future reference.
+    if (!serviceId) return;
+    try {
+      const { data, error } = await supabase
+        .from('services')
+        .select('price_cents') // Fetch price in cents
+        .eq('id', serviceId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching service price:', error);
+        setError('Failed to fetch service price.');
+        setServicePrice(0);
+        return;
+      }
+      setServicePrice(data.price_cents); // Store price in cents
+    } catch (err) {
+      console.error('Error fetching service price:', err);
+      setError('Failed to fetch service price.');
+      setServicePrice(0);
+    }
+  }, [serviceId]);
+
+  // Fetch service price when serviceId changes
+  useEffect(() => {
+    console.log('Service ID changed:', serviceId); // Log serviceId
+    if (serviceId) {
+      fetchServicePrice();
+    } else {
+      setServicePrice(null); // Reset price if serviceId is null/undefined
+    }
+  }, [serviceId, fetchServicePrice]);
+
+    const fetchAvailableSlots = useCallback(async () => {
+    if (!stylistId || !selectedDate) { // Only fetch slots if a stylist is selected
       setAvailableSlots([]); // Clear slots if no stylist is selected
       return;
     }
@@ -118,7 +133,18 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedDate, stylistId]);
+
+
+  useEffect(() => {
+    // Only fetch slots if a date and a valid stylist are selected
+    if (selectedDate && stylistId) {
+      console.log('Fetching slots for date:', selectedDate, 'and stylist:', stylistId); // Log for debugging
+      fetchAvailableSlots();
+    } else {
+      setAvailableSlots([]); // Clear slots if conditions are not met
+    }
+  }, [selectedDate, stylistId, fetchAvailableSlots]);
 
   const handleBooking = async () => {
     console.log("handleBooking called."); // Debug log
@@ -170,30 +196,6 @@ export default function SimpleCalendar({ salonId, serviceId, onBookingConfirmed,
     } finally {
       setLoading(false);
       console.log("handleBooking finished, loading set to false."); // Debug log
-    }
-  };
-
-  const fetchServicePrice = async () => {
-    // This function is no longer directly needed for payment initiation as price is handled in the API route
-    // but kept here in case it's used elsewhere or for future reference.
-    try {
-      const { data, error } = await supabase
-        .from('services')
-        .select('price_cents') // Fetch price in cents
-        .eq('id', serviceId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching service price:', error);
-        setError('Failed to fetch service price.');
-        setServicePrice(0);
-        return;
-      }
-      setServicePrice(data.price_cents); // Store price in cents
-    } catch (err) {
-      console.error('Error fetching service price:', err);
-      setError('Failed to fetch service price.');
-      setServicePrice(0);
     }
   };
 

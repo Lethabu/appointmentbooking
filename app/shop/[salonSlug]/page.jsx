@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 import { supabase } from "../../utils/supabaseClient";
 import { useCartStore } from "../../utils/cartStore";
 
@@ -62,7 +63,7 @@ export default function ShopPage() {
         {products.map((product) => (
           <div key={product.id} className="bg-white rounded shadow p-4 flex flex-col items-center">
             {product.image_url && (
-              <img src={product.image_url} alt={product.name} className="w-24 h-24 object-cover mb-2 rounded" />
+              <Image src={product.image_url} alt={product.name} width={96} height={96} className="w-24 h-24 object-cover mb-2 rounded" />
             )}
             <div className="font-semibold mb-1">{product.name}</div>
             <div className="mb-2">R{product.price}</div>
