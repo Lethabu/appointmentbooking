@@ -1,7 +1,6 @@
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { CSPostHogProvider } from '@/components/PostHogProvider';
-import { ConvexClientProvider } from './providers';
 import { Inter } from 'next/font/google';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
@@ -66,7 +65,6 @@ export default function RootLayout({
       <body className={inter.className}>
         <ClerkProvider>
           <CSPostHogProvider>
-            <ConvexClientProvider>
               <Navigation />
               <main className="min-h-screen">
                 {children}
@@ -74,7 +72,6 @@ export default function RootLayout({
               <Footer />
               <Toaster />
               <SonnerToaster />
-            </ConvexClientProvider>
           </CSPostHogProvider>
         </ClerkProvider>
       </body>

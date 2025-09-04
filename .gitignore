@@ -53,3 +53,5 @@ node_modules/
 .supabase
 # clerk configuration (can include secrets)
 /.clerk/
+
+/generated/prisma
