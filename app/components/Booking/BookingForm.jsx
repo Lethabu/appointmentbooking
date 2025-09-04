@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export default function BookingForm({ tenantId = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70' }) {
   const [services, setServices] = useState([]);
@@ -13,15 +13,15 @@ export default function BookingForm({ tenantId = 'ccb12b4d-ade6-467d-a614-7c9d19
   });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchServices();
-  }, []);
-
-  const fetchServices = async () => {
+  const fetchServices = useCallback(async () => {
     const response = await fetch(`/api/services?tenant_id=${tenantId}`);
     const data = await response.json();
     setServices(data);
-  };
+  }, [tenantId]);
+
+  useEffect(() => {
+    fetchServices();
+  }, [fetchServices]);
 
   const handleBooking = async (e) => {
     e.preventDefault();

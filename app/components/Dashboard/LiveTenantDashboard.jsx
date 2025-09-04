@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -11,7 +11,7 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       const { data, error } = await supabase.rpc('get_tenant_dashboard', {
         tenant_uuid: tenantId
@@ -39,7 +39,7 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
     } finally {
       setLoading(false);
     }
-  };
+  }, [tenantId]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -64,7 +64,7 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
       supabase.removeChannel(channel);
       clearInterval(interval);
     };
-  }, [tenantId]);
+  }, [tenantId, fetchDashboardData]);
 
   if (loading) {
     return (

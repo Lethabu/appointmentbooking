@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   HomeIcon,
   CalendarDaysIcon,
@@ -122,7 +123,7 @@ export default async function DashboardLayout({ children }) {
       <div className="min-h-screen flex bg-gray-100">
       <aside className="w-64 bg-white shadow-md flex-shrink-0 flex flex-col">
         <div className="p-6 border-b flex items-center space-x-4">
-          {logoUrl && <img src={logoUrl} alt="Salon Logo" className="h-10 w-auto" />}
+          {logoUrl && <Image src={logoUrl} alt="Salon Logo" width={40} height={40} className="h-10 w-auto" />}
           <Link href="/dashboard" className="text-2xl font-bold text-indigo-600 truncate">
             {salon.name}
           </Link>

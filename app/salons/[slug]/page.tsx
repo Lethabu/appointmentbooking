@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ConvexHttpClient } from 'convex/browser';
+import Image from 'next/image';
 import { api } from '@/convex/_generated/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -96,9 +97,11 @@ export default async function SalonPage({ params }: PageProps<{ slug: string }>)
             </div>
             
             <div className="relative">
-              <img 
+              <Image 
                 src={salon.ogImage || '/placeholder.jpg'} 
                 alt={salon.name}
+                width={500}
+                height={500}
                 className="rounded-lg shadow-2xl"
               />
             </div>
