@@ -1,5 +1,3 @@
-"use client";
-
 'use client';
 
 import { createContext, useContext, useReducer } from 'react';
@@ -40,13 +38,9 @@ const cartReducer = (state, action) => {
 };
 
 export function CartProvider({ children }) {
-  console.log('CartProvider rendered');
   const [state, dispatch] = useReducer(cartReducer, { items: [] });
 
-  console.log('Cart state:', state);
-
   const addItem = (item) => {
-    console.log('Adding item:', item);
     dispatch({ type: 'ADD_ITEM', payload: item });
   };
 

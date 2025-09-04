@@ -86,7 +86,7 @@ export const ServiceManagement: React.FC = () => {
 
   useEffect(() => {
     fetchServices();
-  }, []);
+  }, [fetchServices]);
 
   const formatPrice = (priceCents: number): string => {
     return `R${(priceCents / 100).toFixed(2)}`;

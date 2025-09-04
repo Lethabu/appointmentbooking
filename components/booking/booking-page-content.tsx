@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useTenantContext } from "@/contexts/tenant-context"
 import { useTheme } from "@/contexts/theme-context"
 import { BookingHeader } from "./booking-header"
@@ -29,13 +29,7 @@ export function BookingPageContent() {
     notes: "",
   })
 
-  useEffect(() => {
-    if (tenant) {
-      loadData()
-    }
-  }, [tenant])
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (!tenant) return
 
     try {
@@ -50,7 +44,13 @@ export function BookingPageContent() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [tenant])
+
+  useEffect(() => {
+    if (tenant) {
+      loadData()
+    }
+  }, [tenant, loadData])
 
   const handleServiceToggle = (service: Service) => {
     setSelectedServices((prev) => {

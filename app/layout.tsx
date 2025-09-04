@@ -4,8 +4,17 @@ import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { Inter } from 'next/font/google';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
-import { Toaster } from '@/components/ui/toaster';
-import { Toaster as SonnerToaster } from '@/components/ui/sonner';
+import ConvexClientProvider from './ConvexClientProvider';
+import { CartProvider } from '@/app/context/CartContext';
+import dynamic from 'next/dynamic';
+
+const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.Toaster), {
+  ssr: false,
+});
+
+const SonnerToaster = dynamic(() => import('@/components/ui/sonner').then(mod => mod.Toaster), {
+  ssr: false,
+});
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -65,13 +74,17 @@ export default function RootLayout({
       <body className={inter.className}>
         <ClerkProvider>
           <CSPostHogProvider>
-              <Navigation />
-              <main className="min-h-screen">
-                {children}
-              </main>
-              <Footer />
-              <Toaster />
-              <SonnerToaster />
+            <ConvexClientProvider>
+              <CartProvider>
+                <Navigation />
+                <main className="min-h-screen">
+                  {children}
+                </main>
+                <Footer />
+                <Toaster />
+                <SonnerToaster />
+              </CartProvider>
+            </ConvexClientProvider>
           </CSPostHogProvider>
         </ClerkProvider>
       </body>
