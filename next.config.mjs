@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  trailingSlash: false,
-  serverExternalPackages: ['@clerk/nextjs']
+  trailingSlash: false
 };
 
 export default nextConfig; 
