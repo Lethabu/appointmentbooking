@@ -5,7 +5,6 @@ import { Inter } from 'next/font/google';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
 import ConvexClientProvider from './ConvexClientProvider';
-import { CartProvider } from '@/app/context/CartContext';
 import dynamic from 'next/dynamic';
 
 const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.Toaster), {
@@ -13,6 +12,10 @@ const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.
 });
 
 const SonnerToaster = dynamic(() => import('@/components/ui/sonner').then(mod => mod.Toaster), {
+  ssr: false,
+});
+
+const CartProvider = dynamic(() => import('@/app/context/CartContext').then(mod => mod.CartProvider), {
   ssr: false,
 });
 
