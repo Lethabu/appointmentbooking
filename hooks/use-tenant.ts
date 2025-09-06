@@ -1,14 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase"
 import type { Tenant } from "@/types"
 
 export function useTenant(subdomain: string) {
   const [tenant, setTenant] = useState<Tenant | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const supabase = createClient()
+  // Use imported supabase client
 
   const fetchTenant = async () => {
     try {

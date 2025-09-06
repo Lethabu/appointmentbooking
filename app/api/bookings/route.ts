@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendWhatsAppMessage } from '@/lib/aisensy';
+import { sendWhatsAppMessage } from '@/services/whatsapp/aisensy';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -23,11 +23,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  await sendWhatsAppMessage(client_phone, 'booking_confirmation', [
-    client_name,
-    service_id,
-    start_time
-  ]);
+  await sendWhatsAppMessage({
+    phone: client_phone,
+    message: `Hi ${client_name}! Your booking for ${service_id} at ${start_time} has been confirmed. See you soon!`,
+    tenantId: 'instylehairboutique'
+  });
 
   return NextResponse.json({ success: true, booking: data });
 }

@@ -1,4 +1,4 @@
-import { createClient } from "./supabase"
+import { supabase } from "./supabase"
 import type { Service, Appointment, Product, BookingFormData } from "@/types"
 
 interface ChatResponse {
@@ -12,7 +12,7 @@ interface AgentSuggestion {
 }
 
 class ApiClient {
-  private supabase = createClient()
+  private supabase = supabase
 
   // Services
   async getServices(tenantId: string): Promise<Service[]> {
