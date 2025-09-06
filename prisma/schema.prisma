@@ -58,9 +58,76 @@ model Tenant {
   id            String    @id @default(cuid())
   name          String
   slug          String    @unique
+  subdomain     String    @unique
   logo          String?
+  brand         Json?     // {"primary":"#8b5cf6","secondary":"#f59e0b"}
   users         User[]
   appointments  Appointment[]
+  services      Service[]
+  bookings      Booking[]
+  products      Product[]
+  carts         Cart[]
+}
+
+model Service {
+  id            String @id @default(cuid())
+  tenant_id     String
+  name          String
+  duration_min  Int
+  price_cents   Int
+  category      String
+  supersaas_id  String? @unique
+  description   String?
+  tenant        Tenant @relation(fields: [tenant_id], references: [id])
+  bookings      Booking[]
+}
+
+model Product {
+  id            String @id @default(cuid())
+  tenant_id     String
+  name          String
+  description   String
+  price_cents   Int
+  category      String
+  supersaas_id  String? @unique
+  images        String   // JSON array of URLs
+  inventory     Int      @default(999)
+  tenant        Tenant   @relation(fields: [tenant_id], references: [id])
+  cartItems     CartItem[]
+}
+
+model Cart {
+  id            String @id @default(cuid())
+  tenant_id     String
+  client_phone  String
+  client_name   String?
+  items         CartItem[]
+  total_cents   Int      @default(0)
+  status        String   @default("active")
+  created_at    DateTime @default(now())
+  tenant        Tenant   @relation(fields: [tenant_id], references: [id])
+}
+
+model CartItem {
+  id            String @id @default(cuid())
+  cart_id       String
+  product_id    String
+  quantity      Int      @default(1)
+  cart          Cart     @relation(fields: [cart_id], references: [id])
+  product       Product  @relation(fields: [product_id], references: [id])
+}
+
+model Booking {
+  id            String @id @default(cuid())
+  tenant_id     String
+  client_phone  String
+  client_name   String
+  service_id    String
+  start_at      DateTime
+  status        String @default("confirmed")
+  supersaas_id  String? @unique
+  tenant        Tenant @relation(fields: [tenant_id], references: [id])
+  service       Service @relation(fields: [service_id], references: [id])
 }
 
 model Appointment {
