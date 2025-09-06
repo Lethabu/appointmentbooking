@@ -1,5 +1,6 @@
 import { createServerSupabaseClient, setTenantContext } from '@/lib/supabase'
 import { BookingWidget } from '@/components/booking/booking-widget'
+import { TypebotWidget } from '@/components/typebot/typebot-widget'
 import { notFound } from 'next/navigation'
 
 interface TenantPageProps {
@@ -60,27 +61,13 @@ export default async function TenantPage({ params }: TenantPageProps) {
       </main>
 
       {/* Typebot Chat Widget */}
-      <div id="typebot-container" className="fixed bottom-4 right-4">
-        <script 
-          type="module" 
-          dangerouslySetInnerHTML={{
-            __html: `
-              import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0.3/dist/web.js'
-              
-              Typebot.initBubble({
-                typebot: "${process.env.NEXT_PUBLIC_TYPEBOT_ID}",
-                theme: {
-                  button: { backgroundColor: "${branding.primaryColor || '#6366f1'}" }
-                },
-                prefilledVariables: {
-                  tenantId: "${tenant.id}",
-                  tenantName: "${tenant.name}"
-                }
-              })
-            `
-          }}
-        />
-      </div>
+      <TypebotWidget 
+        typebotId={process.env.NEXT_PUBLIC_TYPEBOT_ID || 'instyle-booking-flow'}
+        tenantId={tenant.id}
+        theme={{
+          button: { backgroundColor: branding.primaryColor || '#6366f1' }
+        }}
+      />
     </div>
   )
 }

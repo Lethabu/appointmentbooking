@@ -7,7 +7,7 @@ export interface PaymentRequest {
   callback_url: string
 }
 
-// Paystack Integration (Primary)
+// Paystack Integration (Primary - Best for ZAR)
 export async function createPaystackPayment(data: PaymentRequest) {
   const response = await fetch('https://api.paystack.co/transaction/initialize', {
     method: 'POST',
@@ -20,14 +20,15 @@ export async function createPaystackPayment(data: PaymentRequest) {
       amount: data.amount,
       reference: data.reference,
       callback_url: data.callback_url,
-      currency: 'ZAR'
+      currency: 'ZAR',
+      channels: ['card', 'bank', 'ussd', 'qr', 'mobile_money']
     }),
   })
   
   return response.json()
 }
 
-// Yoco Integration (Alternative)
+// Yoco Integration (Card + Tap)
 export async function createYocoPayment(data: PaymentRequest) {
   const response = await fetch('https://online.yoco.com/v1/charges/', {
     method: 'POST',
@@ -48,7 +49,7 @@ export async function createYocoPayment(data: PaymentRequest) {
   return response.json()
 }
 
-// Ozow Integration (Bank Transfer)
+// Ozow Integration (Instant EFT + QR)
 export async function createOzowPayment(data: PaymentRequest) {
   const response = await fetch('https://api.ozow.com/postpaymentrequest', {
     method: 'POST',
@@ -68,4 +69,18 @@ export async function createOzowPayment(data: PaymentRequest) {
   })
   
   return response.json()
+}
+
+// Multi-gateway payment creation
+export async function createPayment(data: PaymentRequest, gateway: 'paystack' | 'yoco' | 'ozow' = 'paystack') {
+  switch (gateway) {
+    case 'paystack':
+      return createPaystackPayment(data)
+    case 'yoco':
+      return createYocoPayment(data)
+    case 'ozow':
+      return createOzowPayment(data)
+    default:
+      return createPaystackPayment(data)
+  }
 }
