@@ -13,6 +13,13 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
+  			// InStyle Brand Colors
+  			instyle: {
+  				primary: '#8b5cf6',
+  				secondary: '#f59e0b',
+  				dark: '#1f2937',
+  				light: '#ffffff'
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
