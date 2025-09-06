@@ -10,18 +10,28 @@ export default function ChatWindow() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const newMessages = [...messages, { role: 'user', content: input }];
-    setMessages(newMessages);
+    const userMessage = { role: 'user', content: input };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput('');
 
-    // TODO: Call the backend API at /api/chat
-    // const response = await fetch('/api/chat', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ message: input }),
-    // });
-    // const data = await response.json();
-    // setMessages((prevMessages) => [...prevMessages, { role: 'assistant', content: data.response }]);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: input }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to get AI response');
+      }
+
+      const data = await response.json();
+      setMessages((prevMessages) => [...prevMessages, { role: 'assistant', content: data.response }]);
+    } catch (error) {
+      console.error('Error communicating with AI:', error);
+      setMessages((prevMessages) => [...prevMessages, { role: 'assistant', content: 'Error: Could not connect to AI.' }]);
+    }
   };
 
   return (

@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/app/utils/supabaseClient';
 import { Step2_DateTime } from "@/components/booking/Step2_DateTime";
@@ -52,25 +53,34 @@ export default function BookingPage() {
     };
 
     const handleConfirmBooking = async () => {
-        const { data, error } = await supabase
-            .from('bookings')
-            .insert([
-                {
-                    salon_id: salon.id,
-                    service_id: selectedService.id,
-                    date: booking.date,
-                    time: booking.time,
-                    customer_name: booking.name,
-                    customer_email: booking.email,
-                    customer_phone: booking.phone,
-                    price: selectedService.price
-                }
-            ]);
-        if (error) {
+        const toastId = toast.loading('Booking your appointment...');
+        try {
+            const clientDetails = {
+                name: booking.name,
+                email: booking.email,
+                phone: booking.phone,
+            };
+            const serviceIds = [selectedService.id]; // Assuming serviceIds is an array
+
+            const response = await fetch('/api/book', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ clientDetails, serviceIds }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to book appointment');
+            }
+
+            const result = await response.json();
+            toast.success('Appointment booked successfully!', { id: toastId });
+            router.push('/booking-success'); // Redirect to a success page
+        } catch (error) {
             console.error('Error booking:', error);
-        } else {
-            alert('Booking confirmed!');
-            router.push('/');
+            toast.error(error.message || 'Error booking appointment.', { id: toastId });
         }
     };
 

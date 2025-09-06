@@ -5,6 +5,7 @@
   packages = [
     pkgs.nodejs_20
     pkgs.openssl_3_3
+    pkgs.sudo
   ];
   idx.extensions = [];
   idx.previews = {
