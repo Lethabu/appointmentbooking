@@ -9,11 +9,19 @@ export function createServerSupabaseClient() {
   return createClient(supabaseUrl, supabaseAnonKey)
 }
 
+// Tenant-aware client
+export const createTenantClient = (tenantId: string) => {
+  const client = createClient(supabaseUrl, supabaseAnonKey);
+  
+  // Set tenant context for RLS
+  client.rpc('set_tenant_context', { tenant_id: tenantId });
+  
+  return client;
+};
+
 export async function setTenantContext(tenantId: string) {
-  const { error } = await supabase.rpc('set_config', {
-    setting_name: 'app.current_tenant_id',
-    setting_value: tenantId,
-    is_local: true
+  const { error } = await supabase.rpc('set_tenant_context', {
+    tenant_id: tenantId
   })
   
   if (error) console.error('Error setting tenant context:', error)
