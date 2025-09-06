@@ -1,13 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase"
 import type { User } from "@supabase/auth-helpers-nextjs"
 
 export function useSupabase() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  // Use imported supabase client
 
   useEffect(() => {
     const getUser = async () => {

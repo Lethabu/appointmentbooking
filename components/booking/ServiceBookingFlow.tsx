@@ -31,8 +31,8 @@ const services = [
 ];
 
 export default function ServiceBookingFlow() {
-  const [selectedService, setSelectedService] = useState(null);
-  const [customerDetails, setCustomerDetails] = useState({
+  const [selectedService, setSelectedService] = useState<any>(null);
+  const [customerDetails, setCustomerDetails] = useState<any>({
     name: '',
     email: '',
     phone: ''
@@ -42,6 +42,14 @@ export default function ServiceBookingFlow() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const formatPrice = (cents: number) => `R${(cents / 100).toFixed(0)}`;
+
+  interface Service {
+    id: string;
+    name: string;
+    price_cents: number;
+    duration: number;
+    description: string;
+  }
 
   const handleBookingPayment = async () => {
     if (!selectedService || !customerDetails.name || !customerDetails.email || !selectedDate || !selectedTime) {
