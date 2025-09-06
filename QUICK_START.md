@@ -1,100 +1,72 @@
-# 🚀 Quick Start: Add Convex + Clerk + Paystack
+# Quick Start - Production Deployment
 
-## 1. Install Dependencies (2 min)
+## 🚨 Critical: Run This First
+
 ```bash
-npm install convex @clerk/nextjs @paystack/inline-js
+# 1. Install dependencies
+npm install
+
+# 2. Set environment variables
+cp .env.example .env.local
+# Edit .env.local with your values
+
+# 3. Apply security fixes
+npm run db:migrate
+
+# 4. Validate security
+npm run test:security
+
+# 5. Deploy to production
+chmod +x scripts/deploy-production.sh
+./scripts/deploy-production.sh
 ```
 
-## 2. Initialize Convex (3 min)
+## ⚡ 5-Minute Security Fix
+
+If you need to fix security issues immediately:
+
 ```bash
-npx convex dev
-# Follow prompts to create account and deployment
+# Apply RLS migration
+npx supabase db push
+
+# Test tenant isolation
+psql $DATABASE_URL -c "SET ROLE anon; SELECT count(*) FROM appointments;"
+# Should return 0
+
+# Deploy middleware fix
+vercel --prod
 ```
 
-## 3. Update Environment Variables
-Add to your `.env.local`:
-```env
-# Get these from convex.dev dashboard
-NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
-CONVEX_DEPLOY_KEY=your-deploy-key
+## 🔧 Environment Setup
 
-# Get these from clerk.com dashboard  
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxx
-CLERK_SECRET_KEY=sk_test_xxx
+Required variables in `.env.local`:
 
-# Get these from paystack.com dashboard
-NEXT_PUBLIC_PAYSTACK_KEY=pk_test_xxx
-PAYSTACK_SECRET_KEY=sk_test_xxx
-```
-
-## 4. Add Providers to Layout (5 min)
-```tsx
-// app/layout.tsx - Update your existing layout
-import { ClerkProvider } from '@clerk/nextjs';
-import { ConvexProvider, ConvexReactClient } from 'convex/react';
-
-const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
-
-export default function RootLayout({ children }) {
-  return (
-    <ClerkProvider>
-      <ConvexProvider client={convex}>
-        <html>
-          <body>
-            {/* Keep your existing providers */}
-            {children}
-          </body>
-        </html>
-      </ConvexProvider>
-    </ClerkProvider>
-  );
-}
-```
-
-## 5. Test Real-time Booking Updates (2 min)
-Add to any booking page:
-```tsx
-import { LiveBookingStatus } from '@/app/components/BookingWidget/LiveBookingStatus';
-
-// In your component
-<LiveBookingStatus 
-  appointmentId="123" 
-  tenantId={process.env.INSTYLE_TENANT_ID} 
-/>
-```
-
-## 6. Test Paystack Payments (2 min)
-Add to checkout page:
-```tsx
-import { PaymentSelector } from '@/app/components/Booking/PaymentSelector';
-
-// In your component
-<PaymentSelector
-  amount={750}
-  email="customer@example.com"
-  appointmentId="123"
-  tenantId={process.env.INSTYLE_TENANT_ID}
-  onPaymentSuccess={(tx) => console.log('Payment success:', tx)}
-/>
-```
-
-## 7. Deploy (1 min)
 ```bash
-npx convex deploy
-npm run build
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+GEMINI_API_KEY=your_gemini_key
 ```
 
-## ✅ Success Checklist
-- [ ] Convex dashboard shows your schema
-- [ ] Real-time updates appear in browser
-- [ ] Paystack test payment works
-- [ ] Existing Supabase features still work
-- [ ] No breaking changes to current users
+## ✅ Validation Commands
 
-## 🎯 Next Steps
-1. Gradually migrate hot-path operations to Convex
-2. Add Clerk auth for new user flows
-3. A/B test Paystack vs PayFast conversion rates
-4. Monitor performance improvements
+```bash
+# Security check
+npm run validate:deployment
 
-**Total setup time: ~15 minutes**
+# Health check
+curl https://appointmentbooking.co.za/api/health
+
+# Tenant check  
+curl https://instylehairboutique.appointmentbooking.co.za/api/health
+```
+
+## 🚀 Success Indicators
+
+- ✅ Health endpoints return 200
+- ✅ Security tests pass
+- ✅ Tenant isolation working
+- ✅ Real-time updates active
+- ✅ AI chat responding
+
+**Platform is production ready when all indicators show ✅**

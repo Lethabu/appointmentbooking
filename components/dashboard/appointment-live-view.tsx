@@ -1,14 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar, Clock, Phone, User } from "lucide-react"
+import { supabase } from "@/lib/supabase"
 import type { Appointment } from "@/types"
 
-// Mock appointments data
+interface AppointmentLiveViewProps {
+  tenantId: string;
+}
+
+// Mock appointments data (fallback)
 const mockAppointments: Appointment[] = [
   {
     id: "1",
@@ -68,8 +73,62 @@ const mockAppointments: Appointment[] = [
   },
 ]
 
-export function AppointmentLiveView() {
+export function AppointmentLiveView({ tenantId }: AppointmentLiveViewProps) {
   const [selectedPeriod, setSelectedPeriod] = useState("today")
+  const [appointments, setAppointments] = useState<Appointment[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch appointments with tenant isolation
+  const fetchAppointments = async () => {
+    try {
+      // Set tenant context for RLS
+      await supabase.rpc('set_tenant_context', { p_tenant_id: tenantId });
+      
+      const { data, error } = await supabase
+        .from('appointments')
+        .select(`
+          *,
+          clients(name, phone),
+          services(name, price)
+        `)
+        .order('datetime', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching appointments:', error);
+        setAppointments(mockAppointments); // Fallback to mock data
+      } else {
+        setAppointments(data || []);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setAppointments(mockAppointments);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Real-time subscription
+  useEffect(() => {
+    fetchAppointments();
+
+    // Set up real-time subscription
+    const channel = supabase
+      .channel('appointments-changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'appointments',
+        filter: `tenant_id=eq.${tenantId}`
+      }, (payload) => {
+        console.log('Real-time update:', payload);
+        fetchAppointments(); // Refresh data
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [tenantId]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -87,8 +146,27 @@ export function AppointmentLiveView() {
   }
 
   const filterAppointments = (period: string) => {
-    // In a real app, this would filter based on actual dates
-    return mockAppointments
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    return appointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.datetime);
+      
+      switch (period) {
+        case 'today':
+          return appointmentDate >= today && appointmentDate < new Date(today.getTime() + 24 * 60 * 60 * 1000);
+        case 'week':
+          const weekStart = new Date(today.getTime() - today.getDay() * 24 * 60 * 60 * 1000);
+          const weekEnd = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+          return appointmentDate >= weekStart && appointmentDate < weekEnd;
+        case 'month':
+          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+          const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+          return appointmentDate >= monthStart && appointmentDate < monthEnd;
+        default:
+          return true;
+      }
+    });
   }
 
   return (
