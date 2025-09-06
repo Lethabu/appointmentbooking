@@ -1,26 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
+  const hostname = request.headers.get('host') || '';
+  const url = request.nextUrl.clone();
+
+  // Extract tenant from subdomain
+  const subdomain = hostname.split('.')[0];
   
-  // A/B Testing for pricing page
-  if (request.nextUrl.pathname === '/pricing') {
-    const variant = Math.random() < 0.5 ? 'control' : 'test';
-    response.cookies.set('pricing-variant', variant);
-    
-    // You could rewrite to different pages based on variant
-    // if (variant === 'test') {
-    //   return NextResponse.rewrite(new URL('/pricing-v2', request.url));
-    // }
+  // Handle apex domain redirects (security fix #3)
+  if (hostname === 'instylehairboutique.co.za') {
+    return NextResponse.redirect('https://instylehairboutique.appointmentbooking.co.za' + url.pathname);
   }
-  
-  // Performance headers
-  response.headers.set('X-DNS-Prefetch-Control', 'on');
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
-  
-  return response;
+
+  // Multi-tenant routing
+  if (subdomain && subdomain !== 'www' && subdomain !== 'appointmentbooking') {
+    // Inject tenant_id into headers for RLS
+    const response = NextResponse.next();
+    response.headers.set('x-tenant-id', subdomain);
+    
+    // Rewrite to tenant-specific path
+    if (!url.pathname.startsWith(`/${subdomain}`)) {
+      url.pathname = `/${subdomain}${url.pathname}`;
+      return NextResponse.rewrite(url);
+    }
+    
+    return response;
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {

@@ -6,6 +6,8 @@ import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
 import ConvexClientProvider from './ConvexClientProvider';
 import dynamic from 'next/dynamic';
+import ChatWindow from '@/components/ChatWindow';
+import { headers } from 'next/headers';
 
 const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.Toaster), {
   ssr: false,
@@ -72,6 +74,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = headers();
+  const tenantId = headersList.get('x-tenant-id') || 'default';
+  
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -84,6 +89,7 @@ export default function RootLayout({
                   {children}
                 </main>
                 <Footer />
+                <ChatWindow tenantId={tenantId} />
                 <Toaster />
                 <SonnerToaster />
               </CartProvider>
