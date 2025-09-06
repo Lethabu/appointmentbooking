@@ -1,28 +1,43 @@
-import axios from 'axios';
+// AiSensy WhatsApp Business API Integration
 
-const AISENSY_BASE_URL = 'https://backend.aisensy.com/campaign/t1/api/v2';
+export class AiSensyClient {
+  private apiUrl = process.env.AISENSY_API_URL!
+  private apiKey = process.env.AISENSY_API_KEY!
 
-export async function sendWhatsAppMessage(phone: string, templateName: string, params: unknown[] = []) {
-  try {
-    const response = await axios.post(
-      `${AISENSY_BASE_URL}/campaigns/send`,
-      {
-        projectID: process.env.AISENSY_PROJECT_ID,
-        campaignName: templateName,
-        destination: phone,
-        templateParams: params
+  async sendTemplate(to: string, templateName: string, parameters: any[] = []) {
+    const response = await fetch(`${this.apiUrl}/sendTemplate`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json',
       },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.AISENSY_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-    return response.data;
-  } catch (err: unknown) {
-    const error = err as { response?: { data?: unknown }; message?: string };
-    console.error('AiSensy API error:', error.response?.data || error.message);
-    throw new Error('Failed to send WhatsApp message');
+      body: JSON.stringify({
+        to,
+        template: templateName,
+        language: 'en',
+        parameters
+      }),
+    })
+    
+    return response.json()
+  }
+
+  async sendMessage(to: string, message: string) {
+    const response = await fetch(`${this.apiUrl}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to,
+        type: 'text',
+        text: { body: message }
+      }),
+    })
+    
+    return response.json()
   }
 }
+
+export const aisensy = new AiSensyClient()
