@@ -4,13 +4,9 @@ import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { Inter } from 'next/font/google';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
-import { TenantHeader } from '@/components/layout/TenantHeader';
-import { TenantFooter } from '@/components/layout/TenantFooter';
 import ConvexClientProvider from './ConvexClientProvider';
 import dynamic from 'next/dynamic';
 import ChatWindow from '@/components/ChatWindow';
-import { headers } from 'next/headers';
-import { createServerSupabaseClient } from '@/lib/supabase';
 
 const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.Toaster), {
   ssr: false,
@@ -77,25 +73,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = headers();
-  const tenantSlug = headersList.get('x-tenant-id');
-  let theme: any = null;
-
-  if (tenantSlug) {
-    const supabase = createServerSupabaseClient();
-    const { data: tenant } = await supabase
-      .from('tenants')
-      .select('id, tenant_themes(*)')
-      .eq('slug', tenantSlug)
-      .single();
-
-    if (tenant && tenant.tenant_themes && Array.isArray(tenant.tenant_themes)) {
-      theme = tenant.tenant_themes[0] || null;
-    } else if (tenant && tenant.tenant_themes) {
-      theme = tenant.tenant_themes;
-    }
-  }
-  
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -103,29 +80,12 @@ export default async function RootLayout({
           <CSPostHogProvider>
             <ConvexClientProvider>
               <CartProvider>
-                {theme && tenantSlug ? (
-                  <TenantHeader
-                    salonSlug={tenantSlug}
-                    logoUrl={theme.logo_url}
-                    brandName={theme.brand_name}
-                    headerLinks={theme.header_links}
-                    primaryColor={theme.primary_color}
-                  />
-                ) : (
-                  <Navigation />
-                )}
+                <Navigation />
                 <main className="min-h-screen flex-grow">
                   {children}
                 </main>
-                {theme ? (
-                  <TenantFooter
-                    brandName={theme.brand_name}
-                    footerHtml={theme.footer_html}
-                  />
-                ) : (
-                  <Footer />
-                )}
-                <ChatWindow tenantId={tenantSlug || 'default'} />
+                <Footer />
+                <ChatWindow tenantId={'default'} />
                 <Toaster />
                 <SonnerToaster />
               </CartProvider>
