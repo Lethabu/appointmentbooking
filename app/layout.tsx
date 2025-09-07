@@ -4,8 +4,8 @@ import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { Inter } from 'next/font/google';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
-import TenantHeader from '@/components/layout/TenantHeader';
-import TenantFooter from '@/components/layout/TenantFooter';
+import { TenantHeader } from '@/components/layout/TenantHeader';
+import { TenantFooter } from '@/components/layout/TenantFooter';
 import ConvexClientProvider from './ConvexClientProvider';
 import dynamic from 'next/dynamic';
 import ChatWindow from '@/components/ChatWindow';
@@ -79,7 +79,7 @@ export default async function RootLayout({
 }>) {
   const headersList = headers();
   const tenantSlug = headersList.get('x-tenant-id');
-  let theme = null;
+  let theme: any = null;
 
   if (tenantSlug) {
     const supabase = createServerSupabaseClient();
@@ -89,12 +89,9 @@ export default async function RootLayout({
       .eq('slug', tenantSlug)
       .single();
 
-    // The Supabase query for a relationship returns an array. Since this is a
-    // one-to-one relationship, we expect an array with a single item.
     if (tenant && tenant.tenant_themes && Array.isArray(tenant.tenant_themes)) {
       theme = tenant.tenant_themes[0] || null;
     } else if (tenant && tenant.tenant_themes) {
-      // Fallback for cases where it might return a single object directly
       theme = tenant.tenant_themes;
     }
   }
@@ -106,11 +103,28 @@ export default async function RootLayout({
           <CSPostHogProvider>
             <ConvexClientProvider>
               <CartProvider>
-                {theme ? <TenantHeader theme={theme} /> : <Navigation />}
+                {theme && tenantSlug ? (
+                  <TenantHeader
+                    salonSlug={tenantSlug}
+                    logoUrl={theme.logo_url}
+                    brandName={theme.brand_name}
+                    headerLinks={theme.header_links}
+                    primaryColor={theme.primary_color}
+                  />
+                ) : (
+                  <Navigation />
+                )}
                 <main className="min-h-screen flex-grow">
                   {children}
                 </main>
-                {theme ? <TenantFooter theme={theme} /> : <Footer />}
+                {theme ? (
+                  <TenantFooter
+                    brandName={theme.brand_name}
+                    footerHtml={theme.footer_html}
+                  />
+                ) : (
+                  <Footer />
+                )}
                 <ChatWindow tenantId={tenantSlug || 'default'} />
                 <Toaster />
                 <SonnerToaster />
