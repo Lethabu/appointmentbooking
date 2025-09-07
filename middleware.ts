@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   const subdomain = hostname.split('.')[0];
   
   // Handle apex domain redirects (security fix #3)
-  if (hostname === 'instylehairboutique.co.za') {
+  if (hostname === 'instylehairboutique.co.za' || hostname === 'www.instylehairboutique.co.za') {
     return NextResponse.redirect('https://instylehairboutique.appointmentbooking.co.za' + url.pathname);
   }
 
