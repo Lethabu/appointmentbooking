@@ -30,8 +30,9 @@ export default async function TenantLayout({ params, children }: TenantLayoutPro
     notFound();
   }
 
-  // Default to an empty object if no theme is found
-  const theme = tenant.tenant_themes || {};
+  // A one-to-one relationship in Supabase can return an array, so we extract the first element.
+  // Default to an empty object if no theme is found.
+  const theme = Array.isArray(tenant.tenant_themes) ? tenant.tenant_themes[0] || {} : tenant.tenant_themes || {};
 
   return (
     <div className="flex flex-col min-h-screen">
