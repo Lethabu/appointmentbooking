@@ -4,10 +4,13 @@ import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { Inter } from 'next/font/google';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
+import TenantHeader from '@/components/layout/TenantHeader';
+import TenantFooter from '@/components/layout/TenantFooter';
 import ConvexClientProvider from './ConvexClientProvider';
 import dynamic from 'next/dynamic';
 import ChatWindow from '@/components/ChatWindow';
 import { headers } from 'next/headers';
+import { createServerSupabaseClient } from '@/lib/supabase';
 
 const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.Toaster), {
   ssr: false,
@@ -69,13 +72,32 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const headersList = headers();
-  const tenantId = headersList.get('x-tenant-id') || 'default';
+  const tenantSlug = headersList.get('x-tenant-id');
+  let theme = null;
+
+  if (tenantSlug) {
+    const supabase = createServerSupabaseClient();
+    const { data: tenant } = await supabase
+      .from('tenants')
+      .select('id, tenant_themes(*)')
+      .eq('slug', tenantSlug)
+      .single();
+
+    // The Supabase query for a relationship returns an array. Since this is a
+    // one-to-one relationship, we expect an array with a single item.
+    if (tenant && tenant.tenant_themes && Array.isArray(tenant.tenant_themes)) {
+      theme = tenant.tenant_themes[0] || null;
+    } else if (tenant && tenant.tenant_themes) {
+      // Fallback for cases where it might return a single object directly
+      theme = tenant.tenant_themes;
+    }
+  }
   
   return (
     <html lang="en">
@@ -84,12 +106,12 @@ export default function RootLayout({
           <CSPostHogProvider>
             <ConvexClientProvider>
               <CartProvider>
-                <Navigation />
-                <main className="min-h-screen">
+                {theme ? <TenantHeader theme={theme} /> : <Navigation />}
+                <main className="min-h-screen flex-grow">
                   {children}
                 </main>
-                <Footer />
-                <ChatWindow tenantId={tenantId} />
+                {theme ? <TenantFooter theme={theme} /> : <Footer />}
+                <ChatWindow tenantId={tenantSlug || 'default'} />
                 <Toaster />
                 <SonnerToaster />
               </CartProvider>
