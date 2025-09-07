@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Define the type for a header link
 interface HeaderLink {
@@ -36,7 +37,14 @@ export default function TenantHeader({ theme }: TenantHeaderProps) {
     <header className="bg-black text-white">
       <nav className="container mx-auto flex items-center justify-between p-4">
         <Link href="/">
-          <img src={theme.logo_url} alt={theme.brand_name} className="h-10" />
+          <Image
+            src={theme.logo_url}
+            alt={theme.brand_name}
+            width={160}
+            height={40}
+            className="h-10 w-auto"
+            priority
+          />
         </Link>
         <ul className="hidden md:flex items-center gap-6">
           {theme.header_links && theme.header_links.map((link) => (
