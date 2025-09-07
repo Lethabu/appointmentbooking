@@ -10,7 +10,7 @@ import ConvexClientProvider from './ConvexClientProvider';
 import dynamic from 'next/dynamic';
 import ChatWindow from '@/components/ChatWindow';
 import { headers } from 'next/headers';
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createServerSupabaseClient } from '@/lib/supabase';
 
 const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.Toaster), {
   ssr: false,

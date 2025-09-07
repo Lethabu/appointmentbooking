@@ -1,5 +1,4 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { setTenantContext } from '@/lib/supabase'
+import { createServerSupabaseClient, setTenantContext } from '@/lib/supabase'
 import { BookingWidget } from '@/components/booking/booking-widget'
 import { TypebotWidget } from '@/components/typebot/typebot-widget'
 import { notFound } from 'next/navigation'
