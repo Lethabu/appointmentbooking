@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Define the type for the theme object
 interface TenantTheme {
   footer_html?: string;
@@ -20,6 +21,24 @@ export default function TenantFooter({ theme }: TenantFooterProps) {
   return (
     <footer className="bg-black text-white p-4 text-center">
       <div className="container mx-auto" dangerouslySetInnerHTML={{ __html: theme.footer_html }} />
+=======
+
+interface TenantFooterProps {
+  brandName?: string;
+  footerHtml?: string;
+}
+
+export function TenantFooter({ brandName, footerHtml }: TenantFooterProps) {
+  return (
+    <footer className="bg-gray-50 border-t py-6 mt-12">
+      <div className="container mx-auto text-center text-gray-500">
+        {footerHtml ? (
+          <div dangerouslySetInnerHTML={{ __html: footerHtml }} />
+        ) : (
+          <p>&copy; {new Date().getFullYear()} {brandName || 'All Rights Reserved'}</p>
+        )}
+      </div>
+>>>>>>> cf8a94a (feat: Implement full white-labeling for Instyle tenant)
     </footer>
   );
 }
