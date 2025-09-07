@@ -3,42 +3,62 @@ import type { NextRequest } from 'next/server';
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 
 export async function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host') || '';
   const url = request.nextUrl.clone();
-  const subdomain = hostname.split('.')[0];
+  const hostname = request.headers.get('host') || '';
+  const res = NextResponse.next();
+
+  // Create Supabase client for middleware
+  const supabase = createMiddlewareClient({ req: request, res });
   
-  // Handle apex domain redirects (security fix #3)
-  if (hostname === 'instylehairboutique.co.za' || hostname === 'www.instylehairboutique.co.za') {
-    return NextResponse.redirect('https://instylehairboutique.appointmentbooking.co.za' + url.pathname);
+  let tenant: { id: string; slug: string } | null = null;
+
+  // 1. Try to find tenant by custom domain
+  const { data: customDomainTenant } = await supabase
+    .from('tenants')
+    .select('id, slug')
+    .eq('custom_domain', hostname)
+    .single();
+
+  if (customDomainTenant) {
+    tenant = customDomainTenant;
+  } else {
+    // 2. Fallback to subdomain logic
+    const subdomain = hostname.split('.')[0];
+    const mainDomain = 'appointmentbooking.co.za'; // Configure this as needed
+    
+    if (hostname.endsWith(mainDomain) && subdomain && subdomain !== 'www' && subdomain !== 'appointmentbooking') {
+        const { data: subdomainTenant } = await supabase
+            .from('tenants')
+            .select('id, slug')
+            .eq('slug', subdomain)
+            .single();
+
+        if (subdomainTenant) {
+            tenant = subdomainTenant;
+        }
+    }
   }
 
-  // Multi-tenant routing with proper tenant context injection
-  if (subdomain && subdomain !== 'www' && subdomain !== 'appointmentbooking') {
-    const res = NextResponse.next();
-    
-    // Create Supabase client for middleware
-    const supabase = createMiddlewareClient({ req: request, res });
-    
+  if (tenant) {
+    // Set tenant context in Supabase session for RLS using the tenant's UUID
     try {
-      // Set tenant context in Supabase session for RLS
-      await supabase.rpc('set_tenant_context', { p_tenant_id: subdomain });
+      const { error } = await supabase.rpc('set_tenant_context', { p_tenant_id: tenant.id });
+      if (error) throw error;
     } catch (error) {
-      console.error('Failed to set tenant context:', error);
+      console.error(`Failed to set tenant context for tenant ${tenant.id}:`, error);
     }
-    
-    // Set headers for additional context
-    res.headers.set('x-tenant-id', subdomain);
-    
-    // Rewrite to tenant-specific path
-    if (!url.pathname.startsWith(`/${subdomain}`)) {
-      url.pathname = `/${subdomain}${url.pathname}`;
+
+    // Set headers for additional context for the application
+    res.headers.set('x-tenant-id', tenant.slug);
+
+    // Rewrite to tenant-specific path if not already there
+    if (!url.pathname.startsWith(`/${tenant.slug}`)) {
+      url.pathname = `/${tenant.slug}${url.pathname}`;
       return NextResponse.rewrite(url);
     }
-    
-    return res;
   }
 
-  return NextResponse.next();
+  return res;
 }
 
 export const config = {
