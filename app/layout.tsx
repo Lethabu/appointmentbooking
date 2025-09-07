@@ -89,7 +89,12 @@ export default async function RootLayout({
       .eq('slug', tenantSlug)
       .single();
 
-    if (tenant && tenant.tenant_themes) {
+    // The Supabase query for a relationship returns an array. Since this is a
+    // one-to-one relationship, we expect an array with a single item.
+    if (tenant && tenant.tenant_themes && Array.isArray(tenant.tenant_themes)) {
+      theme = tenant.tenant_themes[0] || null;
+    } else if (tenant && tenant.tenant_themes) {
+      // Fallback for cases where it might return a single object directly
       theme = tenant.tenant_themes;
     }
   }
