@@ -7,10 +7,11 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const subdomain = hostname.split('.')[0];
   
-  // Handle apex domain redirects (security fix #3)
-  if (hostname === 'instylehairboutique.co.za' || hostname === 'www.instylehairboutique.co.za') {
-    return NextResponse.redirect('https://instylehairboutique.appointmentbooking.co.za' + url.pathname);
-  }
+  // The user's instructions specify using a reverse proxy (Cloudflare/Vercel) to handle the custom domain.
+  // This redirect is incorrect for the new setup and should be removed.
+  // if (hostname === 'instylehairboutique.co.za' || hostname === 'www.instylehairboutique.co.za') {
+  //   return NextResponse.redirect('https://instylehairboutique.appointmentbooking.co.za' + url.pathname);
+  // }
 
   // Multi-tenant routing with proper tenant context injection
   if (subdomain && subdomain !== 'www' && subdomain !== 'appointmentbooking') {

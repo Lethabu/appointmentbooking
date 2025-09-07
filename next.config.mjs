@@ -3,7 +3,18 @@ const nextConfig = {
   reactStrictMode: true,
   trailingSlash: false,
   images: {
-    domains: ["instagram.com", "tiktok.com", "cdninstagram.com"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'assets.instylehairboutique.co.za',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.cdninstagram.com',
+      },
+    ],
     formats: ["image/avif", "image/webp"],
   },
   experimental: {
