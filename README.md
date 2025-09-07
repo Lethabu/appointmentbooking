@@ -8,12 +8,4 @@ A multi-tenant appointment booking SaaS platform built with **Next.js**, **Supab
 
 ## Deployment
 - Main platform: [appointmentbooking.co.za](https://appointmentbooking.co.za)
-- Tenant example: [instylehairboutique.co.za](https://instylehairboutique.co.za)
-
-## Features
-- Multi-tenant booking system
-- AI-powered appointment management
-- Supabase + RDS integration
-
-## Status
-🚧 In active development, undergoing audit and debugging.
+- Tenant example: [instylehairboutique.co.za](https://www.instylehairboutique.co.za)
