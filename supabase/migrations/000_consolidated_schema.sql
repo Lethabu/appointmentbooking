@@ -1,3 +1,14 @@
+-- This is a consolidated migration file. It will drop everything in the public schema and then create the full schema from scratch.
+
+-- Drop everything in the public schema
+DO $$ DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public') LOOP
+        EXECUTE 'DROP TABLE IF EXISTS public.' || quote_ident(r.tablename) || ' CASCADE';
+    END LOOP;
+END $$;
+
 -- ######################################################
 -- ##    APPOINTMENTBOOKINGS SAAS SCHEMA v4.0            ##
 -- ##    Enterprise-Grade: RBAC, Analytics, AI, Ops      ##
@@ -218,15 +229,27 @@ CREATE TABLE tenant_components (
 );
 
 -- Seed for Instyle:
--- NOTE: Replace '8a8d8e8e-8e8e-8e8e-8e8e-8e8e8e8e8e8e' with the actual tenant_id for Instyle
+WITH instyle_salon AS (
+    INSERT INTO salons (name, subdomain, custom_domain)
+    VALUES ('Instyle Hair Boutique', 'instyle', 'instylehairboutique.co.za')
+    RETURNING id
+)
 INSERT INTO tenant_components(tenant_id,comp_type,comp_name,html_chunk,css)
-VALUES
-('8a8d8e8e-8e8e-8e8e-8e8e-8e8e8e8e8e8e','header','InstyleHeader',
- '<header class="instyle-header"><img src="https://cdn-instyle/logo.svg"/>...</header>',
- ':root { --primary: #d946ef; --font: "Poppins"; }'),
-('8a8d8e8e-8e8e-8e8e-8e8e-8e8e8e8e8e8e','footer','InstyleFooter',
- '<footer class="instyle-footer"><p>© 2025 Instyle Hair Boutique</p></footer>',
- '{}');
+SELECT
+    id,
+    'header',
+    'InstyleHeader',
+    '<header class="instyle-header"><img src="https://cdn-instyle/logo.svg"/>...</header>',
+    ':root { --primary: #d946ef; --font: "Poppins"; }'
+FROM instyle_salon
+UNION ALL
+SELECT
+    id,
+    'footer',
+    'InstyleFooter',
+    '<footer class="instyle-footer"><p>© 2025 Instyle Hair Boutique</p></footer>',
+    '{}'
+FROM instyle_salon;
 
 -- =========== SECURITY: ROW LEVEL SECURITY (RLS) ===========
 -- Enable RLS on all tenant-facing tables
@@ -364,10 +387,10 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
 -- =========== INDEXES ===========
-CREATE INDEX CONCURRENTLY idx_appointments_salon_time ON appointments (salon_id, start_time);
-CREATE INDEX CONCURRENTLY idx_services_salon_active ON services (salon_id, is_active);
-CREATE INDEX CONCURRENTLY idx_orders_salon_date ON orders (salon_id, created_at);
-CREATE INDEX CONCURRENTLY idx_staff_members_salon_user ON staff_members (salon_id, user_id);
+CREATE INDEX idx_appointments_salon_time ON appointments (salon_id, start_time);
+CREATE INDEX idx_services_salon_active ON services (salon_id, is_active);
+CREATE INDEX idx_orders_salon_date ON orders (salon_id, created_at);
+CREATE INDEX idx_staff_members_salon_user ON staff_members (salon_id, user_id);
 
 -- Supabase RPC for get_dashboard_stats
 CREATE OR REPLACE FUNCTION get_dashboard_stats(salon_id_param uuid)

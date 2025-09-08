@@ -39,6 +39,12 @@ export async function middleware(request: NextRequest) {
     // Set headers for frontend context
     res.headers.set('x-tenant-id', slug);
 
+    // Add Content Security Policy
+    res.headers.set(
+      'Content-Security-Policy',
+      "default-src 'self'; img-src 'self' https://cdn-*.appointmentbooking.co.za; style-src 'unsafe-inline';"
+    );
+
     // Rewrite to the tenant-specific path, e.g., /instylehairboutique
     // This serves the content from the directory app/[salon]
     if (!url.pathname.startsWith(`/${slug}`)) {

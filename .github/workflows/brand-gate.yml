@@ -1,0 +1,25 @@
+name: Brand Gate Check
+
+on: 
+  pull_request:
+    branches:
+      - main # Or your main development branch
+
+jobs:
+  brand-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # Use a recent LTS version
+
+    - name: Install dependencies
+      run: npm ci # Use npm ci for clean installs in CI environments
+
+    - name: Run Brand Gate Check
+      run: npm run brand-gate www.instylehairboutique.co.za # Replace example.com with your actual vanity domain
