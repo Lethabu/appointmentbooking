@@ -6,7 +6,7 @@
 - [ ] **Clone repositories locally**
   ```bash
   git clone https://github.com/Lethabu/your-platform-repo.git
-  git clone https://github.com/Lethabu/appointmentbookings.agent.git
+  git clone https://github.com/Lethabu/your-agent-repo.git
   ```
 
 - [ ] **Environment setup**
@@ -20,13 +20,13 @@
   ```bash
   # Start PostgreSQL
   docker run -d --name instyle-db \
-    -e POSTGRES_DB=appointmentbooking \
+    -e POSTGRES_DB=instyle \
     -e POSTGRES_USER=postgres \
     -e POSTGRES_PASSWORD=your_password \
     -p 5432:5432 postgres:15
   
   # Run migrations
-  psql -h localhost -U postgres -d appointmentbooking -f supabase/migrations/20250812_instyle_handover.sql
+  psql -h localhost -U postgres -d instyle -f supabase/migrations/20250812_instyle_handover.sql
   ```
 
 ### Hours 6-12: Backend Services
@@ -159,7 +159,7 @@ docker-compose up -d && docker-compose logs -f
 docker-compose up --scale booking-api=2 -d
 
 # Backup database
-docker exec instyle-db pg_dump -U postgres appointmentbooking > backup_$(date +%Y%m%d).sql
+docker exec instyle-db pg_dump -U postgres instyle > backup_$(date +%Y%m%d).sql
 ```
 
 ---
@@ -199,7 +199,7 @@ docker exec instyle-db pg_dump -U postgres appointmentbooking > backup_$(date +%
 ## 🎯 Success Metrics (24h Post-Launch)
 
 | Metric | Target | Measurement |
-|--------|--------|-------------|
+|---|---|---|
 | **Website Uptime** | 99.9% | Pingdom/UptimeRobot |
 | **Booking Success Rate** | >95% | Database logs |
 | **WhatsApp Response Time** | <30 seconds | N8N analytics |
@@ -226,13 +226,13 @@ docker-compose logs nginx
 ### If Bookings Fail
 ```bash
 # Check database connection
-docker exec -it instyle-db psql -U postgres -d appointmentbooking -c "SELECT 1;"
+docker exec -it instyle-db psql -U postgres -d instyle -c "SELECT 1;"
 
 # Verify API health
 curl -f http://localhost:8000/health || echo "API DOWN"
 
 # Check recent bookings
-docker exec -it instyle-db psql -U postgres -d appointmentbooking -c "SELECT * FROM bookings ORDER BY created_at DESC LIMIT 5;"
+docker exec -it instyle-db psql -U postgres -d instyle -c "SELECT * FROM bookings ORDER BY created_at DESC LIMIT 5;"
 ```
 
 ### If WhatsApp Bot Stops
@@ -351,13 +351,13 @@ AI_STATUS=$(curl -s -f http://localhost:8001/health >/dev/null && echo "UP" || e
 DB_STATUS=$(docker exec instyle-db pg_isready -U postgres >/dev/null && echo "UP" || echo "DOWN")
 
 # Get current metrics
-BOOKINGS_TODAY=$(docker exec instyle-db psql -U postgres -d your_database_name -tAc "
+BOOKINGS_TODAY=$(docker exec instyle-db psql -U postgres -d instyle -tAc "
     SELECT COUNT(*) FROM bookings 
     WHERE DATE(start_time) = CURRENT_DATE 
     AND tenant_id = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70'
 ")
 
-REVENUE_WEEK=$(docker exec instyle-db psql -U postgres -d your_database_name -tAc "
+REVENUE_WEEK=$(docker exec instyle-db psql -U postgres -d instyle -tAc "
     SELECT COALESCE(SUM(s.price_zar::NUMERIC/100), 0) 
     FROM bookings b 
     JOIN services s ON b.service_id = s.id 

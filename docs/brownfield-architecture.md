@@ -4,7 +4,7 @@
 ### Approach
 - **Hybrid Resolution**: 
   - Primary: Custom domain → Tenant mapping via `tenants` table
-  - Fallback: Subdomain pattern (client-name.appointmentbooking.co.za)
+  - Fallback: Subdomain pattern (client-name.instylehairboutique.co.za)
   - Development: Path-based (/instylehairboutique/*)
 
 ### Implementation
@@ -173,7 +173,7 @@ export const createTenantClient = (tenantId) => {
 
 ## Introduction
 
-This document captures the CURRENT STATE of the AppointmentBookings.co.za codebase, including technical debt, workarounds, and real-world patterns. It serves as a reference for AI agents working on enhancements.
+This document captures the CURRENT STATE of the instylehairboutique.co.za codebase, including technical debt, workarounds, and real-world patterns. It serves as a reference for AI agents working on enhancements.
 
 ### Document Scope
 
