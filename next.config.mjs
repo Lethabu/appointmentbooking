@@ -21,14 +21,6 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
   },
-  async rewrites() {
-    return [
-      {
-        source: '/instylehairboutique',
-        destination: '/instylehairboutique',
-      },
-    ];
-  },
 };
 
 export default nextConfig;
