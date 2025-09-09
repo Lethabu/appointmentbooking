@@ -20,7 +20,7 @@ program
     let leaksFound = 0;
 
     const excludeDirs = ['node_modules', '.git', '.next', 'dist', 'build', 'scripts']; // Directories to exclude
-    const excludeFiles = ['package.json', 'package-lock.json', 'yarn.lock', 'scripts/brand-gate.js']; // Files to exclude
+    const excludeFiles = ['package.json', 'package-lock.json', 'yarn.lock', 'scripts/brand-gate.js', '.vercel/project.json']; // Files to exclude
 
     const searchDirectory = process.cwd(); // Search from the current working directory
 
@@ -34,7 +34,7 @@ program
             filelist = walkSync(filepath, filelist);
           }
         } else {
-          if (!excludeFiles.includes(path.relative(searchDirectory, filepath)) && filepath.endsWith('.js') || filepath.endsWith('.ts') || filepath.endsWith('.tsx') || filepath.endsWith('.md') || filepath.endsWith('.json')) { // Only check relevant file types
+          if (!excludeFiles.includes(path.relative(searchDirectory, filepath)) && (filepath.endsWith('.js') || filepath.endsWith('.ts') || filepath.endsWith('.tsx') || filepath.endsWith('.md') || filepath.endsWith('.json'))) { // Only check relevant file types
             filelist.push(filepath);
           }
         }
