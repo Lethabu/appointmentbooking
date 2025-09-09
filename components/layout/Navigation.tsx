@@ -15,7 +15,7 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Calendar className="h-8 w-8 text-purple-600" />
-            <span className="text-xl font-bold text-gray-900">AppointmentBooking</span>
+            <span className="text-xl font-bold text-gray-900">The Platform</span>
           </Link>
 
           {/* Desktop Navigation */}

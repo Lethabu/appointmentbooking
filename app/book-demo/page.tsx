@@ -62,7 +62,7 @@ export default function BookDemoPage() {
             🚀 Free 30-minute demo
           </Badge>
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-            See AppointmentBooking in action
+            See the Platform in action
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Book a personalized demo and discover how we can transform your salon operations.
@@ -75,7 +75,7 @@ export default function BookDemoPage() {
             <CardHeader>
               <CardTitle>Book Your Free Demo</CardTitle>
               <CardDescription>
-                Fill out the form below and we&apos;ll show you exactly how AppointmentBooking can help your salon grow.
+                Fill out the form below and we&apos;ll show you exactly how the Platform can help your salon grow.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -243,7 +243,7 @@ export default function BookDemoPage() {
               </CardHeader>
               <CardContent>
                 <blockquote className="text-sm italic text-gray-600 mb-3">
-                  &quot;AppointmentBooking transformed our salon operations. We&apos;ve seen a 300% increase in online bookings and our customers love the convenience!&quot;
+                  &quot;The Platform transformed our salon operations. We&apos;ve seen a 300% increase in online bookings and our customers love the convenience!&quot;
                 </blockquote>
                 <div className="flex items-center gap-2">
                   <div className="flex">

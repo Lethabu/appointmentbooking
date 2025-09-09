@@ -23,37 +23,36 @@ const CartProvider = dynamic(() => import('@/app/context/CartContext').then(mod 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: {
-    default: 'AppointmentBooking - Complete Salon Management Platform',
-    template: '%s | AppointmentBooking'
+  title: { default: 'The Platform - Complete Salon Management Solution',
+    template: '%s | The Platform'
   },
-  description: 'The complete multi-tenant salon booking and management platform. Increase bookings by 300%, reduce no-shows by 80%.',
+  description: 'The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%.',
   keywords: ['salon booking', 'appointment scheduling', 'salon management', 'beauty booking', 'South Africa'],
-  authors: [{ name: 'AppointmentBooking Team' }],
-  creator: 'AppointmentBooking',
-  publisher: 'AppointmentBooking',
+  authors: [{ name: 'Your Platform Team' }],
+  creator: 'The Platform',
+  publisher: 'The Platform',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://appointmentbooking.co.za'),
+  metadataBase: new URL('https://your-platform-domain.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_ZA',
-    url: 'https://appointmentbooking.co.za',
-    title: 'AppointmentBooking - Complete Salon Management Platform',
-    description: 'The complete multi-tenant salon booking and management platform. Increase bookings by 300%, reduce no-shows by 80%.',
-    siteName: 'AppointmentBooking',
+    url: 'https://your-platform-domain.com',
+    title: 'The Platform - Complete Salon Management Solution',
+    description: 'The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%.',
+    siteName: 'The Platform',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AppointmentBooking - Complete Salon Management Platform',
-    description: 'The complete multi-tenant salon booking and management platform.',
-    creator: '@appointmentbooking',
+    title: 'The Platform - Complete Salon Management Solution',
+    description: 'The complete multi-tenant salon management solution.',
+    creator: '@yourplatform',
   },
   robots: {
     index: true,

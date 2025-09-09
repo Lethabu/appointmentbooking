@@ -5,7 +5,7 @@
 ### Hours 0-6: Foundation Setup
 - [ ] **Clone repositories locally**
   ```bash
-  git clone https://github.com/Lethabu/appointmentbooking.git
+  git clone https://github.com/Lethabu/your-platform-repo.git
   git clone https://github.com/Lethabu/appointmentbookings.agent.git
   ```
 
@@ -61,7 +61,7 @@
 ### Hours 12-18: Frontend Integration
 - [ ] **Next.js setup**
   ```bash
-  cd appointmentbooking
+  cd your-platform-repo
   npm install
   npm run dev
   ```
@@ -351,13 +351,13 @@ AI_STATUS=$(curl -s -f http://localhost:8001/health >/dev/null && echo "UP" || e
 DB_STATUS=$(docker exec instyle-db pg_isready -U postgres >/dev/null && echo "UP" || echo "DOWN")
 
 # Get current metrics
-BOOKINGS_TODAY=$(docker exec instyle-db psql -U postgres -d appointmentbooking -tAc "
+BOOKINGS_TODAY=$(docker exec instyle-db psql -U postgres -d your_database_name -tAc "
     SELECT COUNT(*) FROM bookings 
     WHERE DATE(start_time) = CURRENT_DATE 
     AND tenant_id = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70'
 ")
 
-REVENUE_WEEK=$(docker exec instyle-db psql -U postgres -d appointmentbooking -tAc "
+REVENUE_WEEK=$(docker exec instyle-db psql -U postgres -d your_database_name -tAc "
     SELECT COALESCE(SUM(s.price_zar::NUMERIC/100), 0) 
     FROM bookings b 
     JOIN services s ON b.service_id = s.id 
@@ -417,7 +417,7 @@ Schedule with cron:
   
   # Scan for vulnerabilities
   docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-    aquasec/trivy image appointmentbooking_booking-api
+    aquasec/trivy image your_platform_name_booking-api
   ```
 
 ### Application Security

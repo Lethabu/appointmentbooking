@@ -4,7 +4,7 @@ exports.handler = async (event) => {
   const { service, date, time, name, email, phone } = JSON.parse(event.body);
 
   const client = new Client({
-    connectionString: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@appointmentbookings-db.c6ze40o8a4ho.us-east-1.rds.amazonaws.com:5432/${process.env.DB_NAME}`,
+    connectionString: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@your-platform-db-endpoint.com:5432/${process.env.DB_NAME}`,
   });
 
   try {

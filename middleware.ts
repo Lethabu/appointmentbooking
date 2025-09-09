@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
   
   if (!slug) {
     const subdomain = hostname.split('.')[0];
-    if (subdomain && subdomain !== 'www' && subdomain !== 'appointmentbooking' && !hostname.includes('vercel.app')) {
+    if (subdomain && subdomain !== 'www' && subdomain !== 'your-platform-domain' && !hostname.includes('vercel.app')) {
       slug = subdomain;
     }
   }
@@ -42,7 +42,7 @@ export async function middleware(request: NextRequest) {
     // Add Content Security Policy
     res.headers.set(
       'Content-Security-Policy',
-      "default-src 'self'; img-src 'self' https://cdn-*.appointmentbooking.co.za; style-src 'unsafe-inline';"
+      "default-src 'self'; img-src 'self' https://cdn-*.your-platform-domain.com; style-src 'unsafe-inline';"
     );
 
     // Rewrite to the tenant-specific path, e.g., /instylehairboutique

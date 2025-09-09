@@ -8,7 +8,7 @@ export const sendDripEmail = action({
   args: { to: v.string(), subject: v.string(), html: v.string() },
   handler: async (ctx, args) => {
     await resend.emails.send({
-      from: "onboarding@appointmentbooking.co.za",
+      from: "onboarding@your-platform-domain.com",
       to: args.to,
       subject: args.subject,
       html: args.html,

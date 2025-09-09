@@ -1,9 +1,9 @@
-# Contributing to AppointmentBooking
+# Contributing to the Platform
 
 ## Setup
 1. Clone both repos:
-   - `appointmentbooking`
-   - `appointmentbookings.agent`
+   - `the-platform-repo`
+   - `your-platform-agent`
 2. Install dependencies:
    ```bash
    npm install

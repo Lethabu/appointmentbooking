@@ -167,7 +167,7 @@ export default function PricingPage() {
             <span className="text-sm text-gray-600">4.9/5 from 500+ reviews</span>
           </div>
           <p className="text-gray-600">
-            &quot;AppointmentBooking transformed our salon operations. We&apos;ve seen a 300% increase in online bookings!&quot;
+            &quot;The Platform transformed our salon operations. We&apos;ve seen a 300% increase in online bookings!&quot;
           </p>
           <p className="text-sm text-gray-500 mt-2">- Sarah M., InStyle Hair Boutique</p>
         </div>

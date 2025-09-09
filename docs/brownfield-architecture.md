@@ -169,7 +169,7 @@ export const createTenantClient = (tenantId) => {
 3. Phase 3: Auth System Overhaul (1.5 weeks)
 4. Phase 4: Migration Strategy (1 week)
 
-# AppointmentBookings.co.za Brownfield Enhancement PRD
+# The Platform Brownfield Enhancement PRD
 
 ## Introduction
 
@@ -201,7 +201,7 @@ Comprehensive documentation of the entire system, focusing on the multi-tenant N
 
 ### Technical Summary
 
-This project is a multi-tenant AI-powered SaaS platform for appointment bookings, built with Next.js. It is designed to provide a scalable and customizable solution for businesses to manage their appointments, with each tenant operating under their own isolated environment. The platform integrates with external microservices (Nia, Blaze, Orion, Wellness) for specialized functionalities, which are not part of this repository.
+This project is a multi-tenant AI-powered SaaS platform for salon management, built with Next.js. It is designed to provide a scalable and customizable solution for businesses to manage their appointments, with each tenant operating under their own isolated environment. The platform integrates with external microservices (Nia, Blaze, Orion, Wellness) for specialized functionalities, which are not part of this repository.
 
 ### Actual Tech Stack (from package.json/requirements.txt)
 
@@ -232,7 +232,7 @@ This project is a multi-tenant AI-powered SaaS platform for appointment bookings
 ### Project Structure (Actual)
 
 ```text
-appointmentbooking/
+your-platform-repo/
 ├── app/                 # Next.js application pages, API routes, and core logic
 │   ├── api/             # Next.js API routes
 │   ├── lib/             # Core application logic and helper functions

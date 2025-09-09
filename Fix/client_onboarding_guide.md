@@ -1,7 +1,7 @@
 # Complete Client Onboarding Guide - InStyle Hair Boutique
 
 ## Executive Summary
-This guide provides a comprehensive onboarding process for InStyle Hair Boutique on the appointmentbooking.co.za platform, including dashboard setup, issue resolution, and best practices for optimal user experience.
+This guide provides a comprehensive onboarding process for InStyle Hair Boutique on the your-platform-domain.com platform, including dashboard setup, issue resolution, and best practices for optimal user experience.
 
 ## Current Issue Analysis
 

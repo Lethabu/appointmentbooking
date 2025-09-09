@@ -7,7 +7,7 @@ import { jsonLd } from '@/lib/jsonLd';
 
 const faqQuestions = [
   {
-    question: "What is AppointmentBooking.co.za?",
+    question: "What is The Platform?",
     answer: "It's an AI-powered SaaS platform for South African salons and spas to manage their bookings, clients, and grow their business."
   },
   {
@@ -24,8 +24,8 @@ export function HomePage() {
         dangerouslySetInnerHTML={{ __html: jsonLd({
           '@context': 'https://schema.org',
           '@type': 'WebSite',
-          name: 'AppointmentBooking.co.za',
-          url: 'https://appointmentbooking.co.za',
+          name: 'The Platform',
+          url: 'https://your-platform-domain.com',
         } as WithContext<WebSite>)}}
       />
       <script
@@ -47,7 +47,7 @@ export function HomePage() {
         <div className="container mx-auto px-4 py-16">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-5xl font-bold text-gray-900 mb-6">
-              <span className="text-blue-600">AppointmentBooking</span>.co.za
+              <span className="text-blue-600">The Platform</span>.com
             </h1>
             <p className="text-xl text-gray-600 mb-8">
               AI-Powered SaaS Platform for South African Salons & Spas

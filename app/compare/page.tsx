@@ -21,7 +21,7 @@ export async function generateMetadata() {
     }));
 
     return {
-      title: "Compare Features - AppointmentBooking.co.za",
+      title: "Compare Features - The Platform",
       description: "Compare our features with other platforms.",
       other: {
         'script[type="application/ld+json"]': jsonLd({
@@ -34,7 +34,7 @@ export async function generateMetadata() {
   } catch (error) {
     console.error("Error generating metadata for compare page:", error);
     return {
-      title: "Compare Features - AppointmentBooking.co.za",
+      title: "Compare Features - The Platform",
       description: "Compare our features with other platforms.",
     }
   }

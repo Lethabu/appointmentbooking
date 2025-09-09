@@ -1,10 +1,10 @@
-# Multi-Tenant Architecture Plan
+# Multi-Tenant SaaS Platform - Architecture Plan
 
 ## 1. Tenant Identification System
 ### Approach
 - **Hybrid Resolution**: 
   - Primary: Custom domain → Tenant mapping via `tenants` table
-  - Fallback: Subdomain pattern (client-name.appointmentbooking.co.za)
+  - Fallback: Subdomain pattern (client-name.your-platform-domain.com)
   - Development: Path-based (/instylehairboutique/*)
 
 ### Implementation

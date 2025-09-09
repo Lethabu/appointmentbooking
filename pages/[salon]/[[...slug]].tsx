@@ -60,16 +60,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { salon, slug = [] } = params as any;
-  const path = '/' + slug.join('/');
+  const pagePath = '/' + slug.join('/');
   const tenant = await getTenantBySlug(salon);
 
   if (!tenant) {
     return { notFound: true };
   }
 
-  const fileExists = await fileExistsForPath(salon, path);
+  const fileExists = await fileExistsForPath(salon, pagePath);
 
-  if (!fileExists && path !== '/') {
+  if (!fileExists && pagePath !== '/') {
     return {
       props: { tenant, is404: true, services: [], branding: {}, tokens: {} },
       revalidate: 30,

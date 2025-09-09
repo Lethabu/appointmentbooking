@@ -10,7 +10,7 @@ export function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Calendar className="h-6 w-6 text-purple-400" />
-              <span className="text-lg font-bold">AppointmentBooking</span>
+              <span className="text-lg font-bold">The Platform</span>
             </div>
             <p className="text-gray-400 mb-4">
               The complete salon booking and management platform trusted by 500+ salons across South Africa.
@@ -71,7 +71,7 @@ export function Footer() {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-400">
-              © 2024 AppointmentBooking. All rights reserved.
+              © 2024 The Platform. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy" className="text-sm text-gray-400 hover:text-white transition-colors">

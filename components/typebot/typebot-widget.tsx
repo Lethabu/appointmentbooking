@@ -22,7 +22,7 @@ export function TypebotWidget({ typebotId, tenantId, theme }: TypebotWidgetProps
         theme: ${JSON.stringify(theme || { button: { backgroundColor: '#6366f1' } })},
         prefilledVariables: {
           tenantId: "${tenantId}",
-          webhookUrl: "${process.env.NEXT_PUBLIC_APP_URL || 'https://appointmentbooking.co.za'}"
+          webhookUrl: "${process.env.NEXT_PUBLIC_APP_URL || 'https://your-platform-domain.com'}"
         }
       })
     `
@@ -48,7 +48,7 @@ export function TypebotEmbed({ typebotId, tenantId, className = "" }: TypebotWid
         typebot: "${typebotId}",
         prefilledVariables: {
           tenantId: "${tenantId}",
-          webhookUrl: "${process.env.NEXT_PUBLIC_APP_URL || 'https://appointmentbooking.co.za'}"
+          webhookUrl: "${process.env.NEXT_PUBLIC_APP_URL || 'https://your-platform-domain.com'}"
         }
       })
     `

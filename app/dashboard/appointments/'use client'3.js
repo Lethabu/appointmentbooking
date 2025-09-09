@@ -8,7 +8,7 @@ export default function Navbar() {
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         <div className="flex-shrink-0">
           <Link href="/" className="text-2xl font-bold text-indigo-600">
-            AppointmentBookings
+            The Platform
           </Link>
         </div>
         <div className="hidden md:flex items-center space-x-8">

@@ -47,7 +47,7 @@ export async function inviteStaffMember(formData) {
   if (error) return { error: 'Failed to send invitation. Please try again.' }
 
   // In a real app, you would use a service like Resend or SendGrid to email the invite link:
-  // await sendInviteEmail(email, `https://appointmentbookings.co.za/invite?token=${token}`);
+  // await sendInviteEmail(email, `https://your-platform-domain.com/invite?token=${token}`);
 
   revalidatePath('/dashboard/staff')
   return { success: 'Invitation sent successfully!' }

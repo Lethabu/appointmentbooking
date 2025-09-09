@@ -224,7 +224,7 @@
     {
       "id": "webhookUrl",
       "name": "webhookUrl",
-      "defaultValue": "https://appointmentbooking.co.za"
+      "defaultValue": "https://your-platform-domain.com"
     },
     {
       "id": "geminiApiKey",
