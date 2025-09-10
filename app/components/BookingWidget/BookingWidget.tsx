@@ -20,7 +20,7 @@ interface AvailabilitySlot {
   end: Date
 }
 
-export default function BookingWidget() {
+export const BookingWidget = ({ tenantId }: { tenantId: string }) => {
   const [services, setServices] = useState<Service[]>([])
   const [selectedService, setSelectedService] = useState<string>('')
   const [selectedStaff, setSelectedStaff] = useState<string>('')
@@ -31,10 +31,10 @@ export default function BookingWidget() {
   const [success, setSuccess] = useState('')
 
   useEffect(() => {
-    axios.get('/api/services')
+    axios.get(`/api/services?tenantId=${tenantId}`)
       .then(res => setServices(res.data))
       .catch(_err => setError('Failed to load services'))
-  }, [])
+  }, [tenantId])
 
   useEffect(() => {
     if (selectedService && selectedDate) {

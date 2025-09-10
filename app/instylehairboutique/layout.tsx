@@ -1,31 +1,59 @@
-import { Metadata } from 'next';
-import CustomerJourney from '@/components/CustomerJourney';
+import '../globals.css';
+import { ClerkProvider } from '@clerk/nextjs';
+import { CSPostHogProvider } from '@/components/PostHogProvider';
+import { Inter } from 'next/font/google';
+import { Navigation } from '@/components/layout/Navigation';
+import { Footer } from '@/components/layout/Footer';
+import ConvexClientProvider from '../ConvexClientProvider';
+import dynamic from 'next/dynamic';
+import ChatWindow from '@/components/ChatWindow';
+import { headers } from 'next/headers';
 
-export const metadata: Metadata = {
-  title: 'InStyle Hair Boutique - Premium Hair Services & Products',
-  description: 'Professional hair installations, treatments, and premium products in South Africa. Book appointments and shop online with ZAR payments.',
-  keywords: 'hair salon, hair extensions, maphondo, hair treatment, south africa, hair products, booking',
+const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.Toaster), {
+  ssr: false,
+});
+
+const SonnerToaster = dynamic(() => import('@/components/ui/sonner').then(mod => mod.Toaster), {
+  ssr: false,
+});
+
+const CartProvider = dynamic(() => import('@/app/context/CartContext').then(mod => mod.CartProvider), {
+  ssr: false,
+});
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata = {
+  title: { default: 'The Platform - Complete Salon Management Solution',
+    template: '%s | The Platform'
+  },
+  description: 'The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%.',
+  keywords: ['salon booking', 'appointment scheduling', 'salon management', 'beauty booking', 'South Africa'],
+  authors: [{ name: 'Your Platform Team' }],
+  creator: 'The Platform',
+  publisher: 'The Platform',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://your-platform-domain.com'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'InStyle Hair Boutique - Premium Hair Services',
-    description: 'Professional hair services and premium products. Book online or shop our collection.',
-    url: 'https://instylehairboutique.co.za',
-    siteName: 'InStyle Hair Boutique',
-    images: [
-      {
-        url: '/tenants/instyle/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'InStyle Hair Boutique',
-      },
-    ],
-    locale: 'en_ZA',
     type: 'website',
+    locale: 'en_ZA',
+    url: 'https://your-platform-domain.com',
+    title: 'The Platform - Complete Salon Management Solution',
+    description: 'The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%.',
+    siteName: 'The Platform',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'InStyle Hair Boutique',
-    description: 'Premium hair services and products in South Africa',
-    images: ['/tenants/instyle/og-image.png'],
+    title: 'The Platform - Complete Salon Management Solution',
+    description: 'The complete multi-tenant salon management solution.',
+    creator: '@yourplatform',
   },
   robots: {
     index: true,
@@ -40,15 +68,34 @@ export const metadata: Metadata = {
   },
 };
 
-export default function InStyleLayout({
+export default async function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
+  const host = headers().get('host');
+  const tenantId = host?.includes('instylehairboutique') ? 'instyle' : 'default';
+
   return (
-    <>
-      {children}
-      <CustomerJourney />
-    </>
+    <html lang="en">
+      <body className={inter.className}>
+        <ClerkProvider>
+          <CSPostHogProvider>
+            <ConvexClientProvider>
+              <CartProvider>
+                <Navigation />
+                <main className="min-h-screen flex-grow">
+                  {children}
+                </main>
+                <Footer />
+                <ChatWindow tenantId={tenantId} />
+                <Toaster />
+                <SonnerToaster />
+              </CartProvider>
+            </ConvexClientProvider>
+          </CSPostHogProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }

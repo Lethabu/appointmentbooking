@@ -1,0 +1,499 @@
+🔍 ADVANCED 404 DIAGNOSTIC SYSTEM
+==================================
+📊 Tracing request flow for: https://www.instylehairboutique.co.za/book
+1. DNS Resolution (IPv4/IPv6):
+2. SSL/TLS Status (verify certificate chain):
+subject=CN = www.instylehairboutique.co.za
+issuer=C = US, O = Let's Encrypt, CN = R12
+3. Complete HTTP Headers (Direct Test):
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host www.instylehairboutique.co.za:443 was resolved.
+* IPv6: (none)
+* IPv4: 216.198.79.1, 64.29.17.1
+*   Trying 216.198.79.1:443...
+* ALPN: curl offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: /nix/store/jb2mh4asq1klvf3nzj9blr2q6dyhwkrb-nss-cacert-3.107/etc/ssl/certs/ca-bundle.crt
+*  CApath: none
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+{ [15 bytes data]
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+{ [2612 bytes data]
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+{ [264 bytes data]
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+{ [36 bytes data]
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+} [36 bytes data]
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256 / x25519 / RSASSA-PSS
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=www.instylehairboutique.co.za
+*  start date: Sep  8 05:33:48 2025 GMT
+*  expire date: Dec  7 05:33:47 2025 GMT
+*  subjectAltName: host "www.instylehairboutique.co.za" matched cert's "www.instylehairboutique.co.za"
+*  issuer: C=US; O=Let's Encrypt; CN=R12
+*  SSL certificate verify ok.
+*   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 1: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 2: Public key type RSA (4096/152 Bits/secBits), signed using sha256WithRSAEncryption
+* Connected to www.instylehairboutique.co.za (216.198.79.1) port 443
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://www.instylehairboutique.co.za/book
+* [HTTP/2] [1] [:method: HEAD]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: www.instylehairboutique.co.za]
+* [HTTP/2] [1] [:path: /book]
+* [HTTP/2] [1] [user-agent: curl/8.12.1]
+* [HTTP/2] [1] [accept: */*]
+} [5 bytes data]
+> HEAD /book HTTP/2
+> Host: www.instylehairboutique.co.za
+> User-Agent: curl/8.12.1
+> Accept: */*
+> 
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [122 bytes data]
+* Request completely sent off
+{ [5 bytes data]
+< HTTP/2 200 
+< accept-ranges: bytes
+< access-control-allow-origin: *
+< age: 0
+< cache-control: no-cache
+< content-disposition: inline; filename="book.html"
+< content-type: text/html; charset=utf-8
+< date: Wed, 10 Sep 2025 13:03:38 GMT
+< etag: "d7c451e87c3be2683eeba342a214ff8a"
+< last-modified: Wed, 10 Sep 2025 13:03:38 GMT
+< server: Vercel
+< strict-transport-security: max-age=63072000
+< x-emergency-mode: active
+< x-matched-path: /emergency/book.html
+< x-vercel-cache: HIT
+< x-vercel-id: lhr1::mp7th-1757509417996-b1f959529666
+< content-length: 913
+< 
+{ [0 bytes data]
+  0   913    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0   913    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+* Connection #0 to host www.instylehairboutique.co.za left intact
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 0
+cache-control: no-cache
+content-disposition: inline; filename="book.html"
+content-type: text/html; charset=utf-8
+date: Wed, 10 Sep 2025 13:03:38 GMT
+etag: "d7c451e87c3be2683eeba342a214ff8a"
+last-modified: Wed, 10 Sep 2025 13:03:38 GMT
+server: Vercel
+strict-transport-security: max-age=63072000
+x-emergency-mode: active
+x-matched-path: /emergency/book.html
+x-vercel-cache: HIT
+x-vercel-id: lhr1::mp7th-1757509417996-b1f959529666
+content-length: 913
+
+3b. Simulated via Host Header (for multi-tenant):
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host appointmentbooking.co.za:443 was resolved.
+* IPv6: (none)
+* IPv4: 216.198.79.1, 64.29.17.1
+*   Trying 216.198.79.1:443...
+* ALPN: curl offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: /nix/store/jb2mh4asq1klvf3nzj9blr2q6dyhwkrb-nss-cacert-3.107/etc/ssl/certs/ca-bundle.crt
+*  CApath: none
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+{ [15 bytes data]
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+{ [2604 bytes data]
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+{ [264 bytes data]
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+{ [36 bytes data]
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+} [36 bytes data]
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256 / x25519 / RSASSA-PSS
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=appointmentbooking.co.za
+*  start date: Aug 30 12:03:21 2025 GMT
+*  expire date: Nov 28 12:03:20 2025 GMT
+*  subjectAltName: host "appointmentbooking.co.za" matched cert's "appointmentbooking.co.za"
+*  issuer: C=US; O=Let's Encrypt; CN=R12
+*  SSL certificate verify ok.
+*   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 1: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 2: Public key type RSA (4096/152 Bits/secBits), signed using sha256WithRSAEncryption
+* Connected to appointmentbooking.co.za (216.198.79.1) port 443
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://appointmentbooking.co.za/book
+* [HTTP/2] [1] [:method: GET]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: www.instylehairboutique.co.za]
+* [HTTP/2] [1] [:path: /book]
+* [HTTP/2] [1] [user-agent: EmergencyDiagnostic/1.0]
+* [HTTP/2] [1] [accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8]
+} [5 bytes data]
+> GET /book HTTP/2
+> Host: www.instylehairboutique.co.za
+> User-Agent: EmergencyDiagnostic/1.0
+> Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+> 
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [122 bytes data]
+* Request completely sent off
+{ [5 bytes data]
+< HTTP/2 200 
+< accept-ranges: bytes
+< access-control-allow-origin: *
+< age: 0
+< cache-control: no-cache
+< content-disposition: inline; filename="book.html"
+< content-type: text/html; charset=utf-8
+< date: Wed, 10 Sep 2025 13:03:38 GMT
+< etag: "d7c451e87c3be2683eeba342a214ff8a"
+< last-modified: Wed, 10 Sep 2025 13:03:38 GMT
+< server: Vercel
+< strict-transport-security: max-age=63072000
+< x-emergency-mode: active
+< x-matched-path: /emergency/book.html
+< x-vercel-cache: HIT
+< x-vercel-id: lhr1::952hz-1757509418476-0849ee784ae2
+< content-length: 913
+< 
+{ [5 bytes data]
+100   913  100   913    0     0   5240      0 --:--:-- --:--:-- --:--:--  5247
+* Connection #0 to host appointmentbooking.co.za left intact
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - InStyle Hair Boutique</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #fdf2f2; }
+        .container { text-align: center; padding: 2rem; border-radius: 0.5rem; background-color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        h1 { color: #c53030; }
+        p { color: #4a5568; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Booking System Temporarily Unavailable</h1>
+        <p>We are unable to process online bookings at this moment.</p>
+        <p>Please contact us directly to schedule your appointment.</p>
+        <p>We apologize for the inconvenience.</p>
+    </div>
+</body>
+</html>
+4. Edge Function Response:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - InStyle Hair Boutique</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #fdf2f2; }
+        .container { text-align: center; padding: 2rem; border-radius: 0.5rem; background-color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        h1 { color: #c53030; }
+        p { color: #4a5568; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Booking System Temporarily Unavailable</h1>
+        <p>We are unable to process online bookings at this moment.</p>
+        <p>Please contact us directly to schedule your appointment.</p>
+        <p>We apologize for the inconvenience.</p>
+    </div>
+</body>
+</html>
+⚠️ VERCEL_TOKEN not set - skipping API check
+6. External Test (e.g., for validation-like 404s):
+curl: (49) Couldn't parse CURLOPT_RESOLVE entry 'www.instylehairboutique.co.za:443:'
+📊 Tracing request flow for: https://www.instylehairboutique.co.za/
+1. DNS Resolution (IPv4/IPv6):
+2. SSL/TLS Status (verify certificate chain):
+subject=CN = www.instylehairboutique.co.za
+issuer=C = US, O = Let's Encrypt, CN = R12
+3. Complete HTTP Headers (Direct Test):
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host www.instylehairboutique.co.za:443 was resolved.
+* IPv6: (none)
+* IPv4: 216.198.79.1, 64.29.17.1
+*   Trying 216.198.79.1:443...
+* ALPN: curl offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: /nix/store/jb2mh4asq1klvf3nzj9blr2q6dyhwkrb-nss-cacert-3.107/etc/ssl/certs/ca-bundle.crt
+*  CApath: none
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+{ [15 bytes data]
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+{ [2612 bytes data]
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+{ [264 bytes data]
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+{ [36 bytes data]
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+} [36 bytes data]
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256 / x25519 / RSASSA-PSS
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=www.instylehairboutique.co.za
+*  start date: Sep  8 05:33:48 2025 GMT
+*  expire date: Dec  7 05:33:47 2025 GMT
+*  subjectAltName: host "www.instylehairboutique.co.za" matched cert's "www.instylehairboutique.co.za"
+*  issuer: C=US; O=Let's Encrypt; CN=R12
+*  SSL certificate verify ok.
+*   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 1: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 2: Public key type RSA (4096/152 Bits/secBits), signed using sha256WithRSAEncryption
+* Connected to www.instylehairboutique.co.za (216.198.79.1) port 443
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://www.instylehairboutique.co.za/
+* [HTTP/2] [1] [:method: HEAD]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: www.instylehairboutique.co.za]
+* [HTTP/2] [1] [:path: /]
+* [HTTP/2] [1] [user-agent: curl/8.12.1]
+* [HTTP/2] [1] [accept: */*]
+} [5 bytes data]
+> HEAD / HTTP/2
+> Host: www.instylehairboutique.co.za
+> User-Agent: curl/8.12.1
+> Accept: */*
+> 
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [122 bytes data]
+* Request completely sent off
+{ [5 bytes data]
+< HTTP/2 200 
+< accept-ranges: bytes
+< access-control-allow-origin: *
+< age: 0
+< cache-control: no-cache
+< content-disposition: inline
+< content-type: text/html; charset=utf-8
+< date: Wed, 10 Sep 2025 13:03:39 GMT
+< etag: "fa453a8f239f9dea8087c76b6fedb4b9"
+< server: Vercel
+< strict-transport-security: max-age=63072000
+< vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+< x-emergency-mode: active
+< x-matched-path: /
+< x-vercel-cache: PRERENDER
+< x-vercel-id: lhr1::v9c2w-1757509418960-e99ccf34b4a0
+< content-length: 31322
+< 
+{ [0 bytes data]
+  0 31322    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0 31322    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+* Connection #0 to host www.instylehairboutique.co.za left intact
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 0
+cache-control: no-cache
+content-disposition: inline
+content-type: text/html; charset=utf-8
+date: Wed, 10 Sep 2025 13:03:39 GMT
+etag: "fa453a8f239f9dea8087c76b6fedb4b9"
+server: Vercel
+strict-transport-security: max-age=63072000
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+x-emergency-mode: active
+x-matched-path: /
+x-vercel-cache: PRERENDER
+x-vercel-id: lhr1::v9c2w-1757509418960-e99ccf34b4a0
+content-length: 31322
+
+3b. Simulated via Host Header (for multi-tenant):
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host appointmentbooking.co.za:443 was resolved.
+* IPv6: (none)
+* IPv4: 216.198.79.1, 64.29.17.1
+*   Trying 216.198.79.1:443...
+* ALPN: curl offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: /nix/store/jb2mh4asq1klvf3nzj9blr2q6dyhwkrb-nss-cacert-3.107/etc/ssl/certs/ca-bundle.crt
+*  CApath: none
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+{ [15 bytes data]
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+{ [2604 bytes data]
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+{ [264 bytes data]
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+{ [36 bytes data]
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+} [36 bytes data]
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256 / x25519 / RSASSA-PSS
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=appointmentbooking.co.za
+*  start date: Aug 30 12:03:21 2025 GMT
+*  expire date: Nov 28 12:03:20 2025 GMT
+*  subjectAltName: host "appointmentbooking.co.za" matched cert's "appointmentbooking.co.za"
+*  issuer: C=US; O=Let's Encrypt; CN=R12
+*  SSL certificate verify ok.
+*   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 1: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 2: Public key type RSA (4096/152 Bits/secBits), signed using sha256WithRSAEncryption
+* Connected to appointmentbooking.co.za (216.198.79.1) port 443
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://appointmentbooking.co.za/
+* [HTTP/2] [1] [:method: GET]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: www.instylehairboutique.co.za]
+* [HTTP/2] [1] [:path: /]
+* [HTTP/2] [1] [user-agent: EmergencyDiagnostic/1.0]
+* [HTTP/2] [1] [accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8]
+} [5 bytes data]
+> GET / HTTP/2
+> Host: www.instylehairboutique.co.za
+> User-Agent: EmergencyDiagnostic/1.0
+> Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+> 
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [122 bytes data]
+* Request completely sent off
+{ [5 bytes data]
+< HTTP/2 200 
+< accept-ranges: bytes
+< access-control-allow-origin: *
+< age: 0
+< cache-control: no-cache
+< content-disposition: inline
+< content-type: text/html; charset=utf-8
+< date: Wed, 10 Sep 2025 13:03:39 GMT
+< etag: "fa453a8f239f9dea8087c76b6fedb4b9"
+< server: Vercel
+< strict-transport-security: max-age=63072000
+< vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+< x-emergency-mode: active
+< x-matched-path: /
+< x-vercel-cache: HIT
+< x-vercel-id: lhr1::87cmx-1757509419318-f2d2b864e561
+< content-length: 31322
+< 
+{ [5 bytes data]
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/e4af272ccee01ff0-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/9563da215de40361.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/css/275ed64cc4367444.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-35b94c84c4cd83b1.js"/><script src="/_next/static/chunks/fd9d1056-36571b30b99181f7.js" async=""></script><script src="/_next/static/chunks/2117-c228a5395a77088f.js" async=""></script><script src="/_next/static/chunks/main-app-c33783c11ec1de60.js" async=""></script><script src="/_next/static/chunks/2972-067e06fa19a181b9.js" async=""></script><script src="/_next/static/chunks/app/page-152e88e5638a675d.js" async=""></script><script src="/_next/static/chunks/9da6db1e-f3b8850f6181a625.js" async=""></script><script src="/_next/static/chunks/6137-304211f89e2bd3b7.js" async=""></script><script src="/_next/static/chunks/2711-92dc0b4d94155a5e.js" async=""></script><script src="/_next/static/chunks/595-c9b8b2303bdec521.js" async=""></script><script src="/_next/static/chunks/5852-4076f4b205bbec1e.js" async=""></script><script src="/_next/static/chunks/1686-0afd93d3adbce757.js" async=""></script><script src="/_next/static/chunks/31-9a9b4d1fe78904a0.js" async=""></script><script src="/_next/static/chunks/4521-e11b81fdf675687d.js" async=""></script><script src="/_next/static/chunks/8869-97dc0f8024c9a597.js" async=""></script><script src="/_next/static/chunks/app/layout-bf8e797220fe59dd.js" async=""></script><script src="/_next/static/chunks/app/error-7a411b6c74bdef7d.js" async=""></script><script src="https://suited-koi-73.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js" data-clerk-js-script="true" async="" crossorigin="anonymous" data-clerk-publishable-key="pk_test_c3VpdGVkLWtvaS03My5jbGVyay5hY2NvdW50cy5kZXYk"></script><title>The Platform - Complete Salon Management Solution</title><meta name="description" content="The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%."/><meta name="author" content="Your Platform Team"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials"/><meta name="keywords" content="salon booking,appointment scheduling,salon management,beauty booking,South Africa"/><meta name="creator" content="The Platform"/><meta name="publisher" content="The Platform"/><meta name="robots" content="index, follow"/><meta name="googlebot" content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1"/><link rel="canonical" href="https://your-platform-domain.com"/><meta name="format-detection" content="telephone=no, address=no, email=no"/><meta property="og:title" content="The Platform - Complete Salon Management Solution"/><meta property="og:description" content="The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%."/><meta property="og:url" content="https://your-platform-domain.com"/><meta property="og:site_name" content="The Platform"/><meta property="og:locale" content="en_ZA"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:creator" content="@yourplatform"/><meta name="twitter:title" content="The Platform - Complete Salon Management Solution"/><meta name="twitter:description" content="The complete multi-tenant salon management solution."/><link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16"/><meta name="next-size-adjust"/><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body class="__className_e8ce0c"><!--$!--><template data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"></template><!--/$--><script src="/_next/static/chunks/webpack-35b94c84c4cd83b1.js" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/media/e4af272ccee01ff0-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n2:HL[\"/_next/static/css/9563da215de40361.css\",\"style\"]\n3:HL[\"/_next/static/css/275ed64cc4367444.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"4:I[12846,[],\"\"]\n6:I[72972,[\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"1931\",\"static/chunks/app/page-152e88e5638a675d.js\"],\"\"]\n9:I[61060,[],\"\"]\na:[]\n"])</script><script>self.__next_f.push([1,"0:[\"$\",\"$L4\",null,{\"buildId\":\"S_xuW3yTj8Op4n-1ZAm9o\",\"assetPrefix\":\"\",\"urlParts\":[\"\",\"\"],\"initialTree\":[\"\",{\"children\":[\"__PAGE__\",{}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"__PAGE__\",{},[[\"$L5\",[\"$\",\"main\",null,{\"children\":[[\"$\",\"section\",null,{\"className\":\"relative bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500 text-white\",\"children\":[[\"$\",\"div\",null,{\"className\":\"absolute inset-0 bg-black/20\"}],[\"$\",\"div\",null,{\"className\":\"relative max-w-7xl mx-auto px-4 py-24 sm:py-32\",\"children\":[\"$\",\"div\",null,{\"className\":\"text-center\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-4 inline-block bg-white/20 text-white border border-white/30 rounded-full px-3 py-1 text-sm\",\"children\":\"🚀 Trusted by 500+ salons across South Africa\"}],[\"$\",\"h1\",null,{\"className\":\"text-4xl sm:text-6xl font-bold mb-6\",\"children\":[\"The Complete Salon\",[\"$\",\"span\",null,{\"className\":\"block text-yellow-300\",\"children\":\"Booking Platform\"}]]}],[\"$\",\"p\",null,{\"className\":\"text-xl sm:text-2xl mb-8 max-w-3xl mx-auto opacity-90\",\"children\":\"Increase bookings by 300%, reduce no-shows by 80%, and delight customers with AI-powered appointment management.\"}],[\"$\",\"div\",null,{\"className\":\"flex flex-col sm:flex-row gap-4 justify-center\",\"children\":[[\"$\",\"$L6\",null,{\"href\":\"/book-demo\",\"className\":\"inline-flex items-center justify-center px-8 py-3 text-lg font-medium bg-white text-purple-600 rounded-md hover:bg-gray-100 transition-colors\",\"children\":\"Start Free Trial\"}],[\"$\",\"$L6\",null,{\"href\":\"/pricing\",\"className\":\"inline-flex items-center justify-center px-8 py-3 text-lg font-medium border border-white text-white rounded-md hover:bg-white/10 transition-colors\",\"children\":\"View Pricing\"}]]}]]}]}]]}],[\"$\",\"section\",null,{\"className\":\"py-12 bg-gray-50\",\"children\":[\"$\",\"div\",null,{\"className\":\"max-w-7xl mx-auto px-4\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-60\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-center\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-2xl font-bold text-gray-900\",\"children\":\"500+\"}],[\"$\",\"div\",null,{\"className\":\"text-sm text-gray-600\",\"children\":\"Active Salons\"}]]}],[\"$\",\"div\",null,{\"className\":\"text-center\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-2xl font-bold text-gray-900\",\"children\":\"50K+\"}],[\"$\",\"div\",null,{\"className\":\"text-sm text-gray-600\",\"children\":\"Monthly Bookings\"}]]}],[\"$\",\"div\",null,{\"className\":\"text-center\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-2xl font-bold text-gray-900\",\"children\":\"4.9★\"}],[\"$\",\"div\",null,{\"className\":\"text-sm text-gray-600\",\"children\":\"Customer Rating\"}]]}],[\"$\",\"div\",null,{\"className\":\"text-center\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-2xl font-bold text-gray-900\",\"children\":\"99.9%\"}],[\"$\",\"div\",null,{\"className\":\"text-sm text-gray-600\",\"children\":\"Uptime\"}]]}]]}]}]}],[\"$\",\"section\",null,{\"className\":\"py-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"max-w-7xl mx-auto px-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-center mb-16\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-3xl sm:text-4xl font-bold mb-4\",\"children\":\"Everything you need to grow\"}],[\"$\",\"p\",null,{\"className\":\"text-xl text-gray-600 max-w-2xl mx-auto\",\"children\":\"From booking to billing, we've got every aspect of your salon covered.\"}]]}],[\"$\",\"div\",null,{\"className\":\"grid md:grid-cols-3 gap-8\",\"children\":[[\"$\",\"div\",null,{\"className\":\"border-0 shadow-lg hover:shadow-xl transition-shadow rounded-lg bg-white p-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-12 w-12 text-purple-600 mb-4\",\"children\":\"📅\"}],[\"$\",\"h3\",null,{\"className\":\"text-xl font-semibold mb-2\",\"children\":\"Smart Booking\"}],[\"$\",\"p\",null,{\"className\":\"text-gray-600 mb-4\",\"children\":\"AI-powered scheduling that prevents double bookings and optimizes your calendar\"}]]}],[\"$\",\"ul\",null,{\"className\":\"space-y-2\",\"children\":[[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Real-time availability\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Automated reminders\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Multi-staff scheduling\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"border-0 shadow-lg hover:shadow-xl transition-shadow rounded-lg bg-white p-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-12 w-12 text-blue-600 mb-4\",\"children\":\"👥\"}],[\"$\",\"h3\",null,{\"className\":\"text-xl font-semibold mb-2\",\"children\":\"Customer Experience\"}],[\"$\",\"p\",null,{\"className\":\"text-gray-600 mb-4\",\"children\":\"Delight customers with seamless booking and loyalty rewards\"}]]}],[\"$\",\"ul\",null,{\"className\":\"space-y-2\",\"children\":[[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"One-click rebooking\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Loyalty points system\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"AI chat support\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"border-0 shadow-lg hover:shadow-xl transition-shadow rounded-lg bg-white p-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-12 w-12 text-teal-600 mb-4\",\"children\":\"📈\"}],[\"$\",\"h3\",null,{\"className\":\"text-xl font-semibold mb-2\",\"children\":\"Business Growth\"}],[\"$\",\"p\",null,{\"className\":\"text-gray-600 mb-4\",\"children\":\"Analytics and tools to grow your revenue and customer base\"}]]}],[\"$\",\"ul\",null,{\"className\":\"space-y-2\",\"children\":[[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Revenue analytics\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Marketing automation\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Referral program\"}]]}]]}]]}]]}]]}]}],[\"$\",\"section\",null,{\"className\":\"py-20 bg-gradient-to-r from-purple-600 to-blue-600 text-white\",\"children\":[\"$\",\"div\",null,{\"className\":\"max-w-4xl mx-auto text-center px-4\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-3xl sm:text-4xl font-bold mb-4\",\"children\":\"Ready to transform your salon?\"}],[\"$\",\"p\",null,{\"className\":\"text-xl mb-8 opacity-90\",\"children\":\"Join hundreds of successful salons using our platform. Start your free trial today.\"}],[\"$\",\"$L6\",null,{\"href\":\"/book-demo\",\"className\":\"inline-flex items-center justify-center px-8 py-3 text-lg font-medium bg-white text-purple-600 rounded-md hover:bg-gray-100 transition-colors\",\"children\":\"Get Started Free\"}]]}]}]]}],null],null],null]},[[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/9563da215de40361.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/275ed64cc4367444.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\"}]],\"$L7\"],null],null],\"couldBeIntercepted\":false,\"initialHead\":[null,\"$L8\"],\"globalErrorComponent\":\"$9\",\"missingSlots\":\"$Wa\"}]\n"])</script><script>self.__next_f.push([1,"7:[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"className\":\"__className_e8ce0c\",\"children\":\"$Lb\"}]}]\n"])</script><script>self.__next_f.push([1,"8:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"The Platform - Complete Salon Management Solution\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%.\"}],[\"$\",\"meta\",\"4\",{\"name\":\"author\",\"content\":\"Your Platform Team\"}],[\"$\",\"link\",\"5\",{\"rel\":\"manifest\",\"href\":\"/manifest.webmanifest\",\"crossOrigin\":\"use-credentials\"}],[\"$\",\"meta\",\"6\",{\"name\":\"keywords\",\"content\":\"salon booking,appointment scheduling,salon management,beauty booking,South Africa\"}],[\"$\",\"meta\",\"7\",{\"name\":\"creator\",\"content\":\"The Platform\"}],[\"$\",\"meta\",\"8\",{\"name\":\"publisher\",\"content\":\"The Platform\"}],[\"$\",\"meta\",\"9\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"meta\",\"10\",{\"name\":\"googlebot\",\"content\":\"index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1\"}],[\"$\",\"link\",\"11\",{\"rel\":\"canonical\",\"href\":\"https://your-platform-domain.com\"}],[\"$\",\"meta\",\"12\",{\"name\":\"format-detection\",\"content\":\"telephone=no, address=no, email=no\"}],[\"$\",\"meta\",\"13\",{\"property\":\"og:title\",\"content\":\"The Platform - Complete Salon Management Solution\"}],[\"$\",\"meta\",\"14\",{\"property\":\"og:description\",\"content\":\"The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%.\"}],[\"$\",\"meta\",\"15\",{\"property\":\"og:url\",\"content\":\"https://your-platform-domain.com\"}],[\"$\",\"meta\",\"16\",{\"property\":\"og:site_name\",\"content\":\"The Platform\"}],[\"$\",\"meta\",\"17\",{\"property\":\"og:locale\",\"content\":\"en_ZA\"}],[\"$\",\"meta\",\"18\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"19\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"20\",{\"name\":\"twitter:creator\",\"content\":\"@yourplatform\"}],[\"$\",\"meta\",\"21\",{\"name\":\"twitter:title\",\"content\":\"The Platform - Complete Salon Management Solution\"}],[\"$\",\"meta\",\"22\",{\"name\":\"twitter:description\",\"content\":\"The complete multi-tenant salon management solution.\"}],[\"$\",\"link\",\"23\",{\"rel\":\"icon\",\"href\":\"/favicon.ico\",\"type\":\"image/x-icon\",\"sizes\":\"16x16\"}],[\"$\",\"meta\",\"24\",{\"name\":\"next-size-adjust\"}]]\n"])</script><script>self.__next_f.push([1,"5:null\n"])</script><script>self.__next_f.push([1,"c:I[3,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"ClientClerkProvider\"]\nd:I[15689,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"CSPostHogProvider\"]\ne:I[37433,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"default\"]\nf:\"$Sreact.suspense\"\n10:I[81523,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce75"])</script><script>self.__next_f.push([1,"7.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"BailoutToCSR\"]\n11:I[12155,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"CartProvider\",1]\n12:I[30167,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"Navigation\"]\n13:I[4707,[],\"\"]\n14:I[13490,[\"7601\",\"static/chunks/app/error-7a411b6c74bdef7d.js\"],\"default\"]\n15:I[36423,[],\"\"]\n16:I[26831,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"default\"]\n17:I[849,[\"5878\",\"static/chunks/9da6db1e-"])</script><script>self.__next_f.push([1,"f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"Toaster\",1]\n18:I[33606,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"Toaster\",1]\n"])</script><script>self.__next_f.push([1,"b:[\"$\",\"$Lc\",null,{\"publishableKey\":\"pk_test_c3VpdGVkLWtvaS03My5jbGVyay5hY2NvdW50cy5kZXYk\",\"clerkJSUrl\":\"$undefined\",\"clerkJSVersion\":\"$undefined\",\"proxyUrl\":\"\",\"domain\":\"\",\"isSatellite\":false,\"signInUrl\":\"\",\"signUpUrl\":\"\",\"signInForceRedirectUrl\":\"\",\"signUpForceRedirectUrl\":\"\",\"signInFallbackRedirectUrl\":\"\",\"signUpFallbackRedirectUrl\":\"\",\"afterSignInUrl\":\"\",\"afterSignUpUrl\":\"\",\"newSubscriptionRedirectUrl\":\"\",\"telemetry\":{\"disabled\":false,\"debug\":false},\"sdkMetadata\":{\"name\":\"@clerk/nextjs\",\"version\":\"6.31.9\",\"environment\":\"production\"},\"nonce\":\"\",\"initialState\":null,\"children\":[\"$\",\"$Ld\",null,{\"children\":[\"$\",\"$Le\",null,{\"children\":[\"$\",\"$f\",null,{\"fallback\":null,\"children\":[\"$\",\"$L10\",null,{\"reason\":\"next/dynamic\",\"children\":[\"$\",\"$L11\",null,{\"children\":[[\"$\",\"$L12\",null,{}],[\"$\",\"main\",null,{\"className\":\"min-h-screen flex-grow\",\"children\":[\"$\",\"$L13\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"error\":\"$14\",\"errorStyles\":[],\"errorScripts\":[],\"template\":[\"$\",\"$L15\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"h1\",null,{\"children\":\"404 - Not Found\"}],[\"$\",\"p\",null,{\"children\":\"Page not found.\"}]]}],\"notFoundStyles\":[]}]}],[\"$\",\"footer\",null,{\"className\":\"bg-gray-900 text-white\",\"children\":[\"$\",\"div\",null,{\"className\":\"max-w-7xl mx-auto px-4 py-12\",\"children\":[[\"$\",\"div\",null,{\"className\":\"grid md:grid-cols-4 gap-8\",\"children\":[[\"$\",\"div\",null,{\"children\":[[\"$\",\"div\",null,{\"className\":\"flex items-center space-x-2 mb-4\",\"children\":[[\"$\",\"svg\",null,{\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-calendar h-6 w-6 text-purple-400\",\"aria-hidden\":\"true\",\"children\":[[\"$\",\"path\",\"1cmpym\",{\"d\":\"M8 2v4\"}],[\"$\",\"path\",\"4m81vk\",{\"d\":\"M16 2v4\"}],[\"$\",\"rect\",\"1hopcy\",{\"width\":\"18\",\"height\":\"18\",\"x\":\"3\",\"y\":\"4\",\"rx\":\"2\"}],[\"$\",\"path\",\"8toen8\",{\"d\":\"M3 10h18\"}],\"$undefined\"]}],[\"$\",\"span\",null,{\"className\":\"text-lg font-bold\",\"children\":\"The Platform\"}]]}],[\"$\",\"p\",null,{\"className\":\"text-gray-400 mb-4\",\"children\":\"The complete salon booking and management platform trusted by 500+ salons across South Africa.\"}],[\"$\",\"div\",null,{\"className\":\"space-y-2 text-sm text-gray-400\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"svg\",null,{\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-mail h-4 w-4\",\"aria-hidden\":\"true\",\"children\":[[\"$\",\"path\",\"132q7q\",{\"d\":\"m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7\"}],[\"$\",\"rect\",\"izxlao\",{\"x\":\"2\",\"y\":\"4\",\"width\":\"20\",\"height\":\"16\",\"rx\":\"2\"}],\"$undefined\"]}],[\"$\",\"span\",null,{\"children\":\"hello@instylehairboutique.co.za\"}]]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"svg\",null,{\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-phone h-4 w-4\",\"aria-hidden\":\"true\",\"children\":[[\"$\",\"path\",\"9njp5v\",{\"d\":\"M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384\"}],\"$undefined\"]}],[\"$\",\"span\",null,{\"children\":\"+27 11 123 4567\"}]]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"svg\",null,{\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-map-pin h-4 w-4\",\"aria-hidden\":\"true\",\"children\":[[\"$\",\"path\",\"1r0f0z\",{\"d\":\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"}],[\"$\",\"circle\",\"ilqhr7\",{\"cx\":\"12\",\"cy\":\"10\",\"r\":\"3\"}],\"$undefined\"]}],[\"$\",\"span\",null,{\"children\":\"Cape Town, South Africa\"}]]}]]}]]}],[\"$\",\"div\",null,{\"children\":[[\"$\",\"h3\",null,{\"className\":\"font-semibold mb-4\",\"children\":\"Product\"}],[\"$\",\"ul\",null,{\"className\":\"space-y-2 text-sm text-gray-400\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/features\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Features\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/pricing\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Pricing\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/integrations\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Integrations\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/api\",\"className\":\"hover:text-white transition-colors\",\"children\":\"API\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/security\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Security\"}]}]]}]]}],[\"$\",\"div\",null,{\"children\":[[\"$\",\"h3\",null,{\"className\":\"font-semibold mb-4\",\"children\":\"Resources\"}],[\"$\",\"ul\",null,{\"className\":\"space-y-2 text-sm text-gray-400\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/blog\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Blog\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/help\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Help Center\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\100 31322  100 31322    0     0   658k      0 --:--:-- --:--:-- --:--:--  664k
+* Connection #0 to host appointmentbooking.co.za left intact
+"/guides\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Guides\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/webinars\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Webinars\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/status\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Status\"}]}]]}]]}],[\"$\",\"div\",null,{\"children\":[[\"$\",\"h3\",null,{\"className\":\"font-semibold mb-4\",\"children\":\"Company\"}],[\"$\",\"ul\",null,{\"className\":\"space-y-2 text-sm text-gray-400\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/about\",\"className\":\"hover:text-white transition-colors\",\"children\":\"About\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/careers\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Careers\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/contact\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Contact\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/partners\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Partners\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/press\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Press\"}]}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"border-t border-gray-800 mt-8 pt-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col md:flex-row justify-between items-center\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-gray-400\",\"children\":\"© 2024 The Platform. All rights reserved.\"}],[\"$\",\"div\",null,{\"className\":\"flex space-x-6 mt-4 md:mt-0\",\"children\":[[\"$\",\"$L6\",null,{\"href\":\"/privacy\",\"className\":\"text-sm text-gray-400 hover:text-white transition-colors\",\"children\":\"Privacy Policy\"}],[\"$\",\"$L6\",null,{\"href\":\"/terms\",\"className\":\"text-sm text-gray-400 hover:text-white transition-colors\",\"children\":\"Terms of Service\"}],[\"$\",\"$L6\",null,{\"href\":\"/cookies\",\"className\":\"text-sm text-gray-400 hover:text-white transition-colors\",\"children\":\"Cookie Policy\"}]]}]]}]}]]}]}],[\"$\",\"$L16\",null,{\"tenantId\":\"default\"}],[\"$\",\"$f\",null,{\"fallback\":null,\"children\":[\"$\",\"$L10\",null,{\"reason\":\"next/dynamic\",\"children\":[\"$\",\"$L17\",null,{}]}]}],[\"$\",\"$f\",null,{\"fallback\":null,\"children\":[\"$\",\"$L10\",null,{\"reason\":\"next/dynamic\",\"children\":[\"$\",\"$L18\",null,{}]}]}]]}]}]}]}]}]}]\n"])</script></body></html>4. Edge Function Response:
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/e4af272ccee01ff0-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/9563da215de40361.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/css/275ed64cc4367444.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-35b94c84c4cd83b1.js"/><script src="/_next/static/chunks/fd9d1056-36571b30b99181f7.js" async=""></script><script src="/_next/static/chunks/2117-c228a5395a77088f.js" async=""></script><script src="/_next/static/chunks/main-app-c33783c11ec1de60.js" async=""></script><script src="/_next/static/chunks/2972-067e06fa19a181b9.js" async=""></script><script src="/_next/static/chunks/app/page-152e88e5638a675d.js" async=""></script><script src="/_next/static/chunks/9da6db1e-f3b8850f6181a625.js" async=""></script><script src="/_next/static/chunks/6137-304211f89e2bd3b7.js" async=""></script><script src="/_next/static/chunks/2711-92dc0b4d94155a5e.js" async=""></script><script src="/_next/static/chunks/595-c9b8b2303bdec521.js" async=""></script><script src="/_next/static/chunks/5852-4076f4b205bbec1e.js" async=""></script><script src="/_next/static/chunks/1686-0afd93d3adbce757.js" async=""></script><script src="/_next/static/chunks/31-9a9b4d1fe78904a0.js" async=""></script><script src="/_next/static/chunks/4521-e11b81fdf675687d.js" async=""></script><script src="/_next/static/chunks/8869-97dc0f8024c9a597.js" async=""></script><script src="/_next/static/chunks/app/layout-bf8e797220fe59dd.js" async=""></script><script src="/_next/static/chunks/app/error-7a411b6c74bdef7d.js" async=""></script><script src="https://suited-koi-73.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js" data-clerk-js-script="true" async="" crossorigin="anonymous" data-clerk-publishable-key="pk_test_c3VpdGVkLWtvaS03My5jbGVyay5hY2NvdW50cy5kZXYk"></script><title>The Platform - Complete Salon Management Solution</title><meta name="description" content="The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%."/><meta name="author" content="Your Platform Team"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials"/><meta name="keywords" content="salon booking,appointment scheduling,salon management,beauty booking,South Africa"/><meta name="creator" content="The Platform"/><meta name="publisher" content="The Platform"/><meta name="robots" content="index, follow"/><meta name="googlebot" content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1"/><link rel="canonical" href="https://your-platform-domain.com"/><meta name="format-detection" content="telephone=no, address=no, email=no"/><meta property="og:title" content="The Platform - Complete Salon Management Solution"/><meta property="og:description" content="The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%."/><meta property="og:url" content="https://your-platform-domain.com"/><meta property="og:site_name" content="The Platform"/><meta property="og:locale" content="en_ZA"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:creator" content="@yourplatform"/><meta name="twitter:title" content="The Platform - Complete Salon Management Solution"/><meta name="twitter:description" content="The complete multi-tenant salon management solution."/><link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16"/><meta name="next-size-adjust"/><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body class="__className_e8ce0c"><!--$!--><template data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"></template><!--/$--><script src="/_next/static/chunks/webpack-35b94c84c4cd83b1.js" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/media/e4af272ccee01ff0-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n2:HL[\"/_next/static/css/9563da215de40361.css\",\"style\"]\n3:HL[\"/_next/static/css/275ed64cc4367444.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"4:I[12846,[],\"\"]\n6:I[72972,[\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"1931\",\"static/chunks/app/page-152e88e5638a675d.js\"],\"\"]\n9:I[61060,[],\"\"]\na:[]\n"])</script><script>self.__next_f.push([1,"0:[\"$\",\"$L4\",null,{\"buildId\":\"S_xuW3yTj8Op4n-1ZAm9o\",\"assetPrefix\":\"\",\"urlParts\":[\"\",\"\"],\"initialTree\":[\"\",{\"children\":[\"__PAGE__\",{}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"__PAGE__\",{},[[\"$L5\",[\"$\",\"main\",null,{\"children\":[[\"$\",\"section\",null,{\"className\":\"relative bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500 text-white\",\"children\":[[\"$\",\"div\",null,{\"className\":\"absolute inset-0 bg-black/20\"}],[\"$\",\"div\",null,{\"className\":\"relative max-w-7xl mx-auto px-4 py-24 sm:py-32\",\"children\":[\"$\",\"div\",null,{\"className\":\"text-center\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-4 inline-block bg-white/20 text-white border border-white/30 rounded-full px-3 py-1 text-sm\",\"children\":\"🚀 Trusted by 500+ salons across South Africa\"}],[\"$\",\"h1\",null,{\"className\":\"text-4xl sm:text-6xl font-bold mb-6\",\"children\":[\"The Complete Salon\",[\"$\",\"span\",null,{\"className\":\"block text-yellow-300\",\"children\":\"Booking Platform\"}]]}],[\"$\",\"p\",null,{\"className\":\"text-xl sm:text-2xl mb-8 max-w-3xl mx-auto opacity-90\",\"children\":\"Increase bookings by 300%, reduce no-shows by 80%, and delight customers with AI-powered appointment management.\"}],[\"$\",\"div\",null,{\"className\":\"flex flex-col sm:flex-row gap-4 justify-center\",\"children\":[[\"$\",\"$L6\",null,{\"href\":\"/book-demo\",\"className\":\"inline-flex items-center justify-center px-8 py-3 text-lg font-medium bg-white text-purple-600 rounded-md hover:bg-gray-100 transition-colors\",\"children\":\"Start Free Trial\"}],[\"$\",\"$L6\",null,{\"href\":\"/pricing\",\"className\":\"inline-flex items-center justify-center px-8 py-3 text-lg font-medium border border-white text-white rounded-md hover:bg-white/10 transition-colors\",\"children\":\"View Pricing\"}]]}]]}]}]]}],[\"$\",\"section\",null,{\"className\":\"py-12 bg-gray-50\",\"children\":[\"$\",\"div\",null,{\"className\":\"max-w-7xl mx-auto px-4\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-60\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-center\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-2xl font-bold text-gray-900\",\"children\":\"500+\"}],[\"$\",\"div\",null,{\"className\":\"text-sm text-gray-600\",\"children\":\"Active Salons\"}]]}],[\"$\",\"div\",null,{\"className\":\"text-center\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-2xl font-bold text-gray-900\",\"children\":\"50K+\"}],[\"$\",\"div\",null,{\"className\":\"text-sm text-gray-600\",\"children\":\"Monthly Bookings\"}]]}],[\"$\",\"div\",null,{\"className\":\"text-center\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-2xl font-bold text-gray-900\",\"children\":\"4.9★\"}],[\"$\",\"div\",null,{\"className\":\"text-sm text-gray-600\",\"children\":\"Customer Rating\"}]]}],[\"$\",\"div\",null,{\"className\":\"text-center\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-2xl font-bold text-gray-900\",\"children\":\"99.9%\"}],[\"$\",\"div\",null,{\"className\":\"text-sm text-gray-600\",\"children\":\"Uptime\"}]]}]]}]}]}],[\"$\",\"section\",null,{\"className\":\"py-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"max-w-7xl mx-auto px-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"text-center mb-16\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-3xl sm:text-4xl font-bold mb-4\",\"children\":\"Everything you need to grow\"}],[\"$\",\"p\",null,{\"className\":\"text-xl text-gray-600 max-w-2xl mx-auto\",\"children\":\"From booking to billing, we've got every aspect of your salon covered.\"}]]}],[\"$\",\"div\",null,{\"className\":\"grid md:grid-cols-3 gap-8\",\"children\":[[\"$\",\"div\",null,{\"className\":\"border-0 shadow-lg hover:shadow-xl transition-shadow rounded-lg bg-white p-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-12 w-12 text-purple-600 mb-4\",\"children\":\"📅\"}],[\"$\",\"h3\",null,{\"className\":\"text-xl font-semibold mb-2\",\"children\":\"Smart Booking\"}],[\"$\",\"p\",null,{\"className\":\"text-gray-600 mb-4\",\"children\":\"AI-powered scheduling that prevents double bookings and optimizes your calendar\"}]]}],[\"$\",\"ul\",null,{\"className\":\"space-y-2\",\"children\":[[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Real-time availability\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Automated reminders\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Multi-staff scheduling\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"border-0 shadow-lg hover:shadow-xl transition-shadow rounded-lg bg-white p-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-12 w-12 text-blue-600 mb-4\",\"children\":\"👥\"}],[\"$\",\"h3\",null,{\"className\":\"text-xl font-semibold mb-2\",\"children\":\"Customer Experience\"}],[\"$\",\"p\",null,{\"className\":\"text-gray-600 mb-4\",\"children\":\"Delight customers with seamless booking and loyalty rewards\"}]]}],[\"$\",\"ul\",null,{\"className\":\"space-y-2\",\"children\":[[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"One-click rebooking\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Loyalty points system\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"AI chat support\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"border-0 shadow-lg hover:shadow-xl transition-shadow rounded-lg bg-white p-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-12 w-12 text-teal-600 mb-4\",\"children\":\"📈\"}],[\"$\",\"h3\",null,{\"className\":\"text-xl font-semibold mb-2\",\"children\":\"Business Growth\"}],[\"$\",\"p\",null,{\"className\":\"text-gray-600 mb-4\",\"children\":\"Analytics and tools to grow your revenue and customer base\"}]]}],[\"$\",\"ul\",null,{\"className\":\"space-y-2\",\"children\":[[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Revenue analytics\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Marketing automation\"}]]}],[\"$\",\"li\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"span\",null,{\"className\":\"text-green-500\",\"children\":\"✓\"}],[\"$\",\"span\",null,{\"className\":\"text-sm\",\"children\":\"Referral program\"}]]}]]}]]}]]}]]}]}],[\"$\",\"section\",null,{\"className\":\"py-20 bg-gradient-to-r from-purple-600 to-blue-600 text-white\",\"children\":[\"$\",\"div\",null,{\"className\":\"max-w-4xl mx-auto text-center px-4\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-3xl sm:text-4xl font-bold mb-4\",\"children\":\"Ready to transform your salon?\"}],[\"$\",\"p\",null,{\"className\":\"text-xl mb-8 opacity-90\",\"children\":\"Join hundreds of successful salons using our platform. Start your free trial today.\"}],[\"$\",\"$L6\",null,{\"href\":\"/book-demo\",\"className\":\"inline-flex items-center justify-center px-8 py-3 text-lg font-medium bg-white text-purple-600 rounded-md hover:bg-gray-100 transition-colors\",\"children\":\"Get Started Free\"}]]}]}]]}],null],null],null]},[[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/9563da215de40361.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/275ed64cc4367444.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\"}]],\"$L7\"],null],null],\"couldBeIntercepted\":false,\"initialHead\":[null,\"$L8\"],\"globalErrorComponent\":\"$9\",\"missingSlots\":\"$Wa\"}]\n"])</script><script>self.__next_f.push([1,"7:[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"className\":\"__className_e8ce0c\",\"children\":\"$Lb\"}]}]\n"])</script><script>self.__next_f.push([1,"8:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"The Platform - Complete Salon Management Solution\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%.\"}],[\"$\",\"meta\",\"4\",{\"name\":\"author\",\"content\":\"Your Platform Team\"}],[\"$\",\"link\",\"5\",{\"rel\":\"manifest\",\"href\":\"/manifest.webmanifest\",\"crossOrigin\":\"use-credentials\"}],[\"$\",\"meta\",\"6\",{\"name\":\"keywords\",\"content\":\"salon booking,appointment scheduling,salon management,beauty booking,South Africa\"}],[\"$\",\"meta\",\"7\",{\"name\":\"creator\",\"content\":\"The Platform\"}],[\"$\",\"meta\",\"8\",{\"name\":\"publisher\",\"content\":\"The Platform\"}],[\"$\",\"meta\",\"9\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"meta\",\"10\",{\"name\":\"googlebot\",\"content\":\"index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1\"}],[\"$\",\"link\",\"11\",{\"rel\":\"canonical\",\"href\":\"https://your-platform-domain.com\"}],[\"$\",\"meta\",\"12\",{\"name\":\"format-detection\",\"content\":\"telephone=no, address=no, email=no\"}],[\"$\",\"meta\",\"13\",{\"property\":\"og:title\",\"content\":\"The Platform - Complete Salon Management Solution\"}],[\"$\",\"meta\",\"14\",{\"property\":\"og:description\",\"content\":\"The complete multi-tenant salon management solution. Increase bookings by 300%, reduce no-shows by 80%.\"}],[\"$\",\"meta\",\"15\",{\"property\":\"og:url\",\"content\":\"https://your-platform-domain.com\"}],[\"$\",\"meta\",\"16\",{\"property\":\"og:site_name\",\"content\":\"The Platform\"}],[\"$\",\"meta\",\"17\",{\"property\":\"og:locale\",\"content\":\"en_ZA\"}],[\"$\",\"meta\",\"18\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"19\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"20\",{\"name\":\"twitter:creator\",\"content\":\"@yourplatform\"}],[\"$\",\"meta\",\"21\",{\"name\":\"twitter:title\",\"content\":\"The Platform - Complete Salon Management Solution\"}],[\"$\",\"meta\",\"22\",{\"name\":\"twitter:description\",\"content\":\"The complete multi-tenant salon management solution.\"}],[\"$\",\"link\",\"23\",{\"rel\":\"icon\",\"href\":\"/favicon.ico\",\"type\":\"image/x-icon\",\"sizes\":\"16x16\"}],[\"$\",\"meta\",\"24\",{\"name\":\"next-size-adjust\"}]]\n"])</script><script>self.__next_f.push([1,"5:null\n"])</script><script>self.__next_f.push([1,"c:I[3,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"ClientClerkProvider\"]\nd:I[15689,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"CSPostHogProvider\"]\ne:I[37433,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"default\"]\nf:\"$Sreact.suspense\"\n10:I[81523,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce75"])</script><script>self.__next_f.push([1,"7.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"BailoutToCSR\"]\n11:I[12155,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"CartProvider\",1]\n12:I[30167,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"Navigation\"]\n13:I[4707,[],\"\"]\n14:I[13490,[\"7601\",\"static/chunks/app/error-7a411b6c74bdef7d.js\"],\"default\"]\n15:I[36423,[],\"\"]\n16:I[26831,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"default\"]\n17:I[849,[\"5878\",\"static/chunks/9da6db1e-"])</script><script>self.__next_f.push([1,"f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"Toaster\",1]\n18:I[33606,[\"5878\",\"static/chunks/9da6db1e-f3b8850f6181a625.js\",\"2972\",\"static/chunks/2972-067e06fa19a181b9.js\",\"6137\",\"static/chunks/6137-304211f89e2bd3b7.js\",\"2711\",\"static/chunks/2711-92dc0b4d94155a5e.js\",\"595\",\"static/chunks/595-c9b8b2303bdec521.js\",\"5852\",\"static/chunks/5852-4076f4b205bbec1e.js\",\"1686\",\"static/chunks/1686-0afd93d3adbce757.js\",\"31\",\"static/chunks/31-9a9b4d1fe78904a0.js\",\"4521\",\"static/chunks/4521-e11b81fdf675687d.js\",\"8869\",\"static/chunks/8869-97dc0f8024c9a597.js\",\"3185\",\"static/chunks/app/layout-bf8e797220fe59dd.js\"],\"Toaster\",1]\n"])</script><script>self.__next_f.push([1,"b:[\"$\",\"$Lc\",null,{\"publishableKey\":\"pk_test_c3VpdGVkLWtvaS03My5jbGVyay5hY2NvdW50cy5kZXYk\",\"clerkJSUrl\":\"$undefined\",\"clerkJSVersion\":\"$undefined\",\"proxyUrl\":\"\",\"domain\":\"\",\"isSatellite\":false,\"signInUrl\":\"\",\"signUpUrl\":\"\",\"signInForceRedirectUrl\":\"\",\"signUpForceRedirectUrl\":\"\",\"signInFallbackRedirectUrl\":\"\",\"signUpFallbackRedirectUrl\":\"\",\"afterSignInUrl\":\"\",\"afterSignUpUrl\":\"\",\"newSubscriptionRedirectUrl\":\"\",\"telemetry\":{\"disabled\":false,\"debug\":false},\"sdkMetadata\":{\"name\":\"@clerk/nextjs\",\"version\":\"6.31.9\",\"environment\":\"production\"},\"nonce\":\"\",\"initialState\":null,\"children\":[\"$\",\"$Ld\",null,{\"children\":[\"$\",\"$Le\",null,{\"children\":[\"$\",\"$f\",null,{\"fallback\":null,\"children\":[\"$\",\"$L10\",null,{\"reason\":\"next/dynamic\",\"children\":[\"$\",\"$L11\",null,{\"children\":[[\"$\",\"$L12\",null,{}],[\"$\",\"main\",null,{\"className\":\"min-h-screen flex-grow\",\"children\":[\"$\",\"$L13\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"error\":\"$14\",\"errorStyles\":[],\"errorScripts\":[],\"template\":[\"$\",\"$L15\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"h1\",null,{\"children\":\"404 - Not Found\"}],[\"$\",\"p\",null,{\"children\":\"Page not found.\"}]]}],\"notFoundStyles\":[]}]}],[\"$\",\"footer\",null,{\"className\":\"bg-gray-900 text-white\",\"children\":[\"$\",\"div\",null,{\"className\":\"max-w-7xl mx-auto px-4 py-12\",\"children\":[[\"$\",\"div\",null,{\"className\":\"grid md:grid-cols-4 gap-8\",\"children\":[[\"$\",\"div\",null,{\"children\":[[\"$\",\"div\",null,{\"className\":\"flex items-center space-x-2 mb-4\",\"children\":[[\"$\",\"svg\",null,{\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-calendar h-6 w-6 text-purple-400\",\"aria-hidden\":\"true\",\"children\":[[\"$\",\"path\",\"1cmpym\",{\"d\":\"M8 2v4\"}],[\"$\",\"path\",\"4m81vk\",{\"d\":\"M16 2v4\"}],[\"$\",\"rect\",\"1hopcy\",{\"width\":\"18\",\"height\":\"18\",\"x\":\"3\",\"y\":\"4\",\"rx\":\"2\"}],[\"$\",\"path\",\"8toen8\",{\"d\":\"M3 10h18\"}],\"$undefined\"]}],[\"$\",\"span\",null,{\"className\":\"text-lg font-bold\",\"children\":\"The Platform\"}]]}],[\"$\",\"p\",null,{\"className\":\"text-gray-400 mb-4\",\"children\":\"The complete salon booking and management platform trusted by 500+ salons across South Africa.\"}],[\"$\",\"div\",null,{\"className\":\"space-y-2 text-sm text-gray-400\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"svg\",null,{\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-mail h-4 w-4\",\"aria-hidden\":\"true\",\"children\":[[\"$\",\"path\",\"132q7q\",{\"d\":\"m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7\"}],[\"$\",\"rect\",\"izxlao\",{\"x\":\"2\",\"y\":\"4\",\"width\":\"20\",\"height\":\"16\",\"rx\":\"2\"}],\"$undefined\"]}],[\"$\",\"span\",null,{\"children\":\"hello@instylehairboutique.co.za\"}]]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"svg\",null,{\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-phone h-4 w-4\",\"aria-hidden\":\"true\",\"children\":[[\"$\",\"path\",\"9njp5v\",{\"d\":\"M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384\"}],\"$undefined\"]}],[\"$\",\"span\",null,{\"children\":\"+27 11 123 4567\"}]]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-2\",\"children\":[[\"$\",\"svg\",null,{\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-map-pin h-4 w-4\",\"aria-hidden\":\"true\",\"children\":[[\"$\",\"path\",\"1r0f0z\",{\"d\":\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"}],[\"$\",\"circle\",\"ilqhr7\",{\"cx\":\"12\",\"cy\":\"10\",\"r\":\"3\"}],\"$undefined\"]}],[\"$\",\"span\",null,{\"children\":\"Cape Town, South Africa\"}]]}]]}]]}],[\"$\",\"div\",null,{\"children\":[[\"$\",\"h3\",null,{\"className\":\"font-semibold mb-4\",\"children\":\"Product\"}],[\"$\",\"ul\",null,{\"className\":\"space-y-2 text-sm text-gray-400\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/features\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Features\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/pricing\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Pricing\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/integrations\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Integrations\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/api\",\"className\":\"hover:text-white transition-colors\",\"children\":\"API\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/security\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Security\"}]}]]}]]}],[\"$\",\"div\",null,{\"children\":[[\"$\",\"h3\",null,{\"className\":\"font-semibold mb-4\",\"children\":\"Resources\"}],[\"$\",\"ul\",null,{\"className\":\"space-y-2 text-sm text-gray-400\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/blog\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Blog\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/help\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Help Center\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/guides\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Guides\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/webinars\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Webinars\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/status\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Status\"}]}]]}]]}],[\"$\",\"div\",null,{\"children\":[[\"$\",\"h3\",null,{\"className\":\"font-semibold mb-4\",\"children\":\"Company\"}],[\"$\",\"ul\",null,{\"className\":\"space-y-2 text-sm text-gray-400\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/about\",\"className\":\"hover:text-white transition-colors\",\"children\":\"About\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/careers\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Careers\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/contact\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Contact\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/partners\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Partners\"}]}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L6\",null,{\"href\":\"/press\",\"className\":\"hover:text-white transition-colors\",\"children\":\"Press\"}]}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"border-t border-gray-800 mt-8 pt-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col md:flex-row justify-between items-center\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-gray-400\",\"children\":\"© 2024 The Platform. All rights reserved.\"}],[\"$\",\"div\",null,{\"className\":\"flex space-x-6 mt-4 md:mt-0\",\"children\":[[\"$\",\"$L6\",null,{\"href\":\"/privacy\",\"className\":\"text-sm text-gray-400 hover:text-white transition-colors\",\"children\":\"Privacy Policy\"}],[\"$\",\"$L6\",null,{\"href\":\"/terms\",\"className\":\"text-sm text-gray-400 hover:text-white transition-colors\",\"children\":\"Terms of Service\"}],[\"$\",\"$L6\",null,{\"href\":\"/cookies\",\"className\":\"text-sm text-gray-400 hover:text-white transition-colors\",\"children\":\"Cookie Policy\"}]]}]]}]}]]}]}],[\"$\",\"$L16\",null,{\"tenantId\":\"default\"}],[\"$\",\"$f\",null,{\"fallback\":null,\"children\":[\"$\",\"$L10\",null,{\"reason\":\"next/dynamic\",\"children\":[\"$\",\"$L17\",null,{}]}]}],[\"$\",\"$f\",null,{\"fallback\":null,\"children\":[\"$\",\"$L10\",null,{\"reason\":\"next/dynamic\",\"children\":[\"$\",\"$L18\",null,{}]}]}]]}]}]}]}]}]}]\n"])</script></body></html>⚠️ VERCEL_TOKEN not set - skipping API check
+6. External Test (e.g., for validation-like 404s):
+curl: (49) Couldn't parse CURLOPT_RESOLVE entry 'www.instylehairboutique.co.za:443:'
+🔧 VERCEL PROJECT ANALYSIS:
+
+ name                                       value               environments                        created    
+ GEMINI_API_KEY                             Encrypted           Development, Preview, Production    15d ago    
+ CONVEX_DEPLOY_KEY                          Encrypted           Development, Preview, Production    15d ago    
+ CLERK_SECRET_KEY                           Encrypted           Development, Preview, Production    15d ago    
+ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY          Encrypted           Development, Preview, Production    20d ago    
+ NEXT_PUBLIC_CONVEX_URL                     Encrypted           Development, Preview, Production    20d ago    
+ SUPABASE_SERVICE_ROLE_KEY                  Encrypted           Development, Preview, Production    20d ago    
+ INSTYLE_SALON_ID                           Encrypted           Development, Preview, Production    31d ago    
+ SUPERSAAS_API_KEY                          Encrypted           Development, Preview, Production    31d ago    
+ SUPERSAAS_SCHEDULE_ID                      Encrypted           Development, Preview, Production    31d ago    
+ NEXT_PUBLIC_SUPABASE_URL                   Encrypted           Production, Preview, Development    83d ago    
+ NEXT_PUBLIC_SUPABASE_ANON_KEY              Encrypted           Production, Preview, Development    83d ago    
+ OPENAI_API_KEY                             Encrypted           Production, Preview, Development    83d ago    
+
+lethabu
+🔧 Framework Preset Check (manual step: In Vercel dashboard > Settings > Build & Development > Ensure 'Next.js')
+📦 NEXT.JS BUILD ANALYSIS:
+total 60
+drwxr-xr-x  6 user user  4096 Sep 10 12:09 .
+drwxr-xr-x 49 user user  4096 Sep 10 12:36 ..
+-rw-r--r--  1 user user    17 Sep 10 12:09 app-build-manifest.json
+-rw-r--r--  1 user user   294 Sep 10 12:09 build-manifest.json
+drwxr-xr-x  5 user user  4096 Sep  9 02:19 cache
+-rw-r--r--  1 user user    20 Sep 10 12:09 package.json
+-rw-r--r--  1 user user     2 Sep 10 12:09 react-loadable-manifest.json
+drwxr-xr-x  2 user user  4096 Sep 10 12:09 server
+drwxr-xr-x  4 user user  4096 Sep 10 12:09 static
+-rw-r--r--  1 user user 17857 Sep 10 12:09 trace
+drwxr-xr-x  2 user user  4096 Sep 10 12:09 types
+=== .next/cache/config.json ===
+{
+	"telemetry": {
+		"notifiedAt": "1757384337495",
+		"anonymousId": "51b83830fba39dd8abc6c18c93a30a5b73d545358710f406c5074c675af4b00a",
+		"salt": "60c0319bace27806af81d69c781c2296"
+	}
+}=== .next/server/app-paths-manifest.json ===
+{}=== .next/server/server-reference-manifest.json ===
+{
+  "node": {},
+  "edge": {},
+  "encryptionKey": "JaJPKt3yi/KBNgNl5jgAz3P2gciWqLXs3PebD4PI3pc="
+}=== .next/server/middleware-manifest.json ===
+{
+  "version": 3,
+  "middleware": {},
+  "functions": {},
+  "sortedMiddleware": []
+}=== .next/server/pages-manifest.json ===
+{}=== .next/server/next-font-manifest.json ===
+{"pages":{},"app":{},"appUsingSizeAdjust":false,"pagesUsingSizeAdjust":false}=== .next/build-manifest.json ===
+{
+  "polyfillFiles": [
+    "static/chunks/polyfills.js"
+  ],
+  "devFiles": [],
+  "ampDevFiles": [],
+  "lowPriorityFiles": [
+    "static/development/_buildManifest.js",
+    "static/development/_ssgManifest.js"
+  ],
+  "rootMainFiles": [],
+  "pages": {
+    "/_app": []
+  },
+  "ampFirstPages": []
+}=== .next/app-build-manifest.json ===
+{
+  "pages": {}
+}=== .next/types/package.json ===
+{"type": "module"}=== .next/package.json ===
+{"type": "commonjs"}=== .next/react-loadable-manifest.json ===
+{}📄 Diagnostic Report Generated: See above for issues (grep for ⚠️ or ERROR)
