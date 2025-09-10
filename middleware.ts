@@ -9,6 +9,8 @@ export async function middleware(request: NextRequest) {
   console.log('DEBUG: Lowercased Hostname:', hostname);
   console.log('DEBUG: Raw Hostname:', request.headers.get('host'));
   console.log('DEBUG: Lowercased Hostname:', hostname);
+  console.log('DEBUG: Raw Hostname:', request.headers.get('host'));
+  console.log('DEBUG: Lowercased Hostname:', hostname);
   const url = request.nextUrl.clone();
   console.log('🚨 MIDDLEWARE LOG:', {
     hostname,
