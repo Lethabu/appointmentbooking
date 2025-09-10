@@ -4,7 +4,7 @@ import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { Inter } from 'next/font/google';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
-import ConvexClientProvider from './ConvexClientProvider';
+const ConvexClientProvider = dynamic(() => import('./ConvexClientProvider'), { ssr: false });
 import dynamic from 'next/dynamic';
 import ChatWindow from '@/components/ChatWindow';
 import { Analytics } from '@vercel/analytics/react';
@@ -73,7 +73,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
+      return (
     <html lang="en">
       <body className={inter.className}>
         <ClerkProvider>
