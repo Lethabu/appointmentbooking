@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
   }
 
   console.log('⚠️ FALLBACK TO DEFAULT: Serving main landing page');
-  return NextResponse.rewrite(url.origin + '/', { request: { headers: new Headers({ 'x-tenant-id': 'default' }) } });
+  return NextResponse.rewrite('/default-landing', { request: { headers: new Headers({ 'x-tenant-id': 'default' }) } });
 }
 
 export const config = {
