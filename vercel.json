@@ -1,8 +1,40 @@
 {
-  "framework": "nextjs",
-  "functions": {
-    "app/api/**/*.ts": {
-      "maxDuration": 30
+  "version": 2,
+  "builds": [{ "src": "package.json", "use": "@vercel/next" }],
+  "rewrites": [
+    {
+      "source": "/book",
+      "destination": "/[...catchall]",
+      "has": [{ "type": "host", "value": "www.instylehairboutique.co.za" }]
+    },
+    {
+      "source": "/booking",
+      "destination": "/[...catchall]",
+      "has": [{ "type": "host", "value": "www.instylehairboutique.co.za" }]
+    },
+    {
+      "source": "/",
+      "destination": "/[...catchall]",
+      "has": [{ "type": "host", "value": "www.instylehairboutique.co.za" }]
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/[...catchall]",
+      "has": [{ "type": "host", "value": "www.instylehairboutique.co.za" }]
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/emergency/index.html",
+      "has": [{ "type": "host", "value": "appointmentbooking.co.za" }]
     }
-  }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Emergency-Mode", "value": "active" },
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    }
+  ]
 }
