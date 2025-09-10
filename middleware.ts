@@ -1,50 +1,41 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export async function middleware(req: NextRequest) {
-  const url = req.nextUrl;
-  const hostname = req.headers.get('host');
+export async function middleware(request: NextRequest) {
+  const hostname = request.headers.get('host')?.toLowerCase() || '';
+  const url = request.nextUrl.clone();
+  console.log('🚨 MIDDLEWARE LOG:', {
+    hostname,
+    pathname: url.pathname,
+    headers: Object.fromEntries(request.headers.entries())
+  });
 
-  if (!hostname) {
-    // This should not happen in a normal HTTP request
-    return new Response('Hostname not found', { status: 400 });
-  }
+  const tenantMap: Record<string, string> = {
+    'www.instylehairboutique.co.za': 'instyle',
+    'instylehairboutique.co.za': 'instyle',
+    'instylehairboutique.appointmentbooking.co.za': 'instyle'
+  };
+  const tenantId = tenantMap[hostname] || 'default';
 
-  // Avoid running the middleware for the API route itself
-  if (url.pathname.startsWith('/api/tenant-resolver')) {
-    return NextResponse.next();
-  }
+  console.log('🚨 TENANT RESOLUTION:', { hostname, tenantId });
 
-  try {
-    // The URL for the fetch request needs to be absolute,
-    // so we construct it based on the request's URL.
-    const resolverUrl = new URL('/api/tenant-resolver', url);
-    resolverUrl.searchParams.set('hostname', hostname);
+  if (tenantId !== 'default') {
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-tenant-id', tenantId);
+    requestHeaders.set('x-emergency-mode', 'true');
+    requestHeaders.set('X-Content-Type-Options', 'nosniff');
 
-    const response = await fetch(resolverUrl);
-
-    if (response.ok) {
-      const { tenantId } = await response.json();
-      if (tenantId) {
-        const requestHeaders = new Headers(req.headers);
-        requestHeaders.set('x-tenant-id', tenantId);
-
-        return NextResponse.rewrite(url, {
-          request: {
-            headers: requestHeaders,
-          },
-        });
-      }
+    if (['/book', '/booking'].includes(url.pathname)) {
+      url.pathname = '/book';
     }
-  } catch (error) {
-    console.error('Error calling tenant resolver:', error);
+
+    return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
   }
 
-  // If anything goes wrong, just proceed without tenant context
-  return NextResponse.next();
+  console.log('⚠️ FALLBACK TO DEFAULT: Serving main landing page');
+  return NextResponse.rewrite('/default-landing', { request: { headers: new Headers({ 'x-tenant-id': 'default' }) } });
 }
 
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
 };
