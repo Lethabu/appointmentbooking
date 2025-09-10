@@ -1,66 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from 'redis';
 
-// Initialize the Redis client outside the middleware for connection pooling
-const redisClient = createClient({
-  url: process.env.REDIS_URL
-});
+export async function middleware(req: NextRequest) {
+  const url = req.nextUrl;
+  const hostname = req.headers.get('host');
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-// Connect to Redis once
-let isRedisConnected = false;
-async function getRedisClient() {
-    if (!isRedisConnected) {
-        await redisClient.connect();
-        isRedisConnected = true;
-    }
-    return redisClient;
-}
-
-export async function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host')?.toLowerCase() || '';
-  const url = request.nextUrl.clone();
+  if (!hostname) {
+    // This should not happen in a normal HTTP request
+    return new Response('Hostname not found', { status: 400 });
+  }
 
   // Avoid running the middleware for the API route itself
   if (url.pathname.startsWith('/api/tenant-resolver')) {
     return NextResponse.next();
   }
 
-  let tenantId = 'default'; // Default tenant
-
   try {
-    const client = await getRedisClient();
-    // Attempt to get tenantId from Redis using hostname
-    const resolvedTenantId = await client.get(hostname);
-    if (resolvedTenantId) {
-      tenantId = resolvedTenantId;
+    // The URL for the fetch request needs to be absolute,
+    // so we construct it based on the request's URL.
+    const resolverUrl = new URL('/api/tenant-resolver', url);
+    resolverUrl.searchParams.set('hostname', hostname);
+
+    const response = await fetch(resolverUrl);
+
+    if (response.ok) {
+      const { tenantId } = await response.json();
+      if (tenantId) {
+        const requestHeaders = new Headers(req.headers);
+        requestHeaders.set('x-tenant-id', tenantId);
+
+        return NextResponse.rewrite(url, {
+          request: {
+            headers: requestHeaders,
+          },
+        });
+      }
     }
   } catch (error) {
-    console.error('Error fetching tenant from Redis:', error);
-    // Fallback to default if Redis lookup fails
+    console.error('Error calling tenant resolver:', error);
   }
 
-  console.log('🚨 TENANT RESOLUTION (Redis):', { hostname, tenantId });
-
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-tenant-id', tenantId);
-
-  // Rewrite based on tenantId
-  if (tenantId !== 'default') {
-    // Example: Rewrite to a tenant-specific path if needed, or just set headers
-    // For now, we'll just set the header and let the routing handle it.
-    // If you have tenant-specific app directories (e.g., app/[tenantId]/),
-    // you might need to rewrite the URL here.
-    // url.pathname = `/${tenantId}${url.pathname}`;
-  } else {
-    // If tenantId is 'default', rewrite to the default landing page
-    url.pathname = '/'; // Assuming '/' is your default landing page
-  }
-
-  return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+  // If anything goes wrong, just proceed without tenant context
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
 };
