@@ -1,67 +1,62 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from 'redis';
 
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+// Initialize the Redis client
+// The client will automatically use the REDIS_URL from the environment variables
+const redisClient = createClient({
+  url: process.env.REDIS_URL
+});
 
-// Define a map of custom domains to tenant slugs
-const CUSTOM_DOMAINS: Record<string, string> = {
-  'www.instylehairboutique.co.za': 'instylehairboutique',
-  'instylehairboutique.co.za': 'instylehairboutique',
-};
+redisClient.on('error', (err) => console.log('Redis Client Error', err));
 
-export async function middleware(request: NextRequest) {
-  const url = request.nextUrl.clone();
-  const hostname = request.headers.get('host') || '';
+// We need to connect to the client outside of the middleware function
+// to avoid connecting on every request.
+// The `connect` method is async, but we can't use top-level await here.
+// So we will connect inside the middleware and check the connection status.
+let isRedisConnected = false;
 
-  // Determine the tenant slug from either custom domain or subdomain
-  let slug = CUSTOM_DOMAINS[hostname];
-  
-  if (!slug) {
-    const subdomain = hostname.split('.')[0];
-    if (subdomain && subdomain !== 'www' && subdomain !== 'your-platform-domain' && !hostname.includes('vercel.app')) {
-      slug = subdomain;
+async function getRedisClient() {
+    if (!isRedisConnected) {
+        await redisClient.connect();
+        isRedisConnected = true;
     }
+    return redisClient;
+}
+
+
+export async function middleware(req: NextRequest) {
+  const url = req.nextUrl;
+  const hostname = req.headers.get('host');
+
+  if (!hostname) {
+    return new Response('Hostname not found', { status: 400 });
   }
 
-  // If a tenant is identified, rewrite to their path and set context
-  if (slug) {
-    const res = NextResponse.next();
-    
-    // Set tenant context in Supabase for RLS
-    const supabase = createMiddlewareClient({ req: request, res });
-    try {
-      await supabase.rpc('set_tenant_context', { p_tenant_id: slug });
-      console.log(`Context set for tenant: ${slug}`);
-    } catch (error) {
-      console.error(`Failed to set tenant context for ${slug}:`, error);
-    }
-    
-    // Set headers for frontend context
-    res.headers.set('x-tenant-id', slug);
+  try {
+    const client = await getRedisClient();
+    const tenantId = await client.get(hostname);
 
-    // Add Content Security Policy
-    res.headers.set(
-      'Content-Security-Policy',
-      "default-src 'self'; img-src 'self' https://cdn-*.your-platform-domain.com; style-src 'unsafe-inline';"
-    );
-
-    // Rewrite to the tenant-specific path, e.g., /instylehairboutique
-    // This serves the content from the directory app/[salon]
-    if (!url.pathname.startsWith(`/${slug}`)) {
-      url.pathname = `/${slug}${url.pathname}`;
+    if (!tenantId) {
+      return NextResponse.next();
     }
-    
-    console.log(`Rewriting to: ${url.pathname}`);
-    return NextResponse.rewrite(url);
+
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set('x-tenant-id', tenantId);
+
+    return NextResponse.rewrite(url, {
+      request: {
+        headers: requestHeaders,
+      },
+    });
+  } catch (error) {
+    console.error('Redis error in middleware:', error);
+    // Fallback to allow the request to go through without tenant context
+    return NextResponse.next();
   }
-  
-  // Otherwise, it's the main marketing site
-  console.log('Serving main site');
-  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    '/((?!api/|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };

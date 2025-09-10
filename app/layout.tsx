@@ -91,7 +91,12 @@ export default async function RootLayout({
             </ConvexClientProvider>
           </CSPostHogProvider>
         </ClerkProvider>
+        <Analytics />
       </body>
+    </html>
+  );
+}
+    </body>
     </html>
   );
 }
