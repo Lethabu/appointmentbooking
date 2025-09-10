@@ -7,6 +7,7 @@ import { Footer } from '@/components/layout/Footer';
 import ConvexClientProvider from './ConvexClientProvider';
 import dynamic from 'next/dynamic';
 import ChatWindow from '@/components/ChatWindow';
+import { Analytics } from '@vercel/analytics/react';
 
 const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.Toaster), {
   ssr: false,
