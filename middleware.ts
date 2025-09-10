@@ -3,6 +3,8 @@ import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   const hostname = request.headers.get('host')?.toLowerCase() || '';
+  console.log('DEBUG: Raw Hostname:', request.headers.get('host'));
+  console.log('DEBUG: Lowercased Hostname:', hostname);
   const url = request.nextUrl.clone();
   console.log('🚨 MIDDLEWARE LOG:', {
     hostname,
