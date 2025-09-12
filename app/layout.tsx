@@ -75,6 +75,13 @@ export default async function RootLayout({
 }>) {
       return (
     <html lang="en">
+      <head>
+        <link
+          rel="preload"
+          href="/tenants/instyle/hero.webp"
+          as="image"
+        />
+      </head>
       <body className={inter.className}>
         <ClerkProvider>
           <CSPostHogProvider>

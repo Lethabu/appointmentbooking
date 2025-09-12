@@ -78,37 +78,37 @@ export function AppointmentLiveView({ tenantId }: AppointmentLiveViewProps) {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Fetch appointments with tenant isolation
-  const fetchAppointments = async () => {
-    try {
-      // Set tenant context for RLS
-      await supabase.rpc('set_tenant_context', { p_tenant_id: tenantId });
-      
-      const { data, error } = await supabase
-        .from('appointments')
-        .select(`
-          *,
-          clients(name, phone),
-          services(name, price)
-        `)
-        .order('datetime', { ascending: true });
-
-      if (error) {
-        console.error('Error fetching appointments:', error);
-        setAppointments(mockAppointments); // Fallback to mock data
-      } else {
-        setAppointments(data || []);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setAppointments(mockAppointments);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Real-time subscription
   useEffect(() => {
+    // Fetch appointments with tenant isolation
+    const fetchAppointments = async () => {
+      try {
+        // Set tenant context for RLS
+        await supabase.rpc('set_tenant_context', { p_tenant_id: tenantId });
+        
+        const { data, error } = await supabase
+          .from('appointments')
+          .select(`
+            *,
+            clients(name, phone),
+            services(name, price)
+          `)
+          .order('datetime', { ascending: true });
+
+        if (error) {
+          console.error('Error fetching appointments:', error);
+          setAppointments(mockAppointments); // Fallback to mock data
+        } else {
+          setAppointments(data || []);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        setAppointments(mockAppointments);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchAppointments();
 
     // Set up real-time subscription

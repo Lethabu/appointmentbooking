@@ -9,8 +9,8 @@ export async function POST(request: NextRequest) {
     const paystackResponse = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-        'Content-Type': 'application/json',
+                Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         amount: amount, // Amount in kobo (cents)

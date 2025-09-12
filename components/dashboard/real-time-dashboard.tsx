@@ -24,6 +24,21 @@ export function RealTimeDashboard({ tenantId }: { tenantId: string }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const loadDashboardStats = async () => {
+      try {
+        const { data, error } = await supabase.rpc('get_dashboard_stats', {
+          tenant_uuid: tenantId
+        })
+        
+        if (error) throw error
+        setStats(data)
+      } catch (error) {
+        console.error('Error loading dashboard stats:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
     loadDashboardStats()
     
     // Subscribe to real-time updates
@@ -39,21 +54,6 @@ export function RealTimeDashboard({ tenantId }: { tenantId: string }) {
       supabase.removeChannel(channel)
     }
   }, [tenantId])
-
-  const loadDashboardStats = async () => {
-    try {
-      const { data, error } = await supabase.rpc('get_dashboard_stats', {
-        tenant_uuid: tenantId
-      })
-      
-      if (error) throw error
-      setStats(data)
-    } catch (error) {
-      console.error('Error loading dashboard stats:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   if (loading) {
     return <div className="animate-pulse">Loading dashboard...</div>

@@ -10,5 +10,6 @@ const nextConfig = {
     NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
     CONVEX_URL: process.env.CONVEX_URL,
   },
+  
 };
 export default nextConfig;

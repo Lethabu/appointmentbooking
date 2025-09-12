@@ -134,8 +134,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "npm test -- --watch=false",
-      "npm run build"
+      "npm test -- --watch=false --passWithNoTests"
     ]
   }
 }

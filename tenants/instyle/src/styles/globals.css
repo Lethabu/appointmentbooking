@@ -1,0 +1,9 @@
+/* tenants/instyle/src/styles/globals.css */
+/* This file will contain the global CSS, likely copied from the original static page's <style> block. */
+/* These styles will be processed by Tailwind CSS based on the configuration in tailwind.config.js. */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add your global styles here */

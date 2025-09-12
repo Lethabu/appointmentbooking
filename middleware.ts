@@ -1,55 +1,18 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host')?.toLowerCase() || '';
-  console.log('DEBUG: Raw Hostname:', request.headers.get('host'));
-  console.log('DEBUG: Lowercased Hostname:', hostname);
-  console.log('DEBUG: Raw Hostname:', request.headers.get('host'));
-  console.log('DEBUG: Lowercased Hostname:', hostname);
-  console.log('DEBUG: Raw Hostname:', request.headers.get('host'));
-  console.log('DEBUG: Lowercased Hostname:', hostname);
-  console.log('DEBUG: Raw Hostname:', request.headers.get('host'));
-  console.log('DEBUG: Lowercased Hostname:', hostname);
-  console.log('DEBUG: Raw Hostname:', request.headers.get('host'));
-  console.log('DEBUG: Lowercased Hostname:', hostname);
-  console.log('DEBUG: Raw Hostname:', request.headers.get('host'));
-  console.log('DEBUG: Lowercased Hostname:', hostname);
-  console.log('DEBUG: Raw Hostname:', request.headers.get('host'));
-  console.log('DEBUG: Lowercased Hostname:', hostname);
-  console.log('DEBUG: Raw Hostname:', request.headers.get('host'));
-  console.log('DEBUG: Lowercased Hostname:', hostname);
-  const url = request.nextUrl.clone();
-  console.log('🚨 MIDDLEWARE LOG:', {
-    hostname,
-    pathname: url.pathname,
-    headers: Object.fromEntries(request.headers.entries())
-  });
+export function middleware(req: Request) {
+  const url = new URL(req.url);
+  const hostHeader = req.headers.get('host'); // Get the Host header
 
-  const tenantMap: Record<string, string> = {
-    'www.instylehairboutique.co.za': 'instyle'
-  };
-  const tenantId = tenantMap[hostname] || 'default';
-
-  console.log('🚨 TENANT RESOLUTION:', { hostname, tenantId });
-
-  if (tenantId !== 'default') {
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-tenant-id', tenantId);
-    requestHeaders.set('x-emergency-mode', 'true');
-    requestHeaders.set('X-Content-Type-Options', 'nosniff');
-
-    if (['/book', '/booking'].includes(url.pathname)) {
-      url.pathname = '/book';
-    }
-
-    return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+  // For local testing, use localhost:3003 to simulate instylehairboutique.co.za
+  // Check both url.hostname and hostHeader for the target domain
+  if (url.hostname === 'localhost:3003' || hostHeader === 'instylehairboutique.co.za') {
+    url.pathname = '/instyle'; // Rewrite to /instyle instead of /tenants/instyle
+    return NextResponse.rewrite(url);
   }
-
-  console.log('⚠️ FALLBACK TO DEFAULT: Serving main landing page');
-  return NextResponse.rewrite('/default-landing', { request: { headers: new Headers({ 'x-tenant-id': 'default' }) } });
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };

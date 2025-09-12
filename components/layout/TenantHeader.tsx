@@ -1,4 +1,5 @@
 
+import Image from 'next/image';
 import Link from 'next/link';
 
 interface NavLink {
@@ -26,7 +27,7 @@ export function TenantHeader({
       <div className="container mx-auto flex items-center justify-between p-4">
         <Link href={`/${salonSlug}`} className="flex items-center space-x-4">
           {logoUrl && (
-            <img src={logoUrl} alt={brandName || 'Logo'} className="h-10 w-auto" />
+            <Image src={logoUrl} alt={brandName || 'Logo'} width={100} height={40} className="h-10 w-auto" />
           )}
           <span className="text-xl font-bold" style={{ color: primaryColor }}>
             {brandName}
