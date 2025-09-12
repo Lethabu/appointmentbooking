@@ -263,7 +263,7 @@ export default function InstyleLandingPage() {
               <p>Premium hair services and products in South Africa.</p>
               <div className="social-icons">
                 <a href="#" className="social-icon"><i className="fab fa-facebook-f"></i></a>
-                <a href="#" className="social-icon"><i className="fab fa-instagram"></i></a>
+                <a href="#" className.social-icon"><i className="fab fa-instagram"></i></a>
                 <a href="#" className="social-icon"><i className="fab fa-tiktok"></i></a>
                 <a href="#" className="social-icon"><i className="fab fa-twitter"></i></a>
               </div>
