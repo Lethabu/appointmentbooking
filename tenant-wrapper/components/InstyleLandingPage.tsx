@@ -238,70 +238,70 @@ export default function InstyleLandingPage() {
                 </div>
                 <button type="submit" className="submit-btn">Book Appointment</button>
               </form>
-              </div>
-              <div>
-                <h3>Why Choose Instyle?</h3>
-                <p>Our team of experienced stylists is dedicated to providing you with the highest quality service and results that exceed your expectations.</p>
-                <ul>
-                  <li>Premium quality products</li>
-                  <li>Expert stylists with years of experience</li>
-                  <li>Personalized consultations</li>
-                  <li>Comfortable and welcoming environment</li>
-                  <li>Flexible scheduling options</li>
-                </ul>
-              </div>
+            </div>
+            <div>
+              <h3>Why Choose Instyle?</h3>
+              <p>Our team of experienced stylists is dedicated to providing you with the highest quality service and results that exceed your expectations.</p>
+              <ul>
+                <li>Premium quality products</li>
+                <li>Expert stylists with years of experience</li>
+                <li>Personalized consultations</li>
+                <li>Comfortable and welcoming environment</li>
+                <li>Flexible scheduling options</li>
+              </ul>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Footer */}
-        <footer>
-          <div className="container">
-            <div className="footer-grid">
-              <div className="footer-col">
-                <h3>Instyle Hair Boutique</h3>
-                <p>Premium hair services and products in South Africa.</p>
-                <div className="social-icons">
-                  <a href="#" className="social-icon"><i className="fab fa-facebook-f"></i></a>
-                  <a href="#" className="social-icon"><i className="fab fa-instagram"></i></a>
-                  <a href="#" className="social-icon"><i className="fab fa-tiktok"></i></a>
-                  <a href="#" className="social-icon"><i className="fab fa-twitter"></i></a>
-                </div>
-              </div>
-              <div className="footer-col">
-                <h3>Quick Links</h3>
-                <ul>
-                  <li><a href="#home">Home</a></li>
-                  <li><a href="#services">Services</a></li>
-                  <li><a href="#products">Products</a></li>
-                  <li><a href="#gallery">Gallery</a></li>
-                  <li><a href="#testimonials">Testimonials</a></li>
-                </ul>
-              </div>
-              <div className="footer-col">
-                <h3>Services</h3>
-                <ul>
-                  <li><a href="#">Hair Extensions</a></li>
-                  <li><a href="#">Hair Coloring</a></li>
-                  <li><a href="#">Hair Treatments</a></li>
-                  <li><a href="#">Hair Cutting</a></li>
-                  <li><a href="#">Styling</a></li>
-                </ul>
-              </div>
-              <div className="footer-col">
-                <h3>Contact Us</h3>
-                <ul>
-                  <li><i className="fas fa-map-marker-alt"></i> 123 Beauty Street, Johannesburg</li>
-                  <li><i className="fas fa-phone"></i> +27 11 123 4567</li>
-                  <li><i className="fas fa-envelope"></i> info@instylehairboutique.co.za</li>
-                </ul>
+      {/* Footer */}
+      <footer>
+        <div className="container">
+          <div className="footer-grid">
+            <div className="footer-col">
+              <h3>Instyle Hair Boutique</h3>
+              <p>Premium hair services and products in South Africa.</p>
+              <div className="social-icons">
+                <a href="#" className="social-icon"><i className="fab fa-facebook-f"></i></a>
+                <a href="#" className="social-icon"><i className="fab fa-instagram"></i></a>
+                <a href="#" className="social-icon"><i className="fab fa-tiktok"></i></a>
+                <a href="#" className="social-icon"><i className="fab fa-twitter"></i></a>
               </div>
             </div>
-            <div className="copyright">
-              <p>&copy; 2023 Instyle Hair Boutique. All rights reserved.</p>
+            <div className="footer-col">
+              <h3>Quick Links</h3>
+              <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <h3>Services</h3>
+              <ul>
+                <li><a href="#">Hair Extensions</a></li>
+                <li><a href="#">Hair Coloring</a></li>
+                <li><a href="#">Hair Treatments</a></li>
+                <li><a href="#">Hair Cutting</a></li>
+                <li><a href="#">Styling</a></li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <h3>Contact Us</h3>
+              <ul>
+                <li><i className="fas fa-map-marker-alt"></i> 123 Beauty Street, Johannesburg</li>
+                <li><i className="fas fa-phone"></i> +27 11 123 4567</li>
+                <li><i className="fas fa-envelope"></i> info@instylehairboutique.co.za</li>
+              </ul>
             </div>
           </div>
-        </footer>
+          <div className="copyright">
+            <p>&copy; 2023 Instyle Hair Boutique. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }
