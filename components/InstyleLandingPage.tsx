@@ -150,7 +150,7 @@ export default function InstyleLandingPage() {
               <p className="testimonial-text">"The coloring service is exceptional! They really understand how to create the perfect shade for my skin tone."</p>
               <div className="testimonial-author">
                 <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" className="author-img" />
-                <div className="author-info">
+                <div className="author-info">.
                   <h4>Amanda T.</h4>
                   <p>New Client</p>
                 </div>
@@ -263,7 +263,7 @@ export default function InstyleLandingPage() {
               <p>Premium hair services and products in South Africa.</p>
               <div className="social-icons">
                 <a href="#" className="social-icon"><i className="fab fa-facebook-f"></i></a>
-                <a href="#" className.social-icon"><i className="fab fa-instagram"></i></a>
+                <a href="#" className="social-icon"><i className="fab fa-instagram"></i></a>
                 <a href="#" className="social-icon"><i className="fab fa-tiktok"></i></a>
                 <a href="#" className="social-icon"><i className="fab fa-twitter"></i></a>
               </div>
