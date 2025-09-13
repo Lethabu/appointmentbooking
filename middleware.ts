@@ -1,15 +1,13 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(req: Request) {
-  const url = new URL(req.url);
-  const hostHeader = req.headers.get('host'); // Get the Host header
+  const { hostname } = new URL(req.url);
 
-  // For local testing, use localhost:3003 to simulate instylehairboutique.co.za
-  // Check the hostHeader for the target domain
-  if (hostHeader === 'localhost:3003' || hostHeader === 'instylehairboutique.co.za') {
-    url.pathname = '/instyle'; // Rewrite to /instyle instead of /tenants/instyle
-    return NextResponse.rewrite(url);
+  // hard-code the live domain
+  if (hostname === 'instylehairboutique.co.za') {
+    return NextResponse.rewrite(new URL('/tenants/instyle', req.url));
   }
+
   return NextResponse.next();
 }
 
