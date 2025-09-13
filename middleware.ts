@@ -5,8 +5,8 @@ export function middleware(req: Request) {
   const hostHeader = req.headers.get('host'); // Get the Host header
 
   // For local testing, use localhost:3003 to simulate instylehairboutique.co.za
-  // Check both url.hostname and hostHeader for the target domain
-  if (url.hostname === 'localhost:3003' || hostHeader === 'instylehairboutique.co.za') {
+  // Check the hostHeader for the target domain
+  if (hostHeader === 'localhost:3003' || hostHeader === 'instylehairboutique.co.za') {
     url.pathname = '/instyle'; // Rewrite to /instyle instead of /tenants/instyle
     return NextResponse.rewrite(url);
   }
