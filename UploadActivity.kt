@@ -1,7 +1,9 @@
 
 package com.example.yourapp
 
+import android.content.Context
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
@@ -13,18 +15,21 @@ class UploadActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upload)
 
-        val filePath = /home/user/appointmentbooking/tiktok_products.csv
+        val uploadButton: Button = findViewById(R.id.uploadButton)
 
-        val workManager = WorkManager.getInstance(this)
+        uploadButton.setOnClickListener {
+            val filePath = "/home/user/appointmentbooking/tiktok_products.csv"
+            val workManager = WorkManager.getInstance(this)
 
-        val data = Data.Builder()
-            .putString(UploadWorker.KEY_FILE_PATH, filePath)
-            .build()
+            val data = Data.Builder()
+                .putString(UploadWorker.KEY_FILE_PATH, filePath)
+                .build()
 
-        val uploadWorkRequest = OneTimeWorkRequestBuilder<UploadWorker>()
-            .setInputData(data)
-            .build()
+            val uploadWorkRequest = OneTimeWorkRequestBuilder<UploadWorker>()
+                .setInputData(data)
+                .build()
 
-        workManager.enqueue(uploadWorkRequest)
+            workManager.enqueue(uploadWorkRequest)
+        }
     }
 }
