@@ -2,11 +2,7 @@ import { createServerSupabaseClient, setTenantContext } from '@/lib/supabase'
 import { RealTimeDashboard } from '@/components/dashboard/real-time-dashboard'
 import { notFound } from 'next/navigation'
 
-interface DashboardPageProps {
-  params: { slug: string }
-}
-
-export default async function DashboardPage({ params }: DashboardPageProps) {
+export default async function DashboardPage({ params }: any) {
   const supabase = createServerSupabaseClient()
   
   // Get tenant by slug

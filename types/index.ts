@@ -137,8 +137,3 @@ export interface ChatMessage {
   timestamp: Date;
   metadata?: any;
 }
-
-export type PageProps<T extends Record<string, string> = {}> = {
-  params: T;
-  searchParams: { [key: string]: string | string[] | undefined };
-};
