@@ -3,11 +3,8 @@ import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { Inter } from 'next/font/google';
-import { Navigation } from '@/components/layout/Navigation';
-import { Footer } from '@/components/layout/Footer';
 const ConvexClientProvider = dynamic(() => import('./ConvexClientProvider'), { ssr: false });
 import dynamic from 'next/dynamic';
-import ChatWindow from '@/components/ChatWindow';
 import { Analytics } from '@vercel/analytics/react';
 
 const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.Toaster), {
@@ -43,12 +40,7 @@ export default function RootLayout({
           <CSPostHogProvider>
             <ConvexClientProvider>
               <CartProvider>
-                <Navigation />
-                <main className="min-h-screen flex-grow">
-                  {children}
-                </main>
-                <Footer />
-                <ChatWindow tenantId={'default'} />
+                {children}
                 <Toaster />
                 <SonnerToaster />
               </CartProvider>
