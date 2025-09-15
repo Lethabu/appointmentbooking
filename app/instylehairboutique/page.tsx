@@ -6,6 +6,7 @@ import AIChat from './ai-chat';
 import { inStyleBrand } from './config';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://your-platform-domain.com'),
   title: 'InStyle Hair Boutique - Premium Hair Services',
   description: 'Professional hair installations, treatments and styling in South Africa. Book your appointment today.',
   openGraph: {
@@ -42,7 +43,7 @@ export default function InStylePage() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-.between">
             <div>
               <h1 className="text-3xl font-bold text-purple-600">InStyle Hair Boutique</h1>
               <p className="text-gray-600">Premium Hair Services</p>

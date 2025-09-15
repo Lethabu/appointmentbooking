@@ -6,6 +6,7 @@ import ProductCard from '@/components/ProductCard';
 import Cart from '@/components/Cart';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://your-platform-domain.com'),
   title: 'Shop - InStyle Hair Boutique',
   description: 'Shop premium hair products and book services at InStyle Hair Boutique',
 };

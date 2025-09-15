@@ -1,0 +1,1 @@
+export function InstyleFooter() { return null; }
