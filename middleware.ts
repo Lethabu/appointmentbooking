@@ -9,7 +9,7 @@ const TENANT_CONFIG: { [key: string]: { tenant: string; rewrite: string } } = {
     rewrite: '/instyle'
   },
   'www.instylehairboutique.co.za': {
-    tenant: 'instyle', 
+    tenant: 'instyle',
     rewrite: '/instyle'
   }
 };
@@ -20,44 +20,37 @@ const isProtectedRoute = createRouteMatcher([
   '/api/protected(.*)'
 ]);
 
-export default clerkMiddleware(async (auth, req: NextRequest) => {
+export default clerkMiddleware((auth, req: NextRequest) => {
+  // First, check if the route is protected and handle authentication.
+  // Using auth().protect() is the recommended best practice.
+  if (isProtectedRoute(req)) {
+    auth().protect();
+  }
+
   const { pathname } = req.nextUrl;
   const hostname = req.headers.get('host') || req.nextUrl.hostname;
-  
-  // Skip middleware for static assets and API routes that don't need tenant handling
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/favicon') ||
-    pathname.startsWith('/api/webhook') ||
-    pathname.includes('.')
-  ) {
-    return NextResponse.next();
-  }
-
-  // If the route is protected, ensure the user is authenticated.
-  if (isProtectedRoute(req)) {
-    const authResult = await auth();
-    if (!authResult.userId) {
-      return authResult.redirectToSignIn();
-    }
-  }
-
-  // Handle tenant routing
   const tenantConfig = TENANT_CONFIG[hostname];
-  
+
   if (tenantConfig) {
-    // Rewrite to tenant-specific path
+    // Check if the path already starts with the rewrite path.
+    // This prevents an infinite loop of rewrites.
+    if (pathname.startsWith(tenantConfig.rewrite)) {
+      return NextResponse.next();
+    }
+
+    // Rewrite to the tenant-specific path
     const url = req.nextUrl.clone();
     url.pathname = `${tenantConfig.rewrite}${pathname}`;
-    
-    // Add tenant headers for API consumption
     const response = NextResponse.rewrite(url);
+
+    // Add tenant headers for API consumption
     response.headers.set('x-tenant', tenantConfig.tenant);
     response.headers.set('x-original-host', hostname);
     
     return response;
   }
   
+  // If no tenant is matched, proceed with the original request.
   return NextResponse.next();
 });
 
