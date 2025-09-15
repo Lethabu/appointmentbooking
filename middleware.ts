@@ -1,47 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(req: NextRequest) {
-  console.log(`[Middleware] ${req.method} ${req.nextUrl.pathname}`);
-  
   try {
     const { pathname } = req.nextUrl;
     const hostname = req.headers.get('host') || '';
-    
-    // Skip static files and API routes that don't need processing
+
+    // Define the condition for the 'instyle' tenant
+    // This now checks for the custom domain OR any subdomain starting with 'instyle.'
+    const isInstyletenant = hostname.includes('instylehairboutique.co.za') || hostname.startsWith('instyle.');
+
+    // Skip static files and internal Next.js paths to avoid unnecessary processing
     if (
       pathname.startsWith('/_next/') ||
       pathname.startsWith('/_vercel/') ||
-      pathname === '/favicon.ico' ||
-      pathname === '/robots.txt' ||
-      pathname === '/sitemap.xml' ||
+      pathname.startsWith('/api/') ||
       pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|css|js|woff|woff2|ttf|eot)$/)
     ) {
       return NextResponse.next();
     }
 
-    // Handle InStyle Hair Boutique domain
-    if (hostname.includes('instylehairboutique.co.za')) {
-      // Only rewrite if not already on /instyle path
+    // If it's the InStyle tenant, rewrite the path
+    if (isInstyletenant) {
+      // Check if the path already starts with /instyle to prevent redirect loops
       if (!pathname.startsWith('/instyle')) {
         const url = req.nextUrl.clone();
+        // Prepend /instyle to the path, preserving the rest of the URL
         url.pathname = `/instyle${pathname === '/' ? '' : pathname}`;
-        
-        console.log(`[Middleware] Rewriting ${pathname} to ${url.pathname}`);
-        
-        const response = NextResponse.rewrite(url);
-        response.headers.set('x-tenant', 'instyle');
-        response.headers.set('x-original-host', hostname);
-        
-        return response;
+
+        console.log(`[Middleware] Rewriting for InStyle. Host: ${hostname}, Path: ${pathname}, New Path: ${url.pathname}`);
+
+        // Rewrite the request to the new URL
+        return NextResponse.rewrite(url);
       }
     }
 
+    // For all other cases, continue without rewriting
     return NextResponse.next();
-    
+
   } catch (error) {
     console.error('[Middleware] Error:', error);
-    
-    // Always return a valid response, never throw
+
+    // In case of an unexpected error, bypass the middleware to prevent the site from crashing
     return NextResponse.next();
   }
 }
@@ -50,11 +49,10 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
