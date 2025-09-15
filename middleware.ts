@@ -20,20 +20,22 @@ const isProtectedRoute = createRouteMatcher([
   '/api/protected(.*)'
 ]);
 
-export default clerkMiddleware((auth, req: NextRequest) => {
-  // First, check if the route is protected and handle authentication.
-  // Using auth().protect() is the recommended best practice.
-  if (isProtectedRoute(req)) {
-    auth().protect();
-  }
-
+export default clerkMiddleware(async (auth, req: NextRequest) => {
   const { pathname } = req.nextUrl;
   const hostname = req.headers.get('host') || req.nextUrl.hostname;
+
+  // If the route is protected, ensure the user is authenticated.
+  if (isProtectedRoute(req)) {
+    const authResult = await auth();
+    if (!authResult.userId) {
+      return authResult.redirectToSignIn();
+    }
+  }
+
   const tenantConfig = TENANT_CONFIG[hostname];
 
   if (tenantConfig) {
-    // Check if the path already starts with the rewrite path.
-    // This prevents an infinite loop of rewrites.
+    // Check if the path already starts with the rewrite path to prevent infinite loops.
     if (pathname.startsWith(tenantConfig.rewrite)) {
       return NextResponse.next();
     }
@@ -46,10 +48,10 @@ export default clerkMiddleware((auth, req: NextRequest) => {
     // Add tenant headers for API consumption
     response.headers.set('x-tenant', tenantConfig.tenant);
     response.headers.set('x-original-host', hostname);
-    
+
     return response;
   }
-  
+
   // If no tenant is matched, proceed with the original request.
   return NextResponse.next();
 });
