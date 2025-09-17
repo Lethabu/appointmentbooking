@@ -1,1 +1,3 @@
-export function InstyleContact() { return null; }
+export function InstyleContact() {
+  return null;
+}

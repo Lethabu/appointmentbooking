@@ -1,58 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(req: NextRequest) {
-  try {
-    const { pathname } = req.nextUrl;
-    const hostname = req.headers.get('host') || '';
-
-    // Define the condition for the 'instyle' tenant
-    // This now checks for the custom domain OR any subdomain starting with 'instyle.'
-    const isInstyletenant = hostname.includes('instylehairboutique.co.za') || hostname.startsWith('instyle.');
-
-    // Skip static files and internal Next.js paths to avoid unnecessary processing
-    if (
-      pathname.startsWith('/_next/') ||
-      pathname.startsWith('/_vercel/') ||
-      pathname.startsWith('/api/') ||
-      pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|css|js|woff|woff2|ttf|eot)$/)
-    ) {
-      return NextResponse.next();
-    }
-
-    // If it's the InStyle tenant, rewrite the path
-    if (isInstyletenant) {
-      // Check if the path already starts with /instyle to prevent redirect loops
-      if (!pathname.startsWith('/instyle')) {
-        const url = req.nextUrl.clone();
-        // Prepend /instyle to the path, preserving the rest of the URL
-        url.pathname = `/instyle${pathname === '/' ? '' : pathname}`;
-
-        console.log(`[Middleware] Rewriting for InStyle. Host: ${hostname}, Path: ${pathname}, New Path: ${url.pathname}`);
-
-        // Rewrite the request to the new URL
-        return NextResponse.rewrite(url);
-      }
-    }
-
-    // For all other cases, continue without rewriting
-    return NextResponse.next();
-
-  } catch (error) {
-    console.error('[Middleware] Error:', error);
-
-    // In case of an unexpected error, bypass the middleware to prevent the site from crashing
+  const hostname = req.headers.get('host') || '';
+  const { pathname } = req.nextUrl;
+  
+  console.log(`[Middleware] Processing: ${hostname}${pathname}`);
+  
+  // Skip static files
+  if (pathname.startsWith('/_next/') || pathname.includes('.')) {
     return NextResponse.next();
   }
+
+  // Handle apex domain redirects
+  if (hostname === 'instylehairboutique.co.za' || hostname === 'www.instylehairboutique.co.za') {
+    console.log(`[Middleware] Redirecting to tenant subdomain`);
+    return NextResponse.redirect('https://instylehairboutique.appointmentbooking.co.za' + pathname);
+  }
+
+  // Handle InStyle tenant subdomain
+  if (hostname.includes('instylehairboutique.appointmentbooking.co.za')) {
+    console.log(`[Middleware] InStyle tenant detected`);
+    
+    if (!pathname.startsWith('/instyle')) {
+      const url = req.nextUrl.clone();
+      url.pathname = `/instyle${pathname}`;
+      
+      const response = NextResponse.rewrite(url);
+      response.headers.set('x-tenant-id', 'instyle');
+      response.headers.set('x-tenant', 'instyle');
+      
+      return response;
+    } else {
+      const response = NextResponse.next();
+      response.headers.set('x-tenant-id', 'instyle');
+      response.headers.set('x-tenant', 'instyle');
+      return response;
+    }
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: '/((?!_next/static|_next/image|favicon.ico).*)',
 };

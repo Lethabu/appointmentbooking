@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 export default function MarketingPage() {
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   );
   const [marketingData, setMarketingData] = useState(null);
   const [loading, setLoading] = useState(true);

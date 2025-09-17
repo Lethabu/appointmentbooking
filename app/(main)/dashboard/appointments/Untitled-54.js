@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -9,11 +9,21 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} The Platform. All rights reserved.
           </p>
           <div className="flex space-x-6">
-            <Link href="/terms" className="text-gray-600 hover:text-indigo-600 text-sm">Terms of Service</Link>
-            <Link href="/privacy" className="text-gray-600 hover:text-indigo-600 text-sm">Privacy Policy</Link>
+            <Link
+              href="/terms"
+              className="text-gray-600 hover:text-indigo-600 text-sm"
+            >
+              Terms of Service
+            </Link>
+            <Link
+              href="/privacy"
+              className="text-gray-600 hover:text-indigo-600 text-sm"
+            >
+              Privacy Policy
+            </Link>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }

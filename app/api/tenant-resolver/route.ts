@@ -6,11 +6,14 @@ export async function GET(req: NextRequest) {
   const hostname = searchParams.get('hostname');
 
   if (!hostname) {
-    return NextResponse.json({ error: 'Hostname is required' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Hostname is required' },
+      { status: 400 },
+    );
   }
 
   const redisClient = createClient({
-    url: process.env.REDIS_URL
+    url: process.env.REDIS_URL,
   });
 
   redisClient.on('error', (err) => console.error('Redis Client Error', err));
@@ -27,6 +30,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ tenantId });
   } catch (error) {
     console.error('Error connecting to Redis:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    );
   }
 }

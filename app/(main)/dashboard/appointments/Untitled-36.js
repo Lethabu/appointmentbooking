@@ -1,11 +1,11 @@
-import { createClient } from '@supabase/supabase-js'
-import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js';
+import { NextResponse } from 'next/server';
 
 export async function GET(req, { params }) {
-  const { order_id } = params
+  const { order_id } = params;
 
   if (!order_id) {
-    return new NextResponse('Order ID is required', { status: 400 })
+    return new NextResponse('Order ID is required', { status: 400 });
   }
 
   // This uses the public ANON key, as this is a public-facing page.
@@ -13,13 +13,14 @@ export async function GET(req, { params }) {
   // For higher security, you could implement a signed URL or token-based access.
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  )
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  );
 
   try {
     const { data: order, error: orderError } = await supabase
       .from('orders')
-      .select(`
+      .select(
+        `
         id,
         created_at,
         customer_name,
@@ -33,16 +34,19 @@ export async function GET(req, { params }) {
             image_urls
           )
         )
-      `)
+      `,
+      )
       .eq('id', order_id)
-      .single()
+      .single();
 
-    if (orderError) throw orderError
-    if (!order) return new NextResponse('Order not found', { status: 404 })
+    if (orderError) throw orderError;
+    if (!order) return new NextResponse('Order not found', { status: 404 });
 
-    return NextResponse.json(order)
+    return NextResponse.json(order);
   } catch (error) {
-    console.error('Failed to fetch order:', error)
-    return new NextResponse('Internal Server Error: ' + error.message, { status: 500 })
+    console.error('Failed to fetch order:', error);
+    return new NextResponse('Internal Server Error: ' + error.message, {
+      status: 500,
+    });
   }
 }

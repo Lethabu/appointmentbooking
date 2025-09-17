@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
-import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js';
+import { NextResponse } from 'next/server';
 
 export async function POST(req) {
   const {
@@ -8,19 +8,19 @@ export async function POST(req) {
     clientDetails,
     scheduledTime,
     totalDuration,
-    totalPrice
-  } = await req.json()
+    totalPrice,
+  } = await req.json();
 
   if (!salonIdentifier || !serviceIds || !clientDetails || !scheduledTime) {
-    return new NextResponse('Missing required fields', { status: 400 })
+    return new NextResponse('Missing required fields', { status: 400 });
   }
 
   // Use the service role key for backend operations
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  );
 
   try {
     // 1. Find the salon
@@ -28,10 +28,10 @@ export async function POST(req) {
       .from('salons')
       .select('id')
       .or(`subdomain.eq.${salonIdentifier},custom_domain.eq.${salonIdentifier}`)
-      .single()
+      .single();
 
     if (!salon) {
-      return new NextResponse('Salon not found', { status: 404 })
+      return new NextResponse('Salon not found', { status: 404 });
     }
 
     // 2. Create the main appointment record
@@ -45,35 +45,37 @@ export async function POST(req) {
         scheduled_time: scheduledTime,
         total_duration_minutes: totalDuration,
         total_price: totalPrice,
-        status: 'pending' // Salons will confirm this
+        status: 'pending', // Salons will confirm this
       })
       .select()
-      .single()
+      .single();
 
-    if (appointmentError) throw appointmentError
+    if (appointmentError) throw appointmentError;
 
     // 3. Link the services to the appointment
-    const appointmentServices = serviceIds.map(serviceId => ({
+    const appointmentServices = serviceIds.map((serviceId) => ({
       appointment_id: appointment.id,
       service_id: serviceId,
-    }))
+    }));
 
     const { error: servicesError } = await supabase
       .from('appointment_services')
-      .insert(appointmentServices)
+      .insert(appointmentServices);
 
     if (servicesError) {
       // If linking services fails, we should roll back the appointment creation.
       // For simplicity here we log, but in production you'd use a transaction.
-      await supabase.from('appointments').delete().eq('id', appointment.id)
-      throw servicesError
+      await supabase.from('appointments').delete().eq('id', appointment.id);
+      throw servicesError;
     }
 
     // TODO: Send confirmation email/SMS to client and notification to salon owner
 
-    return NextResponse.json({ success: true, appointmentId: appointment.id })
+    return NextResponse.json({ success: true, appointmentId: appointment.id });
   } catch (error) {
-    console.error('Booking creation failed:', error)
-    return new NextResponse('Internal Server Error: ' + error.message, { status: 500 })
+    console.error('Booking creation failed:', error);
+    return new NextResponse('Internal Server Error: ' + error.message, {
+      status: 500,
+    });
   }
 }

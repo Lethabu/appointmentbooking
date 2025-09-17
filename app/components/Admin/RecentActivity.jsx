@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 export default function RecentActivity() {
   return (
@@ -7,5 +7,5 @@ export default function RecentActivity() {
       <p className="text-sm text-gray-500">No recent activity to display.</p>
       {/* Logic to fetch and display recent signups, subscriptions, etc. will go here */}
     </div>
-  )
+  );
 }

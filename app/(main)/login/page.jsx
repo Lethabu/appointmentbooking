@@ -39,8 +39,13 @@ export default function LoginPage() {
       options: { email_redirect_to: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
-    if (magicError) setNotification({ type: 'error', message: magicError.message });
-    else setNotification({ type: 'success', message: 'Check your email for a magic link!' });
+    if (magicError)
+      setNotification({ type: 'error', message: magicError.message });
+    else
+      setNotification({
+        type: 'success',
+        message: 'Check your email for a magic link!',
+      });
   };
 
   // OAuth
@@ -52,16 +57,24 @@ export default function LoginPage() {
       options: { redirect_to: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
-    if (oauthError) setNotification({ type: 'error', message: oauthError.message });
+    if (oauthError)
+      setNotification({ type: 'error', message: oauthError.message });
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center">Sign in to your Account</h1>
+        <h1 className="text-2xl font-bold text-center">
+          Sign in to your Account
+        </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">Email address</label>
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-gray-700"
+            >
+              Email address
+            </label>
             <input
               id="email"
               name="email"
@@ -73,7 +86,12 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
+            <label
+              htmlFor="password"
+              className="text-sm font-medium text-gray-700"
+            >
+              Password
+            </label>
             <input
               id="password"
               name="password"
@@ -101,13 +119,32 @@ export default function LoginPage() {
             placeholder="Email for magic link"
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
-          <button type="submit" className="w-full py-2 px-4 bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200">Send Magic Link</button>
+          <button
+            type="submit"
+            className="w-full py-2 px-4 bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200"
+          >
+            Send Magic Link
+          </button>
         </form>
         <div className="flex flex-col gap-2 mt-4">
-          <button onClick={() => handleOAuth('google')} className="w-full py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600">Sign in with Google</button>
-          <button onClick={() => handleOAuth('github')} className="w-full py-2 px-4 bg-gray-800 text-white rounded hover:bg-gray-900">Sign in with GitHub</button>
+          <button
+            onClick={() => handleOAuth('google')}
+            className="w-full py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Sign in with Google
+          </button>
+          <button
+            onClick={() => handleOAuth('github')}
+            className="w-full py-2 px-4 bg-gray-800 text-white rounded hover:bg-gray-900"
+          >
+            Sign in with GitHub
+          </button>
         </div>
-        <Notification type={notification.type} message={notification.message} onDismiss={() => setNotification({ type: '', message: '' })} />
+        <Notification
+          type={notification.type}
+          message={notification.message}
+          onDismiss={() => setNotification({ type: '', message: '' })}
+        />
       </div>
     </div>
   );

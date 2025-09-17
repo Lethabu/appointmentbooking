@@ -1,39 +1,76 @@
-"use client";
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { Inter } from 'next/font/google';
-const ConvexClientProvider = dynamic(() => import('./ConvexClientProvider'), { ssr: false });
+import { headers } from 'next/headers';
 import dynamic from 'next/dynamic';
 import { Analytics } from '@vercel/analytics/react';
 
-const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.Toaster), {
-  ssr: false,
-});
-
-const SonnerToaster = dynamic(() => import('@/components/ui/sonner').then(mod => mod.Toaster), {
-  ssr: false,
-});
-
-const CartProvider = dynamic(() => import('@/app/context/CartContext').then(mod => mod.CartProvider), {
-  ssr: false,
-});
+// Import components directly for server components
+import ConvexClientProvider from './ConvexClientProvider';
+import { Toaster } from '@/components/ui/toaster';
+import { Toaster as SonnerToaster } from '@/components/ui/sonner';
+import { CartProvider } from '@/app/context/CartContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export default function RootLayout({
+// Helper function to detect tenant from headers
+async function getTenantFromHeaders(): Promise<string | null> {
+  const headersList = await headers();
+  const host = headersList.get('host') || '';
+  const xTenant = headersList.get('x-tenant-id');
+
+  // Check x-tenant header first (set by middleware)
+  if (xTenant) {
+    return xTenant;
+  }
+
+  // Check hostname
+  if (host.includes('instylehairboutique')) {
+    return 'instyle';
+  }
+
+  return null;
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-      return (
+  const tenant = await getTenantFromHeaders();
+
+  // For tenant domains, use minimal wrapper without platform branding
+  if (tenant) {
+    return (
+      <html lang="en">
+        <head>
+          <link rel="preload" href="/tenants/instyle/hero.webp" as="image" />
+        </head>
+        <body className={inter.className}>
+          <ClerkProvider>
+            <CSPostHogProvider>
+              <ConvexClientProvider>
+                <CartProvider>
+                  {/* NO PLATFORM HEADER/FOOTER FOR TENANTS */}
+                  <main className="min-h-screen">{children}</main>
+                  <Toaster />
+                  <SonnerToaster />
+                </CartProvider>
+              </ConvexClientProvider>
+            </CSPostHogProvider>
+          </ClerkProvider>
+          <Analytics />
+        </body>
+      </html>
+    );
+  }
+
+  // For main platform domain, use full platform layout
+  return (
     <html lang="en">
       <head>
-        <link
-          rel="preload"
-          href="/tenants/instyle/hero.webp"
-          as="image"
-        />
+        <link rel="preload" href="/tenants/instyle/hero.webp" as="image" />
       </head>
       <body className={inter.className}>
         <ClerkProvider>

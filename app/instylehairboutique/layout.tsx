@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import '../globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { CSPostHogProvider } from '@/components/PostHogProvider';
@@ -10,17 +10,26 @@ import dynamic from 'next/dynamic';
 import ChatWindow from '@/components/ChatWindow';
 import { headers } from 'next/headers';
 
-const Toaster = dynamic(() => import('@/components/ui/toaster').then(mod => mod.Toaster), {
-  ssr: false,
-});
+const Toaster = dynamic(
+  () => import('@/components/ui/toaster').then((mod) => mod.Toaster),
+  {
+    ssr: false,
+  },
+);
 
-const SonnerToaster = dynamic(() => import('@/components/ui/sonner').then(mod => mod.Toaster), {
-  ssr: false,
-});
+const SonnerToaster = dynamic(
+  () => import('@/components/ui/sonner').then((mod) => mod.Toaster),
+  {
+    ssr: false,
+  },
+);
 
-const CartProvider = dynamic(() => import('@/app/context/CartContext').then(mod => mod.CartProvider), {
-  ssr: false,
-});
+const CartProvider = dynamic(
+  () => import('@/app/context/CartContext').then((mod) => mod.CartProvider),
+  {
+    ssr: false,
+  },
+);
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,7 +38,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -38,11 +46,9 @@ export default function RootLayout({
             <ConvexClientProvider>
               <CartProvider>
                 <Navigation />
-                <main className="min-h-screen flex-grow">
-                  {children}
-                </main>
+                <main className="min-h-screen flex-grow">{children}</main>
                 <Footer />
-                <ChatWindow tenantId={"instyle"} />
+                <ChatWindow tenantId={'instyle'} />
                 <Toaster />
                 <SonnerToaster />
               </CartProvider>

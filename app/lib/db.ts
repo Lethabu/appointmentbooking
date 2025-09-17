@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 export async function getOrCreateClient(phone: string) {
@@ -33,7 +33,5 @@ export async function getConversationHistory(phone: string) {
 }
 
 export async function saveConversationHistory(phone: string, history: string) {
-  await supabase
-    .from('conversations')
-    .upsert({ phone, history });
+  await supabase.from('conversations').upsert({ phone, history });
 }

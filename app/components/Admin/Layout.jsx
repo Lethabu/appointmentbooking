@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 export default function AdminLayout({ children }) {
   return (
@@ -7,9 +7,7 @@ export default function AdminLayout({ children }) {
         <h2 className="text-xl font-bold">Admin Panel</h2>
         {/* Admin navigation links can go here */}
       </aside>
-      <main className="flex-grow p-6">
-        {children}
-      </main>
+      <main className="flex-grow p-6">{children}</main>
     </div>
-  )
+  );
 }

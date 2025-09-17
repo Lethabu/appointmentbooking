@@ -21,25 +21,25 @@ const getStaticProducts = (tenantId: string) => {
     instyle: [
       {
         id: 1,
-        name: "Premium Hair Serum",
-        description: "Nourishing serum for all hair types",
+        name: 'Premium Hair Serum',
+        description: 'Nourishing serum for all hair types',
         price: 299,
-        image: "/products/serum.jpg",
-        category: "Hair Care",
-        in_stock: true
+        image: '/products/serum.jpg',
+        category: 'Hair Care',
+        in_stock: true,
       },
       {
         id: 2,
-        name: "Luxury Shampoo",
-        description: "Professional grade shampoo",
+        name: 'Luxury Shampoo',
+        description: 'Professional grade shampoo',
         price: 199,
-        image: "/products/shampoo.jpg",
-        category: "Hair Care", 
-        in_stock: true
-      }
-    ]
+        image: '/products/shampoo.jpg',
+        category: 'Hair Care',
+        in_stock: true,
+      },
+    ],
   };
-  
+
   return staticProducts[tenantId as keyof typeof staticProducts] || [];
 };
 
@@ -55,11 +55,11 @@ export async function getProducts(tenantId: string) {
       `${STRAPI_URL}/api/products?filters[tenant_id][$eq]=${tenantId}&populate=*`,
       {
         headers: {
-          'Authorization': `Bearer ${STRAPI_TOKEN}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${STRAPI_TOKEN}`,
+          'Content-Type': 'application/json',
         },
-        next: { revalidate: 300 } // Cache for 5 minutes
-      }
+        next: { revalidate: 300 }, // Cache for 5 minutes
+      },
     );
 
     if (!response.ok) {
@@ -67,7 +67,7 @@ export async function getProducts(tenantId: string) {
     }
 
     const data = await response.json();
-    
+
     // Transform Strapi data to our format
     return data.data.map((item: StrapiProduct) => ({
       id: item.id,
@@ -76,9 +76,8 @@ export async function getProducts(tenantId: string) {
       price: item.attributes.price,
       image: item.attributes.image,
       category: item.attributes.category,
-      in_stock: item.attributes.in_stock
+      in_stock: item.attributes.in_stock,
     }));
-    
   } catch (error) {
     console.error('Error fetching products from Strapi:', error);
     // Fallback to static products
@@ -89,7 +88,7 @@ export async function getProducts(tenantId: string) {
 export async function getProduct(tenantId: string, productId: string) {
   if (!STRAPI_URL || !STRAPI_TOKEN) {
     const products = getStaticProducts(tenantId);
-    return products.find(p => p.id.toString() === productId);
+    return products.find((p) => p.id.toString() === productId);
   }
 
   try {
@@ -97,10 +96,10 @@ export async function getProduct(tenantId: string, productId: string) {
       `${STRAPI_URL}/api/products/${productId}?filters[tenant_id][$eq]=${tenantId}&populate=*`,
       {
         headers: {
-          'Authorization': `Bearer ${STRAPI_TOKEN}`,
-          'Content-Type': 'application/json'
-        }
-      }
+          Authorization: `Bearer ${STRAPI_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+      },
     );
 
     if (!response.ok) {
@@ -109,7 +108,7 @@ export async function getProduct(tenantId: string, productId: string) {
 
     const data = await response.json();
     const item = data.data;
-    
+
     return {
       id: item.id,
       name: item.attributes.name,
@@ -117,9 +116,8 @@ export async function getProduct(tenantId: string, productId: string) {
       price: item.attributes.price,
       image: item.attributes.image,
       category: item.attributes.category,
-      in_stock: item.attributes.in_stock
+      in_stock: item.attributes.in_stock,
     };
-    
   } catch (error) {
     console.error('Error fetching product from Strapi:', error);
     return null;

@@ -1,19 +1,23 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
+import { useEffect } from 'react';
 
 interface TypebotWidgetProps {
-  typebotId: string
-  tenantId: string
+  typebotId: string;
+  tenantId: string;
   theme?: {
-    button?: { backgroundColor: string }
-  }
+    button?: { backgroundColor: string };
+  };
 }
 
-export function TypebotWidget({ typebotId, tenantId, theme }: TypebotWidgetProps) {
+export function TypebotWidget({
+  typebotId,
+  tenantId,
+  theme,
+}: TypebotWidgetProps) {
   useEffect(() => {
-    const script = document.createElement('script')
-    script.type = 'module'
+    const script = document.createElement('script');
+    script.type = 'module';
     script.innerHTML = `
       import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0.3/dist/web.js'
       
@@ -25,22 +29,26 @@ export function TypebotWidget({ typebotId, tenantId, theme }: TypebotWidgetProps
           webhookUrl: "${process.env.NEXT_PUBLIC_APP_URL || 'https://your-platform-domain.com'}"
         }
       })
-    `
-    
-    document.head.appendChild(script)
-    
-    return () => {
-      document.head.removeChild(script)
-    }
-  }, [typebotId, tenantId, theme])
+    `;
 
-  return <div id="typebot-container" className="fixed bottom-4 right-4 z-50" />
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [typebotId, tenantId, theme]);
+
+  return <div id="typebot-container" className="fixed bottom-4 right-4 z-50" />;
 }
 
-export function TypebotEmbed({ typebotId, tenantId, className = "" }: TypebotWidgetProps & { className?: string }) {
+export function TypebotEmbed({
+  typebotId,
+  tenantId,
+  className = '',
+}: TypebotWidgetProps & { className?: string }) {
   useEffect(() => {
-    const script = document.createElement('script')
-    script.type = 'module'
+    const script = document.createElement('script');
+    script.type = 'module';
     script.innerHTML = `
       import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0.3/dist/web.js'
       
@@ -51,14 +59,14 @@ export function TypebotEmbed({ typebotId, tenantId, className = "" }: TypebotWid
           webhookUrl: "${process.env.NEXT_PUBLIC_APP_URL || 'https://your-platform-domain.com'}"
         }
       })
-    `
-    
-    document.head.appendChild(script)
-    
-    return () => {
-      document.head.removeChild(script)
-    }
-  }, [typebotId, tenantId])
+    `;
 
-  return <div id="typebot-standard" className={`w-full h-96 ${className}`} />
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [typebotId, tenantId]);
+
+  return <div id="typebot-standard" className={`w-full h-96 ${className}`} />;
 }

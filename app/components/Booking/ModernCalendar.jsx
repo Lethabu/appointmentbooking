@@ -3,9 +3,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { supabase } from '@/app/utils/supabaseClient';
-import { ChevronLeft, ChevronRight, Clock, User, Calendar as CalendarIcon } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  User,
+  Calendar as CalendarIcon,
+} from 'lucide-react';
 
-export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed, onBack }) {
+export default function ModernCalendar({
+  salonId,
+  serviceId,
+  onBookingConfirmed,
+  onBack,
+}) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -22,7 +33,7 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
         .select('id, name, specialty, image_url')
         .eq('salon_id', salonId)
         .eq('is_active', true);
-      
+
       if (error) throw error;
       setStaff(data || []);
     } catch (err) {
@@ -48,22 +59,24 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
         .order('start_time');
 
       if (error) throw error;
-      
+
       const slots = [];
-      data.forEach(slot => {
+      data.forEach((slot) => {
         const start = new Date(`${dateStr}T${slot.start_time}`);
         const end = new Date(`${dateStr}T${slot.end_time}`);
-        
+
         while (start < end) {
-          slots.push(start.toLocaleTimeString('en-ZA', { 
-            hour: '2-digit', 
-            minute: '2-digit',
-            hour12: false 
-          }));
+          slots.push(
+            start.toLocaleTimeString('en-ZA', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false,
+            }),
+          );
           start.setMinutes(start.getMinutes() + 30);
         }
       });
-      
+
       setAvailableSlots(slots);
     } catch (err) {
       setError('Failed to load available times');
@@ -73,7 +86,7 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
   }, [selectedDate, selectedStaff]);
 
   useEffect(() => {
-      fetchAvailableSlots();
+    fetchAvailableSlots();
   }, [fetchAvailableSlots]);
 
   const handleBooking = async () => {
@@ -85,8 +98,10 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
     setLoading(true);
     setError(null);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user) {
         setError('You must be logged in to book an appointment.');
         setLoading(false);
@@ -100,7 +115,7 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
         staff_id: selectedStaff,
         date: selectedDate.toISOString().split('T')[0],
         time: selectedTime,
-        status: 'confirmed'
+        status: 'confirmed',
       };
 
       const { data, error } = await supabase
@@ -110,10 +125,13 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
         .single();
 
       if (error) throw error;
-      
+
       onBookingConfirmed(data);
     } catch (err) {
-      setError(err.message || 'An unexpected error occurred while creating the booking.');
+      setError(
+        err.message ||
+          'An unexpected error occurred while creating the booking.',
+      );
     } finally {
       setLoading(false);
     }
@@ -126,12 +144,12 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
     const startingDayOfWeek = firstDay.getDay();
-    
+
     const days = Array(startingDayOfWeek).fill(null);
     for (let i = 1; i <= daysInMonth; i++) {
       days.push(new Date(year, month, i));
     }
-    
+
     return days;
   };
 
@@ -143,7 +161,7 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6">
-      <button 
+      <button
         onClick={onBack}
         className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
       >
@@ -154,7 +172,9 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
         <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
           <h2 className="text-2xl font-bold">Select Your Appointment</h2>
-          <p className="text-purple-100">Choose your preferred date, time, and stylist</p>
+          <p className="text-purple-100">
+            Choose your preferred date, time, and stylist
+          </p>
         </div>
 
         <div className="p-6">
@@ -175,30 +195,51 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
                 </h3>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-4">
-                    <button 
-                      onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
+                    <button
+                      onClick={() =>
+                        setCurrentMonth(
+                          new Date(
+                            currentMonth.getFullYear(),
+                            currentMonth.getMonth() - 1,
+                          ),
+                        )
+                      }
                       className="p-2 hover:bg-gray-200 rounded-full transition-colors"
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </button>
                     <h4 className="font-semibold text-center">
-                      {currentMonth.toLocaleDateString('en-ZA', { month: 'long', year: 'numeric' })}
+                      {currentMonth.toLocaleDateString('en-ZA', {
+                        month: 'long',
+                        year: 'numeric',
+                      })}
                     </h4>
-                    <button 
-                      onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
+                    <button
+                      onClick={() =>
+                        setCurrentMonth(
+                          new Date(
+                            currentMonth.getFullYear(),
+                            currentMonth.getMonth() + 1,
+                          ),
+                        )
+                      }
                       className="p-2 hover:bg-gray-200 rounded-full transition-colors"
                     >
                       <ChevronRight className="w-5 h-5" />
                     </button>
                   </div>
                   <div className="grid grid-cols-7 gap-1 text-center text-sm">
-                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                      <div key={day} className="font-medium text-gray-500 py-2">{day}</div>
+                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => (
+                      <div key={day} className="font-medium text-gray-500 py-2">
+                        {day}
+                      </div>
                     ))}
                     {getDaysInMonth().map((date, index) => (
                       <button
                         key={index}
-                        onClick={() => date && !isPastDate(date) && setSelectedDate(date)}
+                        onClick={() =>
+                          date && !isPastDate(date) && setSelectedDate(date)
+                        }
                         disabled={!date || isPastDate(date)}
                         className={`
                           py-2 rounded-full transition-colors aspect-square
@@ -221,7 +262,7 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
                   Select Stylist
                 </h3>
                 <div className="space-y-3">
-                  {staff.map(stylist => (
+                  {staff.map((stylist) => (
                     <button
                       key={stylist.id}
                       onClick={() => setSelectedStaff(stylist.id)}
@@ -230,14 +271,23 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden relative">
                           {stylist.image_url ? (
-                            <Image src={stylist.image_url} alt={stylist.name} layout="fill" objectFit="cover" />
+                            <Image
+                              src={stylist.image_url}
+                              alt={stylist.name}
+                              layout="fill"
+                              objectFit="cover"
+                            />
                           ) : (
                             <User className="w-6 h-6 text-gray-400" />
                           )}
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-800">{stylist.name}</p>
-                          <p className="text-sm text-gray-500">{stylist.specialty || 'Stylist'}</p>
+                          <p className="font-semibold text-gray-800">
+                            {stylist.name}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {stylist.specialty || 'Stylist'}
+                          </p>
                         </div>
                       </div>
                     </button>
@@ -257,7 +307,7 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
                 {loading && <p className="text-gray-500">Loading times...</p>}
                 {!loading && availableSlots.length > 0 && (
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                    {availableSlots.map(time => (
+                    {availableSlots.map((time) => (
                       <button
                         key={time}
                         onClick={() => setSelectedTime(time)}
@@ -268,19 +318,29 @@ export default function ModernCalendar({ salonId, serviceId, onBookingConfirmed,
                     ))}
                   </div>
                 )}
-                {!loading && availableSlots.length === 0 && selectedDate && selectedStaff && (
-                  <p className="text-gray-500 bg-gray-100 p-3 rounded-lg">No available slots for this day.</p>
-                )}
-                 {!selectedDate || !selectedStaff && (
-                  <p className="text-gray-400 text-sm">Please select a date and stylist to see available times.</p>
-                )}
+                {!loading &&
+                  availableSlots.length === 0 &&
+                  selectedDate &&
+                  selectedStaff && (
+                    <p className="text-gray-500 bg-gray-100 p-3 rounded-lg">
+                      No available slots for this day.
+                    </p>
+                  )}
+                {!selectedDate ||
+                  (!selectedStaff && (
+                    <p className="text-gray-400 text-sm">
+                      Please select a date and stylist to see available times.
+                    </p>
+                  ))}
               </div>
 
               {/* Booking Button */}
               <div>
                 <button
                   onClick={handleBooking}
-                  disabled={!selectedDate || !selectedTime || !selectedStaff || loading}
+                  disabled={
+                    !selectedDate || !selectedTime || !selectedStaff || loading
+                  }
                   className="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Booking...' : 'Confirm Appointment'}

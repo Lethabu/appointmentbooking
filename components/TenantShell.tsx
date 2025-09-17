@@ -1,9 +1,15 @@
 import useSWR from 'swr';
 import { ReactNode } from 'react';
 
-const fetcher = (url: string) => fetch(url).then(r => r.json());
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-export default function TenantShell({ children, tokens }: { children: ReactNode, tokens: any }) {
+export default function TenantShell({
+  children,
+  tokens,
+}: {
+  children: ReactNode;
+  tokens: any;
+}) {
   const { data, error } = useSWR('/api/render-component', fetcher);
 
   if (error) return <div>Failed to load tenant components</div>;
@@ -12,9 +18,11 @@ export default function TenantShell({ children, tokens }: { children: ReactNode,
   const { header, footer } = data;
 
   // Convert tokens to CSS variables
-  const tokenCss = Object.entries(tokens || {}).map(([key, value]) => {
-    return `--${key}: ${value};`;
-  }).join('\n');
+  const tokenCss = Object.entries(tokens || {})
+    .map(([key, value]) => {
+      return `--${key}: ${value};`;
+    })
+    .join('\n');
 
   return (
     <>

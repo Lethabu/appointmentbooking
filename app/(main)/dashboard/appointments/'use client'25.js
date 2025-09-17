@@ -1,44 +1,48 @@
-"use client";
-'use client'
+'use client';
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [formData, setFormData] = useState({ name: '', price: '', stock_quantity: '' })
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    price: '',
+    stock_quantity: '',
+  });
 
   useEffect(() => {
-    fetchProducts()
-  }, [])
+    fetchProducts();
+  }, []);
 
   const fetchProducts = async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
     try {
-      const res = await fetch('/api/products')
+      const res = await fetch('/api/products');
       if (!res.ok) {
-        const errData = await res.json()
-        throw new Error(errData.error || 'Failed to fetch products.')
+        const errData = await res.json();
+        throw new Error(errData.error || 'Failed to fetch products.');
       }
-      const data = await res.json()
-      setProducts(data)
+      const data = await res.json();
+      setProducts(data);
     } catch (err) {
-      setError(err.message)
+      setError(err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
 
     await fetch('/api/products', {
       method: 'POST',
@@ -48,14 +52,16 @@ export default function ProductsPage() {
         price: parseFloat(formData.price) * 100, // Store in cents
         stock_quantity: parseInt(formData.stock_quantity),
       }),
-    })
+    });
 
-    setFormData({ name: '', price: '', stock_quantity: '' })
-    await fetchProducts()
-  }
+    setFormData({ name: '', price: '', stock_quantity: '' });
+    await fetchProducts();
+  };
 
   if (error) {
-    return <div className="p-6 max-w-4xl mx-auto text-red-600">Error: {error}</div>
+    return (
+      <div className="p-6 max-w-4xl mx-auto text-red-600">Error: {error}</div>
+    );
   }
 
   return (
@@ -64,7 +70,10 @@ export default function ProductsPage() {
 
       <div className="bg-white p-6 rounded-lg shadow mb-8">
         <h2 className="text-xl font-semibold mb-4">Add New Product</h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+        >
           <input
             name="name"
             value={formData.name}
@@ -93,7 +102,11 @@ export default function ProductsPage() {
             required
           />
           <div className="md:col-span-3">
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50">
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50"
+            >
               {loading ? 'Saving...' : 'Add Product'}
             </button>
           </div>
@@ -109,11 +122,15 @@ export default function ProductsPage() {
         ) : (
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <ul className="divide-y divide-gray-200">
-              {products.map(product => (
-                <li key={product.id} className="p-4 flex justify-between items-center">
+              {products.map((product) => (
+                <li
+                  key={product.id}
+                  className="p-4 flex justify-between items-center"
+                >
                   <p className="font-semibold">{product.name}</p>
                   <p className="text-sm text-gray-600">
-                    R{(product.price / 100).toFixed(2)} - Stock: {product.stock_quantity}
+                    R{(product.price / 100).toFixed(2)} - Stock:{' '}
+                    {product.stock_quantity}
                   </p>
                 </li>
               ))}
@@ -122,5 +139,5 @@ export default function ProductsPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

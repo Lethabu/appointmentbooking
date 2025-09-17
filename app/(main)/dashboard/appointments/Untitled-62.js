@@ -1,16 +1,19 @@
-import StatCard from './StatCard'
+import StatCard from './StatCard';
 import {
   CalendarDaysIcon,
   ChatBubbleBottomCenterTextIcon,
   SparklesIcon,
-} from '@heroicons/react/24/outline'
+} from '@heroicons/react/24/outline';
 
 // This would eventually come from a database call
 const recentActivities = [
   { id: 1, text: "New booking: Jane Doe for 'Ladies Cut' - Tomorrow @ 2 PM" },
   { id: 2, text: "AI Agent 'Blaze' suggested a new promotion for winter." },
-  { id: 3, text: "Client 'Mike R.' completed their 5th visit and is now a VIP." },
-]
+  {
+    id: 3,
+    text: "Client 'Mike R.' completed their 5th visit and is now a VIP.",
+  },
+];
 
 export default async function DashboardPage() {
   // The DashboardLayout already handles fetching user and salon data.
@@ -62,5 +65,5 @@ export default async function DashboardPage() {
         </ul>
       </div>
     </div>
-  )
+  );
 }

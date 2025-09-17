@@ -10,7 +10,7 @@ export default function InstyleDashboard() {
     avg_rating: 4.8,
     monthly_bookings: 0,
     popular_service: 'Middle & Side Installation',
-    repeat_clients: 0
+    repeat_clients: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +28,7 @@ export default function InstyleDashboard() {
         avg_rating: 4.9,
         monthly_bookings: 45,
         popular_service: 'Middle & Side Installation',
-        repeat_clients: 78
+        repeat_clients: 78,
       };
       setStats(realStats);
     } catch (error) {
@@ -45,27 +45,33 @@ export default function InstyleDashboard() {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Instyle Dashboard</h1>
-        
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">
+          Instyle Dashboard
+        </h1>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-lg shadow text-white">
             <h3 className="text-sm font-medium opacity-90">Today's Bookings</h3>
             <p className="text-3xl font-bold">{stats.todays_bookings}</p>
             <p className="text-xs opacity-75 mt-1">Active appointments</p>
           </div>
-          
+
           <div className="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-lg shadow text-white">
             <h3 className="text-sm font-medium opacity-90">Monthly Revenue</h3>
-            <p className="text-3xl font-bold">R{((stats.weekly_revenue * 4)/100).toFixed(0)}k</p>
-            <p className="text-xs opacity-75 mt-1">Hair installations & styling</p>
+            <p className="text-3xl font-bold">
+              R{((stats.weekly_revenue * 4) / 100).toFixed(0)}k
+            </p>
+            <p className="text-xs opacity-75 mt-1">
+              Hair installations & styling
+            </p>
           </div>
-          
+
           <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-6 rounded-lg shadow text-white">
             <h3 className="text-sm font-medium opacity-90">Active Clients</h3>
             <p className="text-3xl font-bold">450+</p>
             <p className="text-xs opacity-75 mt-1">Regular customers</p>
           </div>
-          
+
           <div className="bg-gradient-to-r from-pink-500 to-pink-600 p-6 rounded-lg shadow text-white">
             <h3 className="text-sm font-medium opacity-90">Popular Service</h3>
             <p className="text-lg font-bold">Middle & Side</p>
@@ -88,7 +94,7 @@ export default function InstyleDashboard() {
               </button>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-4">Recent Bookings</h2>
             <div className="space-y-3">
@@ -106,7 +112,7 @@ export default function InstyleDashboard() {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-4">Business Insights</h2>
             <div className="space-y-4">
@@ -125,7 +131,7 @@ export default function InstyleDashboard() {
             </div>
           </div>
         </div>
-        
+
         <div className="mt-8">
           <LiveTenantDashboard tenantId="ccb12b4d-ade6-467d-a614-7c9d198ddc70" />
         </div>

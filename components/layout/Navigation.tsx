@@ -15,24 +15,41 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Calendar className="h-8 w-8 text-purple-600" />
-            <span className="text-xl font-bold text-gray-900">The Platform</span>
+            <span className="text-xl font-bold text-gray-900">
+              The Platform
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/pricing" className="text-gray-600 hover:text-purple-600 transition-colors">
+            <Link
+              href="/pricing"
+              className="text-gray-600 hover:text-purple-600 transition-colors"
+            >
               Pricing
             </Link>
-            <Link href="/features" className="text-gray-600 hover:text-purple-600 transition-colors">
+            <Link
+              href="/features"
+              className="text-gray-600 hover:text-purple-600 transition-colors"
+            >
               Features
             </Link>
-            <Link href="/blog" className="text-gray-600 hover:text-purple-600 transition-colors">
+            <Link
+              href="/blog"
+              className="text-gray-600 hover:text-purple-600 transition-colors"
+            >
               Blog
             </Link>
-            <Link href="/compare" className="text-gray-600 hover:text-purple-600 transition-colors">
+            <Link
+              href="/compare"
+              className="text-gray-600 hover:text-purple-600 transition-colors"
+            >
               Compare
             </Link>
-            <Link href="/contact" className="text-gray-600 hover:text-purple-600 transition-colors">
+            <Link
+              href="/contact"
+              className="text-gray-600 hover:text-purple-600 transition-colors"
+            >
               Contact
             </Link>
           </div>
@@ -50,10 +67,7 @@ export function Navigation() {
           </div>
 
           {/* Mobile menu button */}
-          <button
-            className="md:hidden"
-            onClick={() => setIsOpen(!isOpen)}
-          >
+          <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
@@ -62,19 +76,34 @@ export function Navigation() {
         {isOpen && (
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col space-y-4">
-              <Link href="/pricing" className="text-gray-600 hover:text-purple-600">
+              <Link
+                href="/pricing"
+                className="text-gray-600 hover:text-purple-600"
+              >
                 Pricing
               </Link>
-              <Link href="/features" className="text-gray-600 hover:text-purple-600">
+              <Link
+                href="/features"
+                className="text-gray-600 hover:text-purple-600"
+              >
                 Features
               </Link>
-              <Link href="/blog" className="text-gray-600 hover:text-purple-600">
+              <Link
+                href="/blog"
+                className="text-gray-600 hover:text-purple-600"
+              >
                 Blog
               </Link>
-              <Link href="/compare" className="text-gray-600 hover:text-purple-600">
+              <Link
+                href="/compare"
+                className="text-gray-600 hover:text-purple-600"
+              >
                 Compare
               </Link>
-              <Link href="/contact" className="text-gray-600 hover:text-purple-600">
+              <Link
+                href="/contact"
+                className="text-gray-600 hover:text-purple-600"
+              >
                 Contact
               </Link>
               <div className="flex flex-col space-y-2 pt-4 border-t">

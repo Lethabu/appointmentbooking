@@ -3,16 +3,19 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 export async function POST(request: NextRequest) {
   try {
     const tenantId = request.headers.get('x-tenant-id');
     const body = await request.json();
-    
+
     if (!tenantId) {
-      return NextResponse.json({ error: 'Tenant not identified' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Tenant not identified' },
+        { status: 400 },
+      );
     }
 
     // Get tenant/salon ID
@@ -36,7 +39,7 @@ export async function POST(request: NextRequest) {
       preferred_date: body.date,
       preferred_time: body.time,
       status: 'pending_confirmation',
-      notes: 'Emergency booking submission - requires manual confirmation'
+      notes: 'Emergency booking submission - requires manual confirmation',
     };
 
     const { data: appointment, error } = await supabase
@@ -47,7 +50,10 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Booking error:', error);
-      return NextResponse.json({ error: 'Failed to create booking' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to create booking' },
+        { status: 500 },
+      );
     }
 
     // Send notification (WhatsApp integration)
@@ -57,18 +63,21 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         tenantId,
         type: 'new_booking',
-        appointment: appointment
-      })
+        appointment: appointment,
+      }),
     });
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       appointmentId: appointment.id,
-      message: 'Booking request received. We will contact you within 2 hours to confirm.'
+      message:
+        'Booking request received. We will contact you within 2 hours to confirm.',
     });
-
   } catch (error) {
     console.error('Emergency booking error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
   }
 }

@@ -23,7 +23,7 @@ export function anonymizeData(csvData) {
 
   let emailCounter = 1;
 
-  const anonymizedRows = rows.map(row => {
+  const anonymizedRows = rows.map((row) => {
     if (!row.trim()) return row;
 
     // Anonymize emails
@@ -35,7 +35,10 @@ export function anonymizeData(csvData) {
 
     // This is a placeholder for name/username anonymization.
     // A more robust implementation would identify columns containing names.
-    anonymizedRow = anonymizedRow.replace(/Promise\.paralegal/g, 'Sanitized User');
+    anonymizedRow = anonymizedRow.replace(
+      /Promise\.paralegal/g,
+      'Sanitized User',
+    );
 
     return anonymizedRow;
   });

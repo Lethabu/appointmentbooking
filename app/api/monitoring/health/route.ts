@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 export async function GET(request: NextRequest) {
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     checks.push({
       name: 'database',
       status: 'healthy',
-      duration: Date.now() - dbStart
+      duration: Date.now() - dbStart,
     });
 
     // Tenant resolution
@@ -29,36 +29,41 @@ export async function GET(request: NextRequest) {
     checks.push({
       name: 'tenant_resolution',
       status: tenant ? 'healthy' : 'degraded',
-      duration: Date.now() - tenantStart
+      duration: Date.now() - tenantStart,
     });
 
     // Component assembly
     const componentStart = Date.now();
     if (tenant) {
-      const hasComponents = tenant.components.header && tenant.components.footer;
+      const hasComponents =
+        tenant.components.header && tenant.components.footer;
       checks.push({
         name: 'component_assembly',
         status: hasComponents ? 'healthy' : 'degraded',
-        duration: Date.now() - componentStart
+        duration: Date.now() - componentStart,
       });
     }
 
     const totalDuration = Date.now() - startTime;
-    const overallStatus = checks.some(c => c.status === 'degraded') ? 'degraded' : 'healthy';
+    const overallStatus = checks.some((c) => c.status === 'degraded')
+      ? 'degraded'
+      : 'healthy';
 
     return NextResponse.json({
       status: overallStatus,
       timestamp: new Date().toISOString(),
       duration: totalDuration,
-      checks
+      checks,
     });
-
   } catch (error) {
-    return NextResponse.json({
-      status: 'unhealthy',
-      timestamp: new Date().toISOString(),
-      duration: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        duration: Date.now() - startTime,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 },
+    );
   }
 }

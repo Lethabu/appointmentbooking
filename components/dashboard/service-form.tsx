@@ -1,29 +1,35 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { Service } from "@/types"
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import type { Service } from '@/types';
 
 interface ServiceFormProps {
-  service?: Service | null
-  onSubmit: (service: Partial<Service>) => void
-  onCancel: () => void
+  service?: Service | null;
+  onSubmit: (service: Partial<Service>) => void;
+  onCancel: () => void;
 }
 
 export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    category: "",
+    name: '',
+    description: '',
+    category: '',
     duration: 0,
     price: 0,
-  })
+  });
 
   useEffect(() => {
     if (service) {
@@ -33,18 +39,18 @@ export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
         category: service.category || '',
         duration: service.duration,
         price: service.price,
-      })
+      });
     }
-  }, [service])
+  }, [service]);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSubmit(formData)
-  }
+    e.preventDefault();
+    onSubmit(formData);
+  };
 
   const handleChange = (field: string, value: string | number) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -53,7 +59,7 @@ export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
         <Input
           id="name"
           value={formData.name}
-          onChange={(e) => handleChange("name", e.target.value)}
+          onChange={(e) => handleChange('name', e.target.value)}
           placeholder="e.g., Signature Cut & Style"
           required
         />
@@ -64,7 +70,7 @@ export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
         <Textarea
           id="description"
           value={formData.description}
-          onChange={(e) => handleChange("description", e.target.value)}
+          onChange={(e) => handleChange('description', e.target.value)}
           placeholder="Describe your service..."
           required
         />
@@ -72,7 +78,10 @@ export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
 
       <div className="space-y-2">
         <Label htmlFor="category">Category</Label>
-        <Select value={formData.category} onValueChange={(value: string) => handleChange("category", value)}>
+        <Select
+          value={formData.category}
+          onValueChange={(value: string) => handleChange('category', value)}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
@@ -92,7 +101,9 @@ export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
             id="duration"
             type="number"
             value={formData.duration}
-            onChange={(e) => handleChange("duration", Number.parseInt(e.target.value))}
+            onChange={(e) =>
+              handleChange('duration', Number.parseInt(e.target.value))
+            }
             placeholder="90"
             required
           />
@@ -104,7 +115,9 @@ export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
             id="price"
             type="number"
             value={formData.price}
-            onChange={(e) => handleChange("price", Number.parseInt(e.target.value))}
+            onChange={(e) =>
+              handleChange('price', Number.parseInt(e.target.value))
+            }
             placeholder="450"
             required
           />
@@ -115,8 +128,10 @@ export function ServiceForm({ service, onSubmit, onCancel }: ServiceFormProps) {
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">{service ? "Update Service" : "Add Service"}</Button>
+        <Button type="submit">
+          {service ? 'Update Service' : 'Add Service'}
+        </Button>
       </div>
     </form>
-  )
+  );
 }

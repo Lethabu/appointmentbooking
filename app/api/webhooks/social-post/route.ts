@@ -12,15 +12,15 @@ export async function POST(request: NextRequest) {
       await postToInstagram(caption, media);
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Social post processed' 
+    return NextResponse.json({
+      success: true,
+      message: 'Social post processed',
     });
   } catch (error) {
     console.error('Social webhook error:', error);
     return NextResponse.json(
       { error: 'Failed to process social post' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

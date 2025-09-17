@@ -32,57 +32,69 @@ export const ServiceManagement: React.FC = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [lastFetch, setLastFetch] = useState<Date | null>(null);
 
-  const fetchServices = useCallback(async (isRetry = false) => {
-    try {
-      if (!isRetry) {
-        setLoading(true);
-      }
-      setError(null);
-
-      const salonId = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70';
-      const response = await fetch(`/api/dashboard/services?salon_id=${salonId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache'
+  const fetchServices = useCallback(
+    async (isRetry = false) => {
+      try {
+        if (!isRetry) {
+          setLoading(true);
         }
-      });
+        setError(null);
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const salonId = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70';
+        const response = await fetch(
+          `/api/dashboard/services?salon_id=${salonId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-cache',
+            },
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data: ApiResponse = await response.json();
+
+        if (data.error) {
+          throw new Error(
+            data.error + (data.details ? ` - ${data.details}` : ''),
+          );
+        }
+
+        setServices(data.services || []);
+        setRetryCount(0);
+        setLastFetch(new Date());
+
+        console.log(
+          `Successfully loaded ${data.services?.length || 0} services`,
+        );
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Unknown error occurred';
+        console.error('Failed to fetch services:', errorMessage);
+        setError(errorMessage);
+
+        // Implement exponential backoff for retries
+        if (retryCount < 3) {
+          const delay = Math.min(1000 * Math.pow(2, retryCount), 10000);
+          console.log(
+            `Retrying in ${delay}ms... (attempt ${retryCount + 1}/3)`,
+          );
+
+          setTimeout(() => {
+            setRetryCount((prev) => prev + 1);
+            fetchServices(true);
+          }, delay);
+        }
+      } finally {
+        setLoading(false);
       }
-
-      const data: ApiResponse = await response.json();
-      
-      if (data.error) {
-        throw new Error(data.error + (data.details ? ` - ${data.details}` : ''));
-      }
-
-      setServices(data.services || []);
-      setRetryCount(0);
-      setLastFetch(new Date());
-      
-      console.log(`Successfully loaded ${data.services?.length || 0} services`);
-
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      console.error('Failed to fetch services:', errorMessage);
-      setError(errorMessage);
-
-      // Implement exponential backoff for retries
-      if (retryCount < 3) {
-        const delay = Math.min(1000 * Math.pow(2, retryCount), 10000);
-        console.log(`Retrying in ${delay}ms... (attempt ${retryCount + 1}/3)`);
-        
-        setTimeout(() => {
-          setRetryCount(prev => prev + 1);
-          fetchServices(true);
-        }, delay);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [retryCount]);
+    },
+    [retryCount],
+  );
 
   useEffect(() => {
     fetchServices();
@@ -95,21 +107,24 @@ export const ServiceManagement: React.FC = () => {
   const formatDuration = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    
+
     if (hours > 0) {
       return `${hours}h ${mins > 0 ? `${mins}m` : ''}`.trim();
     }
     return `${mins}m`;
   };
 
-  const groupedServices = services.reduce((acc, service) => {
-    const category = service.category || 'Other';
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(service);
-    return acc;
-  }, {} as Record<string, Service[]>);
+  const groupedServices = services.reduce(
+    (acc, service) => {
+      const category = service.category || 'Other';
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(service);
+      return acc;
+    },
+    {} as Record<string, Service[]>,
+  );
 
   if (loading && services.length === 0) {
     return (
@@ -174,12 +189,12 @@ export const ServiceManagement: React.FC = () => {
             disabled={loading}
             className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`}
+            />
             Refresh
           </button>
-          <button
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
+          <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             <Plus className="h-4 w-4 mr-2" />
             Add Service
           </button>
@@ -191,9 +206,7 @@ export const ServiceManagement: React.FC = () => {
         <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
           <div className="flex items-center space-x-2">
             <AlertCircle className="h-4 w-4 text-yellow-600" />
-            <span className="text-sm text-yellow-800">
-              Warning: {error}
-            </span>
+            <span className="text-sm text-yellow-800">Warning: {error}</span>
           </div>
         </div>
       )}
@@ -203,10 +216,17 @@ export const ServiceManagement: React.FC = () => {
         <div className="text-center py-12">
           <div className="mx-auto h-12 w-12 text-gray-400">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
             </svg>
           </div>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No services found</h3>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">
+            No services found
+          </h3>
           <p className="mt-1 text-sm text-gray-500">
             Get started by adding your first service.
           </p>
@@ -224,62 +244,81 @@ export const ServiceManagement: React.FC = () => {
         <div className="mt-8 flow-root">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-              {Object.entries(groupedServices).map(([category, servicesInCategory]) => (
-                <div key={category} className="mb-8">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">{category}</h2>
-                  <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-                    <table className="min-w-full divide-y divide-gray-300">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                            Name
-                          </th>
-                          <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                            Description
-                          </th>
-                          <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                            Duration
-                          </th>
-                          <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                            Price
-                          </th>
-                          <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                            <span className="sr-only">Edit</span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200 bg-white">
-                        {servicesInCategory.map((service) => (
-                          <tr key={service.id}>
-                            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                              {service.name}
-                            </td>
-                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                              {service.description}
-                            </td>
-                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                              {formatDuration(service.duration_minutes)}
-                            </td>
-                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                              {formatPrice(service.price_cents)}
-                            </td>
-                            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                              <button className="text-indigo-600 hover:text-indigo-900 mr-4">
-                                <Edit className="h-4 w-4 inline" />
-                                <span className="ml-1">Edit</span>
-                              </button>
-                              <button className="text-red-600 hover:text-red-900">
-                                <Trash2 className="h-4 w-4 inline" />
-                                <span className="ml-1">Delete</span>
-                              </button>
-                            </td>
+              {Object.entries(groupedServices).map(
+                ([category, servicesInCategory]) => (
+                  <div key={category} className="mb-8">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                      {category}
+                    </h2>
+                    <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+                      <table className="min-w-full divide-y divide-gray-300">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th
+                              scope="col"
+                              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                            >
+                              Name
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Description
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Duration
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Price
+                            </th>
+                            <th
+                              scope="col"
+                              className="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                            >
+                              <span className="sr-only">Edit</span>
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200 bg-white">
+                          {servicesInCategory.map((service) => (
+                            <tr key={service.id}>
+                              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                {service.name}
+                              </td>
+                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                {service.description}
+                              </td>
+                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                {formatDuration(service.duration_minutes)}
+                              </td>
+                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                {formatPrice(service.price_cents)}
+                              </td>
+                              <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                <button className="text-indigo-600 hover:text-indigo-900 mr-4">
+                                  <Edit className="h-4 w-4 inline" />
+                                  <span className="ml-1">Edit</span>
+                                </button>
+                                <button className="text-red-600 hover:text-red-900">
+                                  <Trash2 className="h-4 w-4 inline" />
+                                  <span className="ml-1">Delete</span>
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ),
+              )}
             </div>
           </div>
         </div>

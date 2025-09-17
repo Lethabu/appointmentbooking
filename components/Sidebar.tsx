@@ -8,7 +8,9 @@ const Sidebar: React.FC = () => {
   const pathname = usePathname();
   const navLinkClasses = (path: string): string =>
     `flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ease-in-out hover:bg-primary-dark hover:text-white ${
-      pathname === path ? 'bg-primary-dark text-white shadow-md' : 'text-neutral-200'
+      pathname === path
+        ? 'bg-primary-dark text-white shadow-md'
+        : 'text-neutral-200'
     }`;
 
   return (
@@ -18,15 +20,15 @@ const Sidebar: React.FC = () => {
         <h1 className="text-2xl font-bold text-white">The Platform</h1>
       </div>
       <nav className="flex-1 space-y-2">
-        <Link href="/dashboard" className={navLinkClasses("/dashboard")}>
+        <Link href="/dashboard" className={navLinkClasses('/dashboard')}>
           <IconDashboard className="h-6 w-6" />
           <span>Dashboard</span>
         </Link>
-        <Link href="/agent-chat" className={navLinkClasses("/agent-chat")}>
+        <Link href="/agent-chat" className={navLinkClasses('/agent-chat')}>
           <IconChat className="h-6 w-6" />
           <span>AI Agents</span>
         </Link>
-        <Link href="/bookings" className={navLinkClasses("/bookings")}>
+        <Link href="/bookings" className={navLinkClasses('/bookings')}>
           <IconCalendar className="h-6 w-6" />
           <span>Bookings</span>
         </Link>

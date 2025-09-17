@@ -1,6 +1,14 @@
-"use client"
+'use client';
 
-import { Calendar, Users, Scissors, Package, MessageSquare, Settings, Home } from "lucide-react"
+import {
+  Calendar,
+  Users,
+  Scissors,
+  Package,
+  MessageSquare,
+  Settings,
+  Home,
+} from 'lucide-react';
 
 import {
   Sidebar,
@@ -13,45 +21,45 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
-} from "@/components/ui/sidebar"
+} from '@/components/ui/sidebar';
 
 const menuItems = [
   {
-    title: "Dashboard",
-    url: "/dashboard",
+    title: 'Dashboard',
+    url: '/dashboard',
     icon: Home,
   },
   {
-    title: "Appointments",
-    url: "/dashboard/appointments",
+    title: 'Appointments',
+    url: '/dashboard/appointments',
     icon: Calendar,
   },
   {
-    title: "Clients",
-    url: "/dashboard/clients",
+    title: 'Clients',
+    url: '/dashboard/clients',
     icon: Users,
   },
   {
-    title: "Services",
-    url: "/dashboard/services",
+    title: 'Services',
+    url: '/dashboard/services',
     icon: Scissors,
   },
   {
-    title: "Products",
-    url: "/dashboard/products",
+    title: 'Products',
+    url: '/dashboard/products',
     icon: Package,
   },
   {
-    title: "Marketing (AI)",
-    url: "/dashboard/marketing",
+    title: 'Marketing (AI)',
+    url: '/dashboard/marketing',
     icon: MessageSquare,
   },
   {
-    title: "Settings",
-    url: "/dashboard/settings",
+    title: 'Settings',
+    url: '/dashboard/settings',
     icon: Settings,
   },
-]
+];
 
 export function DashboardSidebar() {
   return (
@@ -95,5 +103,5 @@ export function DashboardSidebar() {
         </div>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

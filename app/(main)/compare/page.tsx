@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic';
 
-import { preloadQuery, fetchQuery } from "convex/nextjs";
-import { api } from "@/convex/_generated/api";
-import { jsonLd } from "@/lib/jsonLd";
+import { preloadQuery, fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
+import { jsonLd } from '@/lib/jsonLd';
 import { ItemList } from 'schema-dts';
-import CompareClientPage from "./CompareClientPage";
+import CompareClientPage from './CompareClientPage';
 
 export async function generateMetadata() {
   try {
@@ -16,27 +16,29 @@ export async function generateMetadata() {
       item: {
         '@type': 'Thing',
         name: item.name,
-        description: item.features.map(f => `${f.name}: ${f.supported ? 'Yes' : 'No'}`).join(', '),
-      }
+        description: item.features
+          .map((f) => `${f.name}: ${f.supported ? 'Yes' : 'No'}`)
+          .join(', '),
+      },
     }));
 
     return {
-      title: "Compare Features - The Platform",
-      description: "Compare our features with other platforms.",
+      title: 'Compare Features - The Platform',
+      description: 'Compare our features with other platforms.',
       other: {
         'script[type="application/ld+json"]': jsonLd({
           '@context': 'https://schema.org',
           '@type': 'ItemList',
           itemListElement: itemListElement,
         } as ItemList),
-      }
+      },
     };
   } catch (error) {
-    console.error("Error generating metadata for compare page:", error);
+    console.error('Error generating metadata for compare page:', error);
     return {
-      title: "Compare Features - The Platform",
-      description: "Compare our features with other platforms.",
-    }
+      title: 'Compare Features - The Platform',
+      description: 'Compare our features with other platforms.',
+    };
   }
 }
 

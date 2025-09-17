@@ -1,12 +1,16 @@
-{pkgs}: {
+{pkgs, ...}: {
   channel = "stable-24.05";
   packages = [
     pkgs.nodejs_20
     pkgs.openssl_3
   ];
-  idx.extensions = [
-    
-  ];
+
+  services.postgres = {
+    enable = true;
+    package = pkgs.postgresql_15;
+  };
+
+  idx.extensions = [];
   idx.previews = {
     previews = {
       web = {

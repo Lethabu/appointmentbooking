@@ -45,13 +45,20 @@ export default function RecentBookings({ salonId }) {
           {bookings.map((booking) => (
             <tr key={booking.id} className="border-b">
               <td className="py-2 px-4">{booking.clientName}</td>
-              <td className="py-2 px-4">{booking.appointment?.service?.name || 'N/A'}</td>
-              <td className="py-2 px-4">{booking.appointment?.staff?.name || 'N/A'}</td>
               <td className="py-2 px-4">
-                {new Date(booking.appointment?.startTime).toLocaleString('en-US', {
-                  dateStyle: 'medium',
-                  timeStyle: 'short',
-                })}
+                {booking.appointment?.service?.name || 'N/A'}
+              </td>
+              <td className="py-2 px-4">
+                {booking.appointment?.staff?.name || 'N/A'}
+              </td>
+              <td className="py-2 px-4">
+                {new Date(booking.appointment?.startTime).toLocaleString(
+                  'en-US',
+                  {
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
+                  },
+                )}
               </td>
               <td className="py-2 px-4">
                 <span
@@ -59,14 +66,16 @@ export default function RecentBookings({ salonId }) {
                     booking.status === 'CONFIRMED'
                       ? 'bg-green-100 text-green-800'
                       : booking.status === 'PENDING'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-red-100 text-red-800'
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-red-100 text-red-800'
                   }`}
                 >
                   {booking.status}
                 </span>
               </td>
-              <td className="text-right py-2 px-4">R{booking.totalAmount.toFixed(2)}</td>
+              <td className="text-right py-2 px-4">
+                R{booking.totalAmount.toFixed(2)}
+              </td>
             </tr>
           ))}
         </tbody>

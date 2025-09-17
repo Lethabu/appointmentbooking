@@ -1,8 +1,8 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { supabase } from "../../utils/supabaseClient";
-import { useCartStore } from "../../utils/cartStore";
+'use client';
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { supabase } from '../../../utils/supabaseClient';
+import { useCartStore } from '../../../utils/cartStore';
 
 export default function CheckoutPage() {
   const params = useParams();
@@ -20,12 +20,12 @@ export default function CheckoutPage() {
       setLoading(true);
       setError(null);
       const { data: salonData, error: salonError } = await supabase
-        .from("salons")
-        .select("id, name")
-        .eq("slug", salonSlug)
+        .from('salons')
+        .select('id, name')
+        .eq('slug', salonSlug)
         .single();
       if (salonError || !salonData) {
-        setError("Salon not found");
+        setError('Salon not found');
         setLoading(false);
         return;
       }
@@ -53,9 +53,15 @@ export default function CheckoutPage() {
     }, 1500);
   };
 
-  if (loading) return <div className="p-8 text-center">Loading checkout...</div>;
+  if (loading)
+    return <div className="p-8 text-center">Loading checkout...</div>;
   if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
-  if (success) return <div className="p-8 text-center text-green-600">Thank you for your purchase!</div>;
+  if (success)
+    return (
+      <div className="p-8 text-center text-green-600">
+        Thank you for your purchase!
+      </div>
+    );
 
   return (
     <div className="max-w-md mx-auto p-6">
@@ -68,7 +74,12 @@ export default function CheckoutPage() {
             <li key={idx} className="flex justify-between items-center mb-2">
               <span>{item.name}</span>
               <span>R{item.price}</span>
-              <button onClick={() => handleRemove(item.id)} className="text-red-500 ml-2">Remove</button>
+              <button
+                onClick={() => handleRemove(item.id)}
+                className="text-red-500 ml-2"
+              >
+                Remove
+              </button>
             </li>
           ))}
         </ul>
@@ -76,7 +87,9 @@ export default function CheckoutPage() {
       {cartItems.length > 0 && (
         <div className="flex justify-between items-center mb-4">
           <div className="font-semibold">Total:</div>
-          <div className="font-bold">R{cartItems.reduce((sum, item) => sum + (item.price || 0), 0)}</div>
+          <div className="font-bold">
+            R{cartItems.reduce((sum, item) => sum + (item.price || 0), 0)}
+          </div>
         </div>
       )}
       <button
@@ -84,7 +97,9 @@ export default function CheckoutPage() {
         onClick={handleCheckout}
         disabled={processing || cartItems.length === 0}
       >
-        {processing ? "Processing..." : `Pay Now${cartItems.length > 0 ? ` (R${cartItems.reduce((sum, item) => sum + (item.price || 0), 0)})` : ''}`}
+        {processing
+          ? 'Processing...'
+          : `Pay Now${cartItems.length > 0 ? ` (R${cartItems.reduce((sum, item) => sum + (item.price || 0), 0)})` : ''}`}
       </button>
     </div>
   );

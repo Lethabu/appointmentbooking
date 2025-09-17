@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 interface TenantConfig {
@@ -25,7 +25,7 @@ export class EmergencyTenantResolver {
     // Check cache first
     const cached = this.cache.get(hostname);
     const expiry = this.cacheExpiry.get(hostname);
-    
+
     if (cached && expiry && Date.now() < expiry) {
       return cached;
     }
@@ -34,7 +34,8 @@ export class EmergencyTenantResolver {
       // Query database for tenant
       const { data: salon, error } = await supabase
         .from('salons')
-        .select(`
+        .select(
+          `
           id,
           name,
           subdomain,
@@ -44,8 +45,11 @@ export class EmergencyTenantResolver {
             comp_type,
             html_chunk
           )
-        `)
-        .or(`custom_domain.eq.${hostname},subdomain.eq.${hostname.split('.')[0]}`)
+        `,
+        )
+        .or(
+          `custom_domain.eq.${hostname},subdomain.eq.${hostname.split('.')[0]}`,
+        )
         .single();
 
       if (error || !salon) {
@@ -54,10 +58,13 @@ export class EmergencyTenantResolver {
       }
 
       // Build tenant config
-      const components = salon.tenant_components.reduce((acc: any, comp: any) => {
-        acc[comp.comp_type] = comp.html_chunk;
-        return acc;
-      }, {});
+      const components = salon.tenant_components.reduce(
+        (acc: any, comp: any) => {
+          acc[comp.comp_type] = comp.html_chunk;
+          return acc;
+        },
+        {},
+      );
 
       const config: TenantConfig = {
         id: salon.id,
@@ -67,16 +74,15 @@ export class EmergencyTenantResolver {
         primary_color: salon.primary_color,
         components: {
           header: components.header || '',
-          footer: components.footer || ''
-        }
+          footer: components.footer || '',
+        },
       };
 
       // Cache for 5 minutes
       this.cache.set(hostname, config);
-      this.cacheExpiry.set(hostname, Date.now() + (5 * 60 * 1000));
+      this.cacheExpiry.set(hostname, Date.now() + 5 * 60 * 1000);
 
       return config;
-
     } catch (error) {
       console.error('Tenant resolution error:', error);
       return null;

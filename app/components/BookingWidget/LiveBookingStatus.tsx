@@ -7,9 +7,12 @@ interface LiveBookingStatusProps {
   tenantId: string;
 }
 
-export function LiveBookingStatus({ appointmentId, tenantId }: LiveBookingStatusProps) {
+export function LiveBookingStatus({
+  appointmentId,
+  tenantId,
+}: LiveBookingStatusProps) {
   // const updates = useQuery(api.bookings.getUpdates, { appointmentId, tenantId });
-  
+
   return (
     <div className="space-y-2">
       <h3 className="font-semibold">Live Status Updates</h3>
@@ -21,7 +24,9 @@ export function LiveBookingStatus({ appointmentId, tenantId }: LiveBookingStatus
           </span>
         </div>
       ))} */}
-      <p className="text-sm text-gray-500">Live updates are currently unavailable.</p>
+      <p className="text-sm text-gray-500">
+        Live updates are currently unavailable.
+      </p>
     </div>
   );
 }

@@ -19,11 +19,11 @@ export default function CustomerJourney() {
     // Cart abandonment tracking
     if (items.length > 0) {
       const abandonmentTimer = setTimeout(() => {
-        trackEvent('cart_abandoned', { 
-          items: items.length, 
-          value: total 
+        trackEvent('cart_abandoned', {
+          items: items.length,
+          value: total,
         });
-        
+
         // Trigger WhatsApp reminder
         fetch('/api/webhooks/automation/abandoned-cart', {
           method: 'POST',
@@ -31,8 +31,8 @@ export default function CustomerJourney() {
           body: JSON.stringify({
             tenantId: 'instylehairboutique',
             clientPhone: '+27123456789', // Get from user session
-            cartItems: items
-          })
+            cartItems: items,
+          }),
         });
       }, 300000); // 5 minutes
 

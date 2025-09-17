@@ -14,34 +14,36 @@ export default function ProfilePage() {
   const redeemLoyaltyPoints = useMutation(api.loyalty.redeemLoyaltyPoints);
 
   const { userId } = useAuth();
-  const loyalty = useQuery(api.loyalty.get, userId ? { userId } : "skip");
+  const loyalty = useQuery(api.loyalty.get, userId ? { userId } : 'skip');
 
   const handleSendMessage = async () => {
     if (message.trim() === '') return;
-    setChatHistory(prev => [...prev, `You: ${message}`]);
+    setChatHistory((prev) => [...prev, `You: ${message}`]);
     const botResponse = await sendChatMessage({ message });
-    setChatHistory(prev => [...prev, `AI Stylist: ${botResponse}`]);
+    setChatHistory((prev) => [...prev, `AI Stylist: ${botResponse}`]);
     setMessage('');
   };
 
   const handleRedeemPoints = async () => {
     if (!userId) {
-      alert("User not authenticated.");
+      alert('User not authenticated.');
       return;
     }
     if (pointsToRedeem <= 0) {
-      alert("Please enter a valid number of points to redeem.");
+      alert('Please enter a valid number of points to redeem.');
       return;
     }
     try {
       const discount = await redeemLoyaltyPoints({ userId, pointsToRedeem });
-      alert(`Successfully redeemed ${pointsToRedeem} points for a discount of R${discount}.`);
+      alert(
+        `Successfully redeemed ${pointsToRedeem} points for a discount of R${discount}.`,
+      );
       setPointsToRedeem(0);
     } catch (error) {
       if (error instanceof Error) {
         alert(`Error redeeming points: ${error.message}`);
       } else {
-        alert("An unknown error occurred while redeeming points.");
+        alert('An unknown error occurred while redeeming points.');
       }
     }
   };

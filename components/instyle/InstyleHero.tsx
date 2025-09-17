@@ -1,1 +1,3 @@
-export function InstyleHero() { return null; }
+export function InstyleHero() {
+  return null;
+}

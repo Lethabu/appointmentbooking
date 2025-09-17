@@ -1,8 +1,8 @@
-import type { Tenant } from "@/types"
-import Image from "next/image"
+import type { Tenant } from '@/types';
+import Image from 'next/image';
 
 interface BookingHeaderProps {
-  tenant: Tenant
+  tenant: Tenant;
 }
 
 export function BookingHeader({ tenant }: BookingHeaderProps) {
@@ -13,7 +13,7 @@ export function BookingHeader({ tenant }: BookingHeaderProps) {
           <div className="flex items-center space-x-4">
             {tenant.config?.branding?.logo_url && (
               <Image
-                src={tenant.config.branding.logo_url || "/placeholder.svg"}
+                src={tenant.config.branding.logo_url || '/placeholder.svg'}
                 alt={`${tenant.name} logo`}
                 width={200}
                 height={60}
@@ -21,7 +21,9 @@ export function BookingHeader({ tenant }: BookingHeaderProps) {
               />
             )}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{tenant.name}</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {tenant.name}
+              </h1>
               <p className="text-gray-600">Book your premium hair experience</p>
             </div>
           </div>
@@ -32,5 +34,5 @@ export function BookingHeader({ tenant }: BookingHeaderProps) {
         </div>
       </div>
     </header>
-  )
+  );
 }

@@ -17,7 +17,7 @@ export async function GET(request) {
           set: (name, value, options) => cookieStore.set(name, value, options),
           remove: (name, options) => cookieStore.remove(name, options),
         },
-      }
+      },
     );
     await supabase.auth.exchangeCodeForSession(code);
   }

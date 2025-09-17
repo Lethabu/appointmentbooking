@@ -1,5 +1,20 @@
-import { useState } from 'react'
-import { Calendar, DollarSign, Users, Star, Phone, Clock, CheckCircle, XCircle, Edit3, MessageCircle, TrendingUp, Zap, Brain, Target } from 'lucide-react'
+import { useState } from 'react';
+import {
+  Calendar,
+  DollarSign,
+  Users,
+  Star,
+  Phone,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Edit3,
+  MessageCircle,
+  TrendingUp,
+  Zap,
+  Brain,
+  Target,
+} from 'lucide-react';
 
 interface ModernAppointment {
   id: number;
@@ -30,7 +45,7 @@ export default function ModernSalonDashboard() {
       duration: '2h 30m',
       status: 'confirmed',
       phone: '+27 123 456 7890',
-      price: 450
+      price: 450,
     },
     {
       id: 2,
@@ -40,44 +55,50 @@ export default function ModernSalonDashboard() {
       duration: '45m',
       status: 'pending',
       phone: '+27 987 654 3210',
-      price: 180
-    }
-  ])
+      price: 180,
+    },
+  ]);
 
   const [stats] = useState({
     todayAppointments: 8,
     weeklyRevenue: 2450,
     totalClients: 142,
-    avgRating: 4.8
-  })
+    avgRating: 4.8,
+  });
 
   const getStatusConfig = (status: ModernAppointment['status']) => {
     switch (status) {
-      case 'confirmed': 
-        return { 
-          bg: 'bg-emerald-50', 
-          text: 'text-emerald-700', 
+      case 'confirmed':
+        return {
+          bg: 'bg-emerald-50',
+          text: 'text-emerald-700',
           border: 'border-emerald-200',
-          icon: CheckCircle 
-        }
-      case 'pending': 
-        return { 
-          bg: 'bg-amber-50', 
-          text: 'text-amber-700', 
+          icon: CheckCircle,
+        };
+      case 'pending':
+        return {
+          bg: 'bg-amber-50',
+          text: 'text-amber-700',
           border: 'border-amber-200',
-          icon: Clock 
-        }
-      default: 
-        return { 
-          bg: 'bg-gray-50', 
-          text: 'text-gray-700', 
+          icon: Clock,
+        };
+      default:
+        return {
+          bg: 'bg-gray-50',
+          text: 'text-gray-700',
           border: 'border-gray-200',
-          icon: Clock 
-        }
+          icon: Clock,
+        };
     }
-  }
+  };
 
-  const StatCard = ({ title, value, icon: Icon, color, trend }: StatCardProps) => (
+  const StatCard = ({
+    title,
+    value,
+    icon: Icon,
+    color,
+    trend,
+  }: StatCardProps) => (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
       <div className="flex items-center justify-between">
         <div>
@@ -86,7 +107,9 @@ export default function ModernSalonDashboard() {
           {trend && (
             <div className="flex items-center mt-2">
               <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
-              <span className="text-sm text-green-600 font-medium">{trend}</span>
+              <span className="text-sm text-green-600 font-medium">
+                {trend}
+              </span>
             </div>
           )}
         </div>
@@ -95,11 +118,15 @@ export default function ModernSalonDashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 
-  const AppointmentCard = ({ appointment }: { appointment: ModernAppointment }) => {
-    const statusConfig = getStatusConfig(appointment.status)
-    const StatusIcon = statusConfig.icon
+  const AppointmentCard = ({
+    appointment,
+  }: {
+    appointment: ModernAppointment;
+  }) => {
+    const statusConfig = getStatusConfig(appointment.status);
+    const StatusIcon = statusConfig.icon;
 
     return (
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
@@ -109,12 +136,16 @@ export default function ModernSalonDashboard() {
               <h3 className="font-semibold text-gray-900 text-lg">
                 {appointment.clientName}
               </h3>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border} border`}>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border} border`}
+              >
                 <StatusIcon className="w-3 h-3" />
                 {appointment.status}
               </span>
             </div>
-            <p className="text-purple-600 font-medium mb-1">{appointment.service}</p>
+            <p className="text-purple-600 font-medium mb-1">
+              {appointment.service}
+            </p>
             <div className="flex items-center gap-4 text-sm text-gray-600">
               <div className="flex items-center gap-1">
                 <Phone className="w-4 h-4" />
@@ -127,11 +158,13 @@ export default function ModernSalonDashboard() {
             </div>
           </div>
           <div className="text-right ml-4">
-            <p className="font-bold text-gray-900 text-lg">{appointment.time}</p>
+            <p className="font-bold text-gray-900 text-lg">
+              {appointment.time}
+            </p>
             <p className="text-green-600 font-semibold">R{appointment.price}</p>
           </div>
         </div>
-        
+
         <div className="flex gap-2 pt-4 border-t border-gray-100">
           <button className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium flex items-center justify-center gap-2">
             <Edit3 className="w-4 h-4" />
@@ -146,8 +179,8 @@ export default function ModernSalonDashboard() {
           </button>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
@@ -158,7 +191,9 @@ export default function ModernSalonDashboard() {
               <h1 className="text-2xl font-bold text-gray-900">
                 <span className="text-purple-600">Salon</span> Dashboard
               </h1>
-              <p className="text-gray-600">Welcome back! Here's your salon overview</p>
+              <p className="text-gray-600">
+                Welcome back! Here's your salon overview
+              </p>
             </div>
             <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
               S
@@ -204,7 +239,9 @@ export default function ModernSalonDashboard() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold text-gray-900">Today's Appointments</h2>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Today's Appointments
+                  </h2>
                   <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">
                     {appointments.length} active
                   </span>
@@ -213,7 +250,10 @@ export default function ModernSalonDashboard() {
               <div className="p-6">
                 <div className="space-y-4">
                   {appointments.map((appointment) => (
-                    <AppointmentCard key={appointment.id} appointment={appointment} />
+                    <AppointmentCard
+                      key={appointment.id}
+                      appointment={appointment}
+                    />
                   ))}
                 </div>
               </div>
@@ -222,7 +262,9 @@ export default function ModernSalonDashboard() {
 
           <div className="space-y-6">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-4">
+                Quick Actions
+              </h3>
               <div className="space-y-3">
                 <button className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 flex items-center justify-center gap-2 font-medium">
                   <MessageCircle className="w-5 h-5" />
@@ -261,5 +303,5 @@ export default function ModernSalonDashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -11,7 +11,7 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   );
 
   const handleLogin = async (e) => {
@@ -32,18 +32,32 @@ export default function LoginPage() {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <form onSubmit={handleLogin} className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
+      >
         <h2 className="text-2xl font-bold mb-6 text-center">Tenant Login</h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <input
-          type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email" required className="w-full p-2 mb-4 border rounded"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          required
+          className="w-full p-2 mb-4 border rounded"
         />
         <input
-          type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password" required className="w-full p-2 mb-4 border rounded"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          required
+          className="w-full p-2 mb-4 border rounded"
         />
-        <button type="submit" className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700">
+        <button
+          type="submit"
+          className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700"
+        >
           Log In
         </button>
       </form>

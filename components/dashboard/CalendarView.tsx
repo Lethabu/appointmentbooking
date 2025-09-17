@@ -13,7 +13,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ bookings }) => {
         {bookings && bookings.length > 0 && (
           <ul className="mt-4 text-left">
             {bookings.map((booking: Booking, index: number) => (
-              <li key={index} className="text-sm">Booking ID: {booking.id || 'N/A'}</li>
+              <li key={index} className="text-sm">
+                Booking ID: {booking.id || 'N/A'}
+              </li>
             ))}
           </ul>
         )}

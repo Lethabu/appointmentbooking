@@ -22,7 +22,9 @@ export default function TestDashboardPage() {
     <div>
       <h1>Test Dashboard</h1>
       <p>Test mode is enabled. You are logged in as a test user.</p>
-      <button onClick={() => router.push('/dashboard/services')}>View Services</button>
+      <button onClick={() => router.push('/dashboard/services')}>
+        View Services
+      </button>
     </div>
   );
 }

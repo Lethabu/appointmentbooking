@@ -1,4 +1,5 @@
-import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
+
+import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -7,7 +8,7 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 describe('Multi-Tenant Security Tests', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     // Set up test data
     await supabase.from('tenants').upsert([
       { id: 'test-tenant-1', name: 'Test Tenant 1' },
@@ -32,7 +33,7 @@ describe('Multi-Tenant Security Tests', () => {
     ]);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     // Clean up test data
     await supabase.from('appointments').delete().in('id', ['test-appt-1', 'test-appt-2']);
     await supabase.from('tenants').delete().in('id', ['test-tenant-1', 'test-tenant-2']);

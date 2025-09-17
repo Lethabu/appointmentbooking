@@ -5,5 +5,8 @@ export async function GET() {
 }
 
 export async function POST() {
-  return NextResponse.json({ message: 'Marketing API endpoint is working!' }, { status: 201 });
+  return NextResponse.json(
+    { message: 'Marketing API endpoint is working!' },
+    { status: 201 },
+  );
 }

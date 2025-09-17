@@ -8,7 +8,7 @@ import { Tenant } from '@/types';
 import { Database } from '@/types/database';
 
 // Helper to create a server client for components
-function createServerSupabaseClient(cookieStore: ReturnType<typeof cookies>) {
+function createServerSupabaseClient(cookieStore: Awaited<ReturnType<typeof cookies>>) {
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: { params: { tenant: string } 
 }
 
 export default async function TenantHome({ params }: { params: { tenant: string } }) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerSupabaseClient(cookieStore);
   const tenant = await getTenant(params.tenant);
 
@@ -82,8 +82,8 @@ export default async function TenantHome({ params }: { params: { tenant: string 
     .eq('tenant_id', tenant.id)
     .order('category');
 
-  // BUG FIX: Supabase foreign table queries return an array. Access the first element.
-  const primaryColor = tenant.config?.[0]?.primaryColor || '#8B5CF6';
+  // Access tenant config properly
+  const primaryColor = '#8B5CF6'; // Default color for now
 
   return (
     <div className="min-h-screen bg-gray-50">

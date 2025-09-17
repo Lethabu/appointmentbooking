@@ -14,7 +14,14 @@ export default function Notification({ message, type = 'info', onDismiss }) {
     <div className={`${baseClasses} ${typeClasses[type]}`}>
       <div className="flex justify-between items-center">
         <span>{message}</span>
-        {onDismiss && <button onClick={onDismiss} className="font-bold ml-4 text-lg leading-none">&times;</button>}
+        {onDismiss && (
+          <button
+            onClick={onDismiss}
+            className="font-bold ml-4 text-lg leading-none"
+          >
+            &times;
+          </button>
+        )}
       </div>
     </div>
   );

@@ -24,7 +24,12 @@ export const Step2_DateTime: React.FC<Step2DateTimeProps> = ({ onNext }) => {
     <div className="space-y-4 p-4 border rounded-lg shadow-sm">
       <h2 className="text-xl font-semibold">Select Date & Time</h2>
       <div>
-        <label htmlFor="booking-date" className="block text-sm font-medium text-gray-700">Date</label>
+        <label
+          htmlFor="booking-date"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Date
+        </label>
         <input
           type="date"
           id="booking-date"
@@ -34,7 +39,12 @@ export const Step2_DateTime: React.FC<Step2DateTimeProps> = ({ onNext }) => {
         />
       </div>
       <div>
-        <label htmlFor="booking-time" className="block text-sm font-medium text-gray-700">Time</label>
+        <label
+          htmlFor="booking-time"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Time
+        </label>
         <input
           type="time"
           id="booking-time"

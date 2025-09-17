@@ -1,18 +1,18 @@
-import { createClient } from '@supabase/supabase-js'
-import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js';
+import { NextResponse } from 'next/server';
 
 export async function POST(req) {
-  const { orderId, amount, returnUrl } = await req.json()
+  const { orderId, amount, returnUrl } = await req.json();
 
   if (!orderId || !amount || !returnUrl) {
-    return new NextResponse('Missing required payment fields', { status: 400 })
+    return new NextResponse('Missing required payment fields', { status: 400 });
   }
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  );
 
   try {
     // 1. Create a payment record in our DB
@@ -22,20 +22,22 @@ export async function POST(req) {
         order_id: orderId,
         amount: amount,
         provider: 'netcash_payflex',
-        status: 'pending'
+        status: 'pending',
       })
       .select()
-      .single()
+      .single();
 
-    if (error) throw error
+    if (error) throw error;
 
     // 2. In a real app, call the Netcash API here to get a real payment URL.
     // For now, we'll simulate a redirect URL.
-    const simulatedPaymentUrl = `/order/complete?payment_id=${payment.id}&status=success`
+    const simulatedPaymentUrl = `/order/complete?payment_id=${payment.id}&status=success`;
 
-    return NextResponse.json({ success: true, url: simulatedPaymentUrl })
+    return NextResponse.json({ success: true, url: simulatedPaymentUrl });
   } catch (error) {
-    console.error('Payment initiation failed:', error)
-    return new NextResponse('Internal Server Error: ' + error.message, { status: 500 })
+    console.error('Payment initiation failed:', error);
+    return new NextResponse('Internal Server Error: ' + error.message, {
+      status: 500,
+    });
   }
 }

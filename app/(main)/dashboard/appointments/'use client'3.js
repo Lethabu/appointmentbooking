@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function Navbar() {
   return (
@@ -12,16 +12,31 @@ export default function Navbar() {
           </Link>
         </div>
         <div className="hidden md:flex items-center space-x-8">
-          <Link href="/#features" className="text-gray-600 hover:text-indigo-600">Features</Link>
-          <Link href="/#pricing" className="text-gray-600 hover:text-indigo-600">Pricing</Link>
-          <Link href="/login" className="text-gray-600 hover:text-indigo-600">Login</Link>
+          <Link
+            href="/#features"
+            className="text-gray-600 hover:text-indigo-600"
+          >
+            Features
+          </Link>
+          <Link
+            href="/#pricing"
+            className="text-gray-600 hover:text-indigo-600"
+          >
+            Pricing
+          </Link>
+          <Link href="/login" className="text-gray-600 hover:text-indigo-600">
+            Login
+          </Link>
         </div>
         <div>
-          <Link href="/signup" className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors">
+          <Link
+            href="/signup"
+            className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors"
+          >
             Start Free Trial
           </Link>
         </div>
       </div>
     </nav>
-  )
+  );
 }

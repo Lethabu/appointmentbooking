@@ -11,8 +11,8 @@ export async function GET() {
       payments: true,
       ai_chat: true,
       whatsapp: true,
-      social_sync: true
-    }
+      social_sync: true,
+    },
   };
 
   return NextResponse.json(health);

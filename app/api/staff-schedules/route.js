@@ -19,14 +19,19 @@ async function getSupabaseClient() {
           cookieStore.set({ name, value: '', ...options });
         },
       },
-    }
+    },
   );
 }
 
 async function authorizeUser(supabase, salonId) {
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   if (!session) {
-    return { authorized: false, response: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
+    return {
+      authorized: false,
+      response: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
+    };
   }
 
   const { data: salon, error: salonError } = await supabase
@@ -38,7 +43,13 @@ async function authorizeUser(supabase, salonId) {
 
   if (salonError || !salon) {
     console.error('Authorization error:', salonError);
-    return { authorized: false, response: NextResponse.json({ error: 'Forbidden: Not salon owner' }, { status: 403 }) };
+    return {
+      authorized: false,
+      response: NextResponse.json(
+        { error: 'Forbidden: Not salon owner' },
+        { status: 403 },
+      ),
+    };
   }
   return { authorized: true };
 }
@@ -51,7 +62,10 @@ export async function GET(req) {
   const staffId = searchParams.get('staff_id');
 
   if (!salonId) {
-    return NextResponse.json({ error: 'Missing salon_id parameter' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing salon_id parameter' },
+      { status: 400 },
+    );
   }
 
   const { authorized, response } = await authorizeUser(supabase, salonId);
@@ -59,7 +73,9 @@ export async function GET(req) {
 
   let query = supabase
     .from('staff_schedules')
-    .select('id, staff_id, day_of_week, start_time, end_time, schedule_type, schedule_date, staff(name)');
+    .select(
+      'id, staff_id, day_of_week, start_time, end_time, schedule_type, schedule_date, staff(name)',
+    );
 
   if (staffId) {
     query = query.eq('staff_id', staffId);
@@ -81,10 +97,21 @@ export async function GET(req) {
 export async function POST(req) {
   const supabase = await getSupabaseClient();
   const scheduleData = await req.json();
-  const { staff_id, day_of_week, start_time, end_time, schedule_type, schedule_date, salon_id } = scheduleData;
+  const {
+    staff_id,
+    day_of_week,
+    start_time,
+    end_time,
+    schedule_type,
+    schedule_date,
+    salon_id,
+  } = scheduleData;
 
   if (!staff_id || !schedule_type || !salon_id) {
-    return NextResponse.json({ error: 'Missing required schedule fields' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing required schedule fields' },
+      { status: 400 },
+    );
   }
 
   const { authorized, response } = await authorizeUser(supabase, salon_id);
@@ -114,10 +141,22 @@ export async function POST(req) {
 export async function PUT(req) {
   const supabase = await getSupabaseClient();
   const scheduleData = await req.json();
-  const { id, staff_id, day_of_week, start_time, end_time, schedule_type, schedule_date, salon_id } = scheduleData;
+  const {
+    id,
+    staff_id,
+    day_of_week,
+    start_time,
+    end_time,
+    schedule_type,
+    schedule_date,
+    salon_id,
+  } = scheduleData;
 
   if (!id || !staff_id || !schedule_type || !salon_id) {
-    return NextResponse.json({ error: 'Missing required schedule fields' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing required schedule fields' },
+      { status: 400 },
+    );
   }
 
   const { authorized, response } = await authorizeUser(supabase, salon_id);
@@ -134,7 +173,10 @@ export async function PUT(req) {
       schedule_date: schedule_type !== 'working_hours' ? schedule_date : null,
     })
     .eq('id', id)
-    .in('staff_id', supabase.from('staff').select('id').eq('salon_id', salon_id)) // Ensure schedule belongs to salon's staff
+    .in(
+      'staff_id',
+      supabase.from('staff').select('id').eq('salon_id', salon_id),
+    ) // Ensure schedule belongs to salon's staff
     .select()
     .single();
 
@@ -153,7 +195,10 @@ export async function DELETE(req) {
   const salonId = searchParams.get('salon_id');
 
   if (!id || !salonId) {
-    return NextResponse.json({ error: 'Missing schedule ID or salon ID' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing schedule ID or salon ID' },
+      { status: 400 },
+    );
   }
 
   const { authorized, response } = await authorizeUser(supabase, salonId);
@@ -163,12 +208,18 @@ export async function DELETE(req) {
     .from('staff_schedules')
     .delete()
     .eq('id', id)
-    .in('staff_id', supabase.from('staff').select('id').eq('salon_id', salonId)); // Ensure schedule belongs to salon's staff
+    .in(
+      'staff_id',
+      supabase.from('staff').select('id').eq('salon_id', salonId),
+    ); // Ensure schedule belongs to salon's staff
 
   if (error) {
     console.error('Error deleting staff schedule:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ message: 'Staff schedule deleted successfully' }, { status: 204 });
+  return NextResponse.json(
+    { message: 'Staff schedule deleted successfully' },
+    { status: 204 },
+  );
 }

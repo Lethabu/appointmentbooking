@@ -1,29 +1,42 @@
-"use client"
+'use client';
 
-import type { Service } from "@/types"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import { Clock, DollarSign, User, Phone } from "lucide-react"
+import type { Service } from '@/types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Clock, DollarSign, User, Phone } from 'lucide-react';
 
 interface AppointmentSummaryProps {
-  selectedServices: Service[]
+  selectedServices: Service[];
   formData: {
-    full_name: string
-    phone_number: string
-  }
-  onFormChange: (field: string, value: string) => void
-  onSubmit: () => void
+    full_name: string;
+    phone_number: string;
+  };
+  onFormChange: (field: string, value: string) => void;
+  onSubmit: () => void;
 }
 
-export function AppointmentSummary({ selectedServices, formData, onFormChange, onSubmit }: AppointmentSummaryProps) {
-  const totalPrice = selectedServices.reduce((sum, service) => sum + service.price, 0)
-  const totalDuration = selectedServices.reduce((sum, service) => sum + service.duration, 0)
+export function AppointmentSummary({
+  selectedServices,
+  formData,
+  onFormChange,
+  onSubmit,
+}: AppointmentSummaryProps) {
+  const totalPrice = selectedServices.reduce(
+    (sum, service) => sum + service.price,
+    0,
+  );
+  const totalDuration = selectedServices.reduce(
+    (sum, service) => sum + service.duration,
+    0,
+  );
 
   const isFormValid =
-    selectedServices.length > 0 && formData.full_name.trim() !== "" && formData.phone_number.trim() !== ""
+    selectedServices.length > 0 &&
+    formData.full_name.trim() !== '' &&
+    formData.phone_number.trim() !== '';
 
   return (
     <Card className="shadow-lg">
@@ -39,7 +52,10 @@ export function AppointmentSummary({ selectedServices, formData, onFormChange, o
           ) : (
             <div className="space-y-2">
               {selectedServices.map((service) => (
-                <div key={service.id} className="flex justify-between items-center text-sm">
+                <div
+                  key={service.id}
+                  className="flex justify-between items-center text-sm"
+                >
                   <span className="text-gray-700">{service.name}</span>
                   <span className="font-medium">R {service.price}</span>
                 </div>
@@ -87,7 +103,7 @@ export function AppointmentSummary({ selectedServices, formData, onFormChange, o
                 id="full_name"
                 placeholder="Enter your full name"
                 value={formData.full_name}
-                onChange={(e) => onFormChange("full_name", e.target.value)}
+                onChange={(e) => onFormChange('full_name', e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -101,7 +117,7 @@ export function AppointmentSummary({ selectedServices, formData, onFormChange, o
                 id="phone_number"
                 placeholder="Enter your phone number"
                 value={formData.phone_number}
-                onChange={(e) => onFormChange("phone_number", e.target.value)}
+                onChange={(e) => onFormChange('phone_number', e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -125,5 +141,5 @@ export function AppointmentSummary({ selectedServices, formData, onFormChange, o
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

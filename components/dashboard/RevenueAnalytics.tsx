@@ -10,13 +10,13 @@ const mockData = {
   topServices: [
     { name: 'Maphondo & Lines', bookings: 8, revenue: 48000 },
     { name: 'Middle & Side', bookings: 12, revenue: 54000 },
-    { name: 'Hair Treatment', bookings: 9, revenue: 22500 }
+    { name: 'Hair Treatment', bookings: 9, revenue: 22500 },
   ],
   topProducts: [
     { name: 'Hair Extensions', sales: 4, revenue: 18000 },
     { name: 'Treatment Kit', sales: 6, revenue: 15000 },
-    { name: 'Styling Bundle', sales: 8, revenue: 14400 }
-  ]
+    { name: 'Styling Bundle', sales: 8, revenue: 14400 },
+  ],
 };
 
 export default function RevenueAnalytics() {
@@ -25,7 +25,7 @@ export default function RevenueAnalytics() {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Revenue Analytics</h2>
-      
+
       <div className="grid md:grid-cols-3 gap-4">
         <Card>
           <CardHeader>

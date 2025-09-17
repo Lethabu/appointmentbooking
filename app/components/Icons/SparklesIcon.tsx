@@ -1,4 +1,6 @@
-export const SparklesIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const SparklesIcon: React.FC<{ className?: string }> = ({
+  className,
+}) => (
   <svg
     className={className}
     xmlns="http://www.w3.org/2000/svg"

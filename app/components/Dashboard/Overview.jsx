@@ -13,8 +13,16 @@ const TimeframeSelector = ({ timeframe, setTimeframe }) => {
 
   return (
     <div className="flex justify-end mb-4">
-      <select value={timeframe} onChange={(e) => setTimeframe(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 bg-white shadow-sm">
-        {options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+      <select
+        value={timeframe}
+        onChange={(e) => setTimeframe(e.target.value)}
+        className="border border-gray-300 rounded-md px-3 py-2 bg-white shadow-sm"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
       </select>
     </div>
   );
@@ -42,13 +50,12 @@ export default function DashboardOverview({ salonId }) {
       if (rpcError) throw rpcError;
       setStats(data);
     } catch (err) {
-      console.error("Error fetching dashboard stats:", err);
-      setError("Could not load salon statistics.");
+      console.error('Error fetching dashboard stats:', err);
+      setError('Could not load salon statistics.');
     } finally {
       setLoading(false);
     }
   }, [supabase, salonId, timeframe]);
-
 
   useEffect(() => {
     fetchStats();
@@ -62,7 +69,11 @@ export default function DashboardOverview({ salonId }) {
       <TimeframeSelector timeframe={timeframe} setTimeframe={setTimeframe} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <StatCard title="Total Bookings" value={stats?.total_bookings} />
-        <StatCard title="Total Revenue" value={stats?.revenue} formatAsCurrency />
+        <StatCard
+          title="Total Revenue"
+          value={stats?.revenue}
+          formatAsCurrency
+        />
         <StatCard title="Upcoming Appointments" value={stats?.upcoming} />
       </div>
     </>

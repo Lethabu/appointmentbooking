@@ -1,22 +1,22 @@
-import { createServerSupabaseClient, setTenantContext } from '@/lib/supabase'
-import { RealTimeDashboard } from '@/components/dashboard/real-time-dashboard'
-import { notFound } from 'next/navigation'
+import { createServerSupabaseClient, setTenantContext } from '@/lib/supabase';
+import { RealTimeDashboard } from '@/components/dashboard/real-time-dashboard';
+import { notFound } from 'next/navigation';
 
 export default async function DashboardPage({ params }: any) {
-  const supabase = createServerSupabaseClient()
-  
+  const supabase = createServerSupabaseClient();
+
   // Get tenant by slug
   const { data: tenant } = await supabase
     .from('tenants')
     .select('*')
     .eq('subdomain', params.slug)
-    .single()
+    .single();
 
   if (!tenant) {
-    notFound()
+    notFound();
   }
 
-  await setTenantContext(tenant.id)
+  await setTenantContext(tenant.id);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -30,7 +30,7 @@ export default async function DashboardPage({ params }: any) {
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <RealTimeDashboard tenantId={tenant.id} />
-        
+
         {/* Quick Actions */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-6 rounded-lg shadow">
@@ -40,7 +40,7 @@ export default async function DashboardPage({ params }: any) {
               New Booking
             </button>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-2">Manage Services</h3>
             <p className="text-gray-600 mb-4">Update your service offerings</p>
@@ -48,10 +48,12 @@ export default async function DashboardPage({ params }: any) {
               Edit Services
             </button>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-2">AI Assistant</h3>
-            <p className="text-gray-600 mb-4">Get insights and recommendations</p>
+            <p className="text-gray-600 mb-4">
+              Get insights and recommendations
+            </p>
             <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
               Ask AI
             </button>
@@ -65,7 +67,9 @@ export default async function DashboardPage({ params }: any) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-600">85%</div>
-                <div className="text-sm text-gray-600">Chat Resolution Rate</div>
+                <div className="text-sm text-gray-600">
+                  Chat Resolution Rate
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">12min</div>
@@ -73,12 +77,14 @@ export default async function DashboardPage({ params }: any) {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-purple-600">94%</div>
-                <div className="text-sm text-gray-600">Customer Satisfaction</div>
+                <div className="text-sm text-gray-600">
+                  Customer Satisfaction
+                </div>
               </div>
             </div>
           </div>
         </div>
       </main>
     </div>
-  )
+  );
 }

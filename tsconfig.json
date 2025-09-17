@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
-    "lib": ["DOM","DOM.Iterable","esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
-    "target": "esnext",
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -13,25 +16,31 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".",
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "convex/*": ["convex/*"]
-    }
+      "@/*": [
+        "./*"
+      ]
+    },
+    "target": "ES2017"
   },
   "include": [
-        "next-env.d.ts",
-        "**/*.ts",
-        "**/*.tsx",
-        ".next/types/**/*.ts",
-        "convex/**/*.ts",
-        "convex/_generated/**/*.d.ts",
-        "convex/_generated/**/*.ts"
-      ],
-  "exclude": ["node_modules", "Claude code", "Fix", "apps/web"]
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "convex/**/*.ts",
+    "convex/_generated/server.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "convex/_generated/server.js",
+    "__tests__/**/*",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
 }

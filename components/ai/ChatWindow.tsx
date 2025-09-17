@@ -1,20 +1,20 @@
-"use client"
+'use client';
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { MessageCircle, Send, Loader2 } from 'lucide-react'
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { MessageCircle, Send, Loader2 } from 'lucide-react';
 
 interface ChatWindowProps {
-  tenantId: string
+  tenantId: string;
 }
 
 interface Message {
-  id: string
-  text: string
-  isUser: boolean
-  timestamp: Date
+  id: string;
+  text: string;
+  isUser: boolean;
+  timestamp: Date;
 }
 
 export function ChatWindow({ tenantId }: ChatWindowProps) {
@@ -23,25 +23,25 @@ export function ChatWindow({ tenantId }: ChatWindowProps) {
       id: '1',
       text: `Hi! I'm Nia, your AI assistant for ${tenantId}. How can I help you today?`,
       isUser: false,
-      timestamp: new Date()
-    }
-  ])
-  const [input, setInput] = useState('')
-  const [loading, setLoading] = useState(false)
+      timestamp: new Date(),
+    },
+  ]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const sendMessage = async () => {
-    if (!input.trim() || loading) return
+    if (!input.trim() || loading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       text: input,
       isUser: true,
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    };
 
-    setMessages(prev => [...prev, userMessage])
-    setInput('')
-    setLoading(true)
+    setMessages((prev) => [...prev, userMessage]);
+    setInput('');
+    setLoading(true);
 
     try {
       const response = await fetch('/api/chat', {
@@ -49,35 +49,35 @@ export function ChatWindow({ tenantId }: ChatWindowProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: input,
-          tenantId
-        })
-      })
+          tenantId,
+        }),
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (response.ok) {
         const aiMessage: Message = {
           id: (Date.now() + 1).toString(),
           text: data.response,
           isUser: false,
-          timestamp: new Date()
-        }
-        setMessages(prev => [...prev, aiMessage])
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, aiMessage]);
       } else {
-        throw new Error(data.error || 'Failed to send message')
+        throw new Error(data.error || 'Failed to send message');
       }
     } catch (error) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Sorry, I\'m having trouble responding right now. Please try again.',
+        text: "Sorry, I'm having trouble responding right now. Please try again.",
         isUser: false,
-        timestamp: new Date()
-      }
-      setMessages(prev => [...prev, errorMessage])
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Card className="w-full max-w-md">
@@ -113,7 +113,7 @@ export function ChatWindow({ tenantId }: ChatWindowProps) {
             </div>
           )}
         </div>
-        
+
         <div className="flex gap-2">
           <Input
             value={input}
@@ -128,5 +128,5 @@ export function ChatWindow({ tenantId }: ChatWindowProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

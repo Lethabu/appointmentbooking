@@ -10,13 +10,18 @@ const mockData = {
   topProducts: [
     { name: 'Hair Extensions', sales: 15, revenue: 67500 },
     { name: 'Treatment Kit', sales: 12, revenue: 30000 },
-    { name: 'Styling Bundle', sales: 8, revenue: 14400 }
+    { name: 'Styling Bundle', sales: 8, revenue: 14400 },
   ],
   recentOrders: [
     { id: 'ORD001', customer: 'Sarah M.', amount: 45000, status: 'completed' },
-    { id: 'ORD002', customer: 'Thandi K.', amount: 25000, status: 'processing' },
-    { id: 'ORD003', customer: 'Lisa P.', amount: 18000, status: 'completed' }
-  ]
+    {
+      id: 'ORD002',
+      customer: 'Thandi K.',
+      amount: 25000,
+      status: 'processing',
+    },
+    { id: 'ORD003', customer: 'Lisa P.', amount: 18000, status: 'completed' },
+  ],
 };
 
 export default function EcommerceDashboard() {
@@ -25,7 +30,7 @@ export default function EcommerceDashboard() {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">E-Commerce Dashboard</h2>
-      
+
       {/* KPI Cards */}
       <div className="grid md:grid-cols-3 gap-6">
         <Card>
@@ -54,7 +59,9 @@ export default function EcommerceDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm font-medium">Avg Order Value</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Avg Order Value
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">
@@ -77,7 +84,9 @@ export default function EcommerceDashboard() {
                 <div key={idx} className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">{product.name}</p>
-                    <p className="text-sm text-gray-500">{product.sales} sales</p>
+                    <p className="text-sm text-gray-500">
+                      {product.sales} sales
+                    </p>
                   </div>
                   <div className="text-right">
                     <p className="font-bold">{formatPrice(product.revenue)}</p>
@@ -96,14 +105,21 @@ export default function EcommerceDashboard() {
           <CardContent>
             <div className="space-y-4">
               {mockData.recentOrders.map((order) => (
-                <div key={order.id} className="flex items-center justify-between">
+                <div
+                  key={order.id}
+                  className="flex items-center justify-between"
+                >
                   <div>
                     <p className="font-medium">{order.id}</p>
                     <p className="text-sm text-gray-500">{order.customer}</p>
                   </div>
                   <div className="text-right">
                     <p className="font-bold">{formatPrice(order.amount)}</p>
-                    <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>
+                    <Badge
+                      variant={
+                        order.status === 'completed' ? 'default' : 'secondary'
+                      }
+                    >
                       {order.status}
                     </Badge>
                   </div>

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { service_id, customer, date, time, payment_reference } = await request.json();
+    const { service_id, customer, date, time, payment_reference } =
+      await request.json();
 
     const booking = {
       id: `booking_${Date.now()}`,
@@ -15,18 +16,18 @@ export async function POST(request: NextRequest) {
       appointment_time: time,
       status: 'confirmed',
       payment_reference,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     };
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       booking,
-      message: 'Booking confirmed successfully'
+      message: 'Booking confirmed successfully',
     });
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to create booking' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

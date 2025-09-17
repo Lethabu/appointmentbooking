@@ -1,6 +1,6 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies, headers } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { createServerClient } from '@supabase/ssr';
+import { cookies, headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -20,46 +20,47 @@ async function getSalonForUser(supabase, userId) {
     .from('salons')
     .select('id, name')
     .eq('owner_id', userId)
-    .single()
+    .single();
 
-  if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
-    console.error('Error fetching salon:', error)
+  if (error && error.code !== 'PGRST116') {
+    // PGRST116 = no rows found
+    console.error('Error fetching salon:', error);
   }
-  return salon
+  return salon;
 }
 
 const SignOut = () => {
   const signOutAction = async () => {
-    'use server'
-    const cookieStore = cookies()
+    'use server';
+    const cookieStore = cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       {
         cookies: {
           get(name) {
-            return cookieStore.get(name)?.value
+            return cookieStore.get(name)?.value;
           },
           set(name, value, options) {
-            cookieStore.set({ name, value, ...options })
+            cookieStore.set({ name, value, ...options });
           },
           remove(name, options) {
-            cookieStore.set({ name, value: '', ...options })
+            cookieStore.set({ name, value: '', ...options });
           },
         },
-      }
-    )
-    await supabase.auth.signOut()
-    return redirect('/')
-  }
+      },
+    );
+    await supabase.auth.signOut();
+    return redirect('/');
+  };
   return (
     <form action={signOutAction}>
       <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
         Sign Out
       </button>
     </form>
-  )
-}
+  );
+};
 
 const NavLink = ({ href, icon: Icon, children }) => (
   <Link
@@ -69,36 +70,36 @@ const NavLink = ({ href, icon: Icon, children }) => (
     <Icon className="h-6 w-6 mr-3" />
     {children}
   </Link>
-)
+);
 
 export default async function DashboardLayout({ children }) {
-  const cookieStore = cookies()
+  const cookieStore = cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         get(name) {
-          return cookieStore.get(name)?.value
+          return cookieStore.get(name)?.value;
         },
       },
-    }
-  )
+    },
+  );
 
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    return redirect('/login')
+    return redirect('/login');
   }
 
-  const salon = await getSalonForUser(supabase, user.id)
+  const salon = await getSalonForUser(supabase, user.id);
 
   // If the user is logged in but hasn't created a salon yet,
   // redirect them to the salon creation page.
   if (!salon) {
-    return redirect('/dashboard/create-salon')
+    return redirect('/dashboard/create-salon');
   }
 
   const headersList = headers();
@@ -121,32 +122,57 @@ export default async function DashboardLayout({ children }) {
     <>
       <ThemeInjector cssVariables={cssVariables} />
       <div className="min-h-screen flex bg-gray-100">
-      <aside className="w-64 bg-white shadow-md flex-shrink-0 flex flex-col">
-        <div className="p-6 border-b flex items-center space-x-4">
-          {logoUrl && <Image src={logoUrl} alt="Salon Logo" width={40} height={40} className="h-10 w-auto" />}
-          <Link href="/dashboard" className="text-2xl font-bold text-indigo-600 truncate">
-            {salon.name}
-          </Link>
-        </div>
-        <nav className="mt-6 flex-grow px-4 space-y-2">
-          <NavLink href="/dashboard" icon={HomeIcon}>Overview</NavLink>
-          <NavLink href="/dashboard/appointments" icon={CalendarDaysIcon}>Appointments</NavLink>
-          <NavLink href="/dashboard/orders" icon={ShoppingBagIcon}>Orders</NavLink>
-          <NavLink href="/dashboard/products" icon={CubeIcon}>Products</NavLink>
-          <NavLink href="/dashboard/clients" icon={UsersIcon}>Clients</NavLink>
-          <NavLink href="/dashboard/staff" icon={UserGroupIcon}>Staff</NavLink>
-          <NavLink href="/dashboard/billing" icon={CreditCardIcon}>Billing</NavLink>
-          <NavLink href="/dashboard/settings" icon={Cog6ToothIcon}>Settings</NavLink>
-        </nav>
-        <div className="p-4 border-t">
-          <p className="text-sm font-medium truncate mb-2">{user.email}</p>
-          <SignOut />
-        </div>
-      </aside>
-      <main className="flex-1 p-6 sm:p-8">
-        {children}
-      </main>
-    </div>
+        <aside className="w-64 bg-white shadow-md flex-shrink-0 flex flex-col">
+          <div className="p-6 border-b flex items-center space-x-4">
+            {logoUrl && (
+              <Image
+                src={logoUrl}
+                alt="Salon Logo"
+                width={40}
+                height={40}
+                className="h-10 w-auto"
+              />
+            )}
+            <Link
+              href="/dashboard"
+              className="text-2xl font-bold text-indigo-600 truncate"
+            >
+              {salon.name}
+            </Link>
+          </div>
+          <nav className="mt-6 flex-grow px-4 space-y-2">
+            <NavLink href="/dashboard" icon={HomeIcon}>
+              Overview
+            </NavLink>
+            <NavLink href="/dashboard/appointments" icon={CalendarDaysIcon}>
+              Appointments
+            </NavLink>
+            <NavLink href="/dashboard/orders" icon={ShoppingBagIcon}>
+              Orders
+            </NavLink>
+            <NavLink href="/dashboard/products" icon={CubeIcon}>
+              Products
+            </NavLink>
+            <NavLink href="/dashboard/clients" icon={UsersIcon}>
+              Clients
+            </NavLink>
+            <NavLink href="/dashboard/staff" icon={UserGroupIcon}>
+              Staff
+            </NavLink>
+            <NavLink href="/dashboard/billing" icon={CreditCardIcon}>
+              Billing
+            </NavLink>
+            <NavLink href="/dashboard/settings" icon={Cog6ToothIcon}>
+              Settings
+            </NavLink>
+          </nav>
+          <div className="p-4 border-t">
+            <p className="text-sm font-medium truncate mb-2">{user.email}</p>
+            <SignOut />
+          </div>
+        </aside>
+        <main className="flex-1 p-6 sm:p-8">{children}</main>
+      </div>
     </>
-  )
+  );
 }

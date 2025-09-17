@@ -20,10 +20,12 @@ export default function EnvTestPage() {
       <h1 className="text-2xl font-bold">Environment Variables Test</h1>
       <div className="mt-4">
         <p>
-          <strong>NEXT_PUBLIC_SUPABASE_URL:</strong> {envVars.supabaseUrl || 'Not loaded'}
+          <strong>NEXT_PUBLIC_SUPABASE_URL:</strong>{' '}
+          {envVars.supabaseUrl || 'Not loaded'}
         </p>
         <p>
-          <strong>NEXT_PUBLIC_SUPABASE_ANON_KEY:</strong> {envVars.supabaseAnonKey || 'Not loaded'}
+          <strong>NEXT_PUBLIC_SUPABASE_ANON_KEY:</strong>{' '}
+          {envVars.supabaseAnonKey || 'Not loaded'}
         </p>
       </div>
     </div>

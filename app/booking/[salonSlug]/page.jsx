@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/app/utils/supabaseClient'; // This path is correct
-import SimpleCalendar from "@/app/components/Booking/SimpleCalendar";
+import SimpleCalendar from '@/app/components/Booking/SimpleCalendar';
 
 export default function BookingPage() {
   const router = useRouter();
@@ -20,32 +20,32 @@ export default function BookingPage() {
   useEffect(() => {
     const fetchData = async () => {
       if (!salonSlug) {
-        console.log("salonSlug is missing");
+        console.log('salonSlug is missing');
         return;
       }
 
       const { data: salonData, error: salonError } = await supabase
-        .from("salons")
-        .select("id, name, subdomain")
-        .eq("subdomain", salonSlug) // Directly query for the specific salon
+        .from('salons')
+        .select('id, name, subdomain')
+        .eq('subdomain', salonSlug) // Directly query for the specific salon
         .single();
 
       if (salonError || !salonData) {
-        console.error("Error fetching salon or salon not found:", salonError);
-        setError("Salon not found");
+        console.error('Error fetching salon or salon not found:', salonError);
+        setError('Salon not found');
         return;
       }
-      
+
       setSalon(salonData);
 
       const { data: servicesData, error: servicesError } = await supabase
-        .from("services")
-        .select("id, name, price_cents")
-        .eq("salon_id", salonData.id);
+        .from('services')
+        .select('id, name, price_cents')
+        .eq('salon_id', salonData.id);
 
       if (servicesError) {
-        console.error("Error fetching services:", servicesError);
-        setError("Error fetching services");
+        console.error('Error fetching services:', servicesError);
+        setError('Error fetching services');
       } else {
         setServices(servicesData || []);
       }
@@ -80,7 +80,10 @@ export default function BookingPage() {
                   className="w-full text-left p-3 border rounded hover:bg-gray-50"
                   onClick={() => handleServiceSelect(service)}
                 >
-                  {service.name} <span className="float-right">R{service.price_cents / 100}</span>
+                  {service.name}{' '}
+                  <span className="float-right">
+                    R{service.price_cents / 100}
+                  </span>
                 </button>
               </li>
             ))}
@@ -88,18 +91,22 @@ export default function BookingPage() {
         </div>
       )}
       {step === 2 && selectedService && (
-          <SimpleCalendar
-            salonId={salon.id}
-            serviceId={selectedService.id}
-            onBookingConfirmed={handleBookingConfirmed}
-            onBack={() => setStep(1)}
-          />
+        <SimpleCalendar
+          salonId={salon.id}
+          serviceId={selectedService.id}
+          onBookingConfirmed={handleBookingConfirmed}
+          onBack={() => setStep(1)}
+        />
       )}
       {step === 3 && booking && (
         <div className="text-center">
           <h2 className="text-xl font-bold mb-2">Booking Confirmed!</h2>
-          <p className="mb-4">Thank you for booking {selectedService.name} at {salon.name}.</p>
-          <button className="btn" onClick={() => router.push("/")}>Back to Home</button>
+          <p className="mb-4">
+            Thank you for booking {selectedService.name} at {salon.name}.
+          </p>
+          <button className="btn" onClick={() => router.push('/')}>
+            Back to Home
+          </button>
         </div>
       )}
     </div>

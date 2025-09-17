@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
 
     if (event === 'charge.success') {
       const { reference, metadata } = data;
-      
+
       if (metadata.bookingDetails) {
         await fetch('/api/book', {
           method: 'POST',
@@ -15,8 +15,8 @@ export async function POST(request: NextRequest) {
           body: JSON.stringify({
             ...metadata.bookingDetails,
             payment_reference: reference,
-            status: 'confirmed'
-          })
+            status: 'confirmed',
+          }),
         });
       }
 

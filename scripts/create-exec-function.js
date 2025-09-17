@@ -1,5 +1,4 @@
-
-require('dotenv').config({ path: '.env.local' });
+require('dotenv').config({ path: '.env.test' });
 const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
@@ -9,16 +8,16 @@ const supabase = createClient(
 
 async function createExecFunction() {
   console.log('🔄 Creating exec function...');
-  const { error } = await supabase.rpc('sql', {
-    sql: `
-      CREATE OR REPLACE FUNCTION exec(sql text)
-      RETURNS void AS $$
-      BEGIN
-        EXECUTE sql;
-      END;
-      $$ LANGUAGE plpgsql;
+  const { data, error } = await supabase
+    .rpc('sql', {
+      sql: `
+      create function exec(sql text) returns void as $$
+      begin
+        execute sql;
+      end;
+      $$ language plpgsql;
     `
-  });
+    });
 
   if (error) {
     console.error('❌ Error creating exec function:', error);

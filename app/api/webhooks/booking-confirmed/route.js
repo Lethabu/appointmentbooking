@@ -5,12 +5,15 @@ export async function POST(req) {
   const { appointment_id } = await req.json();
 
   if (!appointment_id) {
-    return NextResponse.json({ error: 'Missing appointment_id' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing appointment_id' },
+      { status: 400 },
+    );
   }
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
   );
 
   // Fetch appointment details
@@ -21,7 +24,10 @@ export async function POST(req) {
     .single();
 
   if (apptError || !appointment) {
-    return NextResponse.json({ error: 'Appointment not found' }, { status: 404 });
+    return NextResponse.json(
+      { error: 'Appointment not found' },
+      { status: 404 },
+    );
   }
 
   // Fetch salon info
@@ -42,18 +48,19 @@ export async function POST(req) {
   const message = `Hi ${appointment.client_name}, your booking for ${service?.name || 'a service'} at ${salon?.name || 'the salon'} is confirmed for ${new Date(appointment.start_time).toLocaleString()}.`;
 
   // Insert into reminder_queue
-  const { error: queueError } = await supabase
-    .from('reminder_queue')
-    .insert({
-      appointment_id,
-      send_at: appointment.start_time,
-      message,
-      phone: appointment.client_phone,
-      sent: false
-    });
+  const { error: queueError } = await supabase.from('reminder_queue').insert({
+    appointment_id,
+    send_at: appointment.start_time,
+    message,
+    phone: appointment.client_phone,
+    sent: false,
+  });
 
   if (queueError) {
-    return NextResponse.json({ error: 'Failed to queue reminder' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to queue reminder' },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ queued: true });

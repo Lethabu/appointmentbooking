@@ -17,31 +17,33 @@ const getTenantByHost = async (host: string) => {
 };
 
 const getComponents = async (tenantId: string) => {
-    const { data: components, error } = await supabase
-        .from('tenant_components')
-        .select('comp_type, html_chunk, css')
-        .eq('tenant_id', tenantId);
+  const { data: components, error } = await supabase
+    .from('tenant_components')
+    .select('comp_type, html_chunk, css')
+    .eq('tenant_id', tenantId);
 
-    if (error) {
-        console.error('Error fetching components:', error);
-        return null;
-    }
+  if (error) {
+    console.error('Error fetching components:', error);
+    return null;
+  }
 
-    if (!components) {
-        return null;
-    }
+  if (!components) {
+    return null;
+  }
 
-    const header = components.find(c => c.comp_type === 'header');
-    const footer = components.find(c => c.comp_type === 'footer');
+  const header = components.find((c) => c.comp_type === 'header');
+  const footer = components.find((c) => c.comp_type === 'footer');
 
-    return {
-        header: header ? { html_chunk: header.html_chunk, css: header.css } : null,
-        footer: footer ? { html_chunk: footer.html_chunk, css: footer.css } : null,
-    };
+  return {
+    header: header ? { html_chunk: header.html_chunk, css: header.css } : null,
+    footer: footer ? { html_chunk: footer.html_chunk, css: footer.css } : null,
+  };
 };
 
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     const host = req.headers.host ?? '';
     const tenant = await getTenantByHost(host);
@@ -54,14 +56,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!components) {
       // Return empty strings to prevent leaking platform components
-      return res.status(200).json({ header: { html_chunk: '', css: '' }, footer: { html_chunk: '', css: '' } });
+      return res.status(200).json({
+        header: { html_chunk: '', css: '' },
+        footer: { html_chunk: '', css: '' },
+      });
     }
 
     // Set cache headers
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
 
     return res.status(200).json(components);
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Internal Server Error' });

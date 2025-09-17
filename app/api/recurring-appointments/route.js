@@ -19,10 +19,12 @@ export async function POST(req) {
           cookieStore.set({ name, value: '', ...options });
         },
       },
-    }
+    },
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -31,7 +33,13 @@ export async function POST(req) {
   const { baseAppointment, recurrenceRule, endDate } = await req.json();
 
   if (!baseAppointment || !recurrenceRule || !endDate) {
-    return NextResponse.json({ error: 'Missing required parameters: baseAppointment, recurrenceRule, endDate' }, { status: 400 });
+    return NextResponse.json(
+      {
+        error:
+          'Missing required parameters: baseAppointment, recurrenceRule, endDate',
+      },
+      { status: 400 },
+    );
   }
 
   const appointmentsToInsert = [];
@@ -82,6 +90,9 @@ export async function POST(req) {
     return NextResponse.json({ success: true, appointments: data });
   } catch (error) {
     console.error('Exception in recurring appointments API:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
   }
 }

@@ -8,7 +8,8 @@ import { inStyleBrand } from './config';
 export const metadata: Metadata = {
   metadataBase: new URL('https://your-platform-domain.com'),
   title: 'InStyle Hair Boutique - Premium Hair Services',
-  description: 'Professional hair installations, treatments and styling in South Africa. Book your appointment today.',
+  description:
+    'Professional hair installations, treatments and styling in South Africa. Book your appointment today.',
   openGraph: {
     title: 'InStyle Hair Boutique',
     description: 'Premium hair services and installations',
@@ -18,23 +19,26 @@ export const metadata: Metadata = {
 
 const services = [
   {
-    name: "Middle & Side Installation",
-    price: "R450",
-    duration: "60 minutes",
-    description: "Professional installation of middle and side part weaves for a natural, elegant look."
+    name: 'Middle & Side Installation',
+    price: 'R450',
+    duration: '60 minutes',
+    description:
+      'Professional installation of middle and side part weaves for a natural, elegant look.',
   },
   {
-    name: "Maphondo & Lines Installation", 
-    price: "R600",
-    duration: "90 minutes",
-    description: "Intricate Maphondo and lines installation creating stunning geometric patterns."
+    name: 'Maphondo & Lines Installation',
+    price: 'R600',
+    duration: '90 minutes',
+    description:
+      'Intricate Maphondo and lines installation creating stunning geometric patterns.',
   },
   {
-    name: "Hair Treatment",
-    price: "R250",
-    duration: "30 minutes",
-    description: "Rejuvenating hair treatment to restore health, shine and vitality to your hair."
-  }
+    name: 'Hair Treatment',
+    price: 'R250',
+    duration: '30 minutes',
+    description:
+      'Rejuvenating hair treatment to restore health, shine and vitality to your hair.',
+  },
 ];
 
 export default function InStylePage() {
@@ -45,7 +49,9 @@ export default function InStylePage() {
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-.between">
             <div>
-              <h1 className="text-3xl font-bold text-purple-600">InStyle Hair Boutique</h1>
+              <h1 className="text-3xl font-bold text-purple-600">
+                InStyle Hair Boutique
+              </h1>
               <p className="text-gray-600">Premium Hair Services</p>
             </div>
             <Button asChild className="bg-purple-600 hover:bg-purple-700">
@@ -62,14 +68,22 @@ export default function InStylePage() {
             Transform Your Look
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Professional hair installations, treatments and styling services. 
+            Professional hair installations, treatments and styling services.
             Experience the art of beautiful hair at InStyle Hair Boutique.
           </p>
           <div className="flex gap-4 justify-center">
-            <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700">
+            <Button
+              asChild
+              size="lg"
+              className="bg-purple-600 hover:bg-purple-700"
+            >
               <Link href="/book/instylehairboutique">Book Appointment</Link>
             </Button>
-            <Button asChild size="lg" className="bg-amber-600 hover:bg-amber-700">
+            <Button
+              asChild
+              size="lg"
+              className="bg-amber-600 hover:bg-amber-700"
+            >
               <Link href="/instylehairboutique/shop">Shop Products</Link>
             </Button>
             <Button variant="outline" size="lg">
@@ -87,16 +101,25 @@ export default function InStylePage() {
             {services.map((service, idx) => (
               <Card key={idx} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
-                  <CardTitle className="text-purple-600">{service.name}</CardTitle>
+                  <CardTitle className="text-purple-600">
+                    {service.name}
+                  </CardTitle>
                   <div className="flex justify-between text-sm text-gray-600">
                     <span>{service.duration}</span>
-                    <span className="font-bold text-amber-600">{service.price}</span>
+                    <span className="font-bold text-amber-600">
+                      {service.price}
+                    </span>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">{service.description}</p>
-                  <Button className="w-full mt-4 bg-purple-600 hover:bg-purple-700" asChild>
-                    <Link href="/book/instylehairboutique">Book This Service</Link>
+                  <Button
+                    className="w-full mt-4 bg-purple-600 hover:bg-purple-700"
+                    asChild
+                  >
+                    <Link href="/book/instylehairboutique">
+                      Book This Service
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -110,7 +133,8 @@ export default function InStylePage() {
         <div className="max-w-7xl mx-auto">
           <h3 className="text-3xl font-bold text-center mb-8">Chat with Nia</h3>
           <p className="text-center text-gray-600 mb-8">
-            Have questions? Chat with our AI assistant Nia about services, pricing, and bookings.
+            Have questions? Chat with our AI assistant Nia about services,
+            pricing, and bookings.
           </p>
           <AIChat />
         </div>
@@ -136,7 +160,9 @@ export default function InStylePage() {
       <footer className="bg-gray-900 text-white py-8 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <p>&copy; 2024 InStyle Hair Boutique. All rights reserved.</p>
-          <p className="text-gray-400 mt-2">Premium hair services in South Africa</p>
+          <p className="text-gray-400 mt-2">
+            Premium hair services in South Africa
+          </p>
         </div>
       </footer>
     </div>

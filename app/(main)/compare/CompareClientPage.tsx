@@ -1,13 +1,17 @@
 'use client';
 
-import { usePreloadedQuery, Preloaded } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { usePreloadedQuery, Preloaded } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
-export default function CompareClientPage({ preloadedItems }: { preloadedItems: Preloaded<typeof api.comparisonItems.list> }) {
+export default function CompareClientPage({
+  preloadedItems,
+}: {
+  preloadedItems: Preloaded<typeof api.comparisonItems.list>;
+}) {
   const items = usePreloadedQuery(preloadedItems);
 
   if (items.length === 0) {
-    return <div>No comparison items found.</div>
+    return <div>No comparison items found.</div>;
   }
 
   return (
@@ -17,14 +21,16 @@ export default function CompareClientPage({ preloadedItems }: { preloadedItems: 
         <thead>
           <tr>
             <th>Feature</th>
-            {items.map(item => <th key={item.name}>{item.name}</th>)}
+            {items.map((item) => (
+              <th key={item.name}>{item.name}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
           {items[0]?.features.map((feature, index) => (
             <tr key={feature.name}>
               <td>{feature.name}</td>
-              {items.map(item => (
+              {items.map((item) => (
                 <td key={item.name}>
                   {item.features[index].supported ? '✅' : '❌'}
                 </td>

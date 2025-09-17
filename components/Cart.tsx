@@ -39,16 +39,23 @@ export default function Cart() {
       </CardHeader>
       <CardContent className="space-y-4">
         {items.map((item) => (
-          <div key={item.id} className="flex items-center justify-between border-b pb-2">
+          <div
+            key={item.id}
+            className="flex items-center justify-between border-b pb-2"
+          >
             <div className="flex-1">
               <h4 className="font-medium text-sm">{item.name}</h4>
-              <p className="text-purple-600 font-bold">{formatPrice(item.price_cents)}</p>
+              <p className="text-purple-600 font-bold">
+                {formatPrice(item.price_cents)}
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
+                onClick={() =>
+                  updateQuantity(item.id, Math.max(0, item.quantity - 1))
+                }
               >
                 -
               </Button>
@@ -70,7 +77,7 @@ export default function Cart() {
             </div>
           </div>
         ))}
-        
+
         <div className="border-t pt-4">
           <div className="flex justify-between items-center mb-4">
             <span className="font-bold text-lg">Total:</span>
@@ -78,7 +85,7 @@ export default function Cart() {
               {formatPrice(total)}
             </span>
           </div>
-          
+
           <PayStackCheckout />
         </div>
       </CardContent>

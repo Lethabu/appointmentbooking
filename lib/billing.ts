@@ -7,14 +7,14 @@ interface CheckoutParams {
 }
 
 export function checkout({ tier, tenantId, email }: CheckoutParams) {
-  const amounts = { 
-    starter: 0, 
+  const amounts = {
+    starter: 0,
     pro: 29900, // R299 in kobo (cents)
-    scale: 74900 // R749 in kobo (cents)
+    scale: 74900, // R749 in kobo (cents)
   };
-  
+
   const amount = amounts[tier as keyof typeof amounts];
-  
+
   if (amount === 0) {
     // Free tier - create tenant directly
     return createTenant({ tenantId, tier });
@@ -27,19 +27,19 @@ export function checkout({ tier, tenantId, email }: CheckoutParams) {
     amount,
     currency: 'ZAR',
     reference: `sub_${tenantId}_${Date.now()}`,
-    metadata: { 
+    metadata: {
       custom_fields: [
         {
-          display_name: "Subscription Tier",
-          variable_name: "tier",
-          value: tier
+          display_name: 'Subscription Tier',
+          variable_name: 'tier',
+          value: tier,
         },
         {
-          display_name: "Tenant ID",
-          variable_name: "tenantId",
-          value: tenantId
-        }
-      ]
+          display_name: 'Tenant ID',
+          variable_name: 'tenantId',
+          value: tenantId,
+        },
+      ],
     },
     onSuccess: (transaction) => {
       console.log('Payment successful:', transaction);
@@ -51,10 +51,14 @@ export function checkout({ tier, tenantId, email }: CheckoutParams) {
   });
 }
 
-async function createTenant({ tenantId, tier, paid = false }: { 
-  tenantId: string; 
-  tier: string; 
-  paid?: boolean; 
+async function createTenant({
+  tenantId,
+  tier,
+  paid = false,
+}: {
+  tenantId: string;
+  tier: string;
+  paid?: boolean;
 }) {
   try {
     const response = await fetch('/api/tenants/create', {
@@ -62,7 +66,7 @@ async function createTenant({ tenantId, tier, paid = false }: {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tenantId, tier, paid }),
     });
-    
+
     if (response.ok) {
       const { slug } = await response.json();
       window.location.href = `/dashboard/${slug}`;

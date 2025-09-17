@@ -1,1 +1,3 @@
-export function InstyleBooking() { return null; }
+export function InstyleBooking() {
+  return null;
+}

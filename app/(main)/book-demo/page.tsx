@@ -2,10 +2,22 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Calendar, Users, TrendingUp, Star } from 'lucide-react';
@@ -31,7 +43,7 @@ export default function BookDemoPage() {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   if (isSubmitted) {
@@ -42,7 +54,8 @@ export default function BookDemoPage() {
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-2">Demo Booked!</h2>
             <p className="text-gray-600 mb-4">
-              Thank you for your interest! We&apos;ll contact you within 24 hours to schedule your personalized demo.
+              Thank you for your interest! We&apos;ll contact you within 24
+              hours to schedule your personalized demo.
             </p>
             <Button onClick={() => setIsSubmitted(false)} variant="outline">
               Book Another Demo
@@ -65,7 +78,8 @@ export default function BookDemoPage() {
             See the Platform in action
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Book a personalized demo and discover how we can transform your salon operations.
+            Book a personalized demo and discover how we can transform your
+            salon operations.
           </p>
         </div>
 
@@ -75,7 +89,8 @@ export default function BookDemoPage() {
             <CardHeader>
               <CardTitle>Book Your Free Demo</CardTitle>
               <CardDescription>
-                Fill out the form below and we&apos;ll show you exactly how the Platform can help your salon grow.
+                Fill out the form below and we&apos;ll show you exactly how the
+                Platform can help your salon grow.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -86,7 +101,9 @@ export default function BookDemoPage() {
                     <Input
                       id="name"
                       value={formData.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange('name', e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -96,7 +113,9 @@ export default function BookDemoPage() {
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange('email', e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -116,14 +135,20 @@ export default function BookDemoPage() {
                   <Input
                     id="salonName"
                     value={formData.salonName}
-                    onChange={(e) => handleInputChange('salonName', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange('salonName', e.target.value)
+                    }
                     required
                   />
                 </div>
 
                 <div>
                   <Label htmlFor="salonSize">Salon Size</Label>
-                  <Select onValueChange={(value) => handleInputChange('salonSize', value)}>
+                  <Select
+                    onValueChange={(value) =>
+                      handleInputChange('salonSize', value)
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select salon size" />
                     </SelectTrigger>
@@ -138,16 +163,26 @@ export default function BookDemoPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="currentSolution">Current Booking Solution</Label>
-                  <Select onValueChange={(value) => handleInputChange('currentSolution', value)}>
+                  <Label htmlFor="currentSolution">
+                    Current Booking Solution
+                  </Label>
+                  <Select
+                    onValueChange={(value) =>
+                      handleInputChange('currentSolution', value)
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="How do you currently manage bookings?" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="phone">Phone calls only</SelectItem>
-                      <SelectItem value="paper">Paper appointment book</SelectItem>
+                      <SelectItem value="paper">
+                        Paper appointment book
+                      </SelectItem>
                       <SelectItem value="excel">Excel/Google Sheets</SelectItem>
-                      <SelectItem value="other-software">Other booking software</SelectItem>
+                      <SelectItem value="other-software">
+                        Other booking software
+                      </SelectItem>
                       <SelectItem value="none">No system currently</SelectItem>
                     </SelectContent>
                   </Select>
@@ -159,11 +194,16 @@ export default function BookDemoPage() {
                     id="message"
                     placeholder="What challenges are you facing with your current booking process?"
                     value={formData.message}
-                    onChange={(e) => handleInputChange('message', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange('message', e.target.value)
+                    }
                   />
                 </div>
 
-                <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700">
+                <Button
+                  type="submit"
+                  className="w-full bg-purple-600 hover:bg-purple-700"
+                >
                   Book My Free Demo
                 </Button>
               </form>
@@ -183,23 +223,33 @@ export default function BookDemoPage() {
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Complete booking flow from customer perspective</span>
+                    <span className="text-sm">
+                      Complete booking flow from customer perspective
+                    </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Admin dashboard and appointment management</span>
+                    <span className="text-sm">
+                      Admin dashboard and appointment management
+                    </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Automated notifications and reminders</span>
+                    <span className="text-sm">
+                      Automated notifications and reminders
+                    </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Revenue analytics and reporting</span>
+                    <span className="text-sm">
+                      Revenue analytics and reporting
+                    </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Custom branding and setup process</span>
+                    <span className="text-sm">
+                      Custom branding and setup process
+                    </span>
                   </li>
                 </ul>
               </CardContent>
@@ -215,12 +265,18 @@ export default function BookDemoPage() {
               <CardContent>
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-green-600">300%</div>
-                    <div className="text-sm text-gray-600">Increase in online bookings</div>
+                    <div className="text-2xl font-bold text-green-600">
+                      300%
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Increase in online bookings
+                    </div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-green-600">80%</div>
-                    <div className="text-sm text-gray-600">Reduction in no-shows</div>
+                    <div className="text-sm text-gray-600">
+                      Reduction in no-shows
+                    </div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-green-600">60%</div>
@@ -228,7 +284,9 @@ export default function BookDemoPage() {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-green-600">25%</div>
-                    <div className="text-sm text-gray-600">Revenue increase</div>
+                    <div className="text-sm text-gray-600">
+                      Revenue increase
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -243,15 +301,22 @@ export default function BookDemoPage() {
               </CardHeader>
               <CardContent>
                 <blockquote className="text-sm italic text-gray-600 mb-3">
-                  &quot;The Platform transformed our salon operations. We&apos;ve seen a 300% increase in online bookings and our customers love the convenience!&quot;
+                  &quot;The Platform transformed our salon operations.
+                  We&apos;ve seen a 300% increase in online bookings and our
+                  customers love the convenience!&quot;
                 </blockquote>
                 <div className="flex items-center gap-2">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star
+                        key={i}
+                        className="h-4 w-4 fill-yellow-400 text-yellow-400"
+                      />
                     ))}
                   </div>
-                  <span className="text-sm text-gray-500">- Sarah M., InStyle Hair Boutique</span>
+                  <span className="text-sm text-gray-500">
+                    - Sarah M., InStyle Hair Boutique
+                  </span>
                 </div>
               </CardContent>
             </Card>

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
 import ChatWindow from '@/components/ChatWindow';
@@ -11,9 +11,7 @@ export default function MainLayout({
   return (
     <>
       <Navigation />
-      <main className="min-h-screen flex-grow">
-        {children}
-      </main>
+      <main className="min-h-screen flex-grow">{children}</main>
       <Footer />
       <ChatWindow tenantId={'default'} />
     </>

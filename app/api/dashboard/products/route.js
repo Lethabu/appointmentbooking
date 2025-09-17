@@ -15,12 +15,18 @@ export async function GET() {
 
     if (error) {
       console.error('Error fetching products:', error);
-      return new NextResponse(JSON.stringify({ error: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+      return new NextResponse(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
     return NextResponse.json(products);
   } catch (e) {
     console.error('Unhandled error in GET /api/dashboard/products:', e);
-    return new NextResponse(JSON.stringify({ error: 'An unexpected error occurred.' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    return new NextResponse(
+      JSON.stringify({ error: 'An unexpected error occurred.' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } },
+    );
   }
 }

@@ -3,7 +3,10 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method === 'POST') {
     // Logic to create SuperSaaS slot + WhatsApp confirmation
     res.status(200).json({ message: 'Booking successful' });

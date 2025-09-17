@@ -1,51 +1,55 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface Service {
-  id: string
-  name: string
-  description: string
-  price: number
-  duration: number
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  duration: number;
 }
 
 interface BookingWidgetProps {
-  tenantId: string
-  services: Service[]
-  branding: any
+  tenantId: string;
+  services: Service[];
+  branding: any;
 }
 
-export function BookingWidget({ tenantId, services, branding }: BookingWidgetProps) {
-  const [step, setStep] = useState(1)
-  const [selectedService, setSelectedService] = useState<Service | null>(null)
-  const [selectedDateTime, setSelectedDateTime] = useState('')
+export function BookingWidget({
+  tenantId,
+  services,
+  branding,
+}: BookingWidgetProps) {
+  const [step, setStep] = useState(1);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [selectedDateTime, setSelectedDateTime] = useState('');
   const [customerData, setCustomerData] = useState({
     name: '',
     email: '',
-    phone: ''
-  })
-  const [loading, setLoading] = useState(false)
+    phone: '',
+  });
+  const [loading, setLoading] = useState(false);
 
   const handleServiceSelect = (service: Service) => {
-    setSelectedService(service)
-    setStep(2)
-  }
+    setSelectedService(service);
+    setStep(2);
+  };
 
   const handleDateTimeSelect = (datetime: string) => {
-    setSelectedDateTime(datetime)
-    setStep(3)
-  }
+    setSelectedDateTime(datetime);
+    setStep(3);
+  };
 
   const handleBooking = async () => {
-    if (!selectedService || !selectedDateTime) return
-    
-    setLoading(true)
-    
+    if (!selectedService || !selectedDateTime) return;
+
+    setLoading(true);
+
     try {
       const response = await fetch('/api/book-appointment', {
         method: 'POST',
@@ -56,24 +60,24 @@ export function BookingWidget({ tenantId, services, branding }: BookingWidgetPro
           customerName: customerData.name,
           customerEmail: customerData.email,
           customerPhone: customerData.phone,
-          datetime: selectedDateTime
-        })
-      })
+          datetime: selectedDateTime,
+        }),
+      });
 
-      const result = await response.json()
-      
+      const result = await response.json();
+
       if (result.success) {
         // Redirect to payment
-        window.location.href = result.paymentUrl
+        window.location.href = result.paymentUrl;
       } else {
-        alert('Booking failed: ' + result.error)
+        alert('Booking failed: ' + result.error);
       }
     } catch (error) {
-      alert('Booking failed. Please try again.')
+      alert('Booking failed. Please try again.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -86,7 +90,7 @@ export function BookingWidget({ tenantId, services, branding }: BookingWidgetPro
           <CardContent>
             <div className="grid gap-4">
               {services.map((service) => (
-                <div 
+                <div
                   key={service.id}
                   className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50"
                   onClick={() => handleServiceSelect(service)}
@@ -94,11 +98,17 @@ export function BookingWidget({ tenantId, services, branding }: BookingWidgetPro
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-semibold">{service.name}</h3>
-                      <p className="text-gray-600 text-sm">{service.description}</p>
-                      <p className="text-sm text-gray-500">{service.duration} minutes</p>
+                      <p className="text-gray-600 text-sm">
+                        {service.description}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {service.duration} minutes
+                      </p>
                     </div>
                     <div className="text-right">
-                      <div className="font-bold">R{(service.price / 100).toFixed(2)}</div>
+                      <div className="font-bold">
+                        R{(service.price / 100).toFixed(2)}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -114,7 +124,8 @@ export function BookingWidget({ tenantId, services, branding }: BookingWidgetPro
           <CardHeader>
             <CardTitle>Select Date & Time</CardTitle>
             <p className="text-sm text-gray-600">
-              Service: {selectedService.name} - R{(selectedService.price / 100).toFixed(2)}
+              Service: {selectedService.name} - R
+              {(selectedService.price / 100).toFixed(2)}
             </p>
           </CardHeader>
           <CardContent>
@@ -133,7 +144,7 @@ export function BookingWidget({ tenantId, services, branding }: BookingWidgetPro
                 <Button variant="outline" onClick={() => setStep(1)}>
                   Back
                 </Button>
-                <Button 
+                <Button
                   onClick={() => handleDateTimeSelect(selectedDateTime)}
                   disabled={!selectedDateTime}
                 >
@@ -158,7 +169,9 @@ export function BookingWidget({ tenantId, services, branding }: BookingWidgetPro
                 <Input
                   id="name"
                   value={customerData.name}
-                  onChange={(e) => setCustomerData({...customerData, name: e.target.value})}
+                  onChange={(e) =>
+                    setCustomerData({ ...customerData, name: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -168,7 +181,9 @@ export function BookingWidget({ tenantId, services, branding }: BookingWidgetPro
                   id="email"
                   type="email"
                   value={customerData.email}
-                  onChange={(e) => setCustomerData({...customerData, email: e.target.value})}
+                  onChange={(e) =>
+                    setCustomerData({ ...customerData, email: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -178,29 +193,38 @@ export function BookingWidget({ tenantId, services, branding }: BookingWidgetPro
                   id="phone"
                   type="tel"
                   value={customerData.phone}
-                  onChange={(e) => setCustomerData({...customerData, phone: e.target.value})}
+                  onChange={(e) =>
+                    setCustomerData({ ...customerData, phone: e.target.value })
+                  }
                   required
                 />
               </div>
-              
+
               {/* POPIA Consent */}
               <div className="text-xs text-gray-600 bg-gray-50 p-3 rounded">
-                By booking this appointment, you consent to the processing of your personal data 
-                in accordance with POPIA (Protection of Personal Information Act). 
-                Your data will only be used for appointment management and service delivery.
+                By booking this appointment, you consent to the processing of
+                your personal data in accordance with POPIA (Protection of
+                Personal Information Act). Your data will only be used for
+                appointment management and service delivery.
               </div>
 
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setStep(2)}>
                   Back
                 </Button>
-                <Button 
+                <Button
                   onClick={handleBooking}
-                  disabled={!customerData.name || !customerData.email || loading}
+                  disabled={
+                    !customerData.name || !customerData.email || loading
+                  }
                   className="flex-1"
-                  style={{ backgroundColor: branding.primaryColor || '#6366f1' }}
+                  style={{
+                    backgroundColor: branding.primaryColor || '#6366f1',
+                  }}
                 >
-                  {loading ? 'Processing...' : `Book & Pay R${(selectedService?.price || 0) / 100}`}
+                  {loading
+                    ? 'Processing...'
+                    : `Book & Pay R${(selectedService?.price || 0) / 100}`}
                 </Button>
               </div>
             </div>
@@ -208,5 +232,5 @@ export function BookingWidget({ tenantId, services, branding }: BookingWidgetPro
         </Card>
       )}
     </div>
-  )
+  );
 }

@@ -1,22 +1,22 @@
-"use client";
-'use client'
+'use client';
+'use client';
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import Link from 'next/link'
+import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import Link from 'next/link';
 
 export default function SignUp() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [fullName, setFullName] = useState('')
-  const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(false)
-  const supabase = createClient()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const supabase = createClient();
 
   const handleSignUp = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setMessage('')
+    e.preventDefault();
+    setLoading(true);
+    setMessage('');
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -30,15 +30,15 @@ export default function SignUp() {
           role: 'owner',
         },
       },
-    })
+    });
 
-    setLoading(false)
+    setLoading(false);
     if (error) {
-      setMessage('Could not authenticate user: ' + error.message)
+      setMessage('Could not authenticate user: ' + error.message);
     } else {
-      setMessage('Check your email to continue the sign-up process.')
+      setMessage('Check your email to continue the sign-up process.');
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -49,7 +49,10 @@ export default function SignUp() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
-            <Link href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link
+              href="/login"
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
               sign in to your existing account
             </Link>
           </p>
@@ -123,5 +126,5 @@ export default function SignUp() {
         </form>
       </div>
     </div>
-  )
+  );
 }

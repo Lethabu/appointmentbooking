@@ -16,16 +16,17 @@ export default function HomePage() {
               <span className="block text-yellow-300">Booking Platform</span>
             </h1>
             <p className="text-xl sm:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
-              Increase bookings by 300%, reduce no-shows by 80%, and delight customers with AI-powered appointment management.
+              Increase bookings by 300%, reduce no-shows by 80%, and delight
+              customers with AI-powered appointment management.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
+              <Link
                 href="/book-demo"
                 className="inline-flex items-center justify-center px-8 py-3 text-lg font-medium bg-white text-purple-600 rounded-md hover:bg-gray-100 transition-colors"
               >
                 Start Free Trial
               </Link>
-              <Link 
+              <Link
                 href="/pricing"
                 className="inline-flex items-center justify-center px-8 py-3 text-lg font-medium border border-white text-white rounded-md hover:bg-white/10 transition-colors"
               >
@@ -64,19 +65,23 @@ export default function HomePage() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Everything you need to grow</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              Everything you need to grow
+            </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              From booking to billing, we&apos;ve got every aspect of your salon covered.
+              From booking to billing, we&apos;ve got every aspect of your salon
+              covered.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             <div className="border-0 shadow-lg hover:shadow-xl transition-shadow rounded-lg bg-white p-6">
               <div className="mb-4">
                 <div className="h-12 w-12 text-purple-600 mb-4">📅</div>
                 <h3 className="text-xl font-semibold mb-2">Smart Booking</h3>
                 <p className="text-gray-600 mb-4">
-                  AI-powered scheduling that prevents double bookings and optimizes your calendar
+                  AI-powered scheduling that prevents double bookings and
+                  optimizes your calendar
                 </p>
               </div>
               <ul className="space-y-2">
@@ -98,7 +103,9 @@ export default function HomePage() {
             <div className="border-0 shadow-lg hover:shadow-xl transition-shadow rounded-lg bg-white p-6">
               <div className="mb-4">
                 <div className="h-12 w-12 text-blue-600 mb-4">👥</div>
-                <h3 className="text-xl font-semibold mb-2">Customer Experience</h3>
+                <h3 className="text-xl font-semibold mb-2">
+                  Customer Experience
+                </h3>
                 <p className="text-gray-600 mb-4">
                   Delight customers with seamless booking and loyalty rewards
                 </p>
@@ -153,9 +160,10 @@ export default function HomePage() {
             Ready to transform your salon?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Join hundreds of successful salons using our platform. Start your free trial today.
+            Join hundreds of successful salons using our platform. Start your
+            free trial today.
           </p>
-          <Link 
+          <Link
             href="/book-demo"
             className="inline-flex items-center justify-center px-8 py-3 text-lg font-medium bg-white text-purple-600 rounded-md hover:bg-gray-100 transition-colors"
           >

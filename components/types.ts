@@ -26,10 +26,12 @@ export interface RawAppointmentData {
     price: number;
     duration_minutes: number;
   }[];
-  staff: {
-    id: string;
-    name: string;
-  }[] | null;
+  staff:
+    | {
+        id: string;
+        name: string;
+      }[]
+    | null;
   recurrence_rule: string | null;
 }
 
@@ -39,7 +41,14 @@ export interface Booking {
   clientPhone: string | null;
   service: Service;
   scheduled_time: Date;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'scheduled' | 'in_progress' | 'completed' | 'no_show';
+  status:
+    | 'pending'
+    | 'confirmed'
+    | 'cancelled'
+    | 'scheduled'
+    | 'in_progress'
+    | 'completed'
+    | 'no_show';
   staffId?: string | null;
   recurrence_rule?: string | null;
   staff?: Staff | null;

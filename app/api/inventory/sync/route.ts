@@ -3,13 +3,13 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const { productId, quantity, operation } = await request.json();
-    
+
     const inventoryUpdate = {
       productId,
       previousQuantity: 10,
       newQuantity: operation === 'decrease' ? 10 - quantity : 10 + quantity,
       operation,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     if (inventoryUpdate.newQuantity <= 2) {
@@ -19,19 +19,19 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           platform: 'instagram',
           caption: `⚡ Only ${inventoryUpdate.newQuantity} left! Get yours now at instylehairboutique.co.za/shop`,
-          tenantId: 'instylehairboutique'
-        })
+          tenantId: 'instylehairboutique',
+        }),
       });
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      inventory: inventoryUpdate 
+    return NextResponse.json({
+      success: true,
+      inventory: inventoryUpdate,
     });
   } catch (error) {
     return NextResponse.json(
       { error: 'Inventory sync failed' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

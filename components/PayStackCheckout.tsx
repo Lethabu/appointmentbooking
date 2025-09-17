@@ -18,7 +18,7 @@ export default function PayStackCheckout() {
     }
 
     setLoading(true);
-    
+
     try {
       const response = await fetch('/api/paystack/create', {
         method: 'POST',
@@ -29,18 +29,18 @@ export default function PayStackCheckout() {
           amount: total,
           email,
           phone,
-          items: items.map(i => ({ 
-            id: i.id, 
-            name: i.name, 
+          items: items.map((i) => ({
+            id: i.id,
+            name: i.name,
             price_cents: i.price_cents,
-            quantity: i.quantity 
+            quantity: i.quantity,
           })),
           tenantId: 'ccb12b4d-ade6-467d-a614-7c9d198ddc70',
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.url) {
         // Redirect to PayStack
         window.location.href = data.url;
@@ -69,12 +69,14 @@ export default function PayStackCheckout() {
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
       />
-      <Button 
-        onClick={handleCheckout} 
+      <Button
+        onClick={handleCheckout}
         disabled={loading || total === 0}
         className="w-full bg-green-600 hover:bg-green-700"
       >
-        {loading ? 'Processing...' : `Pay R${(total / 100).toFixed(0)} with PayStack`}
+        {loading
+          ? 'Processing...'
+          : `Pay R${(total / 100).toFixed(0)} with PayStack`}
       </Button>
     </div>
   );

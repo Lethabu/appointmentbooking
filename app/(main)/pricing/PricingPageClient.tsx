@@ -2,7 +2,13 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { CheckCircle, Star } from 'lucide-react';
@@ -71,7 +77,7 @@ export default function PricingPage() {
       window.location.href = '/book-demo';
       return;
     }
-    
+
     checkout({
       tier,
       tenantId: `tenant_${Date.now()}`,
@@ -88,19 +94,21 @@ export default function PricingPage() {
             Simple, transparent pricing
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Choose the perfect plan for your salon. All plans include a 14-day free trial.
+            Choose the perfect plan for your salon. All plans include a 14-day
+            free trial.
           </p>
-          
+
           {/* Annual/Monthly Toggle */}
           <div className="flex items-center justify-center gap-4 mb-8">
-            <span className={`text-sm ${!isAnnual ? 'font-semibold' : 'text-gray-500'}`}>
+            <span
+              className={`text-sm ${!isAnnual ? 'font-semibold' : 'text-gray-500'}`}
+            >
               Monthly
             </span>
-            <Switch
-              checked={isAnnual}
-              onCheckedChange={setIsAnnual}
-            />
-            <span className={`text-sm ${isAnnual ? 'font-semibold' : 'text-gray-500'}`}>
+            <Switch checked={isAnnual} onCheckedChange={setIsAnnual} />
+            <span
+              className={`text-sm ${isAnnual ? 'font-semibold' : 'text-gray-500'}`}
+            >
               Annual
             </span>
             <Badge className="bg-green-100 text-green-800 border-green-200">
@@ -112,7 +120,7 @@ export default function PricingPage() {
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           {tiers.map((tier) => (
-            <Card 
+            <Card
               key={tier.id}
               className={`relative ${tier.popular ? 'border-purple-500 shadow-lg scale-105' : 'border-gray-200'}`}
             >
@@ -121,10 +129,12 @@ export default function PricingPage() {
                   Most Popular
                 </Badge>
               )}
-              
+
               <CardHeader className="text-center pb-8">
                 <CardTitle className="text-2xl">{tier.name}</CardTitle>
-                <CardDescription className="text-base">{tier.description}</CardDescription>
+                <CardDescription className="text-base">
+                  {tier.description}
+                </CardDescription>
                 <div className="mt-4">
                   <span className="text-4xl font-bold">
                     R{isAnnual ? tier.price.annual : tier.price.monthly}
@@ -134,15 +144,15 @@ export default function PricingPage() {
                   </span>
                 </div>
               </CardHeader>
-              
+
               <CardContent>
-                <Button 
+                <Button
                   className={`w-full mb-6 ${tier.popular ? 'bg-purple-600 hover:bg-purple-700' : ''}`}
                   onClick={() => handleCheckout(tier.id)}
                 >
                   {tier.cta}
                 </Button>
-                
+
                 <ul className="space-y-3">
                   {tier.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3">
@@ -161,15 +171,23 @@ export default function PricingPage() {
           <div className="flex items-center justify-center gap-2 mb-4">
             <div className="flex">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                <Star
+                  key={i}
+                  className="h-5 w-5 fill-yellow-400 text-yellow-400"
+                />
               ))}
             </div>
-            <span className="text-sm text-gray-600">4.9/5 from 500+ reviews</span>
+            <span className="text-sm text-gray-600">
+              4.9/5 from 500+ reviews
+            </span>
           </div>
           <p className="text-gray-600">
-            &quot;The Platform transformed our salon operations. We&apos;ve seen a 300% increase in online bookings!&quot;
+            &quot;The Platform transformed our salon operations. We&apos;ve seen
+            a 300% increase in online bookings!&quot;
           </p>
-          <p className="text-sm text-gray-500 mt-2">- Sarah M., InStyle Hair Boutique</p>
+          <p className="text-sm text-gray-500 mt-2">
+            - Sarah M., InStyle Hair Boutique
+          </p>
         </div>
       </div>
     </div>

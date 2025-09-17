@@ -1,1 +1,3 @@
-export function InstyleGallery() { return null; }
+export function InstyleGallery() {
+  return null;
+}

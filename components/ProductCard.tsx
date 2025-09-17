@@ -53,7 +53,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <CardContent className="p-4">
         <CardTitle className="text-lg mb-2">{product.name}</CardTitle>
         <p className="text-gray-600 text-sm mb-4">{product.description}</p>
-        
+
         <div className="flex items-center justify-between mb-4">
           <span className="text-2xl font-bold text-purple-600">
             {formatPrice(product.price_cents)}
@@ -63,12 +63,16 @@ export default function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
 
-        <Button 
+        <Button
           onClick={handleAddToCart}
           disabled={isAdding || product.inventory === 0}
           className="w-full bg-purple-600 hover:bg-purple-700"
         >
-          {isAdding ? 'Adding...' : product.inventory === 0 ? 'Out of Stock' : 'Add to Cart'}
+          {isAdding
+            ? 'Adding...'
+            : product.inventory === 0
+              ? 'Out of Stock'
+              : 'Add to Cart'}
         </Button>
       </CardContent>
     </Card>

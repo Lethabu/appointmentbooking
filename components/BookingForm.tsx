@@ -8,7 +8,11 @@ interface BookingFormProps {
   salonId: string; // Add salonId prop
 }
 
-const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit, salonId }) => {
+const BookingForm: React.FC<BookingFormProps> = ({
+  selectedDate,
+  onBookingSubmit,
+  salonId,
+}) => {
   const [clientName, setClientName] = useState('');
   const [services, setServices] = useState<Service[]>([]); // State to store fetched services
   const [selectedServiceId, setSelectedServiceId] = useState<string>('');
@@ -16,7 +20,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
   const [clientPhone, setClientPhone] = useState('');
   const [recurrenceRule, setRecurrenceRule] = useState<string>('none'); // 'none', 'daily', 'weekly', 'monthly'
   const [recurrenceEndDate, setRecurrenceEndDate] = useState<string>('');
-  const [availableSlots, setAvailableSlots] = useState<{ time: string; staff_id: string }[]>([]); // State to store available slots with staff_id
+  const [availableSlots, setAvailableSlots] = useState<
+    { time: string; staff_id: string }[]
+  >([]); // State to store available slots with staff_id
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -32,7 +38,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
           setSelectedServiceId(data[0].id); // Select the first service by default
         }
       } catch (error) {
-        console.error("Failed to fetch services:", error);
+        console.error('Failed to fetch services:', error);
         // Handle error (e.g., display a message to the user)
       }
     };
@@ -48,19 +54,29 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
       }
       try {
         const formattedDate = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
-        const response = await fetch(`/api/availability?salon_id=${salonId}&service_id=${selectedServiceId}&date=${formattedDate}`);
+        const response = await fetch(
+          `/api/availability?salon_id=${salonId}&service_id=${selectedServiceId}&date=${formattedDate}`,
+        );
         if (!response.ok) {
-          throw new Error(`Error fetching available slots: ${response.statusText}`);
+          throw new Error(
+            `Error fetching available slots: ${response.statusText}`,
+          );
         }
-        const data: { available_slots: { time: string; staff_id: string }[] } = await response.json();
+        const data: { available_slots: { time: string; staff_id: string }[] } =
+          await response.json();
         setAvailableSlots(data.available_slots);
         if (data.available_slots.length > 0) {
-          setBookingTime(new Date(data.available_slots[0].time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+          setBookingTime(
+            new Date(data.available_slots[0].time).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+          );
         } else {
           setBookingTime('');
         }
       } catch (error) {
-        console.error("Failed to fetch available slots:", error);
+        console.error('Failed to fetch available slots:', error);
         setAvailableSlots([]);
         setBookingTime('');
       }
@@ -75,13 +91,19 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
       alert('Please select a date, service, and time.');
       return;
     }
-    const service = services.find(s => s.id === selectedServiceId);
+    const service = services.find((s) => s.id === selectedServiceId);
     if (!service) {
       alert('Selected service not found.');
       return;
     }
 
-    const selectedSlot = availableSlots.find(slot => new Date(slot.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) === bookingTime);
+    const selectedSlot = availableSlots.find(
+      (slot) =>
+        new Date(slot.time).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }) === bookingTime,
+    );
     if (!selectedSlot) {
       alert('Selected time slot is invalid.');
       return;
@@ -133,94 +155,132 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
       setRecurrenceRule('none');
       setRecurrenceEndDate('');
     } catch (error) {
-      console.error("Booking submission failed:", error);
+      console.error('Booking submission failed:', error);
       // Handle error appropriately, e.g., display an error message to the user.
     }
   };
 
   const handleSimulateWhatsAppReminder = () => {
     if (!clientPhone) {
-      alert("Please enter a client phone number to simulate WhatsApp reminder.");
+      alert(
+        'Please enter a client phone number to simulate WhatsApp reminder.',
+      );
       return;
     }
-    alert(`(Simulated) WhatsApp reminder would be sent to ${clientPhone} for this booking if it were confirmed.`);
+    alert(
+      `(Simulated) WhatsApp reminder would be sent to ${clientPhone} for this booking if it were confirmed.`,
+    );
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-6 rounded-lg shadow-lg space-y-4"
+    >
       <h3 className="text-xl font-semibold text-neutral-700 mb-2">
-        {selectedDate ? `Book for ${selectedDate.toLocaleDateString()}` : 'Select a date to book'}
+        {selectedDate
+          ? `Book for ${selectedDate.toLocaleDateString()}`
+          : 'Select a date to book'}
       </h3>
-     
-      
-        <label htmlFor="clientName" className="block text-sm font-medium text-neutral-700">Client Name</label>
-        <input
-          type="text"
-          id="clientName"
-          value={clientName}
-          onChange={(e) => setClientName(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-neutral-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-          required
-          disabled={!selectedDate}
-        />
-      
 
-       
-        <label htmlFor="clientPhone" className="block text-sm font-medium text-neutral-700">Client Phone (for reminders)</label>
-        <input
-          type="tel"
-          id="clientPhone"
-          value={clientPhone}
-          onChange={(e) => setClientPhone(e.target.value)}
-          placeholder="e.g., +27821234567"
-          className="mt-1 block w-full px-3 py-2 border border-neutral-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-          disabled={!selectedDate}
-        />
-      
+      <label
+        htmlFor="clientName"
+        className="block text-sm font-medium text-neutral-700"
+      >
+        Client Name
+      </label>
+      <input
+        type="text"
+        id="clientName"
+        value={clientName}
+        onChange={(e) => setClientName(e.target.value)}
+        className="mt-1 block w-full px-3 py-2 border border-neutral-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+        required
+        disabled={!selectedDate}
+      />
 
-      
-        <label htmlFor="service" className="block text-sm font-medium text-neutral-700">Service</label>
-        <select
-          id="service"
-          value={selectedServiceId}
-          onChange={(e) => setSelectedServiceId(e.target.value)}
-          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white"
-          required
-          disabled={!selectedDate || services.length === 0}
-        >
-          {services.length > 0 ? (
-            services.map(service => (
-              <option key={service.id} value={service.id}>{service.name} - {service.duration_minutes}min (R{service.price})</option>
-            ))
-          ) : (
-            <option value="">Loading services...</option>
-          )}
-        </select>
-      
+      <label
+        htmlFor="clientPhone"
+        className="block text-sm font-medium text-neutral-700"
+      >
+        Client Phone (for reminders)
+      </label>
+      <input
+        type="tel"
+        id="clientPhone"
+        value={clientPhone}
+        onChange={(e) => setClientPhone(e.target.value)}
+        placeholder="e.g., +27821234567"
+        className="mt-1 block w-full px-3 py-2 border border-neutral-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+        disabled={!selectedDate}
+      />
 
-      
-        <label htmlFor="bookingTime" className="block text-sm font-medium text-neutral-700">Time</label>
-        <select
-          id="bookingTime"
-          value={bookingTime}
-          onChange={(e) => setBookingTime(e.target.value)}
-          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white"
-          required
-          disabled={!selectedDate || availableSlots.length === 0}
-        >
-          {availableSlots.length > 0 ? (
-            availableSlots.map(slot => (
-              <option key={slot.time + slot.staff_id} value={new Date(slot.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}>
-                {new Date(slot.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} (Staff: {slot.staff_id})
-              </option>
-            ))
-          ) : (
-            <option value="">No slots available</option>
-          )}
-        </select>
-      
+      <label
+        htmlFor="service"
+        className="block text-sm font-medium text-neutral-700"
+      >
+        Service
+      </label>
+      <select
+        id="service"
+        value={selectedServiceId}
+        onChange={(e) => setSelectedServiceId(e.target.value)}
+        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white"
+        required
+        disabled={!selectedDate || services.length === 0}
+      >
+        {services.length > 0 ? (
+          services.map((service) => (
+            <option key={service.id} value={service.id}>
+              {service.name} - {service.duration_minutes}min (R{service.price})
+            </option>
+          ))
+        ) : (
+          <option value="">Loading services...</option>
+        )}
+      </select>
 
-      <label htmlFor="recurrenceRule" className="block text-sm font-medium text-neutral-700">Recurrence</label>
+      <label
+        htmlFor="bookingTime"
+        className="block text-sm font-medium text-neutral-700"
+      >
+        Time
+      </label>
+      <select
+        id="bookingTime"
+        value={bookingTime}
+        onChange={(e) => setBookingTime(e.target.value)}
+        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white"
+        required
+        disabled={!selectedDate || availableSlots.length === 0}
+      >
+        {availableSlots.length > 0 ? (
+          availableSlots.map((slot) => (
+            <option
+              key={slot.time + slot.staff_id}
+              value={new Date(slot.time).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            >
+              {new Date(slot.time).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}{' '}
+              (Staff: {slot.staff_id})
+            </option>
+          ))
+        ) : (
+          <option value="">No slots available</option>
+        )}
+      </select>
+
+      <label
+        htmlFor="recurrenceRule"
+        className="block text-sm font-medium text-neutral-700"
+      >
+        Recurrence
+      </label>
       <select
         id="recurrenceRule"
         value={recurrenceRule}
@@ -236,7 +296,12 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
 
       {recurrenceRule !== 'none' && (
         <div className="mt-4">
-          <label htmlFor="recurrenceEndDate" className="block text-sm font-medium text-neutral-700">Recurrence End Date</label>
+          <label
+            htmlFor="recurrenceEndDate"
+            className="block text-sm font-medium text-neutral-700"
+          >
+            Recurrence End Date
+          </label>
           <input
             type="date"
             id="recurrenceEndDate"
@@ -249,20 +314,21 @@ const BookingForm: React.FC<BookingFormProps> = ({ selectedDate, onBookingSubmit
       )}
 
       <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0 pt-2 ">
-        <button className="w-full sm:w-auto flex-grow justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-light disabled:opacity-50"
-            type="submit"
-            disabled={!selectedDate || availableSlots.length === 0}
+        <button
+          className="w-full sm:w-auto flex-grow justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-light disabled:opacity-50"
+          type="submit"
+          disabled={!selectedDate || availableSlots.length === 0}
         >
-            Add Booking
+          Add Booking
         </button>
         <button
-            type="button"
-            onClick={handleSimulateWhatsAppReminder}
-            disabled={!selectedDate || !clientPhone}
-            className="w-full sm:w-auto flex-grow justify-center py-2 px-4 border border-secondary text-secondary hover:bg-secondary hover:text-white rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-light disabled:opacity-50 flex items-center space-x-2"
+          type="button"
+          onClick={handleSimulateWhatsAppReminder}
+          disabled={!selectedDate || !clientPhone}
+          className="w-full sm:w-auto flex-grow justify-center py-2 px-4 border border-secondary text-secondary hover:bg-secondary hover:text-white rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-light disabled:opacity-50 flex items-center space-x-2"
         >
-            <IconChat />
-            <span>Simulate Reminder</span>
+          <IconChat />
+          <span>Simulate Reminder</span>
         </button>
       </div>
     </form>

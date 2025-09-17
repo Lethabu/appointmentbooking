@@ -8,17 +8,36 @@ export default function InstyleLandingPage() {
       <header>
         <div className="container header-container">
           <div className="logo">
-            <Image src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjOEI1Q0Y2Ii8+CjxwYXRoIGQ9Ik0xNSAxNUwzNSBMMjUgMzVaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" alt="Instyle Hair Boutique" width={50} height={50} />
+            <Image
+              src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjOEI1Q0Y2Ii8+CjxwYXRoIGQ9Ik0xNSAxNUwzNSBMMjUgMzVaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K"
+              alt="Instyle Hair Boutique"
+              width={50}
+              height={50}
+            />
             Instyle Hair Boutique
           </div>
           <nav>
             <ul>
-              <li><Link href="#home">Home</Link></li>
-              <li><Link href="#services">Services</Link></li>
-              <li><Link href="#products">Products</Link></li>
-              <li><Link href="#gallery">Gallery</Link></li>
-              <li><Link href="#testimonials">Testimonials</Link></li>
-              <li><Link href="/book" className="nav-cta">Book Now</Link></li>
+              <li>
+                <Link href="#home">Home</Link>
+              </li>
+              <li>
+                <Link href="#services">Services</Link>
+              </li>
+              <li>
+                <Link href="#products">Products</Link>
+              </li>
+              <li>
+                <Link href="#gallery">Gallery</Link>
+              </li>
+              <li>
+                <Link href="#testimonials">Testimonials</Link>
+              </li>
+              <li>
+                <Link href="/book" className="nav-cta">
+                  Book Now
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>
@@ -28,10 +47,17 @@ export default function InstyleLandingPage() {
       <section className="hero" id="home">
         <div className="container">
           <h1>Transform Your Look With Premium Hair Services</h1>
-          <p>Experience the finest hair treatments, extensions, and styling from South Africa's leading hair boutique</p>
+          <p>
+            Experience the finest hair treatments, extensions, and styling from
+            South Africa's leading hair boutique
+          </p>
           <div className="hero-buttons">
-            <Link href="/book" className="btn btn-primary">Book Appointment</Link>
-            <Link href="#products" className="btn btn-secondary">Shop Products</Link>
+            <Link href="/book" className="btn btn-primary">
+              Book Appointment
+            </Link>
+            <Link href="#products" className="btn btn-secondary">
+              Shop Products
+            </Link>
           </div>
         </div>
       </section>
@@ -41,34 +67,61 @@ export default function InstyleLandingPage() {
         <div className="container">
           <div className="section-title">
             <h2>Our Premium Services</h2>
-            <p>Professional hair treatments and styling services tailored to your unique needs</p>
+            <p>
+              Professional hair treatments and styling services tailored to your
+              unique needs
+            </p>
           </div>
           <div className="services-grid">
             <div className="service-card">
-              <Image src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Hair Extensions" className="service-img" width={500} height={300} />
+              <Image
+                src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Hair Extensions"
+                className="service-img"
+                width={500}
+                height={300}
+              />
               <div className="service-content">
                 <h3>Premium Hair Extensions</h3>
                 <p>High-quality human hair extensions for length and volume.</p>
                 <div className="service-price">From R1,200</div>
-                <Link href="/book" className="add-to-cart">Book Now</Link>
+                <Link href="/book" className="add-to-cart">
+                  Book Now
+                </Link>
               </div>
             </div>
             <div className="service-card">
-              <Image src="https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Hair Coloring" className="service-img" width={500} height={300} />
+              <Image
+                src="https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Hair Coloring"
+                className="service-img"
+                width={500}
+                height={300}
+              />
               <div className="service-content">
                 <h3>Professional Coloring</h3>
                 <p>Balayage, highlights, ombre and full color services.</p>
                 <div className="service-price">From R850</div>
-                <Link href="/book" className="add-to-cart">Book Now</Link>
+                <Link href="/book" className="add-to-cart">
+                  Book Now
+                </Link>
               </div>
             </div>
             <div className="service-card">
-              <Image src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Hair Treatment" className="service-img" width={500} height={300} />
+              <Image
+                src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Hair Treatment"
+                className="service-img"
+                width={500}
+                height={300}
+              />
               <div className="service-content">
                 <h3>Hair Treatments</h3>
                 <p>Restorative treatments for damaged and dry hair.</p>
                 <div className="service-price">From R600</div>
-                <Link href="/book" className="add-to-cart">Book Now</Link>
+                <Link href="/book" className="add-to-cart">
+                  Book Now
+                </Link>
               </div>
             </div>
           </div>
@@ -80,11 +133,20 @@ export default function InstyleLandingPage() {
         <div className="container">
           <div className="section-title">
             <h2>Premium Hair Products</h2>
-            <p>Shop our selection of professional hair care products and accessories</p>
+            <p>
+              Shop our selection of professional hair care products and
+              accessories
+            </p>
           </div>
           <div className="products-grid">
             <div className="product-card">
-              <Image src="https://images.unsplash.com/photo-1595342108313-5b2c4a4b7c36?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Hair Product" className="product-img" width={500} height={500} />
+              <Image
+                src="https://images.unsplash.com/photo-1595342108313-5b2c4a4b7c36?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Hair Product"
+                className="product-img"
+                width={500}
+                height={500}
+              />
               <div className="product-content">
                 <h3>Luxury Hair Serum</h3>
                 <div className="product-price">R350</div>
@@ -92,7 +154,13 @@ export default function InstyleLandingPage() {
               </div>
             </div>
             <div className="product-card">
-              <Image src="https://images.unsplash.com/photo-1595425970377-2f8ded7c7b19?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Hair Product" className="product-img" width={500} height={500} />
+              <Image
+                src="https://images.unsplash.com/photo-1595425970377-2f8ded7c7b19?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Hair Product"
+                className="product-img"
+                width={500}
+                height={500}
+              />
               <div className="product-content">
                 <h3>Hydrating Shampoo</h3>
                 <div className="product-price">R280</div>
@@ -100,7 +168,13 @@ export default function InstyleLandingPage() {
               </div>
             </div>
             <div className="product-card">
-              <Image src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Hair Product" className="product-img" width={500} height={500} />
+              <Image
+                src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Hair Product"
+                className="product-img"
+                width={500}
+                height={500}
+              />
               <div className="product-content">
                 <h3>Repair Conditioner</h3>
                 <div className="product-price">R300</div>
@@ -108,7 +182,13 @@ export default function InstyleLandingPage() {
               </div>
             </div>
             <div className="product-card">
-              <Image src="https://images.unsplash.com/photo-1634302237642-9c0e1cf175e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Hair Product" className="product-img" width={500} height={500} />
+              <Image
+                src="https://images.unsplash.com/photo-1634302237642-9c0e1cf175e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Hair Product"
+                className="product-img"
+                width={500}
+                height={500}
+              />
               <div className="product-content">
                 <h3>Heat Protectant Spray</h3>
                 <div className="product-price">R250</div>
@@ -124,13 +204,25 @@ export default function InstyleLandingPage() {
         <div className="container">
           <div className="section-title">
             <h2>What Our Clients Say</h2>
-            <p>Don't just take our word for it - hear from our satisfied customers</p>
+            <p>
+              Don't just take our word for it - hear from our satisfied
+              customers
+            </p>
           </div>
           <div className="testimonials">
             <div className="testimonial">
-              <p className="testimonial-text">"The best hair salon experience I've ever had! My extensions look so natural and the service was exceptional."</p>
+              <p className="testimonial-text">
+                "The best hair salon experience I've ever had! My extensions
+                look so natural and the service was exceptional."
+              </p>
               <div className="testimonial-author">
-                <Image src="https://randomuser.me/api/portraits/women/65.jpg" alt="Client" className="author-img" width={50} height={50} />
+                <Image
+                  src="https://randomuser.me/api/portraits/women/65.jpg"
+                  alt="Client"
+                  className="author-img"
+                  width={50}
+                  height={50}
+                />
                 <div className="author-info">
                   <h4>Sarah M.</h4>
                   <p>Regular Client</p>
@@ -138,9 +230,18 @@ export default function InstyleLandingPage() {
               </div>
             </div>
             <div className="testimonial">
-              <p className="testimonial-text">"I've been coming to Instyle for over a year now and I'm always impressed with their attention to detail and professionalism."</p>
+              <p className="testimonial-text">
+                "I've been coming to Instyle for over a year now and I'm always
+                impressed with their attention to detail and professionalism."
+              </p>
               <div className="testimonial-author">
-                <Image src="https://randomuser.me/api/portraits/women/32.jpg" alt="Client" className="author-img" width={50} height={50} />
+                <Image
+                  src="https://randomuser.me/api/portraits/women/32.jpg"
+                  alt="Client"
+                  className="author-img"
+                  width={50}
+                  height={50}
+                />
                 <div className="author-info">
                   <h4>Zoe K.</h4>
                   <p>Regular Client</p>
@@ -148,11 +249,20 @@ export default function InstyleLandingPage() {
               </div>
             </div>
             <div className="testimonial">
-              <p className="testimonial-text">"The coloring service is exceptional! They really understand how to create the perfect shade for my skin tone."</p>
+              <p className="testimonial-text">
+                "The coloring service is exceptional! They really understand how
+                to create the perfect shade for my skin tone."
+              </p>
               <div className="testimonial-author">
-                <Image src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" className="author-img" width={50} height={50} />
-                <div className="author-info">.
-                  <h4>Amanda T.</h4>
+                <Image
+                  src="https://randomuser.me/api/portraits/women/44.jpg"
+                  alt="Client"
+                  className="author-img"
+                  width={50}
+                  height={50}
+                />
+                <div className="author-info">
+                  .<h4>Amanda T.</h4>
                   <p>New Client</p>
                 </div>
               </div>
@@ -166,29 +276,52 @@ export default function InstyleLandingPage() {
         <div className="container">
           <div className="section-title">
             <h2>Follow Us on Social Media</h2>
-            <p>Check out our latest work and stay updated with promotions and tips</p>
+            <p>
+              Check out our latest work and stay updated with promotions and
+              tips
+            </p>
           </div>
           <div className="social-feed">
             <div className="social-post">
-              <Image src="https://images.unsplash.com/photo-1522338140262-f46f5913618a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Social Post" width={500} height={500} />
+              <Image
+                src="https://images.unsplash.com/photo-1522338140262-f46f5913618a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Social Post"
+                width={500}
+                height={500}
+              />
               <div className="social-overlay">
                 <p>New hairstyle inspiration</p>
               </div>
             </div>
             <div className="social-post">
-              <Image src="https://images.unsplash.com/photo-1559599076-9c61cc8a2be5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Social Post" width={500} height={500} />
+              <Image
+                src="https://images.unsplash.com/photo-1559599076-9c61cc8a2be5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Social Post"
+                width={500}
+                height={500}
+              />
               <div className="social-overlay">
                 <p>Client transformation</p>
               </div>
             </div>
             <div className="social-post">
-              <Image src="https://images.unsplash.com/photo-1598703104882-3850f6cffff9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Social Post" width={500} height={500} />
+              <Image
+                src="https://images.unsplash.com/photo-1598703104882-3850f6cffff9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Social Post"
+                width={500}
+                height={500}
+              />
               <div className="social-overlay">
                 <p>New product arrival</p>
               </div>
             </div>
             <div className="social-post">
-              <Image src="https://images.unsplash.com/photo-1597241728400-294ec0c8b83a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Social Post" width={500} height={500} />
+              <Image
+                src="https://images.unsplash.com/photo-1597241728400-294ec0c8b83a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Social Post"
+                width={500}
+                height={500}
+              />
               <div className="social-overlay">
                 <p>Behind the scenes</p>
               </div>
@@ -237,12 +370,18 @@ export default function InstyleLandingPage() {
                   <label htmlFor="message">Additional Notes</label>
                   <textarea id="message"></textarea>
                 </div>
-                <button type="submit" className="submit-btn">Book Appointment</button>
+                <button type="submit" className="submit-btn">
+                  Book Appointment
+                </button>
               </form>
             </div>
             <div>
               <h3>Why Choose Instyle?</h3>
-              <p>Our team of experienced stylists is dedicated to providing you with the highest quality service and results that exceed your expectations.</p>
+              <p>
+                Our team of experienced stylists is dedicated to providing you
+                with the highest quality service and results that exceed your
+                expectations.
+              </p>
               <ul>
                 <li>Premium quality products</li>
                 <li>Expert stylists with years of experience</li>
@@ -263,38 +402,74 @@ export default function InstyleLandingPage() {
               <h3>Instyle Hair Boutique</h3>
               <p>Premium hair services and products in South Africa.</p>
               <div className="social-icons">
-                <Link href="#" className="social-icon"><i className="fab fa-facebook-f"></i></Link>
-                <Link href="#" className="social-icon"><i className="fab fa-instagram"></i></Link>
-                <Link href="#" className="social-icon"><i className="fab fa-tiktok"></i></Link>
-                <Link href="#" className="social-icon"><i className="fab fa-twitter"></i></Link>
+                <Link href="#" className="social-icon">
+                  <i className="fab fa-facebook-f"></i>
+                </Link>
+                <Link href="#" className="social-icon">
+                  <i className="fab fa-instagram"></i>
+                </Link>
+                <Link href="#" className="social-icon">
+                  <i className="fab fa-tiktok"></i>
+                </Link>
+                <Link href="#" className="social-icon">
+                  <i className="fab fa-twitter"></i>
+                </Link>
               </div>
             </div>
             <div className="footer-col">
               <h3>Quick Links</h3>
               <ul>
-                <li><Link href="#home">Home</Link></li>
-                <li><Link href="#services">Services</Link></li>
-                <li><Link href="#products">Products</Link></li>
-                <li><Link href="#gallery">Gallery</Link></li>
-                <li><Link href="#testimonials">Testimonials</Link></li>
+                <li>
+                  <Link href="#home">Home</Link>
+                </li>
+                <li>
+                  <Link href="#services">Services</Link>
+                </li>
+                <li>
+                  <Link href="#products">Products</Link>
+                </li>
+                <li>
+                  <Link href="#gallery">Gallery</Link>
+                </li>
+                <li>
+                  <Link href="#testimonials">Testimonials</Link>
+                </li>
               </ul>
             </div>
             <div className="footer-col">
               <h3>Services</h3>
               <ul>
-                <li><Link href="#">Hair Extensions</Link></li>
-                <li><Link href="#">Hair Coloring</Link></li>
-                <li><Link href="#">Hair Treatments</Link></li>
-                <li><Link href="#">Hair Cutting</Link></li>
-                <li><Link href="#">Styling</Link></li>
+                <li>
+                  <Link href="#">Hair Extensions</Link>
+                </li>
+                <li>
+                  <Link href="#">Hair Coloring</Link>
+                </li>
+                <li>
+                  <Link href="#">Hair Treatments</Link>
+                </li>
+                <li>
+                  <Link href="#">Hair Cutting</Link>
+                </li>
+                <li>
+                  <Link href="#">Styling</Link>
+                </li>
               </ul>
             </div>
             <div className="footer-col">
               <h3>Contact Us</h3>
               <ul>
-                <li><i className="fas fa-map-marker-alt"></i> 123 Beauty Street, Johannesburg</li>
-                <li><i className="fas fa-phone"></i> +27 11 123 4567</li>
-                <li><i className="fas fa-envelope"></i> info@instylehairboutique.co.za</li>
+                <li>
+                  <i className="fas fa-map-marker-alt"></i> 123 Beauty Street,
+                  Johannesburg
+                </li>
+                <li>
+                  <i className="fas fa-phone"></i> +27 11 123 4567
+                </li>
+                <li>
+                  <i className="fas fa-envelope"></i>{' '}
+                  info@instylehairboutique.co.za
+                </li>
               </ul>
             </div>
           </div>

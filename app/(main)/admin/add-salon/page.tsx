@@ -12,10 +12,10 @@ export default function AddSalonPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createTenant({ 
-        name, 
+      await createTenant({
+        name,
         slug: slug || name.toLowerCase().replace(/\s+/g, '-'),
-        paystackKey: 'pk_test_default' 
+        paystackKey: 'pk_test_default',
       });
       alert('Salon created successfully!');
       setName('');
