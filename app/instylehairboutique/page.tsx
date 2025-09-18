@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AIChat from './ai-chat';
 import { inStyleBrand } from './config';
+import ChatWindow from '@/components/ChatWindow';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://your-platform-domain.com'),
@@ -165,6 +166,9 @@ export default function InStylePage() {
           </p>
         </div>
       </footer>
+      
+      {/* Chat Window */}
+      <ChatWindow tenantId="instyle" />
     </div>
   );
 }

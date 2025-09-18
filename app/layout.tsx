@@ -25,8 +25,10 @@ async function getTenantFromHeaders(): Promise<string | null> {
     return xTenant;
   }
 
-  // Check hostname
-  if (host.includes('instylehairboutique')) {
+  // Check hostname for tenant domains
+  if (host.includes('instylehairboutique.co.za') || 
+      host.includes('instylehairboutique') ||
+      host === 'www.instylehairboutique.co.za') {
     return 'instyle';
   }
 

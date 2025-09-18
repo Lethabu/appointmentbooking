@@ -21,10 +21,17 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Redirect instyle subdomain to main domain path
-  if (request.nextUrl.hostname === 'instyle.localhost' || 
-      request.nextUrl.hostname === 'instylehairboutique.co.za') {
-    return NextResponse.rewrite(new URL(`/instylehairboutique${pathname}`, request.url));
+  // Handle tenant domains
+  const hostname = request.nextUrl.hostname;
+  
+  if (hostname === 'instylehairboutique.co.za' || 
+      hostname === 'www.instylehairboutique.co.za' ||
+      hostname === 'instyle.localhost') {
+    
+    // Set tenant header for proper detection
+    const response = NextResponse.rewrite(new URL(`/instylehairboutique${pathname}`, request.url));
+    response.headers.set('x-tenant-id', 'instyle');
+    return response;
   }
 
   return NextResponse.next();
