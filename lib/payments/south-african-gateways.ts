@@ -202,3 +202,19 @@ export class MultiGatewayProcessor {
     return 'paystack';
   }
 }
+
+// Export convenience function for backward compatibility
+export const createPaystackPayment = async (amount: number, email: string, reference: string) => {
+  const gateway = new PaystackZARGateway({ 
+    secretKey: process.env.PAYSTACK_SECRET_KEY!, 
+    testMode: process.env.NODE_ENV !== 'production' 
+  });
+  
+  return gateway.initializeTransaction({
+    email,
+    amount: amount * 100,
+    reference,
+    callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment/callback`,
+    metadata: {}
+  });
+};

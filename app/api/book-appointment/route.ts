@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     } = body;
 
     const supabase = createServerSupabaseClient();
-    await setTenantContext(tenantId);
+    await setTenantContext(supabase, tenantId);
 
     // Get service details
     const { data: service, error: serviceError } = await supabase
@@ -90,7 +90,11 @@ export async function POST(request: NextRequest) {
       callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/booking-success?ref=${appointment.id}`,
     };
 
-    const paymentResponse = await createPaystackPayment(paymentData);
+    const paymentResponse = await createPaystackPayment(
+      paymentData.amount,
+      paymentData.email,
+      paymentData.reference
+    );
 
     if (paymentResponse.status) {
       // Trigger Typebot booking confirmation flow

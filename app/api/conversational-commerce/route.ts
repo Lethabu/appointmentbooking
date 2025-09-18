@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
         } else {
           // Update existing cart
           const existingItems = cart.items || [];
-          const existingItemIndex = existingItems.findIndex(item => item.product_id === productId);
+          const existingItemIndex = existingItems.findIndex((item: any) => item.product_id === productId);
           
           if (existingItemIndex >= 0) {
             existingItems[existingItemIndex].quantity += quantity;
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
             existingItems.push(cartItem);
           }
 
-          const totalAmount = existingItems.reduce((sum, item) => sum + item.total, 0);
+          const totalAmount = existingItems.reduce((sum: number, item: any) => sum + item.total, 0);
 
           await supabase
             .from('carts')
@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Determine upsell products based on purchase
-        const hasWig = order.order_items.some(item => 
+        const hasWig = order.order_items.some((item: any) => 
           item.product_id && item.product_id.includes('wig')
         );
 

@@ -90,7 +90,7 @@ const services = [
 ];
 
 export default function EnhancedShopPage() {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState<any[]>([]);
   const whatsappNumber = '+27123456789';
   
   const orderViaWhatsApp = (product: any) => {
@@ -175,6 +175,7 @@ export default function EnhancedShopPage() {
                   {featuredProducts.map((product) => (
                     <Card key={product.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-md">
                       <div className="relative overflow-hidden rounded-t-lg">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img 
                           src={product.image} 
                           alt={product.name}

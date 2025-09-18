@@ -14,19 +14,19 @@ export async function GET(request: NextRequest) {
 
     // Additional metrics
     const today = new Date().toISOString().split('T')[0];
-    const { data: todayOrders } = await analytics.supabase
+    const { data: todayOrders } = await analytics.getSupabaseClient()
       .from('orders')
       .select('*')
       .eq('tenant_id', tenantId)
       .gte('created_at', today);
 
-    const { data: abandonedCarts } = await analytics.supabase
+    const { data: abandonedCarts } = await analytics.getSupabaseClient()
       .from('carts')
       .select('*')
       .eq('tenant_id', tenantId)
       .eq('status', 'abandoned');
 
-    const { data: socialClicks } = await analytics.supabase
+    const { data: socialClicks } = await analytics.getSupabaseClient()
       .from('customer_touchpoints')
       .select('*')
       .eq('tenant_id', tenantId)

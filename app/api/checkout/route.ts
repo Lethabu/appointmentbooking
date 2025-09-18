@@ -103,8 +103,7 @@ export async function POST(request: NextRequest) {
         customerEmail: customerData.email
       });
     } else if (selectedGateway === 'payfast') {
-      const payfast = processor.gateways.get('payfast');
-      paymentResult = payfast.createPayment({
+      paymentResult = await processor.processPayment('payfast', {
         ...paymentParams,
         itemName: `InStyle Hair Boutique Order #${order.id}`,
         itemDescription: `${items.length} items`,
@@ -158,7 +157,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Checkout error:', error);
     return NextResponse.json(
-      { error: 'Checkout failed', details: error.message },
+      { error: 'Checkout failed', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

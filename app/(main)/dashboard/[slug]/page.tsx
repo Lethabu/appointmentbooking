@@ -16,7 +16,7 @@ export default async function DashboardPage({ params }: any) {
     notFound();
   }
 
-  await setTenantContext(tenant.id);
+  await setTenantContext(supabase, tenant.id);
 
   return (
     <div className="min-h-screen bg-gray-50">

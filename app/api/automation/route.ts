@@ -41,7 +41,7 @@ async function syncCatalog(tenantId: string, supabase: any) {
     .eq('tenant_id', tenantId)
     .eq('is_active', true);
 
-  const catalogItems = products?.map(p => ({
+  const catalogItems = products?.map((p: any) => ({
     retailer_id: p.sku || p.id,
     name: p.name,
     price: (p.price / 100).toString(),
@@ -117,7 +117,7 @@ async function generateWeeklyReport(tenantId: string, supabase: any) {
   ]);
 
   return {
-    revenue: orders.data?.reduce((sum, o) => sum + o.total, 0) || 0,
+    revenue: orders.data?.reduce((sum: number, o: any) => sum + o.total, 0) || 0,
     orders: orders.data?.length || 0,
     bookings: bookings.data?.length || 0,
     whatsapp_sessions: sessions.data?.length || 0

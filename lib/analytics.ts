@@ -4,6 +4,10 @@ export class InstyleAnalytics {
   private supabase = createClient();
   private tenantId = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70';
 
+  getSupabaseClient() {
+    return this.supabase;
+  }
+
   async getRealtimeStats() {
     const [revenue, orders, bookings, sessions] = await Promise.all([
       this.getTotalRevenue(),
@@ -81,18 +85,19 @@ export class InstyleAnalytics {
       .eq('products.tenant_id', this.tenantId)
       .limit(limit);
 
-    const productSales = data?.reduce((acc, item) => {
+    const productSales = data?.reduce((acc: Record<string, any>, item: any) => {
       const productId = item.product_id;
       if (!acc[productId]) {
-        acc[productId] = { name: item.products?.name, quantity: 0 };
+        acc[productId] = { name: item.products?.name || 'Unknown', quantity: 0 };
       }
       acc[productId].quantity += item.quantity;
       return acc;
-    }, {});
+    }, {} as Record<string, any>);
 
     return Object.entries(productSales || {})
       .sort(([,a], [,b]) => (b as any).quantity - (a as any).quantity)
-      .slice(0, limit);
+      .slice(0, limit)
+      .map(([id, data]) => ({ id, ...(data as any) }));
   }
 
   async getCustomerJourney(customerPhone: string) {

@@ -24,7 +24,13 @@
     "setup": "npm install && npm run db:migrate",
     "onboard": "node scripts/onboard.js",
     "brand-gate": "node scripts/brand-gate.js",
-    "analyze": "cross-env ANALYZE=true npm run build"
+    "analyze": "cross-env ANALYZE=true npm run build",
+    "health-check": "node scripts/health-check.js",
+    "security-check": "npm audit --audit-level=high",
+    "pre-deploy": "npm run lint && npm run build && npm run security-check",
+    "pre-deploy-check": "./scripts/pre-deploy-check.sh",
+    "type-check": "npx tsc --noEmit --skipLibCheck",
+    "lint-fix": "next lint --fix"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
