@@ -44,18 +44,17 @@ const services = [
 
 export default function InStylePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50" style={{minHeight: '100vh', background: 'linear-gradient(to bottom right, #faf5ff, #fffbeb)'}}>
       {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-.between">
+      <header className="bg-white shadow-sm" style={{backgroundColor: 'white', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'}}>        <div className="max-w-7xl mx-auto px-4 py-6" style={{maxWidth: '80rem', margin: '0 auto', padding: '1.5rem 1rem'}}>
+          <div className="flex items-center justify-between" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
             <div>
-              <h1 className="text-3xl font-bold text-purple-600">
+              <h1 className="text-3xl font-bold text-purple-600" style={{fontSize: '1.875rem', fontWeight: 'bold', color: '#9333ea'}}>
                 InStyle Hair Boutique
               </h1>
-              <p className="text-gray-600">Premium Hair Services</p>
+              <p className="text-gray-600" style={{color: '#4b5563'}}>Premium Hair Services</p>
             </div>
-            <Button asChild className="bg-purple-600 hover:bg-purple-700">
+            <Button asChild className="bg-purple-600 hover:bg-purple-700" style={{backgroundColor: '#9333ea', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.375rem', textDecoration: 'none', display: 'inline-block'}}>
               <Link href="/instylehairboutique/book">Book Now</Link>
             </Button>
           </div>
