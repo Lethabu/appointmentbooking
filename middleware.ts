@@ -1,46 +1,38 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export function middleware(req: NextRequest) {
-  const hostname = req.headers.get('host') || '';
-  const { pathname } = req.nextUrl;
-  
-  console.log(`[Middleware] Processing: ${hostname}${pathname}`);
-  
-  // Skip static files
-  if (pathname.startsWith('/_next/') || pathname.includes('.')) {
-    return NextResponse.next();
-  }
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
-  // Handle apex domain redirects
-  if (hostname === 'instylehairboutique.co.za' || hostname === 'www.instylehairboutique.co.za') {
-    console.log(`[Middleware] Redirecting to tenant subdomain`);
-    return NextResponse.redirect('https://instylehairboutique.appointmentbooking.co.za' + pathname);
-  }
-
-  // Handle InStyle tenant subdomain
-  if (hostname.includes('instylehairboutique.appointmentbooking.co.za')) {
-    console.log(`[Middleware] InStyle tenant detected`);
+  // Rate limiting for API routes
+  if (pathname.startsWith('/api/')) {
+    const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
     
-    if (!pathname.startsWith('/instyle')) {
-      const url = req.nextUrl.clone();
-      url.pathname = `/instyle${pathname}`;
-      
-      const response = NextResponse.rewrite(url);
-      response.headers.set('x-tenant-id', 'instyle');
-      response.headers.set('x-tenant', 'instyle');
-      
-      return response;
-    } else {
+    // Skip rate limiting for webhooks
+    if (pathname.includes('/webhooks/')) {
+      return NextResponse.next();
+    }
+
+    // Add tenant context for multi-tenant APIs
+    if (pathname.includes('/instylehairboutique') || pathname.includes('instyle')) {
       const response = NextResponse.next();
-      response.headers.set('x-tenant-id', 'instyle');
-      response.headers.set('x-tenant', 'instyle');
+      response.headers.set('x-tenant-id', 'ccb12b4d-ade6-467d-a614-7c9d198ddc70');
       return response;
     }
+  }
+
+  // Redirect instyle subdomain to main domain path
+  if (request.nextUrl.hostname === 'instyle.localhost' || 
+      request.nextUrl.hostname === 'instylehairboutique.co.za') {
+    return NextResponse.rewrite(new URL(`/instylehairboutique${pathname}`, request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: '/((?!_next/static|_next/image|favicon.ico).*)',
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/api/:path*'
+  ]
 };
