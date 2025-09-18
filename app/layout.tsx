@@ -55,7 +55,7 @@ export default async function RootLayout({
               <ConvexClientProvider>
                 <CartProvider>
                   {/* NO PLATFORM HEADER/FOOTER FOR TENANTS */}
-                  <main className="min-h-screen">{children}</main>
+                  {children}
                   <Toaster />
                   <SonnerToaster />
                 </CartProvider>

@@ -56,7 +56,7 @@ export default function InStylePage() {
               <p className="text-gray-600">Premium Hair Services</p>
             </div>
             <Button asChild className="bg-purple-600 hover:bg-purple-700">
-              <Link href="/book/instylehairboutique">Book Now</Link>
+              <Link href="/instylehairboutique/book">Book Now</Link>
             </Button>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function InStylePage() {
               size="lg"
               className="bg-purple-600 hover:bg-purple-700"
             >
-              <Link href="/book/instylehairboutique">Book Appointment</Link>
+              <Link href="/instylehairboutique/book">Book Appointment</Link>
             </Button>
             <Button
               asChild
@@ -118,7 +118,7 @@ export default function InStylePage() {
                     className="w-full mt-4 bg-purple-600 hover:bg-purple-700"
                     asChild
                   >
-                    <Link href="/book/instylehairboutique">
+                    <Link href="/instylehairboutique/book">
                       Book This Service
                     </Link>
                   </Button>
