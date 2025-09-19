@@ -51,7 +51,7 @@ const nextConfig = {
               value: 'instylehairboutique.co.za',
             },
           ],
-          destination: '/instyle/:path*',
+          destination: '/instylehairboutique/:path*',
         },
         // Handle www redirect
         {

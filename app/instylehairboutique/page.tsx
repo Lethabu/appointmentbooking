@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AIChat from './ai-chat';
 import { inStyleBrand } from './config';
 import ChatWindow from '@/components/ChatWindow';
+import GoogleMap from '@/components/GoogleMap';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://your-platform-domain.com'),
@@ -107,6 +108,15 @@ export default function InStylePage() {
             >
               <Link href="/instylehairboutique/shop">Shop Products</Link>
             </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+            >
+              <a href="https://www.supersaas.com/schedule/instyle/Hair_Services" target="_blank" rel="noopener noreferrer">
+                SuperSaaS Booking
+              </a>
+            </Button>
             <Button variant="outline" size="lg">
               <Link href="#services">View Services</Link>
             </Button>
@@ -173,6 +183,53 @@ export default function InStylePage() {
                 </Link>
               </Button>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Location Section */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <h3 className="text-3xl font-bold text-center mb-12">Visit Us</h3>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <GoogleMap 
+                address="Soshanguve, Pretoria, Gauteng, South Africa"
+                businessName="InStyle Hair Boutique"
+                className="w-full h-64 rounded-lg"
+              />
+            </div>
+            <div className="space-y-6">
+              <div>
+                <h4 className="text-xl font-semibold text-purple-600 mb-4">Contact Information</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-purple-600">📍</span>
+                    <span>Soshanguve, Pretoria, Gauteng</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <span className="text-purple-600">📞</span>
+                    <span>+27 (0)12 799 0000</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <span className="text-purple-600">⏰</span>
+                    <span>Mon-Sat: 9:00 AM - 5:00 PM</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Button asChild className="flex-1 bg-purple-600 hover:bg-purple-700">
+                  <a href="https://maps.google.com/?q=Soshanguve,Pretoria" target="_blank" rel="noopener noreferrer">
+                    🗺️ Get Directions
+                  </a>
+                </Button>
+                <Button asChild variant="outline" className="flex-1">
+                  <a href="tel:+27127990000">
+                    📞 Call Now
+                  </a>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
