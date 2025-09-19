@@ -42,6 +42,17 @@ const nextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
+        // Handle instylehairboutique.co.za domain
+        {
+          source: '/:path*',
+          has: [
+            {
+              type: 'host',
+              value: 'instylehairboutique.co.za',
+            },
+          ],
+          destination: '/instyle/:path*',
+        },
         // Handle www redirect
         {
           source: '/:path*',

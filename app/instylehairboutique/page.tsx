@@ -21,14 +21,14 @@ export const metadata: Metadata = {
 const services = [
   {
     name: 'Middle & Side Installation',
-    price: 'R450',
+    price: 'R300',
     duration: '60 minutes',
     description:
       'Professional installation of middle and side part weaves for a natural, elegant look.',
   },
   {
     name: 'Maphondo & Lines Installation',
-    price: 'R600',
+    price: 'R350',
     duration: '90 minutes',
     description:
       'Intricate Maphondo and lines installation creating stunning geometric patterns.',
@@ -39,6 +39,27 @@ const services = [
     duration: '30 minutes',
     description:
       'Rejuvenating hair treatment to restore health, shine and vitality to your hair.',
+  },
+  {
+    name: 'Gel Maphondo',
+    price: 'R350',
+    duration: '60 minutes',
+    description:
+      'Sleek gel-based Maphondo styling for a polished, long-lasting look.',
+  },
+  {
+    name: 'Frontal Ponytail',
+    price: 'R950',
+    duration: '2 hours',
+    description:
+      'Elegant frontal ponytail installation for a sophisticated, versatile style.',
+  },
+  {
+    name: 'Makeup Soft Glam',
+    price: 'R450',
+    duration: '2 hours',
+    description:
+      'Professional soft glam makeup application for a natural, radiant look.',
   },
 ];
 

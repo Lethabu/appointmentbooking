@@ -29,7 +29,7 @@ export function middleware(request: NextRequest) {
       hostname === 'instyle.localhost') {
     
     // Set tenant header for proper detection
-    const response = NextResponse.rewrite(new URL(`/instylehairboutique${pathname}`, request.url));
+    const response = NextResponse.rewrite(new URL(`/instyle${pathname}`, request.url));
     response.headers.set('x-tenant-id', 'instyle');
     return response;
   }
