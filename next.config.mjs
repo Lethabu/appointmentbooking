@@ -11,6 +11,7 @@ const nextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
+    domains: ['instylehairboutique.co.za'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -18,6 +19,22 @@ const nextConfig = {
       },
     ],
   },
+  swcMinify: true,
+  trailingSlash: false,
+  
+  webpack: (config, { dev, isServer }) => {
+    // Handle CSS and static assets properly
+    if (!dev && !isServer) {
+      config.optimization.splitChunks.cacheGroups.styles = {
+        name: 'styles',
+        test: /\.(css|scss|sass)$/,
+        chunks: 'all',
+        enforce: true,
+      };
+    }
+    return config;
+  },
+  
   async headers() {
     return [
       {
@@ -48,6 +65,7 @@ const nextConfig = {
       },
     ];
   },
+  
   async redirects() {
     return [
       {
