@@ -15,19 +15,21 @@ export function middleware(request: NextRequest) {
     console.log('Middleware:', { hostname, pathname });
   }
   
+  // Skip middleware for static assets and Next.js internals FIRST
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/favicon.ico') ||
+    pathname.includes('.') || // Any file with extension
+    pathname.startsWith('/static')
+  ) {
+    return NextResponse.next();
+  }
+
   // Handle tenant domains
   const tenantSlug = TENANT_MAP[hostname];
   
   if (tenantSlug) {
-    // Don't rewrite API routes, static files, or Next.js internals
-    if (
-      pathname.startsWith('/api') ||
-      pathname.startsWith('/_next') ||
-      pathname.startsWith('/favicon.ico') ||
-      pathname.includes('.') // This catches most static files
-    ) {
-      return NextResponse.next();
-    }
     
     // Handle root path
     if (pathname === '/') {
@@ -52,6 +54,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.).*)',
+    '/((?!_next|api|favicon.ico|.*\\.).*)',
   ]
 };
