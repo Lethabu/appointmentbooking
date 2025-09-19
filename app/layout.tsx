@@ -47,9 +47,7 @@ export default async function RootLayout({
   if (tenant) {
     return (
       <html lang="en">
-        <head>
-          <link rel="preload" href="/tenants/instyle/hero.webp" as="image" />
-        </head>
+        <head />
         <body className={inter.className}>
           <ClerkProvider>
             <CSPostHogProvider>
@@ -73,9 +71,7 @@ export default async function RootLayout({
   // For main platform domain, use full platform layout
   return (
     <html lang="en">
-      <head>
-        <link rel="preload" href="/tenants/instyle/hero.webp" as="image" />
-      </head>
+      <head />
       <body className={inter.className}>
         <ClerkProvider>
           <CSPostHogProvider>
