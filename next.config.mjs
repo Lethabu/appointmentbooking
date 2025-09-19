@@ -37,35 +37,31 @@ const nextConfig = {
           },
         ],
       },
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
     ];
   },
-  async rewrites() {
-    return {
-      beforeFiles: [
-        // Handle instylehairboutique.co.za domain
-        {
-          source: '/:path*',
-          has: [
-            {
-              type: 'host',
-              value: 'instylehairboutique.co.za',
-            },
-          ],
-          destination: '/instylehairboutique/:path*',
-        },
-        // Handle www redirect
-        {
-          source: '/:path*',
-          has: [
-            {
-              type: 'host',
-              value: 'www.instylehairboutique.co.za',
-            },
-          ],
-          destination: 'https://instylehairboutique.co.za/:path*',
-        },
-      ],
-    };
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.instylehairboutique.co.za',
+          },
+        ],
+        destination: 'https://instylehairboutique.co.za/:path*',
+        permanent: true,
+      },
+    ];
   },
 };
 

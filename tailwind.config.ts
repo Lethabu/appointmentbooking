@@ -2,12 +2,14 @@ import type { Config } from "tailwindcss";
 
 // all in fixtures is set to tailwind v3 as interims solutions
 
-const config: Config = {
+const config = {
     darkMode: "class",
     content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./lib/**/*.{js,ts,jsx,tsx,mdx}",
+    "./utils/**/*.{js,ts,jsx,tsx,mdx}",
     "*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
@@ -15,8 +17,8 @@ const config: Config = {
   		colors: {
   			// InStyle Brand Colors
   			instyle: {
-  				primary: '#8b5cf6',
-  				secondary: '#f59e0b',
+  				primary: '#8b5cf6', // purple-600
+  				secondary: '#f59e0b', // amber-600
   				dark: '#1f2937',
   				light: '#ffffff'
   			},
@@ -101,5 +103,5 @@ const config: Config = {
   	}
   },
   plugins: [require("tailwindcss-animate")],
-};
+} satisfies Config;
 export default config;

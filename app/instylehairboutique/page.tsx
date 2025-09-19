@@ -6,6 +6,7 @@ import AIChat from './ai-chat';
 import { inStyleBrand } from './config';
 import ChatWindow from '@/components/ChatWindow';
 import GoogleMap from '@/components/GoogleMap';
+import { TenantImage } from '@/components/ui/tenant-image';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://your-platform-domain.com'),
@@ -86,15 +87,28 @@ export default function InStylePage() {
 
       {/* Hero Section */}
       <section className="py-16 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
-            Transform Your Look
-          </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Professional hair installations, treatments and styling services.
-            Experience the art of beautiful hair at InStyle Hair Boutique.
-          </p>
-          <div className="flex gap-4 justify-center">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-5xl font-bold text-gray-900 mb-6">
+                Transform Your Look
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Professional hair installations, treatments and styling services.
+                Experience the art of beautiful hair at InStyle Hair Boutique.
+              </p>
+            </div>
+            <div className="relative h-96 rounded-lg overflow-hidden">
+              <TenantImage
+                src="/tenants/instyle/hero.webp"
+                alt="InStyle Hair Boutique - Professional Hair Services"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+          </div>
+          <div className="flex gap-4 justify-center mt-8">
             <Button
               asChild
               size="lg"

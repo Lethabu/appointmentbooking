@@ -1,36 +1,38 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+// Tenant mapping
+const TENANT_MAP: Record<string, string> = {
+  'instylehairboutique.co.za': 'instylehairboutique',
+  'www.instylehairboutique.co.za': 'instylehairboutique',
+  'instyle.localhost': 'instylehairboutique'
+};
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const hostname = request.nextUrl.hostname;
 
-  // Rate limiting for API routes
-  if (pathname.startsWith('/api/')) {
-    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-    
-    // Skip rate limiting for webhooks
-    if (pathname.includes('/webhooks/')) {
-      return NextResponse.next();
-    }
-
-    // Add tenant context for multi-tenant APIs
-    if (pathname.includes('/instylehairboutique') || pathname.includes('instyle')) {
-      const response = NextResponse.next();
-      response.headers.set('x-tenant-id', 'ccb12b4d-ade6-467d-a614-7c9d198ddc70');
-      return response;
-    }
+  // Skip middleware for static assets and Next.js internals
+  if (
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/api/') ||
+    pathname.includes('.') || // Any file with extension
+    pathname === '/favicon.ico'
+  ) {
+    return NextResponse.next();
   }
 
   // Handle tenant domains
-  const hostname = request.nextUrl.hostname;
+  const tenantSlug = TENANT_MAP[hostname];
   
-  if (hostname === 'instylehairboutique.co.za' || 
-      hostname === 'www.instylehairboutique.co.za' ||
-      hostname === 'instyle.localhost') {
+  if (tenantSlug) {
+    // Rewrite URL to tenant path
+    const response = NextResponse.rewrite(
+      new URL(`/${tenantSlug}${pathname}`, request.url)
+    );
     
-    // Set tenant header for proper detection
-    const response = NextResponse.rewrite(new URL(`/instylehairboutique${pathname}`, request.url));
-    response.headers.set('x-tenant-id', 'instyle');
+    // Add tenant header for identification
+    response.headers.set('x-tenant-slug', tenantSlug);
     return response;
   }
 
@@ -39,7 +41,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico).*)',
-    '/api/:path*'
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.).*)',
   ]
 };

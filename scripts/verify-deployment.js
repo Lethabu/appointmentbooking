@@ -1,93 +1,153 @@
-const axios = require('axios');
+#!/usr/bin/env node
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+/**
+ * Deployment Verification Script
+ * Runs automated checks on the live domain to verify all fixes are working
+ */
 
-async function verifyDeployment() {
-  console.log('🔍 Verifying InStyle E-Commerce Deployment');
-  console.log('==========================================');
+const https = require('https');
+const { URL } = require('url');
 
-  const tests = [
-    {
-      name: 'Home Page',
-      url: `${BASE_URL}/instylehairboutique`,
-      expected: 'InStyle Hair Boutique'
-    },
-    {
-      name: 'Shop Page',
-      url: `${BASE_URL}/instylehairboutique/shop`,
-      expected: 'Shop Products'
-    },
-    {
-      name: 'API Health',
-      url: `${BASE_URL}/api/health`,
-      expected: 'ok'
-    }
-  ];
+const DOMAIN = 'instylehairboutique.co.za';
+const ROUTES_TO_TEST = ['/', '/book', '/shop', '/services'];
 
-  let passed = 0;
-  let failed = 0;
-
-  for (const test of tests) {
-    try {
-      console.log(`\n🧪 Testing: ${test.name}`);
-      const response = await axios.get(test.url, { timeout: 10000 });
-      
-      if (response.status === 200 && response.data.includes?.(test.expected)) {
-        console.log(`✅ PASS: ${test.name}`);
-        passed++;
-      } else {
-        console.log(`❌ FAIL: ${test.name} - Unexpected response`);
-        failed++;
-      }
-    } catch (error) {
-      console.log(`❌ FAIL: ${test.name} - ${error.message}`);
-      failed++;
-    }
-  }
-
-  console.log('\n📊 Test Results:');
-  console.log(`✅ Passed: ${passed}`);
-  console.log(`❌ Failed: ${failed}`);
-  console.log(`📈 Success Rate: ${Math.round((passed / tests.length) * 100)}%`);
-
-  if (failed === 0) {
-    console.log('\n🎉 All tests passed! InStyle E-Commerce is ready for production.');
-    console.log('\n🌐 Live URLs:');
-    console.log(`   - Home: ${BASE_URL}/instylehairboutique`);
-    console.log(`   - Shop: ${BASE_URL}/instylehairboutique/shop`);
-    console.log(`   - Book: ${BASE_URL}/book/instylehairboutique`);
-  } else {
-    console.log('\n⚠️ Some tests failed. Please check the deployment.');
-    process.exit(1);
-  }
-}
-
-// Manual verification checklist
-function printManualChecklist() {
-  console.log('\n📋 Manual Verification Checklist:');
-  console.log('==================================');
-  console.log('□ Home page loads with InStyle branding');
-  console.log('□ Shop page displays 5 products');
-  console.log('□ Add to cart functionality works');
-  console.log('□ Cart persists across page refreshes');
-  console.log('□ PayStack checkout flow completes');
-  console.log('□ Success page clears cart');
-  console.log('□ Mobile responsive design');
-  console.log('□ AI chat responds correctly');
-  console.log('□ WhatsApp bot configuration uploaded');
-  console.log('□ Social media links work');
-  console.log('\n🚀 Production Readiness:');
-  console.log('□ SSL certificate configured');
-  console.log('□ Domain DNS pointing correctly');
-  console.log('□ PayStack live keys configured');
-  console.log('□ WhatsApp Business API connected');
-  console.log('□ Analytics tracking enabled');
-}
-
-if (require.main === module) {
-  verifyDeployment().then(() => {
-    printManualChecklist();
+async function makeRequest(url) {
+  return new Promise((resolve, reject) => {
+    const request = https.get(url, (response) => {
+      let data = '';
+      response.on('data', chunk => data += chunk);
+      response.on('end', () => {
+        resolve({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: data
+        });
+      });
+    });
+    
+    request.on('error', reject);
+    request.setTimeout(10000, () => {
+      request.destroy();
+      reject(new Error('Request timeout'));
+    });
   });
 }
 
-module.exports = { verifyDeployment };
+async function checkRoute(route) {
+  const url = `https://${DOMAIN}${route}`;
+  console.log(`\n🔍 Testing: ${url}`);
+  
+  try {
+    const response = await makeRequest(url);
+    
+    // Check status code
+    const statusOk = response.statusCode === 200;
+    console.log(`   Status: ${response.statusCode} ${statusOk ? '✅' : '❌'}`);
+    
+    // Check for Tailwind CSS classes in HTML
+    const hasTailwind = response.body.includes('bg-purple-') || response.body.includes('text-purple-');
+    console.log(`   Tailwind: ${hasTailwind ? '✅ Found' : '❌ Missing'}`);
+    
+    // Check for proper meta tags
+    const hasTitle = response.body.includes('<title>');
+    console.log(`   Meta Tags: ${hasTitle ? '✅ Present' : '❌ Missing'}`);
+    
+    // Check for React hydration
+    const hasReact = response.body.includes('__NEXT_DATA__');
+    console.log(`   React SSR: ${hasReact ? '✅ Working' : '❌ Failed'}`);
+    
+    return {
+      route,
+      statusOk,
+      hasTailwind,
+      hasTitle,
+      hasReact,
+      success: statusOk && hasTailwind && hasTitle && hasReact
+    };
+    
+  } catch (error) {
+    console.log(`   Error: ❌ ${error.message}`);
+    return {
+      route,
+      success: false,
+      error: error.message
+    };
+  }
+}
+
+async function checkAssets() {
+  console.log(`\n🖼️  Testing Assets:`);
+  
+  const assets = [
+    '/tenants/instyle/hero.webp',
+    '/tenants/instyle/logo.png'
+  ];
+  
+  const results = [];
+  
+  for (const asset of assets) {
+    const url = `https://${DOMAIN}${asset}`;
+    try {
+      const response = await makeRequest(url);
+      const success = response.statusCode === 200;
+      console.log(`   ${asset}: ${success ? '✅' : '❌'} (${response.statusCode})`);
+      results.push({ asset, success, statusCode: response.statusCode });
+    } catch (error) {
+      console.log(`   ${asset}: ❌ ${error.message}`);
+      results.push({ asset, success: false, error: error.message });
+    }
+  }
+  
+  return results;
+}
+
+async function main() {
+  console.log('🚀 Starting Deployment Verification');
+  console.log(`📍 Domain: ${DOMAIN}`);
+  console.log('=' .repeat(50));
+  
+  // Test all routes
+  const routeResults = [];
+  for (const route of ROUTES_TO_TEST) {
+    const result = await checkRoute(route);
+    routeResults.push(result);
+  }
+  
+  // Test assets
+  const assetResults = await checkAssets();
+  
+  // Summary
+  console.log('\n' + '='.repeat(50));
+  console.log('📊 VERIFICATION SUMMARY');
+  console.log('='.repeat(50));
+  
+  const successfulRoutes = routeResults.filter(r => r.success).length;
+  const successfulAssets = assetResults.filter(a => a.success).length;
+  
+  console.log(`Routes: ${successfulRoutes}/${routeResults.length} ✅`);
+  console.log(`Assets: ${successfulAssets}/${assetResults.length} ✅`);
+  
+  const overallSuccess = successfulRoutes === routeResults.length && 
+                        successfulAssets === assetResults.length;
+  
+  console.log(`\n🎯 Overall Status: ${overallSuccess ? '✅ PASS' : '❌ FAIL'}`);
+  
+  if (!overallSuccess) {
+    console.log('\n❌ Issues found:');
+    routeResults.filter(r => !r.success).forEach(r => {
+      console.log(`   - Route ${r.route}: ${r.error || 'Failed checks'}`);
+    });
+    assetResults.filter(a => !a.success).forEach(a => {
+      console.log(`   - Asset ${a.asset}: ${a.error || `Status ${a.statusCode}`}`);
+    });
+    process.exit(1);
+  }
+  
+  console.log('\n🎉 All checks passed! Deployment is successful.');
+  process.exit(0);
+}
+
+main().catch(error => {
+  console.error('💥 Verification failed:', error);
+  process.exit(1);
+});

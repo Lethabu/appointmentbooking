@@ -11,6 +11,7 @@ import ConvexClientProvider from './ConvexClientProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { CartProvider } from '@/app/context/CartContext';
+import Debug from '@/components/Debug';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -58,6 +59,7 @@ export default async function RootLayout({
                   {children}
                   <Toaster />
                   <SonnerToaster />
+                  <Debug />
                 </CartProvider>
               </ConvexClientProvider>
             </CSPostHogProvider>
@@ -82,6 +84,7 @@ export default async function RootLayout({
                 {children}
                 <Toaster />
                 <SonnerToaster />
+                <Debug />
               </CartProvider>
             </ConvexClientProvider>
           </CSPostHogProvider>
