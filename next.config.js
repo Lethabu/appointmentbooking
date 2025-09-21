@@ -59,6 +59,10 @@ const nextConfig = {
           {
             key: 'Content-Type',
             value: 'application/javascript'
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
           }
         ]
       },
@@ -68,6 +72,23 @@ const nextConfig = {
           {
             key: 'Content-Type',
             value: 'text/css'
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
+          }
+        ]
+      },
+      {
+        source: '/_next/static/media/(.*)',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
           }
         ]
       }
