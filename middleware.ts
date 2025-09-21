@@ -17,9 +17,16 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Redirect www to non-www for tenant domains
+  if (hostname === 'www.instylehairboutique.co.za') {
+    const redirectUrl = new URL(request.url);
+    redirectUrl.hostname = 'instylehairboutique.co.za';
+    console.log(`[Middleware] Redirecting www to non-www`);
+    return NextResponse.redirect(redirectUrl, 301);
+  }
+
   // Tenant Routing Logic
   const tenants: Record<string, string> = {
-    'www.instylehairboutique.co.za': 'instylehairboutique',
     'instylehairboutique.co.za': 'instylehairboutique',
   };
 
