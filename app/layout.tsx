@@ -1,11 +1,9 @@
 import './globals.css';
-import { ClerkProvider } from '@clerk/nextjs';
 import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { Inter } from 'next/font/google';
 import { headers } from 'next/headers';
 import dynamic from 'next/dynamic';
 import { Analytics } from '@vercel/analytics/react';
-import { clerkConfig } from './clerk.config';
 
 // Import components directly for server components
 import ConvexClientProvider from './ConvexClientProvider';
@@ -50,19 +48,17 @@ export default async function RootLayout({
       <html lang="en">
         <head />
         <body className={inter.className}>
-          <ClerkProvider {...clerkConfig}>
-            <CSPostHogProvider>
-              <ConvexClientProvider>
-                <CartProvider>
-                  {/* NO PLATFORM HEADER/FOOTER FOR TENANTS */}
-                  {children}
-                  <Toaster />
-                  <SonnerToaster />
-                  <Debug />
-                </CartProvider>
-              </ConvexClientProvider>
-            </CSPostHogProvider>
-          </ClerkProvider>
+          <CSPostHogProvider>
+            <ConvexClientProvider>
+              <CartProvider>
+                {/* NO PLATFORM HEADER/FOOTER FOR TENANTS */}
+                {children}
+                <Toaster />
+                <SonnerToaster />
+                <Debug />
+              </CartProvider>
+            </ConvexClientProvider>
+          </CSPostHogProvider>
           <Analytics />
         </body>
       </html>
@@ -74,18 +70,16 @@ export default async function RootLayout({
     <html lang="en">
       <head />
       <body className={inter.className}>
-        <ClerkProvider {...clerkConfig}>
-          <CSPostHogProvider>
-            <ConvexClientProvider>
-              <CartProvider>
-                {children}
-                <Toaster />
-                <SonnerToaster />
-                <Debug />
-              </CartProvider>
-            </ConvexClientProvider>
-          </CSPostHogProvider>
-        </ClerkProvider>
+        <CSPostHogProvider>
+          <ConvexClientProvider>
+            <CartProvider>
+              {children}
+              <Toaster />
+              <SonnerToaster />
+              <Debug />
+            </CartProvider>
+          </ConvexClientProvider>
+        </CSPostHogProvider>
         <Analytics />
       </body>
     </html>
