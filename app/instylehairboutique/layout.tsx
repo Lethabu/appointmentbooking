@@ -5,7 +5,10 @@ export default function InstyleLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <head>
+        <title>Instyle Hair Boutique</title>
+      </head>
+      <body style={{margin: 0, padding: '20px', fontFamily: 'Arial, sans-serif'}}>
         {children}
       </body>
     </html>
