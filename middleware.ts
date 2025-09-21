@@ -1,17 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const hostname = request.headers.get('host') || '';
+  const pathname = url.pathname;
 
-  // Ignore static assets and API routes
-  if (url.pathname.startsWith('/_next') || url.pathname.startsWith('/api') || url.pathname.includes('.')) {
-    const response = NextResponse.next();
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    return response;
+  console.log(`[Middleware] Host: ${hostname}, Path: ${pathname}`);
+
+  // CRITICAL: Ignore static assets, images, and API routes
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api/') ||
+    pathname.includes('.') // This catches files like .woff2, .ico, .png, etc.
+  ) {
+    console.log('[Middleware] Bypassing for static asset or API route.');
+    return NextResponse.next();
   }
 
-  // Handle tenant domains
+  // Tenant Routing Logic
   const tenants: Record<string, string> = {
     'www.instylehairboutique.co.za': 'instylehairboutique',
     'instylehairboutique.co.za': 'instylehairboutique',
@@ -19,10 +25,12 @@ export async function middleware(request: NextRequest) {
 
   if (hostname in tenants) {
     const tenantSlug = tenants[hostname];
-    url.pathname = `/${tenantSlug}${url.pathname}`;
-    return NextResponse.rewrite(url);
+    const rewrittenPath = `/${tenantSlug}${pathname}`;
+    console.log(`[Middleware] Rewriting to: ${rewrittenPath}`);
+    return NextResponse.rewrite(new URL(rewrittenPath, request.url));
   }
   
+  // If it's the main domain or another path, do nothing
   return NextResponse.next();
 }
 
