@@ -8,19 +8,41 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/_next/static/(.*)',
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
             value: '*'
           },
           {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN'
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, OPTIONS'
           },
           {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff'
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        source: '/_next/static/media/(.*)',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, OPTIONS'
+          }
+        ]
+      },
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
           }
         ]
       }
