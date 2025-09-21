@@ -79,24 +79,12 @@ const nextConfig = {
             value: 'DENY',
           },
           {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin',
           },
           {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
-          },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET, POST, PUT, DELETE, OPTIONS',
-          },
-          {
-            key: 'Access-Control-Allow-Headers',
-            value: 'Content-Type, Authorization',
+            key: 'Content-Security-Policy',
+            value: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://js.clerk.com https://clerk.appointmentbooking.co.za https://instylehairboutique.co.za https://www.instylehairboutique.co.za; style-src 'self' 'unsafe-inline' https://instylehairboutique.co.za https://www.instylehairboutique.co.za; font-src 'self' data: https://instylehairboutique.co.za https://www.instylehairboutique.co.za; img-src 'self' data: https: blob:; connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.appointmentbooking.co.za;",
           },
         ],
       },
@@ -108,17 +96,17 @@ const nextConfig = {
             value: 'public, max-age=31536000, immutable',
           },
           {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
+            key: 'Content-Type',
+            value: 'application/javascript',
           },
         ],
       },
       {
-        source: '/_next/(.*)',
+        source: '/_next/static/css/(.*)',
         headers: [
           {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
+            key: 'Content-Type',
+            value: 'text/css',
           },
         ],
       },
