@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google';
 import { headers } from 'next/headers';
 import dynamic from 'next/dynamic';
 import { Analytics } from '@vercel/analytics/react';
+import { clerkConfig } from './clerk.config';
 
 // Import components directly for server components
 import ConvexClientProvider from './ConvexClientProvider';
@@ -49,7 +50,7 @@ export default async function RootLayout({
       <html lang="en">
         <head />
         <body className={inter.className}>
-          <ClerkProvider>
+          <ClerkProvider {...clerkConfig}>
             <CSPostHogProvider>
               <ConvexClientProvider>
                 <CartProvider>
@@ -73,7 +74,7 @@ export default async function RootLayout({
     <html lang="en">
       <head />
       <body className={inter.className}>
-        <ClerkProvider>
+        <ClerkProvider {...clerkConfig}>
           <CSPostHogProvider>
             <ConvexClientProvider>
               <CartProvider>
