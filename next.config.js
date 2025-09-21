@@ -1,9 +1,9 @@
 const cspHeader = `
-  default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.clerk.com https://*.clerk.accounts.dev https://*.clerk.com;
-  style-src 'self' 'unsafe-inline';
+  default-src 'self' https://instylehairboutique.co.za https://www.instylehairboutique.co.za;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://instylehairboutique.co.za https://www.instylehairboutique.co.za;
+  style-src 'self' 'unsafe-inline' https://instylehairboutique.co.za https://www.instylehairboutique.co.za;
   img-src 'self' blob: data: https:;
-  font-src 'self' data:;
+  font-src 'self' data: https://instylehairboutique.co.za https://www.instylehairboutique.co.za;
   connect-src 'self' https: wss:;
   object-src 'none';
   base-uri 'self';
@@ -24,6 +24,10 @@ const nextConfig = {
       {
         source: '/:path*',
         headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: cspHeader.replace(/\s{2,}/g, ' ').trim()
+          },
           {
             key: 'Access-Control-Allow-Origin',
             value: '*'
