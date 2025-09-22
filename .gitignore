@@ -57,3 +57,4 @@ node_modules/
 /generated/prisma
 .vercel
 .env*.local
+.idx/

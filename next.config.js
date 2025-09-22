@@ -25,6 +25,15 @@ const nextConfig = {
         ]
       }
     ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/:path*',
+        destination: 'https://clerk.accounts.dev/:path*',
+        has: [{ type: 'host', value: 'clerk.appointmentbooking.co.za' }],
+      }
+    ]
   }
 };
 

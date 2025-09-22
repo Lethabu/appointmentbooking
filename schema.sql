@@ -322,7 +322,7 @@ BEGIN
     WHERE prod.salon_id = p_salon_id AND prod.name ILIKE '%' || search_term || '%'
     LIMIT 10;
 END;
-$$ LANGUAGE plpgsql;
+$ LANGUAGE plpgsql;
 
 -- ... other advanced functions like get_platform_stats, get_salon_financials, etc. would go here ...
 
