@@ -1,6 +1,6 @@
 import EcommerceDashboard from '@/components/dashboard/EcommerceDashboard';
-import { tenantId } from '../config';
+import { inStyleBrand } from '../config';
 
 export default function InstyleDashboard() {
-  return <EcommerceDashboard tenantId={tenantId} />;
+  return <EcommerceDashboard tenantId={inStyleBrand.tenantId} />;
 }

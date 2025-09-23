@@ -1,21 +1,27 @@
 'use client';
 
-import { useMutation } from 'convex/react';
-import { api } from '@/convex/_generated/api';
 import { useState } from 'react';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useAuth } from '@/app/ConvexClientProvider';
 
 export default function AddSalonPage() {
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
-  const createTenant = useMutation(api.tenants.create);
+  const { user } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+
     try {
-      await createTenant({
+      await addDoc(collection(db, 'tenants'), {
         name,
         slug: slug || name.toLowerCase().replace(/\s+/g, '-'),
+        ownerId: user.uid,
         paystackKey: 'pk_test_default',
+        createdAt: serverTimestamp(),
+        status: 'active',
       });
       alert('Salon created successfully!');
       setName('');

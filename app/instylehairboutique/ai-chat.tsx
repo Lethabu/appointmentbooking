@@ -1,55 +1,30 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
 
-const INSTYLE_KB = {
-  services: [
-    { name: 'Middle & Side Installation', price: 'R450', duration: '60min' },
-    { name: 'Maphondo & Lines Installation', price: 'R600', duration: '90min' },
-    { name: 'Hair Treatment', price: 'R250', duration: '30min' },
-  ],
-  responses: {
-    greeting:
-      "Hi! I'm Nia, your InStyle Hair Boutique assistant. How can I help you today?",
-    services:
-      'We offer Middle & Side Installation (R450, 60min), Maphondo & Lines (R600, 90min), and Hair Treatment (R250, 30min).',
-    booking:
-      'You can book online at instylehairboutique.co.za or I can help you choose the perfect service!',
-    location:
-      "We're InStyle Hair Boutique, your premium hair destination in South Africa.",
-    default:
-      "I'd be happy to help! Ask me about our services, prices, or booking appointments.",
+const KB_DATA = [
+  {
+    question: 'What is Wash & Cut?',
+    answer:
+      'Wash & Cut is a 60 min treatment priced at R350. Professional wash, cut and blow-dry',
   },
-};
+  {
+    question: 'What is Balayage?',
+    answer:
+      'Balayage is a 120 min treatment priced at R650. Hand-painted highlights for natural look',
+  },
+  {
+    question: 'What is Hair Treatment?',
+    answer:
+      'Hair Treatment is a 90 min treatment priced at R450. Deep conditioning and repair treatment',
+  },
+];
 
 export default function AIChat() {
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: INSTYLE_KB.responses.greeting },
-  ]);
+  const [messages, setMessages] = useState<
+    Array<{ role: string; content: string }>
+  >([]);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const getResponse = (question: string) => {
-    const q = question.toLowerCase();
-
-    if (q.includes('service') || q.includes('offer')) {
-      return INSTYLE_KB.responses.services;
-    }
-    if (q.includes('book') || q.includes('appointment')) {
-      return INSTYLE_KB.responses.booking;
-    }
-    if (q.includes('price') || q.includes('cost')) {
-      return INSTYLE_KB.responses.services;
-    }
-    if (q.includes('location') || q.includes('where')) {
-      return INSTYLE_KB.responses.location;
-    }
-
-    return INSTYLE_KB.responses.default;
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,51 +32,45 @@ export default function AIChat() {
 
     const userMessage = { role: 'user', content: input };
     setMessages((prev) => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const response = getResponse(input);
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: response },
-      ]);
-      setIsLoading(false);
-    }, 1000);
+    // Simple KB lookup
+    const answer =
+      KB_DATA.find((kb) =>
+        input.toLowerCase().includes(kb.question.toLowerCase().split(' ')[2]),
+      )?.answer ||
+      "I'm Nia, your stylist assistant. How can I help you with our services?";
+
+    setMessages((prev) => [...prev, { role: 'assistant', content: answer }]);
+    setInput('');
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto p-4">
+    <div className="max-w-md mx-auto bg-white rounded-lg shadow p-4">
+      <h3 className="font-bold mb-4">Chat with Nia</h3>
       <div className="h-64 overflow-y-auto mb-4 space-y-2">
-        {messages.map((msg, idx) => (
+        {messages.map((msg, i) => (
           <div
-            key={idx}
-            className={`p-2 rounded-lg ${
-              msg.role === 'user' ? 'bg-purple-100 ml-8' : 'bg-gray-100 mr-8'
-            }`}
+            key={i}
+            className={`p-2 rounded ${msg.role === 'user' ? 'bg-purple-100 ml-4' : 'bg-gray-100 mr-4'}`}
           >
-            <p className="text-sm">{msg.content}</p>
+            {msg.content}
           </div>
         ))}
-        {isLoading && (
-          <div className="bg-gray-100 mr-8 p-2 rounded-lg">
-            <p className="text-sm">Nia is typing...</p>
-          </div>
-        )}
       </div>
-
       <form onSubmit={handleSubmit} className="flex gap-2">
-        <Input
+        <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask about our services..."
-          className="flex-1"
+          className="flex-1 p-2 border rounded"
         />
-        <Button type="submit" disabled={isLoading}>
+        <button
+          type="submit"
+          className="bg-purple-600 text-white px-4 py-2 rounded"
+        >
           Send
-        </Button>
+        </button>
       </form>
-    </Card>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase';
-import { typebotOrchestrator } from '@/lib/typebot-orchestrator';
+import { createClient } from '@/lib/supabase';
 import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
@@ -19,41 +18,40 @@ export async function POST(request: NextRequest) {
     }
 
     const event = JSON.parse(body);
+    const supabase = createClient();
 
     if (event.event === 'charge.success') {
-      const reference = event.data.reference;
-      const appointmentId = reference.replace('apt_', '');
+      const { reference, metadata } = event.data;
+      const orderId = metadata.order_id;
 
-      const supabase = createServerSupabaseClient();
+      // Update order status
+      await supabase
+        .from('orders')
+        .update({ status: 'paid' })
+        .eq('id', orderId);
 
-      // Update appointment status
-      const { data: appointment, error } = await supabase
-        .from('appointments')
-        .update({ status: 'confirmed' })
-        .eq('id', appointmentId)
-        .select(
-          `
-          *,
-          customer:customers(*),
-          service:services(*),
-          tenant:tenants(*)
-        `,
-        )
-        .single();
+      // Update product stock
+      const { data: orderItems } = await supabase
+        .from('order_items')
+        .select('product_id, quantity')
+        .eq('order_id', orderId);
 
-      if (error) {
-        console.error('Error updating appointment:', error);
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
+      for (const item of orderItems || []) {
+        await supabase.rpc('decrement_stock', {
+          product_id: item.product_id,
+          quantity: item.quantity,
+        });
       }
 
-      // Trigger Typebot confirmation flow with AiSensy WhatsApp
-      if (appointment) {
-        await typebotOrchestrator.triggerBookingFlow({
-          customerName: appointment.customer.name,
-          customerPhone: appointment.customer.phone,
-          serviceName: appointment.service.name,
-          tenantId: appointment.tenant_id,
-          appointmentId: appointment.id,
+      // Send WhatsApp confirmation (if enabled)
+      if (metadata.customer_phone) {
+        await fetch('/api/whatsapp/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: metadata.customer_phone,
+            message: `Order confirmed! Reference: ${reference}. We'll prepare your items for collection.`,
+          }),
         });
       }
     }
@@ -61,9 +59,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error('Webhook error:', error);
-    return NextResponse.json(
-      { error: 'Webhook processing failed' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Webhook failed' }, { status: 500 });
   }
 }

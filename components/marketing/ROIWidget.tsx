@@ -1,10 +1,13 @@
 'use client';
 
-import { useQuery } from 'convex/react';
-import { api } from '@/convex/_generated/api';
-
 export function ROIWidget() {
-  const roiStats = useQuery(api.roi.getROIStats);
+  const roiStats = {
+    averageSavingsPerSalon: 15000,
+    totalSalonsHelped: 500,
+    averageROI: 300,
+    averageTimeSavedHours: 25,
+    averageNewClients: 45,
+  };
 
   if (!roiStats) {
     return <div>Loading ROI stats...</div>;

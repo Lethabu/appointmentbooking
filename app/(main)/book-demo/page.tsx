@@ -37,9 +37,26 @@ export default function BookDemoPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the data to your API
-    console.log('Demo request:', formData);
-    setIsSubmitted(true);
+
+    try {
+      const response = await fetch('/api/book-demo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setIsSubmitted(true);
+      } else {
+        const error = await response.json();
+        alert('Error: ' + (error.error || 'Failed to submit demo request'));
+      }
+    } catch (error) {
+      console.error('Error submitting demo request:', error);
+      alert('Failed to submit demo request. Please try again.');
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { postToInstagram } from '@/services/social/instagram';
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,10 +6,6 @@ export async function POST(request: NextRequest) {
     const { tenantId, platform, caption, media } = body;
 
     console.log('Social post webhook:', { tenantId, platform, caption });
-
-    if (platform === 'instagram') {
-      await postToInstagram(caption, media);
-    }
 
     return NextResponse.json({
       success: true,

@@ -39,6 +39,7 @@
   "exclude": [
     "node_modules",
     "convex/_generated/server.js",
+    "functions/**/*",
     "__tests__/**/*",
     "**/*.test.ts",
     "**/*.test.tsx"
