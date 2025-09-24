@@ -71,7 +71,7 @@ export function RealTimeDashboard({ tenantId }: { tenantId: string }) {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">
-              Today's Appointments
+              Today&apos;s Appointments
             </CardTitle>
           </CardHeader>
           <CardContent>

@@ -32,7 +32,7 @@ export function ExitIntentModal() {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-8 rounded-lg shadow-lg text-center">
-        <h2 className="text-2xl font-bold mb-4">Don't leave yet!</h2>
+        <h2 className="text-2xl font-bold mb-4">Don&apos;t leave yet!</h2>
         <p className="mb-6">
           Get 10% off your first booking when you sign up now!
         </p>

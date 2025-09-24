@@ -120,7 +120,7 @@ export function BookingPageContent() {
             Salon Not Found
           </h1>
           <p className="text-gray-600">
-            The salon you're looking for doesn't exist or is no longer
+            The salon you&apos;re looking for doesn&apos;t exist or is no longer
             available.
           </p>
         </div>

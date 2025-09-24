@@ -107,7 +107,7 @@ export default function AutomatedReviews() {
         // Low rating - direct to management
         setTimeout(() => {
           alert(
-            "We're sorry your experience wasn't perfect. Our manager will contact you within 24 hours to make this right.",
+            "We&apos;re sorry your experience wasn&apos;t perfect. Our manager will contact you within 24 hours to make this right.",
           );
         }, 1000);
       }

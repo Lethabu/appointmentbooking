@@ -192,7 +192,7 @@ export default function ModernSalonDashboard() {
                 <span className="text-purple-600">Salon</span> Dashboard
               </h1>
               <p className="text-gray-600">
-                Welcome back! Here's your salon overview
+                Welcome back! Here&apos;s your salon overview
               </p>
             </div>
             <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
@@ -240,7 +240,7 @@ export default function ModernSalonDashboard() {
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-gray-900">
-                    Today's Appointments
+                    Today&apos;s Appointments
                   </h2>
                   <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">
                     {appointments.length} active

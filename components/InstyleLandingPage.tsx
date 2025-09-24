@@ -49,7 +49,7 @@ export default function InstyleLandingPage() {
           <h1>Transform Your Look With Premium Hair Services</h1>
           <p>
             Experience the finest hair treatments, extensions, and styling from
-            South Africa's leading hair boutique
+            South Africa&apos;s leading hair boutique
           </p>
           <div className="hero-buttons">
             <Link href="/book" className="btn btn-primary">
@@ -205,15 +205,15 @@ export default function InstyleLandingPage() {
           <div className="section-title">
             <h2>What Our Clients Say</h2>
             <p>
-              Don't just take our word for it - hear from our satisfied
+              Don&apos;t just take our word for it - hear from our satisfied
               customers
             </p>
           </div>
           <div className="testimonials">
             <div className="testimonial">
               <p className="testimonial-text">
-                "The best hair salon experience I've ever had! My extensions
-                look so natural and the service was exceptional.'"
+                &quot;The best hair salon experience I&apos;ve ever had! My extensions
+                look so natural and the service was exceptional.&apos;&quot;
               </p>
               <div className="testimonial-author">
                 <Image
@@ -231,9 +231,9 @@ export default function InstyleLandingPage() {
             </div>
             <div className="testimonial">
               <p className="testimonial-text">
-                                "I've been coming to Instyle for over a year now and I'm always
+                                &quot;I&apos;ve been coming to Instyle for over a year now and I&apos;m always
 
-                impressed with their attention to detail and professionalism."
+                impressed with their attention to detail and professionalism.&quot;
               </p>
               <div className="testimonial-author">
                 <Image
@@ -251,8 +251,8 @@ export default function InstyleLandingPage() {
             </div>
             <div className="testimonial">
               <p className="testimonial-text">
-                "The coloring service is exceptional! They really understand how
-                to create the perfect shade for my skin tone."
+                &quot;The coloring service is exceptional! They really understand how
+                to create the perfect shade for my skin tone.&quot;
               </p>
               <div className="testimonial-author">
                 <Image
@@ -383,7 +383,7 @@ export default function InstyleLandingPage() {
                 with the highest quality service and results that exceed your
                 expectations.
               </p>
-              <ul>
+<ul>
                 <li>Premium quality products</li>
                 <li>Expert stylists with years of experience</li>
                 <li>Personalized consultations</li>

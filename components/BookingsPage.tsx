@@ -121,7 +121,7 @@ const BookingsPage: FC = () => {
         `Booking for ${newBookingData.clientName} on ${newBookingData.scheduled_time.toLocaleDateString()} at ${newBookingData.scheduled_time.toLocaleTimeString()} added! Status: Pending.`,
       );
     },
-    [refetch],
+    [refetch, queryClient],
   );;
 
   const bookingsForSelectedDate = bookingsData ?? [];
