@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   compress: true,
 
-  serverExternalPackages: ['@supabase/supabase-js'],
+  serverComponentsExternalPackages: ['@supabase/supabase-js'],
 
   experimental: {
     optimizeCss: true,

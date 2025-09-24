@@ -11,6 +11,7 @@ import ConvexClientProvider from './ConvexClientProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { CartProvider } from '@/app/context/CartContext';
+import Providers from './providers';
 import Debug from '@/components/Debug';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -51,15 +52,17 @@ export default async function RootLayout({
         <body className={inter.className}>
           <ClerkProvider>
             <CSPostHogProvider>
-              <ConvexClientProvider>
-                <CartProvider>
-                  {/* NO PLATFORM HEADER/FOOTER FOR TENANTS */}
-                  {children}
-                  <Toaster />
-                  <SonnerToaster />
-                  <Debug />
-                </CartProvider>
-              </ConvexClientProvider>
+              <Providers>
+                <ConvexClientProvider>
+                  <CartProvider>
+                    {/* NO PLATFORM HEADER/FOOTER FOR TENANTS */}
+                    {children}
+                    <Toaster />
+                    <SonnerToaster />
+                    <Debug />
+                  </CartProvider>
+                </ConvexClientProvider>
+              </Providers>
             </CSPostHogProvider>
             <Analytics />
           </ClerkProvider>
@@ -75,14 +78,16 @@ export default async function RootLayout({
       <body className={inter.className}>
         <ClerkProvider>
           <CSPostHogProvider>
-            <ConvexClientProvider>
-              <CartProvider>
-                {children}
-                <Toaster />
-                <SonnerToaster />
-                <Debug />
-              </CartProvider>
-            </ConvexClientProvider>
+            <Providers>
+              <ConvexClientProvider>
+                <CartProvider>
+                  {children}
+                  <Toaster />
+                  <SonnerToaster />
+                  <Debug />
+                </CartProvider>
+              </ConvexClientProvider>
+            </Providers>
           </CSPostHogProvider>
           <Analytics />
         </ClerkProvider>

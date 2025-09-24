@@ -1,21 +1,17 @@
-import React, { useState, useCallback, useEffect } from 'react';
+'use client';
+
+import React, { useState, useCallback, useEffect, FC, useMemo } from 'react';
 import SimpleCalendar from './SimpleCalendar';
 import BookingForm from './BookingForm';
 import { Booking, Service, RawAppointmentData, Staff } from './types';
-import {
-  useQuery,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-// Create a QueryClient instance
-const queryClient = new QueryClient();
-
-const BookingsPage: React.FC = () => {
+const BookingsPage: FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [salonId, setSalonId] = useState<string | null>(null);
   const supabase = createClientComponentClient();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const getSalonId = async () => {
@@ -75,19 +71,15 @@ const BookingsPage: React.FC = () => {
       return [];
     }
 
-    return data.map((appt: RawAppointmentData) => {
-      const mappedService: Service =
-        appt.services && appt.services.length > 0
-          ? appt.services[0]
-          : ({} as Service); // Ensure it's a single Service object
-      const mappedStaff: Staff | null =
-        appt.staff && appt.staff.length > 0 ? appt.staff[0] : null; // Ensure it's a single Staff object
+    return data.map((appt: RawAppointmentData): Booking => {
+      const service = Array.isArray(appt.services) ? appt.services[0] : appt.services;
+      const staff = Array.isArray(appt.staff) ? appt.staff[0] : appt.staff;
 
       return {
         id: appt.id,
         clientName: appt.client_name,
         clientPhone: appt.client_phone,
-        service: mappedService,
+        service: service || ({} as Service),
         scheduled_time: new Date(appt.scheduled_time),
         status: appt.status as
           | 'pending'
@@ -97,9 +89,9 @@ const BookingsPage: React.FC = () => {
           | 'in_progress'
           | 'completed'
           | 'no_show',
-        staffId: mappedStaff?.id || null, // Access id from the mappedStaff object
+        staffId: staff?.id || null,
         recurrence_rule: appt.recurrence_rule || null,
-        staff: mappedStaff,
+        staff: staff || null,
       };
     });
   }, [salonId, selectedDate, supabase]);
@@ -130,13 +122,9 @@ const BookingsPage: React.FC = () => {
       );
     },
     [refetch],
-  );
+  );;
 
-  const bookingsForSelectedDate = selectedDate
-    ? bookingsData.filter(
-        (b) => b.scheduled_time.toDateString() === selectedDate.toDateString(),
-      )
-    : [];
+  const bookingsForSelectedDate = bookingsData ?? [];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -145,49 +133,41 @@ const BookingsPage: React.FC = () => {
           onDateSelect={handleDateSelect}
           selectedDate={selectedDate}
         />
-        {selectedDate && bookingsForSelectedDate.length > 0 && (
-          <div className="mt-6 bg-white p-4 rounded-lg shadow-lg">
-            {isLoading && <p>Loading bookings...</p>}
-            {error && <p>Error: {error.message}</p>}
-            {!isLoading && !error && (
+        {selectedDate && (
+          <div className="mt-6 bg-white p-4 rounded-lg shadow-lg min-h-[200px]">
+            {isLoading ? (
+              <p className="text-center text-neutral-500 py-4">Loading bookings...</p>
+            ) : error ? (
+              <p className="text-center text-red-500 py-4">Error: {error.message}</p>
+            ) : (
               <>
                 <h3 className="text-lg font-semibold text-neutral-700 mb-3">
                   Bookings for {selectedDate.toLocaleDateString()}:
                 </h3>
-                <ul className="space-y-2">
-                  {bookingsForSelectedDate.map((booking) => (
-                    <li
-                      key={booking.id}
-                      className="p-3 bg-neutral-50 rounded-md shadow-sm"
-                    >
-                      <p className="font-medium text-neutral-800">
-                        {booking.clientName} - {booking.service.name}
-                      </p>
-                      <p className="text-sm text-neutral-600">
-                        Time:{' '}
-                        {booking.scheduled_time.toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}{' '}
-                        - Status: {booking.status}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
+                {bookingsForSelectedDate.length > 0 ? (
+                  <ul className="space-y-2">
+                    {bookingsForSelectedDate.map((booking) => (
+                      <li
+                        key={booking.id}
+                        className="p-3 bg-neutral-50 rounded-md shadow-sm"
+                      >
+                        <p className="font-medium text-neutral-800">
+                          {booking.clientName} - {booking.service.name}
+                        </p>
+                        <p className="text-sm text-neutral-600">
+                          Time:{' '}
+                          {booking.scheduled_time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}{' '}
+                          - Status: {booking.status}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-neutral-500 text-center py-4">
+                    No bookings scheduled for this date.
+                  </p>
+                )}
               </>
-            )}
-          </div>
-        )}
-        {selectedDate && bookingsForSelectedDate.length === 0 && (
-          <div className="mt-6 bg-white p-4 rounded-lg shadow-lg">
-            {isLoading && <p>Loading bookings...</p>}
-            {error && <p>Error: {error.message}</p>}
-            {!isLoading && !error && (
-              <div className="mt-6 bg-white p-4 rounded-lg shadow-lg text-center">
-                <p className="text-neutral-500">
-                  No bookings scheduled for {selectedDate.toLocaleDateString()}.
-                </p>
-              </div>
             )}
           </div>
         )}
@@ -207,10 +187,4 @@ const BookingsPage: React.FC = () => {
   );
 };
 
-const BookingsPageWrapper: React.FC = () => (
-  <QueryClientProvider client={queryClient}>
-    <BookingsPage />
-  </QueryClientProvider>
-);
-
-export default BookingsPageWrapper;
+export default BookingsPage;

@@ -13,7 +13,7 @@ if (typeof window !== 'undefined' && posthogKey) {
   });
 }
 
-export function CSPostHogProvider({ children }: { children: ReactNode }) {
+export function CSPostHogProvider({ children }: { children?: ReactNode }) {
   const { user } = useUser();
   const { isSignedIn } = useAuth();
 

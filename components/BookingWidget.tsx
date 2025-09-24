@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useReducer, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -18,37 +18,116 @@ interface Service {
   id: string;
   name: string;
   price: number;
-  duration: number;
+  duration_minutes: number;
+}
+
+interface TimeSlot {
+  time: string;
+  staff_id: string;
+}
+
+type BookingState = {
+  services: Service[];
+  timeSlots: TimeSlot[];
+  selectedService: string;
+  selectedDate: string;
+  selectedTime: string;
+  clientInfo: {
+    name: string;
+    phone: string;
+    email: string;
+  };
+  status: 'idle' | 'loading' | 'booking' | 'booked' | 'error';
+  error: string | null;
+};
+
+type BookingAction =
+  | { type: 'SET_SERVICES'; payload: Service[] }
+  | { type: 'SET_TIME_SLOTS'; payload: TimeSlot[] }
+  | { type: 'SET_FIELD'; payload: { field: keyof BookingState | `clientInfo.${keyof BookingState['clientInfo']}`; value: any } }
+  | { type: 'SET_STATUS'; payload: BookingState['status'] }
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'RESET' };
+
+const initialState: BookingState = {
+  services: [],
+  timeSlots: [],
+  selectedService: '',
+  selectedDate: new Date().toISOString().split('T')[0],
+  selectedTime: '',
+  clientInfo: { name: '', phone: '', email: '' },
+  status: 'loading',
+  error: null,
+};
+
+function bookingReducer(state: BookingState, action: BookingAction): BookingState {
+  switch (action.type) {
+    case 'SET_SERVICES':
+      return { ...state, services: action.payload, status: 'idle' };
+    case 'SET_TIME_SLOTS':
+      return { ...state, timeSlots: action.payload, status: 'idle' };
+    case 'SET_FIELD':
+      if (action.payload.field.startsWith('clientInfo.')) {
+        const field = action.payload.field.split('.')[1] as keyof BookingState['clientInfo'];
+        return { ...state, clientInfo: { ...state.clientInfo, [field]: action.payload.value } };
+      }
+      return { ...state, [action.payload.field]: action.payload.value };
+    case 'SET_STATUS':
+      return { ...state, status: action.payload };
+    case 'SET_ERROR':
+      return { ...state, error: action.payload, status: action.payload ? 'error' : 'idle' };
+    case 'RESET':
+      return {
+        ...initialState,
+        services: state.services, // Keep services loaded
+        status: 'idle',
+      };
+    default:
+      return state;
+  }
 }
 
 export default function BookingWidget() {
-  const [services, setServices] = useState<Service[]>([]);
-  const [selectedService, setSelectedService] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
-  const [clientInfo, setClientInfo] = useState({
-    name: '',
-    phone: '',
-    email: '',
-  });
-  const [isBooking, setIsBooking] = useState(false);
-  const [isBooked, setIsBooked] = useState(false);
+  const [state, dispatch] = useReducer(bookingReducer, initialState);
+  const { services, timeSlots, selectedService, selectedDate, selectedTime, clientInfo, status, error } = state;
+  const tenantId = 'instyle-boutique'; // This should likely come from props or context
 
   useEffect(() => {
-    // Mock services for InStyle Hair Boutique
-    setServices([
-      { id: '1', name: 'Hair Cut & Style', price: 35000, duration: 60 },
-      { id: '2', name: 'Hair Wash & Blow Dry', price: 25000, duration: 45 },
-      { id: '3', name: 'Hair Extensions', price: 80000, duration: 120 },
-      { id: '4', name: 'Hair Coloring', price: 65000, duration: 90 },
-      { id: '5', name: 'Hair Treatment', price: 45000, duration: 75 },
-      { id: '6', name: 'Bridal Hair Styling', price: 120000, duration: 150 },
-    ]);
+    const fetchServices = async () => {
+      dispatch({ type: 'SET_STATUS', payload: 'loading' });
+      try {
+        // Assuming a similar API structure to BookingForm.tsx
+        const response = await fetch(`/api/services?salon_id=${tenantId}`);
+        if (!response.ok) throw new Error('Failed to fetch services.');
+        const data = await response.json();
+        dispatch({ type: 'SET_SERVICES', payload: data });
+      } catch (e) {
+        dispatch({ type: 'SET_ERROR', payload: e instanceof Error ? e.message : 'An unknown error occurred.' });
+      }
+    };
+    fetchServices();
   }, []);
+
+  const fetchAvailableSlots = useCallback(async () => {
+    if (!selectedDate || !selectedService) return;
+    dispatch({ type: 'SET_STATUS', payload: 'loading' });
+    try {
+      const response = await fetch(`/api/availability?salon_id=${tenantId}&service_id=${selectedService}&date=${selectedDate}`);
+      if (!response.ok) throw new Error('Failed to fetch time slots.');
+      const data = await response.json();
+      dispatch({ type: 'SET_TIME_SLOTS', payload: data.available_slots || [] });
+    } catch (e) {
+      dispatch({ type: 'SET_ERROR', payload: e instanceof Error ? e.message : 'Could not load time slots.' });
+    }
+  }, [selectedDate, selectedService]);
+
+  useEffect(() => {
+    fetchAvailableSlots();
+  }, [fetchAvailableSlots]);
 
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsBooking(true);
+    dispatch({ type: 'SET_STATUS', payload: 'booking' });
 
     try {
       const response = await fetch('/api/book-appointment', {
@@ -62,7 +141,7 @@ export default function BookingWidget() {
           clientName: clientInfo.name,
           clientPhone: clientInfo.phone,
           clientEmail: clientInfo.email,
-          tenantId: 'instyle-boutique',
+          tenantId,
         }),
       });
 
@@ -76,14 +155,13 @@ export default function BookingWidget() {
           initializePayment(result.appointmentId, selectedServiceData.price);
         }
       } else {
-        alert('Failed to book appointment. Please try again.');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to book appointment.');
       }
     } catch (error) {
       console.error('Booking error:', error);
-      alert('Failed to book appointment. Please try again.');
+      dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'An unknown error occurred.' });
     }
-
-    setIsBooking(false);
   };
 
   const initializePayment = (appointmentId: string, amount: number) => {
@@ -103,43 +181,20 @@ export default function BookingWidget() {
             appointmentId,
           }),
         }).then(() => {
-          setIsBooked(true);
-          setSelectedService('');
-          setSelectedDate('');
-          setSelectedTime('');
-          setClientInfo({ name: '', phone: '', email: '' });
+          dispatch({ type: 'SET_STATUS', payload: 'booked' });
         });
       },
       onClose: () => {
         alert('Payment cancelled');
+        dispatch({ type: 'SET_STATUS', payload: 'idle' });
       },
     });
     handler.openIframe();
   };
 
-  const timeSlots = [
-    '09:00',
-    '09:30',
-    '10:00',
-    '10:30',
-    '11:00',
-    '11:30',
-    '12:00',
-    '12:30',
-    '13:00',
-    '13:30',
-    '14:00',
-    '14:30',
-    '15:00',
-    '15:30',
-    '16:00',
-    '16:30',
-    '17:00',
-  ];
-
   const today = new Date().toISOString().split('T')[0];
 
-  if (isBooked) {
+  if (status === 'booked') {
     return (
       <Card className="max-w-md mx-auto">
         <CardContent className="pt-6 text-center">
@@ -151,7 +206,7 @@ export default function BookingWidget() {
             Your appointment has been booked successfully. You&apos;ll receive a
             WhatsApp confirmation shortly.
           </p>
-          <Button onClick={() => setIsBooked(false)} variant="outline">
+          <Button onClick={() => dispatch({ type: 'RESET' })} variant="outline">
             Book Another Appointment
           </Button>
         </CardContent>
@@ -168,25 +223,34 @@ export default function BookingWidget() {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleBooking} className="space-y-6">
           {/* Service Selection */}
           <div className="space-y-2">
             <Label htmlFor="service">Select Service *</Label>
             <Select
               value={selectedService}
-              onValueChange={setSelectedService}
+              onValueChange={(value) => dispatch({ type: 'SET_FIELD', payload: { field: 'selectedService', value } })}
               required
+              disabled={status === 'loading' || services.length === 0}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Choose a service..." />
+                <SelectValue placeholder={status === 'loading' ? 'Loading services...' : 'Choose a service...'} />
               </SelectTrigger>
               <SelectContent>
-                {services.map((service) => (
-                  <SelectItem key={service.id} value={service.id}>
-                    {service.name} - R{(service.price / 100).toFixed(2)} (
-                    {service.duration}min)
-                  </SelectItem>
-                ))}
+                {services.length > 0 ? (
+                  services.map((service) => (
+                    <SelectItem key={service.id} value={service.id}>
+                      {service.name} - R{(service.price / 100).toFixed(2)} ({service.duration_minutes}min)
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="no-services" disabled>No services available</SelectItem>
+                )}
               </SelectContent>
             </Select>
           </div>
@@ -198,7 +262,7 @@ export default function BookingWidget() {
               id="date"
               type="date"
               value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
+              onChange={(e) => dispatch({ type: 'SET_FIELD', payload: { field: 'selectedDate', value: e.target.value } })}
               min={today}
               required
             />
@@ -209,21 +273,24 @@ export default function BookingWidget() {
             <Label htmlFor="time">Select Time *</Label>
             <Select
               value={selectedTime}
-              onValueChange={setSelectedTime}
+              onValueChange={(value) => dispatch({ type: 'SET_FIELD', payload: { field: 'selectedTime', value } })}
               required
+              disabled={status === 'loading' || timeSlots.length === 0}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Choose a time..." />
+                <SelectValue placeholder={status === 'loading' ? 'Loading times...' : 'Choose a time...'} />
               </SelectTrigger>
               <SelectContent>
-                {timeSlots.map((time) => (
-                  <SelectItem key={time} value={time}>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      {time}
-                    </div>
-                  </SelectItem>
-                ))}
+                {timeSlots.length > 0 ? (
+                  timeSlots.map((slot) => (
+                    <SelectItem key={slot.time} value={slot.time}>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        {new Date(slot.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                    </SelectItem>
+                  ))
+                ) : (<SelectItem value="no-slots" disabled>No time slots available</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -238,9 +305,7 @@ export default function BookingWidget() {
                   id="name"
                   type="text"
                   value={clientInfo.name}
-                  onChange={(e) =>
-                    setClientInfo({ ...clientInfo, name: e.target.value })
-                  }
+                  onChange={(e) => dispatch({ type: 'SET_FIELD', payload: { field: 'clientInfo.name', value: e.target.value } })}
                   className="pl-10"
                   required
                 />
@@ -255,9 +320,7 @@ export default function BookingWidget() {
                   id="phone"
                   type="tel"
                   value={clientInfo.phone}
-                  onChange={(e) =>
-                    setClientInfo({ ...clientInfo, phone: e.target.value })
-                  }
+                  onChange={(e) => dispatch({ type: 'SET_FIELD', payload: { field: 'clientInfo.phone', value: e.target.value } })}
                   placeholder="+27 82 123 4567"
                   className="pl-10"
                   required
@@ -274,9 +337,7 @@ export default function BookingWidget() {
                 id="email"
                 type="email"
                 value={clientInfo.email}
-                onChange={(e) =>
-                  setClientInfo({ ...clientInfo, email: e.target.value })
-                }
+                onChange={(e) => dispatch({ type: 'SET_FIELD', payload: { field: 'clientInfo.email', value: e.target.value } })}
                 className="pl-10"
                 required
               />
@@ -285,10 +346,10 @@ export default function BookingWidget() {
 
           <Button
             type="submit"
-            disabled={isBooking}
+            disabled={status === 'booking' || status === 'loading'}
             className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
           >
-            {isBooking ? 'Booking...' : 'Book Appointment'}
+            {status === 'booking' ? 'Booking...' : 'Book Appointment'}
           </Button>
         </form>
       </CardContent>

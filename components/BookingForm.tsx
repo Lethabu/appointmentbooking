@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+"use client";
+
+import React, { useEffect, useCallback, useReducer } from 'react';
 import { Booking, Service } from './types';
 import { IconChat } from './icons/index';
 
@@ -8,82 +10,123 @@ interface BookingFormProps {
   salonId: string; // Add salonId prop
 }
 
+interface FormState {
+  clientName: string;
+  clientPhone: string;
+  selectedServiceId: string;
+  bookingTime: string; // This will now store the ISO string of the selected slot
+  recurrenceRule: string;
+  recurrenceEndDate: string;
+  services: Service[];
+  availableSlots: { time: string; staff_id: string }[];
+  isLoadingServices: boolean;
+  isLoadingSlots: boolean;
+  error: string | null;
+}
+
+type FormAction =
+  | { type: 'SET_FIELD'; field: keyof Omit<FormState, 'services' | 'availableSlots'>; payload: any }
+  | { type: 'SET_SERVICES'; payload: Service[] }
+  | { type: 'SET_AVAILABLE_SLOTS'; payload: { time: string; staff_id: string }[] }
+  | { type: 'FETCH_SERVICES_START' }
+  | { type: 'FETCH_SLOTS_START' }
+  | { type: 'FETCH_SUCCESS' }
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'RESET_FORM'; payload: { services: Service[] } };
+
+const initialState: FormState = {
+  clientName: '',
+  clientPhone: '',
+  selectedServiceId: '',
+  bookingTime: '',
+  recurrenceRule: 'none',
+  recurrenceEndDate: '',
+  services: [],
+  availableSlots: [],
+  isLoadingServices: true,
+  isLoadingSlots: false,
+  error: null,
+};
+
+function formReducer(state: FormState, action: FormAction): FormState {
+  switch (action.type) {
+    case 'SET_FIELD':
+      return { ...state, [action.field]: action.payload };
+    case 'FETCH_SERVICES_START':
+      return { ...state, isLoadingServices: true, error: null };
+    case 'SET_SERVICES':
+      return { ...state, services: action.payload, selectedServiceId: action.payload[0]?.id || '', isLoadingServices: false };
+    case 'FETCH_SLOTS_START':
+      return { ...state, isLoadingSlots: true, error: null, availableSlots: [], bookingTime: '' };
+    case 'SET_AVAILABLE_SLOTS':
+      return { ...state, availableSlots: action.payload, bookingTime: action.payload[0]?.time || '', isLoadingSlots: false };
+    case 'FETCH_SUCCESS':
+      return { ...state, isLoadingServices: false, isLoadingSlots: false };
+    case 'SET_ERROR':
+      return { ...state, error: action.payload, isLoadingServices: false, isLoadingSlots: false };
+    case 'RESET_FORM':
+      return { ...initialState, services: action.payload.services, selectedServiceId: action.payload.services[0]?.id || '', isLoadingServices: false };
+    default:
+      return state;
+  }
+}
+
 const BookingForm: React.FC<BookingFormProps> = ({
   selectedDate,
   onBookingSubmit,
   salonId,
-}) => {
-  const [clientName, setClientName] = useState('');
-  const [services, setServices] = useState<Service[]>([]); // State to store fetched services
-  const [selectedServiceId, setSelectedServiceId] = useState<string>('');
-  const [bookingTime, setBookingTime] = useState(''); // Initialize with empty string
-  const [clientPhone, setClientPhone] = useState('');
-  const [recurrenceRule, setRecurrenceRule] = useState<string>('none'); // 'none', 'daily', 'weekly', 'monthly'
-  const [recurrenceEndDate, setRecurrenceEndDate] = useState<string>('');
-  const [availableSlots, setAvailableSlots] = useState<
-    { time: string; staff_id: string }[]
-  >([]); // State to store available slots with staff_id
+}: BookingFormProps) => {
+  const [state, dispatch] = useReducer(formReducer, initialState);
+  const { clientName, clientPhone, selectedServiceId, bookingTime, recurrenceRule, recurrenceEndDate, services, availableSlots, isLoadingServices, isLoadingSlots, error } = state;
+
+  const fetchServices = useCallback(async () => {
+    if (!salonId) return;
+    dispatch({ type: 'FETCH_SERVICES_START' });
+    try {
+      const response = await fetch(`/api/services?salon_id=${salonId}`);
+      if (!response.ok) {
+        throw new Error(`Error fetching services: ${response.statusText}`);
+      }
+      const data: Service[] = await response.json();
+      dispatch({ type: 'SET_SERVICES', payload: data });
+    } catch (err) {
+      console.error('Failed to fetch services:', err);
+      dispatch({ type: 'SET_ERROR', payload: 'Could not load services. Please try again later.' });
+    }
+  }, [salonId]);
 
   useEffect(() => {
-    const fetchServices = async () => {
-      if (!salonId) return;
-      try {
-        const response = await fetch(`/api/services?salon_id=${salonId}`);
-        if (!response.ok) {
-          throw new Error(`Error fetching services: ${response.statusText}`);
-        }
-        const data: Service[] = await response.json();
-        setServices(data);
-        if (data.length > 0) {
-          setSelectedServiceId(data[0].id); // Select the first service by default
-        }
-      } catch (error) {
-        console.error('Failed to fetch services:', error);
-        // Handle error (e.g., display a message to the user)
-      }
-    };
-
     fetchServices();
-  }, [salonId]); // Re-fetch services when salonId changes
+  }, [fetchServices]);
+
+  const fetchAvailableSlots = useCallback(async () => {
+    if (!selectedDate || !salonId || !selectedServiceId) {
+      dispatch({ type: 'SET_AVAILABLE_SLOTS', payload: [] });
+      return;
+    }
+    dispatch({ type: 'FETCH_SLOTS_START' });
+    try {
+      const formattedDate = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
+      const response = await fetch(
+        `/api/availability?salon_id=${salonId}&service_id=${selectedServiceId}&date=${formattedDate}`,
+      );
+      if (!response.ok) {
+        throw new Error(
+          `Error fetching available slots: ${response.statusText}`,
+        );
+      }
+      const data: { available_slots: { time: string; staff_id: string }[] } =
+        await response.json();
+      dispatch({ type: 'SET_AVAILABLE_SLOTS', payload: data.available_slots || [] });
+    } catch (err) {
+      console.error('Failed to fetch available slots:', err);
+      dispatch({ type: 'SET_ERROR', payload: 'Could not load available time slots.' });
+    }
+  }, [selectedDate, salonId, selectedServiceId]);
 
   useEffect(() => {
-    const fetchAvailableSlots = async () => {
-      if (!selectedDate || !salonId || !selectedServiceId) {
-        setAvailableSlots([]);
-        return;
-      }
-      try {
-        const formattedDate = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
-        const response = await fetch(
-          `/api/availability?salon_id=${salonId}&service_id=${selectedServiceId}&date=${formattedDate}`,
-        );
-        if (!response.ok) {
-          throw new Error(
-            `Error fetching available slots: ${response.statusText}`,
-          );
-        }
-        const data: { available_slots: { time: string; staff_id: string }[] } =
-          await response.json();
-        setAvailableSlots(data.available_slots);
-        if (data.available_slots.length > 0) {
-          setBookingTime(
-            new Date(data.available_slots[0].time).toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            }),
-          );
-        } else {
-          setBookingTime('');
-        }
-      } catch (error) {
-        console.error('Failed to fetch available slots:', error);
-        setAvailableSlots([]);
-        setBookingTime('');
-      }
-    };
-
     fetchAvailableSlots();
-  }, [selectedDate, salonId, selectedServiceId]);
+  }, [fetchAvailableSlots]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,13 +140,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
       return;
     }
 
-    const selectedSlot = availableSlots.find(
-      (slot) =>
-        new Date(slot.time).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        }) === bookingTime,
-    );
+    const selectedSlot = availableSlots.find((slot) => slot.time === bookingTime);
     if (!selectedSlot) {
       alert('Selected time slot is invalid.');
       return;
@@ -147,16 +184,12 @@ const BookingForm: React.FC<BookingFormProps> = ({
         alert('Appointment booked successfully!');
       }
 
-      // Reset form (optional)
-      setClientName('');
-      setSelectedServiceId(services[0]?.id || '');
-      setBookingTime('');
-      setClientPhone('');
-      setRecurrenceRule('none');
-      setRecurrenceEndDate('');
-    } catch (error) {
-      console.error('Booking submission failed:', error);
-      // Handle error appropriately, e.g., display an error message to the user.
+      dispatch({ type: 'RESET_FORM', payload: { services } });
+    } catch (err) {
+      console.error('Booking submission failed:', err);
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
+      dispatch({ type: 'SET_ERROR', payload: `Booking failed: ${errorMessage}` });
+      alert(`Booking failed. Please try again. Error: ${errorMessage}`);
     }
   };
 
@@ -183,6 +216,12 @@ const BookingForm: React.FC<BookingFormProps> = ({
           : 'Select a date to book'}
       </h3>
 
+      {error && (
+        <div className="p-3 bg-red-100 text-red-700 rounded-md text-sm">
+          {error}
+        </div>
+      )}
+
       <label
         htmlFor="clientName"
         className="block text-sm font-medium text-neutral-700"
@@ -193,7 +232,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
         type="text"
         id="clientName"
         value={clientName}
-        onChange={(e) => setClientName(e.target.value)}
+        onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'clientName', payload: e.target.value })}
         className="mt-1 block w-full px-3 py-2 border border-neutral-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
         required
         disabled={!selectedDate}
@@ -209,7 +248,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
         type="tel"
         id="clientPhone"
         value={clientPhone}
-        onChange={(e) => setClientPhone(e.target.value)}
+        onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'clientPhone', payload: e.target.value })}
         placeholder="e.g., +27821234567"
         className="mt-1 block w-full px-3 py-2 border border-neutral-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
         disabled={!selectedDate}
@@ -224,19 +263,21 @@ const BookingForm: React.FC<BookingFormProps> = ({
       <select
         id="service"
         value={selectedServiceId}
-        onChange={(e) => setSelectedServiceId(e.target.value)}
+        onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'selectedServiceId', payload: e.target.value })}
         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white"
         required
-        disabled={!selectedDate || services.length === 0}
+        disabled={!selectedDate || isLoadingServices || services.length === 0}
       >
-        {services.length > 0 ? (
+        {isLoadingServices ? (
+          <option>Loading services...</option>
+        ) : services.length > 0 ? (
           services.map((service) => (
             <option key={service.id} value={service.id}>
               {service.name} - {service.duration_minutes}min (R{service.price})
             </option>
           ))
         ) : (
-          <option value="">Loading services...</option>
+          <option value="">No services available</option>
         )}
       </select>
 
@@ -249,19 +290,18 @@ const BookingForm: React.FC<BookingFormProps> = ({
       <select
         id="bookingTime"
         value={bookingTime}
-        onChange={(e) => setBookingTime(e.target.value)}
+        onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'bookingTime', payload: e.target.value })}
         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white"
         required
-        disabled={!selectedDate || availableSlots.length === 0}
+        disabled={!selectedDate || isLoadingSlots || availableSlots.length === 0}
       >
-        {availableSlots.length > 0 ? (
+        {isLoadingSlots ? (
+          <option>Loading times...</option>
+        ) : availableSlots.length > 0 ? (
           availableSlots.map((slot) => (
             <option
-              key={slot.time + slot.staff_id}
-              value={new Date(slot.time).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
+              key={slot.time}
+              value={slot.time}
             >
               {new Date(slot.time).toLocaleTimeString([], {
                 hour: '2-digit',
@@ -284,7 +324,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
       <select
         id="recurrenceRule"
         value={recurrenceRule}
-        onChange={(e) => setRecurrenceRule(e.target.value)}
+        onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'recurrenceRule', payload: e.target.value })}
         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white"
         disabled={!selectedDate}
       >
@@ -306,7 +346,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
             type="date"
             id="recurrenceEndDate"
             value={recurrenceEndDate}
-            onChange={(e) => setRecurrenceEndDate(e.target.value)}
+            onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'recurrenceEndDate', payload: e.target.value })}
             className="mt-1 block w-full px-3 py-2 border border-neutral-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
             required
           />

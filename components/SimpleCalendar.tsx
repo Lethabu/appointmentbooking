@@ -1,4 +1,6 @@
-import React, { useMemo, useState } from 'react';
+'use client';
+
+import React, { useMemo, useState, FC } from 'react';
 import { ChevronDownIcon as IconChevronDown } from '@heroicons/react/24/solid';
 
 // --- Helper functions moved outside the component for better performance ---
@@ -14,10 +16,7 @@ interface SimpleCalendarProps {
   selectedDate?: Date | null;
 }
 
-const SimpleCalendar: React.FC<SimpleCalendarProps> = ({
-  onDateSelect,
-  selectedDate,
-}) => {
+const SimpleCalendar: FC<SimpleCalendarProps> = ({ onDateSelect, selectedDate }: SimpleCalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const year = currentMonth.getFullYear();
