@@ -9,8 +9,8 @@ export interface AuthUser {
   email: string
 }
 
-export async function getCurrentUser(request?: NextRequest): Promise<AuthUser> {
-  const { userId } = auth(request)
+export async function getCurrentUser(): Promise<AuthUser> {
+  const { userId } = auth()
   if (!userId) {
     throw new NextResponse('Unauthorized', { status: 401 })
   }
@@ -28,7 +28,7 @@ export async function getCurrentUser(request?: NextRequest): Promise<AuthUser> {
 
 export function requireAdmin(requestHandler: (request: NextRequest) => Promise<NextResponse>) {
   return async (request: NextRequest) => {
-    const user = await getCurrentUser(request)
+    const user = await getCurrentUser()
     if (user.role !== 'admin') {
       return new NextResponse('Forbidden: Admin access required', { status: 403 })
     }
@@ -38,7 +38,7 @@ export function requireAdmin(requestHandler: (request: NextRequest) => Promise<N
 
 export function requireCustomerOrAdmin(requestHandler: (request: NextRequest) => Promise<NextResponse>) {
   return async (request: NextRequest) => {
-    const user = await getCurrentUser(request)
+    const user = await getCurrentUser()
     if (!['admin', 'customer'].includes(user.role)) {
       return new NextResponse('Forbidden: Customer or Admin access required', { status: 403 })
     }

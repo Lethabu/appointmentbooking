@@ -1,7 +1,5 @@
 'use client';
 
-'use client';
-
 import { useState, useEffect } from 'react';
 
 const mockReviews = [
@@ -10,7 +8,7 @@ const mockReviews = [
     client_name: 'Sarah M.',
     rating: 5,
     comment:
-      "Amazing hair transformation! The team at InStyle really knows what they're doing. My highlights look perfect!",
+      "Amazing hair transformation! The team at InStyle really knows what they&apos;re doing. My highlights look perfect!",
     service: 'Highlights',
     date: '2024-01-15',
     automated: true,
@@ -20,7 +18,7 @@ const mockReviews = [
     client_name: 'Lisa K.',
     rating: 5,
     comment:
-      "Best hair treatment I've ever had. My hair feels so soft and healthy now. Definitely booking again!",
+      "Best hair treatment I&apos;ve ever had. My hair feels so soft and healthy now. Definitely booking again!",
     service: 'Hair Treatment',
     date: '2024-01-10',
     automated: true,
@@ -124,7 +122,7 @@ export default function AutomatedReviews() {
               How was your experience?
             </h3>
             <p className="text-gray-600 mb-4">
-              We'd love to hear about your visit to InStyle Hair Boutique!
+              We&apos;d love to hear about your visit to InStyle Hair Boutique!
             </p>
 
             <div className="mb-4">

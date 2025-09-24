@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   compress: true,
 
-  serverExternalPackages: ['@supabase/supabase-js'],
+  
 
   experimental: {
     optimizeCss: true,
@@ -96,3 +96,13 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+
+nextConfig.webpack = (config, { isServer }) => {
+  if (isServer) {
+    config.ignoreWarnings = [
+      /Critical dependency: the request of a dependency is an expression/,
+      /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/,
+    ];
+  }
+  return config;
+};
