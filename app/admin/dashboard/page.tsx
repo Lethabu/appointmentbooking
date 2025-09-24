@@ -119,7 +119,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <h3 className="text-sm font-medium text-gray-500 mb-2">
-            Today's Bookings
+            Today&apos;s Bookings
           </h3>
           <div className="text-3xl font-bold text-blue-600">
             {metrics.todayBookings}
@@ -135,7 +135,7 @@ export default function AdminDashboard() {
         </div>
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <h3 className="text-sm font-medium text-gray-500 mb-2">
-            Today's Revenue
+            Today&apos;s Revenue
           </h3>
           <div className="text-3xl font-bold text-green-600">
             R{metrics.totalRevenue.toFixed(2)}

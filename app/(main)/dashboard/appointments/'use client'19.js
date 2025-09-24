@@ -143,7 +143,7 @@ export default function ServicesPage() {
           <p>Loading services...</p>
         ) : services.length === 0 ? (
           <p>
-            You haven't added any services yet. Use the form above to get
+            You haven&apos;t added any services yet. Use the form above to get
             started.
           </p>
         ) : (

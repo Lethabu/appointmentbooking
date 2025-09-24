@@ -101,7 +101,7 @@ export default function LiveTenantDashboard({
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-lg text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm opacity-90">Today's Bookings</p>
+              <p className="text-sm opacity-90">Today&apos;s Bookings</p>
               <p className="text-3xl font-bold">
                 {dashboardData?.today_bookings || 0}
               </p>
@@ -113,7 +113,7 @@ export default function LiveTenantDashboard({
         <div className="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-lg text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm opacity-90">Today's Revenue</p>
+              <p className="text-sm opacity-90">Today&apos;s Revenue</p>
               <p className="text-3xl font-bold">
                 R{((dashboardData?.today_revenue || 0) / 100).toFixed(0)}
               </p>

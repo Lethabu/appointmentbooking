@@ -5,9 +5,6 @@ import {
   WithContext,
   WebSite,
   FAQPage,
-  HowTo,
-  VideoObject,
-  SpeakableSpecification,
 } from 'schema-dts';
 import { jsonLd } from '@/lib/jsonLd';
 

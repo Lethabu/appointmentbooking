@@ -238,7 +238,7 @@ function ServicesPageContent() {
           <p>Loading services...</p>
         ) : services.length === 0 ? (
           <div className="text-center py-8 bg-gray-50 rounded-lg">
-            <p className="text-gray-600">You haven't added any services yet.</p>
+            <p className="text-gray-600">You haven&apos;t added any services yet.</p>
             <p className="text-sm text-gray-500">
               Use the form above to get started.
             </p>

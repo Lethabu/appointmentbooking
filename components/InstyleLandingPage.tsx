@@ -213,7 +213,7 @@ export default function InstyleLandingPage() {
             <div className="testimonial">
               <p className="testimonial-text">
                 "The best hair salon experience I've ever had! My extensions
-                look so natural and the service was exceptional."
+                look so natural and the service was exceptional.'"
               </p>
               <div className="testimonial-author">
                 <Image
@@ -231,7 +231,8 @@ export default function InstyleLandingPage() {
             </div>
             <div className="testimonial">
               <p className="testimonial-text">
-                "I've been coming to Instyle for over a year now and I'm always
+                                "I've been coming to Instyle for over a year now and I'm always
+
                 impressed with their attention to detail and professionalism."
               </p>
               <div className="testimonial-author">

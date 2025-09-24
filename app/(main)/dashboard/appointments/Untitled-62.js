@@ -24,7 +24,7 @@ export default async function DashboardPage() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
         <p className="mt-1 text-sm text-gray-600">
-          Here's a quick overview of your salon's performance.
+          Here&apos;s a quick overview of your salon&apos;s performance.
         </p>
       </div>
 

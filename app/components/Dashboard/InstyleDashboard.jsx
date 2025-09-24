@@ -51,7 +51,7 @@ export default function InstyleDashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-lg shadow text-white">
-            <h3 className="text-sm font-medium opacity-90">Today's Bookings</h3>
+            <h3 className="text-sm font-medium opacity-90">Today&apos;s Bookings</h3>
             <p className="text-3xl font-bold">{stats.todays_bookings}</p>
             <p className="text-xs opacity-75 mt-1">Active appointments</p>
           </div>
@@ -84,7 +84,7 @@ export default function InstyleDashboard() {
             <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
             <div className="space-y-3">
               <button className="w-full p-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 text-left">
-                📅 Today's Schedule
+                📅 Today&apos;s Schedule
               </button>
               <button className="w-full p-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 text-left">
                 💇‍♀️ Manage Services

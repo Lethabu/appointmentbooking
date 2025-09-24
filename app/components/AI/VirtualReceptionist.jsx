@@ -116,7 +116,7 @@ export default function VirtualReceptionist() {
         </button>
         <div className="absolute bottom-16 right-0 bg-white rounded-lg shadow-lg p-3 max-w-xs animate-bounce">
           <p className="text-sm text-gray-700">
-            Hi! I'm your AI assistant. Click to chat! 💬
+            Hi! I&apos;m your AI assistant. Click to chat! 💬
           </p>
         </div>
       </div>

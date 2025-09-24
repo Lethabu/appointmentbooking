@@ -112,7 +112,7 @@ export default function HomePage() {
               <h3 className="text-xl font-bold mb-2">Blaze - Marketing AI</h3>
               <p className="text-gray-600 mb-4">
                 Data-driven marketing agent that creates campaigns and boosts
-                your salon's visibility
+                your salon&apos;s visibility
               </p>
               <ul className="text-sm text-left space-y-2">
                 <li className="flex items-center gap-2">
@@ -281,8 +281,8 @@ export default function HomePage() {
                 ))}
               </div>
               <blockquote className="text-gray-700 mb-4 italic">
-                "Our bookings increased 280% in the first month. The AI
-                assistant handles everything seamlessly!"
+                &quot;Our bookings increased 280% in the first month. The AI
+                assistant handles everything seamlessly!&quot;
               </blockquote>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
@@ -306,8 +306,8 @@ export default function HomePage() {
                 ))}
               </div>
               <blockquote className="text-gray-700 mb-4 italic">
-                "No more no-shows! The smart reminders and confirmations are
-                absolutely game-changing."
+                &quot;No more no-shows! The smart reminders and confirmations are
+                absolutely game-changing.&quot;
               </blockquote>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
@@ -331,8 +331,8 @@ export default function HomePage() {
                 ))}
               </div>
               <blockquote className="text-gray-700 mb-4 italic">
-                "The AI marketing agent created campaigns that brought in 50+
-                new clients in 6 weeks."
+                &quot;The AI marketing agent created campaigns that brought in 50+
+                new clients in 6 weeks.&quot;
               </blockquote>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">

@@ -62,7 +62,7 @@ const DashboardPage: React.FC = () => {
         Welcome to Smart Salon HQ!
       </h1>
       <p className="text-neutral-600">
-        Here's a quick overview of your salon's performance.
+        Here&apos;s a quick overview of your salon&apos;s performance.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -100,10 +100,10 @@ const DashboardPage: React.FC = () => {
             New booking: Jane Doe - Ladies Cut - Tomorrow @ 2 PM
           </li>
           <li className="text-neutral-600 p-3 bg-neutral-50 rounded-md">
-            AI Agent 'Blaze' suggested a new promotion.
+            AI Agent &apos;Blaze&apos; suggested a new promotion.
           </li>
           <li className="text-neutral-600 p-3 bg-neutral-50 rounded-md">
-            Client 'Mike R.' completed their 5th visit.
+            Client &apos;Mike R.&apos; completed their 5th visit.
           </li>
         </ul>
       </div>

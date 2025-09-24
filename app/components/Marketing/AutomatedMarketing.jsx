@@ -107,7 +107,7 @@ export default function AutomatedMarketing() {
 
               <p className="text-sm text-gray-600 mb-3">{campaign.trigger}</p>
               <p className="text-sm text-gray-800 mb-4 bg-gray-50 p-2 rounded italic">
-                "{campaign.message}"
+                &quot;{campaign.message}&quot;
               </p>
 
               <div className="grid grid-cols-2 gap-2 text-sm">
@@ -137,7 +137,7 @@ export default function AutomatedMarketing() {
         {/* Performance Summary */}
         <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            This Month's Performance
+            This Month&apos;s Performance
           </h3>
           <div className="grid md:grid-cols-4 gap-4">
             <div className="text-center">
@@ -208,7 +208,7 @@ export default function AutomatedMarketing() {
           <div className="p-4 bg-yellow-50 rounded-lg">
             <h4 className="font-medium text-yellow-900">At-Risk Clients</h4>
             <p className="text-sm text-yellow-700">
-              15 regular clients haven't booked in 6+ weeks - win-back campaign
+              15 regular clients haven&apos;t booked in 6+ weeks - win-back campaign
               recommended
             </p>
           </div>

@@ -118,7 +118,7 @@ export default function ProductsPage() {
         {loading && products.length === 0 ? (
           <p>Loading products...</p>
         ) : products.length === 0 ? (
-          <p>You haven't added any products yet.</p>
+          <p>You haven&apos;t added any products yet.</p>
         ) : (
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <ul className="divide-y divide-gray-200">

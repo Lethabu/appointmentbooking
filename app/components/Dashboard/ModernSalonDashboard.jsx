@@ -44,7 +44,7 @@ const ModernSalonDashboard = () => {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Today's Appointments</h2>
+        <h2 className="text-2xl font-bold mb-4">Today&apos;s Appointments</h2>
         <div className="flex gap-4 mb-6">
           <div className="p-4 bg-blue-50 rounded-lg">
             <h3 className="text-sm text-gray-600">Total Appointments</h3>

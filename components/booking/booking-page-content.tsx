@@ -1,5 +1,7 @@
 'use client';
 
+'use client';
+
 import { useState, useEffect, useCallback } from 'react';
 import { useTenantContext } from '@/contexts/tenant-context';
 import { useTheme } from '@/contexts/theme-context';

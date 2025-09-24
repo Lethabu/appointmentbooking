@@ -55,7 +55,7 @@ export default function CreateSalonPage() {
             Set Up Your Salon
           </h1>
           <p className="mt-2 text-sm text-center text-gray-600">
-            Let's get your business online. This will be your home base.
+            Let&apos;s get your business online. This will be your home base.
           </p>
         </div>
         <form action={handleSubmit} className="space-y-6">
@@ -81,7 +81,7 @@ export default function CreateSalonPage() {
               htmlFor="subdomain"
               className="block text-sm font-medium text-gray-700"
             >
-              Your Salon's Web Address
+              Your Salon&apos;s Web Address
             </label>
             <div className="flex mt-1">
               <input

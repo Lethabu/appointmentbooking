@@ -43,7 +43,7 @@ export default function RealTimeMetrics({
         </div>
 
         <div className="text-center p-4 bg-green-50 rounded-lg">
-          <span className="text-sm text-gray-600">Today's Bookings</span>
+          <span className="text-sm text-gray-600">Today&apos;s Bookings</span>
           <p className="text-2xl font-bold text-green-600">
             {metrics.bookingsToday}
           </p>

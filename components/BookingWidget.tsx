@@ -148,7 +148,7 @@ export default function BookingWidget() {
           </div>
           <h3 className="text-xl font-bold mb-2">Booking Confirmed!</h3>
           <p className="text-gray-600 mb-4">
-            Your appointment has been booked successfully. You'll receive a
+            Your appointment has been booked successfully. You&apos;ll receive a
             WhatsApp confirmation shortly.
           </p>
           <Button onClick={() => setIsBooked(false)} variant="outline">

@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/app/utils/cartStore';
@@ -128,9 +129,11 @@ export default function SmartProductShowcase({
               <CardHeader>
                 <CardTitle className="text-sm">{product.name}</CardTitle>
                 {product.image_urls?.[0] && (
-                  <img
+                  <Image
                     src={product.image_urls[0]}
                     alt={product.name}
+                    width={500} // Assuming a reasonable default width
+                    height={500} // Assuming a reasonable default height
                     className="w-full h-32 object-cover rounded"
                   />
                 )}

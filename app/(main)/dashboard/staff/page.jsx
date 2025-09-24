@@ -79,7 +79,7 @@ export default async function StaffPage() {
               </ul>
             ) : (
               <p className="text-gray-500">
-                You haven't added any staff members yet.
+                You haven&apos;t added any staff members yet.
               </p>
             )}
           </div>

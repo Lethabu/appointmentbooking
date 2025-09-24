@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -52,11 +52,7 @@ export default function EcommerceDashboard({ tenantId }: { tenantId: string }) {
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, [tenantId]);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       const [statsRes, activityRes] = await Promise.all([
         fetch(`/api/dashboard-stats?tenantId=${tenantId}`),
@@ -73,7 +69,11 @@ export default function EcommerceDashboard({ tenantId }: { tenantId: string }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [tenantId]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const syncWhatsAppCatalog = async () => {
     try {
@@ -169,11 +169,11 @@ export default function EcommerceDashboard({ tenantId }: { tenantId: string }) {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">WhatsApp Sessions</CardTitle>
-            <MessageCircle className="h-4 w-4 text-muted-foreground" />
+            <MessageCircle className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.whatsappSessions}</div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {stats.socialClicks} social clicks
             </p>
           </CardContent>
