@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase';
 import { fetchInstagramMedia } from '@/services/social/instagram';
-import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
+  const supabase = createClient();
   try {
     const { tenantId } = await request.json();
 

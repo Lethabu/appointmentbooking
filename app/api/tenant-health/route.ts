@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
+  const supabase = createClient();
   const tenantId = request.headers.get('x-tenant-id') || 'unknown';
 
   try {

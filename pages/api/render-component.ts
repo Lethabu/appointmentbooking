@@ -1,7 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { supabase } from '../../lib/supabase';
+import { createClient } from '../../lib/supabase';
+import { SupabaseClient } from '@supabase/supabase-js';
 
-const getTenantByHost = async (host: string) => {
+interface Component {
+  comp_type: string;
+  html_chunk: string;
+  css: string;
+}
+
+const getTenantByHost = async (host: string, supabase: SupabaseClient) => {
   const { data: tenant, error } = await supabase
     .from('salons')
     .select('id, name')
@@ -16,7 +23,7 @@ const getTenantByHost = async (host: string) => {
   return tenant;
 };
 
-const getComponents = async (tenantId: string) => {
+const getComponents = async (tenantId: string, supabase: SupabaseClient): Promise<{ header: { html_chunk: string; css: string } | null; footer: { html_chunk: string; css: string } | null } | null> => {
   const { data: components, error } = await supabase
     .from('tenant_components')
     .select('comp_type, html_chunk, css')
@@ -31,8 +38,8 @@ const getComponents = async (tenantId: string) => {
     return null;
   }
 
-  const header = components.find((c) => c.comp_type === 'header');
-  const footer = components.find((c) => c.comp_type === 'footer');
+  const header = components.find((c: Component) => c.comp_type === 'header');
+  const footer = components.find((c: Component) => c.comp_type === 'footer');
 
   return {
     header: header ? { html_chunk: header.html_chunk, css: header.css } : null,
@@ -44,15 +51,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  const supabase = createClient();
   try {
     const host = req.headers.host ?? '';
-    const tenant = await getTenantByHost(host);
+    const tenant = await getTenantByHost(host, supabase);
 
     if (!tenant) {
       return res.status(404).json({ error: 'Tenant not found' });
     }
 
-    const components = await getComponents(tenant.id);
+    const components = await getComponents(tenant.id, supabase);
 
     if (!components) {
       // Return empty strings to prevent leaking platform components

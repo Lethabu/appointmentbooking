@@ -1,6 +1,6 @@
 'use client';
 
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -15,6 +15,8 @@ import {
 import axios from 'axios'; // Import axios for API calls
 
 export default function InstyleBooking() {
+  const supabase = createClient();
+
   const [services, setServices] = useState([]);
   const [products, setProducts] = useState([]);
   const [appointmentHistory, setAppointmentHistory] = useState([]); // State for appointment history
