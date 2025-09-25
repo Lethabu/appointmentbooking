@@ -56,7 +56,7 @@ export function RealTimeDashboard({ tenantId }: { tenantId: string }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [tenantId]);
+  }, [tenantId, supabase]);
 
   if (loading) {
     return <div className="animate-pulse">Loading dashboard...</div>;

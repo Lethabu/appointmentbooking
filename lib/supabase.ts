@@ -30,3 +30,6 @@ export const createTenantClient = (tenantId: string) => {
 export const setTenantContext = async (client: any, tenantId: string) => {
   return client;
 };
+
+// Default client for client-side usage
+export const supabase = createClient();

@@ -59,7 +59,7 @@ export default function InstyleBooking() {
     }
 
     fetchData();
-  }, []);
+  }, [supabase]);
 
   // Fetch appointments
   useEffect(() => {
@@ -112,7 +112,7 @@ export default function InstyleBooking() {
     }
 
     fetchAppointments();
-  }, []);
+  }, [supabase]);
 
   // Group services by category
   const grouped = services?.reduce((acc, s) => {

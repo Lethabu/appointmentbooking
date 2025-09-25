@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { supabase } from '@/lib/supabase';
+
 import { inStyleBrand, inStyleConfig } from './config';
 import Image from 'next/image';
 import GoogleMap from './map';
