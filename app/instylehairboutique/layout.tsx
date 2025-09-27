@@ -1,8 +1,6 @@
-import { ClerkProvider } from '@clerk/nextjs';
 import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
-import { clerkConfig } from '../clerk.config';
 import ConvexClientProvider from '../ConvexClientProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
@@ -22,17 +20,15 @@ export default function InstyleLayout({
         <title>Instyle Hair Boutique</title>
       </head>
       <body className={inter.className}>
-        <ClerkProvider {...clerkConfig}>
-          <CSPostHogProvider>
-            <ConvexClientProvider>
-              <CartProvider>
-                {children}
-                <Toaster />
-                <SonnerToaster />
-              </CartProvider>
-            </ConvexClientProvider>
-          </CSPostHogProvider>
-        </ClerkProvider>
+        <CSPostHogProvider>
+          <ConvexClientProvider>
+            <CartProvider>
+              {children}
+              <Toaster />
+              <SonnerToaster />
+            </CartProvider>
+          </ConvexClientProvider>
+        </CSPostHogProvider>
         <Analytics />
       </body>
     </html>

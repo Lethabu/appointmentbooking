@@ -7,7 +7,9 @@ import { inStyleBrand, inStyleConfig } from './config';
 import Image from 'next/image';
 import GoogleMap from './map';
 import ContactSection from './contact';
-import BookingWidget from '@/components/BookingWidget';
+import dynamic from 'next/dynamic';
+
+const BookingWidget = dynamic(() => import('@/components/BookingWidget'), { ssr: false });
 
 interface Service {
   id: string;

@@ -48,7 +48,9 @@ export default async function RootLayout({
   if (tenant) {
     return (
       <html lang="en">
-        <head />
+        <head>
+          <meta name="referrer" content="strict-origin-when-cross-origin" />
+        </head>
         <body className={inter.className}>
           <ClerkProvider>
             <CSPostHogProvider>
@@ -74,7 +76,9 @@ export default async function RootLayout({
   // For main platform domain, use full platform layout
   return (
     <html lang="en">
-      <head />
+      <head>
+          <meta name="referrer" content="strict-origin-when-cross-origin" />
+      </head>
       <body className={inter.className}>
         <ClerkProvider>
           <CSPostHogProvider>

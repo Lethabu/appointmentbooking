@@ -1,0 +1,26 @@
+connectorId: example
+generate:
+  javascriptSdk:
+    - outputDir: ../../src/dataconnect-generated
+      package: "@dataconnect/generated"
+      packageJsonDir: ../..
+      react: true
+      angular: false
+    - outputDir: ../../tenant-wrapper/src/dataconnect-generated
+      package: "@dataconnect/generated"
+      packageJsonDir: ../../tenant-wrapper
+      react: true
+      angular: false
+    - outputDir: ../../functions/src/dataconnect-generated
+      package: "@dataconnect/generated"
+      packageJsonDir: ../../functions
+      react: false
+      angular: false
+    - outputDir: ../../tenants/instyle/src/dataconnect-generated
+      package: "@dataconnect/generated"
+      packageJsonDir: ../../tenants/instyle
+      react: true
+      angular: false
+  kotlinSdk:
+    - outputDir: ../../app/src/main/kotlin
+      package: com.google.firebase.dataconnect.generated

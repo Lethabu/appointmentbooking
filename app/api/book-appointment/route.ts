@@ -8,23 +8,9 @@ import {
 } from 'firebase/firestore';
 import { validateAndSanitize, bookingSchema } from '@/lib/validation';
 import { trackBooking, trackError } from '@/lib/monitoring';
-import rateLimit from '@/lib/rate-limit';
-
-const limiter = rateLimit({
-  limit: 10, // 10 bookings per minute
-  windowMs: 60 * 1000,
-});
 
 export async function POST(request: NextRequest) {
   try {
-    // Rate limiting
-    if (!limiter.check(request)) {
-      return NextResponse.json(
-        { error: 'Too many requests. Please try again later.' },
-        { status: 429 },
-      );
-    }
-
     const body = await request.json();
 
     // Validate and sanitize input

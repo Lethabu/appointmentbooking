@@ -1,17 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getRateLimit } from '@/lib/rate-limit';
 import { AiSensyClient } from '@/lib/aisensy';
 
 export async function POST(request: NextRequest) {
-  // Rate limiting (10 req/min per IP)
-  const identifier = request.headers.get('x-forwarded-for') ?? 'anonymous';
-  const rateLimit = getRateLimit();
-  const { success } = await rateLimit.limit(identifier);
-
-  if (!success) {
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
-  }
-
   const { messages, agentId, to } = await request.json();
 
   if (!agentId) {

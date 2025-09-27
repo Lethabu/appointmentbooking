@@ -1,17 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { firebaseAuthMiddleware } from './lib/firebase/middleware';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const hostname = request.headers.get('host') || '';
   const pathname = url.pathname;
 
-  // Ignore static assets and API routes
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/api/') ||
-    pathname.includes('.')
-  ) {
-    return NextResponse.next();
+  let response: NextResponse;
+
+  // Protect API routes with Firebase Auth
+  if (pathname.startsWith('/api/')) {
+    response = await firebaseAuthMiddleware(request);
+  } else {
+    response = NextResponse.next();
+  }
+
+  // Ignore static assets
+  if (pathname.startsWith('/_next') || pathname.includes('.')) {
+    return response;
   }
 
   // Handle tenant domains - route to tenant pages
@@ -20,11 +26,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(new URL(rewrittenPath, request.url));
   }
   
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
   matcher: [
-    '/((?!_next|api|favicon.ico|.*\\.).*)',
+    '/((?!_next|favicon.ico|.*\\.).*)',
   ]
 };
