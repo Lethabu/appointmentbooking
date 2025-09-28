@@ -16,6 +16,9 @@ import Debug from '@/components/Debug';
 
 const inter = Inter({ subsets: ['latin'] });
 
+// Force dynamic rendering to ensure headers() is available
+export const dynamic = 'force-dynamic';
+
 // Helper function to detect tenant from headers
 async function getTenantFromHeaders(): Promise<string | null> {
   const headersList = await headers();
