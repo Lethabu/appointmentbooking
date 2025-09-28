@@ -22,6 +22,8 @@ export async function middleware(request: NextRequest) {
 
   // Handle tenant domains - route to tenant pages
   if (hostname === 'instylehairboutique.co.za' || hostname === 'www.instylehairboutique.co.za') {
+    // Set the tenant header for the layout to read
+    response.headers.set('x-tenant-id', 'instyle');
     const rewrittenPath = `/instylehairboutique${pathname}`;
     return NextResponse.rewrite(new URL(rewrittenPath, request.url));
   }
