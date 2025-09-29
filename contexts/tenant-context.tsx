@@ -17,13 +17,21 @@ const TenantContext = createContext<TenantContextType | undefined>(undefined)
 export function TenantProvider({ children }: { children: ReactNode }) {
   const params = useParams()
   const subdomain = params?.subdomain as string
-  const { tenant, loading, error, refetch } = useTenant(subdomain)
+  // useTenant returns a React Query result: { data, isLoading, error, refetch }
+  const { data: tenant, isLoading: loading, error, refetch } = useTenant(subdomain as string)
 
   const refreshTenant = async () => {
     await refetch()
   }
 
-  return <TenantContext.Provider value={{ tenant, loading, error, refreshTenant }}>{children}</TenantContext.Provider>
+  // Ensure values match TenantContextType: tenant | null and error | null
+  return (
+    <TenantContext.Provider
+      value={{ tenant: tenant ?? null, loading: !!loading, error: error ? (error as Error).message : null, refreshTenant }}
+    >
+      {children}
+    </TenantContext.Provider>
+  )
 }
 
 export function useTenantContext() {
