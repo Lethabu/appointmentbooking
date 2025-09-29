@@ -1,5 +1,8 @@
+
+
 import { Metadata } from 'next';
 import InstyleClientPage from '@/components/instyle/InstyleClientPage';
+import React from 'react';
 
 export const metadata: Metadata = {
   title: 'InStyle Hair Boutique - Premium Hair Salon in Johannesburg',

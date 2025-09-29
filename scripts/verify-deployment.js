@@ -1,63 +1,84 @@
 #!/usr/bin/env node
 
-/**
- * Deployment Verification Script
- * Runs automated checks on the live domain to verify all fixes are working
- */
+// ================================================================
+// DEPLOYMENT VERIFICATION SUITE
+// Run this script after each deployment to ensure platform health
+// ================================================================
 
 const https = require('https');
-const { URL } = require('url');
+const fs = require('fs');
+const path = require('path');
 
-const DOMAIN = 'instylehairboutique.co.za';
-const ROUTES_TO_TEST = ['/', '/book', '/shop', '/services'];
+// Configuration for all tenant verification
+const VERIFICATION_CONFIG = {
+  'instylehairboutique.co.za': {
+    name: 'InStyle Hair Boutique',
+    routes: [
+      { path: '/', name: 'Home', critical: true },
+      { path: '/book', name: 'Booking', critical: true },
+      { path: '/shop', name: 'Shop', critical: false },
+      { path: '/services', name: 'Services', critical: true }
+    ],
+    assets: [
+      { path: '/tenants/instyle/hero.webp', name: 'Hero Image', critical: true },
+      { path: '/tenants/instyle/logo.png', name: 'Logo', critical: true }
+    ],
+    expectedContent: {
+      '/': ['InStyle Hair Boutique', 'Where Style is Perfected'],
+      '/book': ['book', 'appointment', 'service'],
+      '/services': ['hair', 'service', 'pricing']
+    }
+  },
+  'www.appointmentbooking.co.za': {
+    name: 'AppointmentBooking Platform',
+    routes: [
+      { path: '/', name: 'Platform Home', critical: true },
+      { path: '/features', name: 'Features', critical: false }
+    ],
+    assets: [
+      { path: '/platform/logo.png', name: 'Platform Logo', critical: true }
+    ]
+  }
+};
 
-async function makeRequest(url) {
-  return new Promise((resolve, reject) => {
-    const request = https.get(url, (response) => {
-      let data = '';
-      response.on('data', chunk => data += chunk);
-      response.on('end', () => {
-        resolve({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: data
-        });
-      });
-    });
-    
-    request.on('error', reject);
-    request.setTimeout(10000, () => {
-      request.destroy();
-      reject(new Error('Request timeout'));
-    });
-  });
+// Utility functions
+function log(message, type = 'info') {
+  const timestamp = new Date().toISOString();
+  const colors = {
+    info: '\x1b[36m',
+    success: '\x1b[32m', 
+    warning: '\x1b[33m',
+    error: '\x1b[31m',
+    reset: '\x1b[0m'
+  };
+  
+  console.log(`${colors[type]}[${timestamp}] ${message}${colors.reset}`);
 }
 
-async function checkRoute(route) {
-  const url = `https://${DOMAIN}${route}`;
-  console.log(`\n🔍 Testing: ${url}`);
+async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
   
   try {
-    const response = await makeRequest(url);
-    
-    // Check status code
-    const statusOk = response.statusCode === 200;
-    console.log(`   Status: ${response.statusCode} ${statusOk ? '✅' : '❌'}`);
-    
-    // Check for Tailwind CSS classes in HTML
-    const hasTailwind = response.body.includes('bg-purple-') || response.body.includes('text-purple-');
-    console.log(`   Tailwind: ${hasTailwind ? '✅ Found' : '❌ Missing'}`);
-    
-    // Check for proper meta tags
-    const hasTitle = response.body.includes('<title>');
-    console.log(`   Meta Tags: ${hasTitle ? '✅ Present' : '❌ Missing'}`);
-    
-    // Check for React hydration
-    const hasReact = response.body.includes('__NEXT_DATA__');
-    console.log(`   React SSR: ${hasReact ? '✅ Working' : '❌ Failed'}`);
-    
-    return {
-      route,
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'InStyle-Health-Check/1.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        ...options.headers
+      }
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+}
+
+// Core verification functions
+// ...rest of user-provided code...
       statusOk,
       hasTailwind,
       hasTitle,

@@ -2,97 +2,54 @@
 const nextConfig = {
   reactStrictMode: true,
   compress: true,
-
-  
-
+  trailingSlash: false,
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,
   },
-
   images: {
     domains: [
       'images.unsplash.com',
       'cdn-instyle',
       'instylehairboutique.co.za',
       'www.instylehairboutique.co.za',
-      'firebasestorage.googleapis.com',
+      'appointmentbooking.co.za',
+      'localhost'
     ],
     formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 60 * 60 * 24 * 7, // 1 week
+    minimumCacheTTL: 86400,
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
-
   async headers() {
     return [
       {
-        source: '/_next/static/(.*)',
+        source: '/tenants/:tenant/:asset*',
         headers: [
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
-          },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET, HEAD, OPTIONS',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
-          },
-        ],
-      },
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' }
+        ]
+      }
     ];
   },
-
-  async redirects() {
-    return [
-      {
-        source: '/demo',
-        destination: '/book-demo',
-        permanent: true,
-      },
-      {
-        source: '/booking',
-        destination: '/book-appointment',
-        permanent: true,
-      },
-    ];
-  },
-
   async rewrites() {
     return [
       {
-        source: '/:path*',
-        destination: 'https://clerk.accounts.dev/:path*',
-        has: [{ type: 'host', value: 'clerk.appointmentbooking.co.za' }],
-      },
-      {
-        source: '/sitemap.xml',
-        destination: '/api/sitemap',
-      },
-      {
-        source: '/robots.txt',
-        destination: '/api/robots',
-      },
+        source: '/tenants/:tenant/:asset*',
+        destination: '/tenants/:tenant/:asset*'
+      }
     ];
   },
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production'
+  },
+  typescript: {
+    ignoreBuildErrors: false
+  },
+  eslint: {
+    ignoreDuringBuilds: false
+  }
 };
 
 module.exports = nextConfig;

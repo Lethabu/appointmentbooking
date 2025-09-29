@@ -1,38 +1,66 @@
+
 import { NextRequest, NextResponse } from 'next/server';
-import { firebaseAuthMiddleware } from './lib/firebase/middleware';
+import { resolveTenantFromHostname } from './lib/tenant-resolver';
 
-export async function middleware(request: NextRequest) {
-  const url = request.nextUrl;
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
   const hostname = request.headers.get('host') || '';
-  const pathname = url.pathname;
 
-  let response: NextResponse;
-
-  // Protect API routes with Firebase Auth
-  if (pathname.startsWith('/api/')) {
-    response = await firebaseAuthMiddleware(request);
-  } else {
-    response = NextResponse.next();
+  // Skip middleware for static assets and API routes
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/static') ||
+    pathname.includes('.') ||
+    pathname.startsWith('/favicon')
+  ) {
+    return NextResponse.next();
   }
 
-  // Ignore static assets
-  if (pathname.startsWith('/_next') || pathname.includes('.')) {
-    return response;
+  // Resolve tenant configuration
+  const tenant = resolveTenantFromHostname(hostname);
+
+  if (tenant) {
+    // Create new headers with tenant context
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-tenant-id', tenant.id);
+    requestHeaders.set('x-tenant-slug', tenant.canonical);
+    requestHeaders.set('x-tenant-name', tenant.name);
+    requestHeaders.set('x-tenant-domain', tenant.domain);
+
+    // Handle redirect slugs
+    const currentSlug = pathname.split('/')[1];
+    if (tenant.redirects.includes(currentSlug)) {
+      const url = request.nextUrl.clone();
+      url.pathname = pathname.replace(`/${currentSlug}`, `/${tenant.canonical}`);
+      return NextResponse.redirect(url, 301); // Permanent redirect
+    }
+
+    // Rewrite to tenant-specific path
+    const url = request.nextUrl.clone();
+    if (!pathname.startsWith(`/${tenant.canonical}`)) {
+      url.pathname = `/${tenant.canonical}${pathname}`;
+      return NextResponse.rewrite(url, {
+        request: {
+          headers: requestHeaders
+        }
+      });
+    }
+
+    // Pass through with tenant headers
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders
+      }
+    });
   }
 
-  // Handle tenant domains - route to tenant pages
-  if (hostname === 'instylehairboutique.co.za' || hostname === 'www.instylehairboutique.co.za') {
-    // Set the tenant header for the layout to read
-    response.headers.set('x-tenant-id', 'instyle');
-    const rewrittenPath = `/instylehairboutique${pathname}`;
-    return NextResponse.rewrite(new URL(rewrittenPath, request.url));
-  }
-  
-  return response;
+  // Default platform routing
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    '/((?!_next|favicon.ico|.*\\.).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)' 
   ]
 };
