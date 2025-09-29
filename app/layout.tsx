@@ -2,7 +2,6 @@ import './globals.css';
 import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { Inter } from 'next/font/google';
 import { headers } from 'next/headers';
-import dynamic from 'next/dynamic';
 import { Analytics } from '@vercel/analytics/react';
 import { ClerkProvider } from '@clerk/nextjs';
 
