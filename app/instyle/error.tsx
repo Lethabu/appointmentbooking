@@ -6,7 +6,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold text-red-600 mb-4">Something went wrong</h1>
-      <p className="text-gray-700 mb-2">We couldn't load the page. Please try again later.</p>
+  <p className="text-gray-700 mb-2">We couldn&apos;t load the page. Please try again later.</p>
       {process.env.NODE_ENV === 'development' && (
         <pre className="bg-gray-100 p-4 rounded text-xs text-red-800 max-w-xl overflow-auto">
           {error?.message}

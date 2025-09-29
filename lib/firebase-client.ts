@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, Firestore } from "firebase/firestore";
+import { getFirestore, Firestore, enableIndexedDbPersistence } from "firebase/firestore";
 import { useState, useEffect } from "react";
 
 let firebaseApp: ReturnType<typeof initializeApp> | null = null;
@@ -19,9 +19,22 @@ export function getClientFirestore() {
       appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!
     });
     _firestore = getFirestore(firebaseApp);
+    // Enable offline persistence
+    enableIndexedDbPersistence(_firestore).catch((err) => {
+      if (err.code === 'failed-precondition') {
+        // Multiple tabs open, persistence can only be enabled in one tab at a time.
+        console.warn('Firestore persistence failed-precondition:', err.message);
+      } else if (err.code === 'unimplemented') {
+        // The current browser does not support all of the features required to enable persistence
+        console.warn('Firestore persistence unimplemented:', err.message);
+      } else {
+        console.error('Firestore persistence error:', err);
+      }
+    });
   }
   return _firestore;
 }
+// ...existing code...
 
 export function useFirestore() {
   const [firestore, setFirestore] = useState<Firestore | null>(null);

@@ -14,12 +14,19 @@ const nextConfig = {
       'instylehairboutique.co.za',
       'www.instylehairboutique.co.za',
       'appointmentbooking.co.za',
-      'localhost'
+      'localhost',
+      'fonts.gstatic.com',
+      'fonts.googleapis.com'
     ],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 86400,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
+  },
+
+  experimental: {
+    optimizeCss: true,
+    scrollRestoration: true,
   },
   async headers() {
     return [

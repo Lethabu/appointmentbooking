@@ -41,24 +41,21 @@ const VERIFICATION_CONFIG = {
   }
 };
 
-// Utility functions
 function log(message, type = 'info') {
   const timestamp = new Date().toISOString();
   const colors = {
     info: '\x1b[36m',
-    success: '\x1b[32m', 
+    success: '\x1b[32m',
     warning: '\x1b[33m',
     error: '\x1b[31m',
     reset: '\x1b[0m'
   };
-  
   console.log(`${colors[type]}[${timestamp}] ${message}${colors.reset}`);
 }
 
 async function fetchWithTimeout(url, options = {}, timeout = 10000) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
-  
   try {
     const response = await fetch(url, {
       ...options,
@@ -77,98 +74,98 @@ async function fetchWithTimeout(url, options = {}, timeout = 10000) {
   }
 }
 
-// Core verification functions
-// ...rest of user-provided code...
+async function verifyRoute(domain, route) {
+  const url = `https://${domain}${route.path}`;
+  try {
+    log(`Checking route: ${url}`);
+    const response = await fetchWithTimeout(url);
+    const html = await response.text();
+    const statusOk = response.status === 200;
+    const hasTailwind = html.includes('bg-') || html.includes('text-');
+    const hasTitle = html.includes('<title>');
+    const hasReact = html.includes('__NEXT_DATA__');
+    return {
+      route: route.path,
       statusOk,
       hasTailwind,
       hasTitle,
       hasReact,
       success: statusOk && hasTailwind && hasTitle && hasReact
     };
-    
   } catch (error) {
-    console.log(`   Error: ❌ ${error.message}`);
+    log(`   Error: ❌ ${error.message}`);
     return {
-      route,
+      route: route.path,
       success: false,
       error: error.message
     };
   }
 }
 
-async function checkAssets() {
-  console.log(`\n🖼️  Testing Assets:`);
-  
-  const assets = [
-    '/tenants/instyle/hero.webp',
-    '/tenants/instyle/logo.png'
-  ];
-  
-  const results = [];
-  
-  for (const asset of assets) {
-    const url = `https://${DOMAIN}${asset}`;
-    try {
-      const response = await makeRequest(url);
-      const success = response.statusCode === 200;
-      console.log(`   ${asset}: ${success ? '✅' : '❌'} (${response.statusCode})`);
-      results.push({ asset, success, statusCode: response.statusCode });
-    } catch (error) {
-      console.log(`   ${asset}: ❌ ${error.message}`);
-      results.push({ asset, success: false, error: error.message });
-    }
+async function verifyAsset(domain, asset) {
+  const url = `https://${domain}${asset.path}`;
+  try {
+    log(`Checking asset: ${url}`);
+    const response = await fetchWithTimeout(url, { method: 'HEAD' });
+    const success = response.status === 200;
+    return {
+      asset: asset.path,
+      success,
+      statusCode: response.status
+    };
+  } catch (error) {
+    log(`   ${asset.path}: ❌ ${error.message}`);
+    return {
+      asset: asset.path,
+      success: false,
+      error: error.message
+    };
   }
-  
-  return results;
 }
 
 async function main() {
-  console.log('🚀 Starting Deployment Verification');
-  console.log(`📍 Domain: ${DOMAIN}`);
-  console.log('=' .repeat(50));
-  
-  // Test all routes
-  const routeResults = [];
-  for (const route of ROUTES_TO_TEST) {
-    const result = await checkRoute(route);
-    routeResults.push(result);
+  log('🚀 Starting Deployment Verification', 'info');
+  log('='.repeat(80), 'info');
+  for (const [domain, config] of Object.entries(VERIFICATION_CONFIG)) {
+    log(`\nVerifying ${config.name} (${domain})...`, 'info');
+    // Test all routes
+    const routeResults = [];
+    for (const route of config.routes) {
+      const result = await verifyRoute(domain, route);
+      routeResults.push(result);
+    }
+    // Test assets
+    const assetResults = [];
+    for (const asset of config.assets) {
+      const result = await verifyAsset(domain, asset);
+      assetResults.push(result);
+    }
+    // Summary
+    log('\n' + '='.repeat(50), 'info');
+    log('📊 VERIFICATION SUMMARY', 'info');
+    log('='.repeat(50), 'info');
+    const successfulRoutes = routeResults.filter(r => r.success).length;
+    const successfulAssets = assetResults.filter(a => a.success).length;
+    log(`Routes: ${successfulRoutes}/${routeResults.length} ✅`, 'info');
+    log(`Assets: ${successfulAssets}/${assetResults.length} ✅`, 'info');
+    const overallSuccess = successfulRoutes === routeResults.length && successfulAssets === assetResults.length;
+    log(`\n🎯 Overall Status: ${overallSuccess ? '✅ PASS' : '❌ FAIL'}`, overallSuccess ? 'success' : 'error');
+    if (!overallSuccess) {
+      log('\n❌ Issues found:', 'error');
+      routeResults.filter(r => !r.success).forEach(r => {
+        log(`   - Route ${r.route}: ${r.error || 'Failed checks'}`, 'error');
+      });
+      assetResults.filter(a => !a.success).forEach(a => {
+        log(`   - Asset ${a.asset}: ${a.error || `Status ${a.statusCode}`}`, 'error');
+      });
+      process.exit(1);
+    }
+    log('\n🎉 All checks passed! Deployment is successful.', 'success');
   }
-  
-  // Test assets
-  const assetResults = await checkAssets();
-  
-  // Summary
-  console.log('\n' + '='.repeat(50));
-  console.log('📊 VERIFICATION SUMMARY');
-  console.log('='.repeat(50));
-  
-  const successfulRoutes = routeResults.filter(r => r.success).length;
-  const successfulAssets = assetResults.filter(a => a.success).length;
-  
-  console.log(`Routes: ${successfulRoutes}/${routeResults.length} ✅`);
-  console.log(`Assets: ${successfulAssets}/${assetResults.length} ✅`);
-  
-  const overallSuccess = successfulRoutes === routeResults.length && 
-                        successfulAssets === assetResults.length;
-  
-  console.log(`\n🎯 Overall Status: ${overallSuccess ? '✅ PASS' : '❌ FAIL'}`);
-  
-  if (!overallSuccess) {
-    console.log('\n❌ Issues found:');
-    routeResults.filter(r => !r.success).forEach(r => {
-      console.log(`   - Route ${r.route}: ${r.error || 'Failed checks'}`);
-    });
-    assetResults.filter(a => !a.success).forEach(a => {
-      console.log(`   - Asset ${a.asset}: ${a.error || `Status ${a.statusCode}`}`);
-    });
-    process.exit(1);
-  }
-  
-  console.log('\n🎉 All checks passed! Deployment is successful.');
   process.exit(0);
 }
 
 main().catch(error => {
-  console.error('💥 Verification failed:', error);
+  log('💥 Verification failed: ' + error, 'error');
   process.exit(1);
 });
