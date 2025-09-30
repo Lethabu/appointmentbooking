@@ -1,9 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, Firestore, enableIndexedDbPersistence } from "firebase/firestore";
-import { useState, useEffect } from "react";
 
 let firebaseApp: ReturnType<typeof initializeApp> | null = null;
 let _firestore: Firestore | null = null;
+export let db: Firestore | null = null;
 
 export function getClientFirestore() {
   if (typeof window === "undefined") {
@@ -18,7 +18,8 @@ export function getClientFirestore() {
       messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
       appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!
     });
-    _firestore = getFirestore(firebaseApp);
+  _firestore = getFirestore(firebaseApp);
+  db = _firestore;
     // Enable offline persistence
     enableIndexedDbPersistence(_firestore).catch((err) => {
       if (err.code === 'failed-precondition') {
@@ -36,16 +37,3 @@ export function getClientFirestore() {
 }
 // ...existing code...
 
-export function useFirestore() {
-  const [firestore, setFirestore] = useState<Firestore | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  useEffect(() => {
-    try {
-      const db = getClientFirestore();
-      setFirestore(db);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Firebase initialization failed');
-    }
-  }, []);
-  return { firestore, error };
-}
