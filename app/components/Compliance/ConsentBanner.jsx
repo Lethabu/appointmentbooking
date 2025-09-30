@@ -6,7 +6,7 @@ export default function ConsentBanner() {
   const [consents, setConsents] = useState({
     essential: true,
     marketing: false,
-    analytics: false
+    analytics: false,
   });
 
   useEffect(() => {
@@ -20,9 +20,9 @@ export default function ConsentBanner() {
     const consentData = {
       essential: true,
       marketing: true,
-      analytics: true
+      analytics: true,
     };
-    
+
     await recordConsent(consentData);
     localStorage.setItem('instyle_consent', JSON.stringify(consentData));
     setShowBanner(false);
@@ -36,8 +36,10 @@ export default function ConsentBanner() {
         body: JSON.stringify({
           consent_type: 'website_cookies',
           purpose: 'website_functionality_and_marketing',
-          data_categories: Object.keys(consentData).filter(key => consentData[key])
-        })
+          data_categories: Object.keys(consentData).filter(
+            (key) => consentData[key],
+          ),
+        }),
       });
     } catch (error) {
       console.error('Failed to record consent:', error);
@@ -51,13 +53,16 @@ export default function ConsentBanner() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 mb-2">Your Privacy Matters</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">
+              Your Privacy Matters
+            </h3>
             <p className="text-sm text-gray-600 mb-3">
-              We use cookies and collect data to provide you with the best booking experience. 
-              In compliance with POPIA, we need your consent to process your personal information.
+              We use cookies and collect data to provide you with the best
+              booking experience. In compliance with POPIA, we need your consent
+              to process your personal information.
             </p>
           </div>
-          
+
           <div className="flex gap-2">
             <button
               onClick={handleAcceptAll}

@@ -1,81 +1,101 @@
 import './globals.css';
-import { ClerkProvider } from '@clerk/nextjs';
 import { CSPostHogProvider } from '@/components/PostHogProvider';
-import { ConvexClientProvider } from './providers';
 import { Inter } from 'next/font/google';
-import { Navigation } from '@/components/layout/Navigation';
-import { Footer } from '@/components/layout/Footer';
+import { headers } from 'next/headers';
+import { Analytics } from '@vercel/analytics/react';
+import { ClerkProvider } from '@clerk/nextjs';
+
+// Import components directly for server components
+import ConvexClientProvider from './ConvexClientProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
+import { CartProvider } from '@/app/context/CartContext';
+import Providers from './providers';
+import Debug from '@/components/Debug';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata = {
-  title: {
-    default: 'AppointmentBooking - Complete Salon Management Platform',
-    template: '%s | AppointmentBooking'
-  },
-  description: 'The complete multi-tenant salon booking and management platform. Increase bookings by 300%, reduce no-shows by 80%.',
-  keywords: ['salon booking', 'appointment scheduling', 'salon management', 'beauty booking', 'South Africa'],
-  authors: [{ name: 'AppointmentBooking Team' }],
-  creator: 'AppointmentBooking',
-  publisher: 'AppointmentBooking',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  metadataBase: new URL('https://appointmentbooking.co.za'),
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_ZA',
-    url: 'https://appointmentbooking.co.za',
-    title: 'AppointmentBooking - Complete Salon Management Platform',
-    description: 'The complete multi-tenant salon booking and management platform. Increase bookings by 300%, reduce no-shows by 80%.',
-    siteName: 'AppointmentBooking',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'AppointmentBooking - Complete Salon Management Platform',
-    description: 'The complete multi-tenant salon booking and management platform.',
-    creator: '@appointmentbooking',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-};
+// Force dynamic rendering to ensure headers() is available
+export const dynamic = 'force-dynamic';
 
-export default function RootLayout({
+// Helper function to detect tenant from headers
+async function getTenantFromHeaders(): Promise<string | null> {
+  const headersList = await headers();
+  const host = headersList.get('host') || '';
+  const xTenant = headersList.get('x-tenant-id');
+
+  // Check x-tenant header first (set by middleware)
+  if (xTenant) {
+    return xTenant;
+  }
+
+  // Check hostname for tenant domains
+  if (host.includes('instylehairboutique.co.za') || 
+      host.includes('instylehairboutique') ||
+      host === 'www.instylehairboutique.co.za') {
+    return 'instyle';
+  }
+
+  return null;
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const tenant = await getTenantFromHeaders();
+
+  // For tenant domains, use minimal wrapper without platform branding
+  if (tenant) {
+    return (
+      <html lang="en">
+        <head>
+          <meta name="referrer" content="strict-origin-when-cross-origin" />
+        </head>
+        <body className={inter.className}>
+          <ClerkProvider>
+            <CSPostHogProvider>
+              <Providers>
+                <ConvexClientProvider>
+                  <CartProvider>
+                    {/* NO PLATFORM HEADER/FOOTER FOR TENANTS */}
+                    {children}
+                    <Toaster />
+                    <SonnerToaster />
+                    <Debug />
+                  </CartProvider>
+                </ConvexClientProvider>
+              </Providers>
+            </CSPostHogProvider>
+            <Analytics />
+          </ClerkProvider>
+        </body>
+      </html>
+    );
+  }
+
+  // For main platform domain, use full platform layout
   return (
     <html lang="en">
+      <head>
+          <meta name="referrer" content="strict-origin-when-cross-origin" />
+      </head>
       <body className={inter.className}>
         <ClerkProvider>
           <CSPostHogProvider>
-            <ConvexClientProvider>
-              <Navigation />
-              <main className="min-h-screen">
-                {children}
-              </main>
-              <Footer />
-              <Toaster />
-              <SonnerToaster />
-            </ConvexClientProvider>
+            <Providers>
+              <ConvexClientProvider>
+                <CartProvider>
+                  {children}
+                  <Toaster />
+                  <SonnerToaster />
+                  <Debug />
+                </CartProvider>
+              </ConvexClientProvider>
+            </Providers>
           </CSPostHogProvider>
+          <Analytics />
         </ClerkProvider>
       </body>
     </html>

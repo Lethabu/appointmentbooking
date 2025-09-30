@@ -9,20 +9,22 @@ export default function VirtualReceptionist() {
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
-  const { tenant } = useTenant();
+  const { data: tenant } = useTenant();
 
   useEffect(() => {
     if (tenant) {
-      setMessages([{
-        type: 'bot',
-        content: `Hi! I'm your AI assistant for ${tenant.name}. I'm here 24/7 to help you book appointments, answer questions about our services, or provide assistance! How can I help you today?`,
-        timestamp: new Date()
-      }]);
+      setMessages([
+        {
+          type: 'bot',
+          content: `Hi! I'm your AI assistant for ${tenant.name}. I'm here 24/7 to help you book appointments, answer questions about our services, or provide assistance! How can I help you today?`,
+          timestamp: new Date(),
+        },
+      ]);
     }
   }, [tenant]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -30,10 +32,10 @@ export default function VirtualReceptionist() {
   }, [messages]);
 
   const commonQuestions = [
-    "What services do you offer?",
-    "How do I book an appointment?",
-    "What are your hours?",
-    "What are your prices?"
+    'What services do you offer?',
+    'How do I book an appointment?',
+    'What are your hours?',
+    'What are your prices?',
   ];
 
   const handleSendMessage = async () => {
@@ -42,10 +44,10 @@ export default function VirtualReceptionist() {
     const userMessage = {
       type: 'user',
       content: inputText,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInputText('');
     setIsTyping(true);
 
@@ -54,31 +56,34 @@ export default function VirtualReceptionist() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...messages, userMessage].map(m => ({
+          messages: [...messages, userMessage].map((m) => ({
             role: m.type === 'user' ? 'user' : 'assistant',
-            content: m.content
+            content: m.content,
           })),
-          context: { agent: 'nia' }
-        })
+          context: { agent: 'nia' },
+        }),
       });
 
       const data = await response.json();
-      
+
       const botResponse = {
         type: 'bot',
-        content: data.reply || 'I apologize, but I encountered an issue. Please try again.',
-        timestamp: new Date()
+        content:
+          data.reply ||
+          'I apologize, but I encountered an issue. Please try again.',
+        timestamp: new Date(),
       };
-      
-      setMessages(prev => [...prev, botResponse]);
+
+      setMessages((prev) => [...prev, botResponse]);
     } catch (error) {
       console.error('Chat error:', error);
       const errorResponse = {
         type: 'bot',
-        content: 'I apologize, but I encountered an issue. Please try again later.',
-        timestamp: new Date()
+        content:
+          'I apologize, but I encountered an issue. Please try again later.',
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorResponse]);
+      setMessages((prev) => [...prev, errorResponse]);
     } finally {
       setIsTyping(false);
     }
@@ -95,12 +100,24 @@ export default function VirtualReceptionist() {
           onClick={() => setIsOpen(true)}
           className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+            />
           </svg>
         </button>
         <div className="absolute bottom-16 right-0 bg-white rounded-lg shadow-lg p-3 max-w-xs animate-bounce">
-          <p className="text-sm text-gray-700">Hi! I'm your AI assistant. Click to chat! 💬</p>
+          <p className="text-sm text-gray-700">
+            Hi! I&apos;m your AI assistant. Click to chat! 💬
+          </p>
         </div>
       </div>
     );
@@ -123,8 +140,18 @@ export default function VirtualReceptionist() {
           onClick={() => setIsOpen(false)}
           className="text-white hover:bg-white hover:bg-opacity-20 rounded p-1"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -163,14 +190,20 @@ export default function VirtualReceptionist() {
             </div>
           </div>
         ))}
-        
+
         {isTyping && (
           <div className="flex justify-start">
             <div className="bg-gray-100 rounded-lg px-4 py-2">
               <div className="flex space-x-1">
                 <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                <div
+                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                  style={{ animationDelay: '0.1s' }}
+                ></div>
+                <div
+                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                  style={{ animationDelay: '0.2s' }}
+                ></div>
               </div>
             </div>
           </div>
@@ -194,8 +227,18 @@ export default function VirtualReceptionist() {
             disabled={!inputText.trim()}
             className="bg-blue-500 text-white rounded-lg px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              />
             </svg>
           </button>
         </div>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { AgentType } from '../../lib/types';
 import { Agents } from '../../lib/constants';
@@ -9,7 +8,10 @@ interface AgentSelectorProps {
   onSelectAgent: (agent: AgentType) => void;
 }
 
-const AgentSelector: React.FC<AgentSelectorProps> = ({ selectedAgent, onSelectAgent }) => {
+const AgentSelector: React.FC<AgentSelectorProps> = ({
+  selectedAgent,
+  onSelectAgent,
+}) => {
   return (
     <div className="relative">
       <select

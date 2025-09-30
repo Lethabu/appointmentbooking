@@ -7,19 +7,21 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 );
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const salonId = searchParams.get('salon_id') || 'ccb12b4d-ade6-467d-a614-7c9d198ddc70';
+    const salonId =
+      searchParams.get('salon_id') || 'ccb12b4d-ade6-467d-a614-7c9d198ddc70';
 
     console.log(`Fetching services for salon: ${salonId}`);
 
     const { data: services, error } = await supabase
       .from('services')
-      .select(`
+      .select(
+        `
         id,
         name,
         description,
@@ -28,7 +30,8 @@ export async function GET(request: NextRequest) {
         category,
         is_active,
         created_at
-      `)
+      `,
+      )
       .eq('salon_id', salonId)
       .eq('is_active', true)
       .order('category', { ascending: true })
@@ -37,12 +40,12 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Supabase error:', error);
       return NextResponse.json(
-        { 
-          error: 'Failed to fetch services', 
+        {
+          error: 'Failed to fetch services',
           details: error.message,
-          services: [] 
+          services: [],
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -51,18 +54,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       services: services || [],
-      count: services?.length || 0
+      count: services?.length || 0,
     });
-
   } catch (error) {
     console.error('Unexpected error in services API:', error);
     return NextResponse.json(
-      { 
-        error: 'Internal server error', 
+      {
+        error: 'Internal server error',
         services: [],
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

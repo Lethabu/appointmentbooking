@@ -5,7 +5,12 @@ interface StatsCardsProps {
 export const StatsCards: React.FC<StatsCardsProps> = ({ bookings }) => {
   // Dummy data for demonstration
   const totalBookings = bookings ? bookings.length : 0;
-  const revenue = bookings ? bookings.reduce((sum: number, booking: Booking) => sum + (booking.amount || 0), 0) : 0;
+  const revenue = bookings
+    ? bookings.reduce(
+        (sum: number, booking: Booking) => sum + (booking.amount || 0),
+        0,
+      )
+    : 0;
   const avgBookingValue = totalBookings > 0 ? revenue / totalBookings : 0;
 
   return (
@@ -19,8 +24,12 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ bookings }) => {
         <p className="text-3xl font-bold">R{(revenue / 100).toFixed(2)}</p>
       </div>
       <div className="p-4 border rounded-lg shadow-sm bg-white md:col-span-2">
-        <h3 className="text-lg font-semibold text-gray-500">Average Booking Value</h3>
-        <p className="text-3xl font-bold">R{(avgBookingValue / 100).toFixed(2)}</p>
+        <h3 className="text-lg font-semibold text-gray-500">
+          Average Booking Value
+        </h3>
+        <p className="text-3xl font-bold">
+          R{(avgBookingValue / 100).toFixed(2)}
+        </p>
       </div>
     </div>
   );

@@ -21,16 +21,16 @@ export const Step1_Services: React.FC<Step1ServicesProps> = ({ onNext }) => {
   const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([]);
 
   const handleServiceToggle = (serviceId: string) => {
-    setSelectedServiceIds(prev =>
+    setSelectedServiceIds((prev) =>
       prev.includes(serviceId)
-        ? prev.filter(id => id !== serviceId)
-        : [...prev, serviceId]
+        ? prev.filter((id) => id !== serviceId)
+        : [...prev, serviceId],
     );
   };
 
   const calculateTotalAmount = () => {
     return selectedServiceIds.reduce((total, serviceId) => {
-      const service = mockServices.find(svc => svc.id === serviceId);
+      const service = mockServices.find((svc) => svc.id === serviceId);
       return total + (service ? service.price : 0);
     }, 0);
   };
@@ -49,11 +49,13 @@ export const Step1_Services: React.FC<Step1ServicesProps> = ({ onNext }) => {
   return (
     <div className="space-y-4 p-4 border rounded-lg shadow-sm">
       <h2 className="text-xl font-semibold">Select Services</h2>
-      {mockServices.map(service => (
+      {mockServices.map((service) => (
         <div
           key={service.id}
           className={`flex items-center justify-between p-3 border rounded-md cursor-pointer ${
-            selectedServiceIds.includes(service.id) ? 'bg-blue-100 border-blue-500' : 'bg-white'
+            selectedServiceIds.includes(service.id)
+              ? 'bg-blue-100 border-blue-500'
+              : 'bg-white'
           }`}
           onClick={() => handleServiceToggle(service.id)}
         >

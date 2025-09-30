@@ -1,21 +1,40 @@
-"use client";
-'use client'
+'use client';
+'use client';
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts'
+import { useState, useEffect } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
 export default function AdvancedDashboard() {
   const [analyticsData, setAnalyticsData] = useState({
     revenue: [],
     appointments: [],
     services: [],
-    customers: []
-  })
-  const [loading, setLoading] = useState(true)
+    customers: [],
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Simulate loading analytics data
@@ -27,7 +46,7 @@ export default function AdvancedDashboard() {
           { month: 'Mar', revenue: 18000, appointments: 61 },
           { month: 'Apr', revenue: 16000, appointments: 58 },
           { month: 'May', revenue: 22000, appointments: 73 },
-          { month: 'Jun', revenue: 25000, appointments: 82 }
+          { month: 'Jun', revenue: 25000, appointments: 82 },
         ],
         appointments: [
           { day: 'Mon', completed: 12, cancelled: 2, noShow: 1 },
@@ -36,24 +55,24 @@ export default function AdvancedDashboard() {
           { day: 'Thu', completed: 14, cancelled: 1, noShow: 1 },
           { day: 'Fri', completed: 20, cancelled: 2, noShow: 1 },
           { day: 'Sat', completed: 25, cancelled: 4, noShow: 2 },
-          { day: 'Sun', completed: 8, cancelled: 1, noShow: 0 }
+          { day: 'Sun', completed: 8, cancelled: 1, noShow: 0 },
         ],
         services: [
           { name: 'Hair Cut', bookings: 120, revenue: 18000 },
           { name: 'Hair Color', bookings: 85, revenue: 25500 },
           { name: 'Hair Treatment', bookings: 65, revenue: 19500 },
           { name: 'Styling', bookings: 95, revenue: 14250 },
-          { name: 'Extensions', bookings: 35, revenue: 28000 }
+          { name: 'Extensions', bookings: 35, revenue: 28000 },
         ],
         customers: [
           { type: 'New', count: 45, percentage: 30 },
           { type: 'Returning', count: 85, percentage: 56.7 },
-          { type: 'VIP', count: 20, percentage: 13.3 }
-        ]
-      })
-      setLoading(false)
-    }, 1000)
-  }, [])
+          { type: 'VIP', count: 20, percentage: 13.3 },
+        ],
+      });
+      setLoading(false);
+    }, 1000);
+  }, []);
 
   if (loading) {
     return (
@@ -68,12 +87,18 @@ export default function AdvancedDashboard() {
           <div className="h-96 bg-gray-200 rounded"></div>
         </div>
       </div>
-    )
+    );
   }
 
-  const totalRevenue = analyticsData.revenue.reduce((sum, item) => sum + item.revenue, 0)
-  const totalAppointments = analyticsData.revenue.reduce((sum, item) => sum + item.appointments, 0)
-  const avgRevenuePerAppointment = totalRevenue / totalAppointments
+  const totalRevenue = analyticsData.revenue.reduce(
+    (sum, item) => sum + item.revenue,
+    0,
+  );
+  const totalAppointments = analyticsData.revenue.reduce(
+    (sum, item) => sum + item.appointments,
+    0,
+  );
+  const avgRevenuePerAppointment = totalRevenue / totalAppointments;
 
   return (
     <div className="p-6 space-y-6">
@@ -93,52 +118,110 @@ export default function AdvancedDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2v20m9-9H3" />
+            <svg
+              className="h-4 w-4 text-muted-foreground"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 2v20m9-9H3"
+              />
             </svg>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">R{totalRevenue.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">+12.5% from last period</p>
+            <div className="text-2xl font-bold">
+              R{totalRevenue.toLocaleString()}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              +12.5% from last period
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
-            <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <CardTitle className="text-sm font-medium">
+              Total Appointments
+            </CardTitle>
+            <svg
+              className="h-4 w-4 text-muted-foreground"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalAppointments}</div>
-            <p className="text-xs text-muted-foreground">+8.2% from last period</p>
+            <p className="text-xs text-muted-foreground">
+              +8.2% from last period
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Revenue/Appointment</CardTitle>
-            <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            <CardTitle className="text-sm font-medium">
+              Avg Revenue/Appointment
+            </CardTitle>
+            <svg
+              className="h-4 w-4 text-muted-foreground"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+              />
             </svg>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">R{Math.round(avgRevenuePerAppointment)}</div>
-            <p className="text-xs text-muted-foreground">+3.8% from last period</p>
+            <div className="text-2xl font-bold">
+              R{Math.round(avgRevenuePerAppointment)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              +3.8% from last period
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Customer Retention</CardTitle>
-            <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            <CardTitle className="text-sm font-medium">
+              Customer Retention
+            </CardTitle>
+            <svg
+              className="h-4 w-4 text-muted-foreground"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
             </svg>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">73.2%</div>
-            <p className="text-xs text-muted-foreground">+5.1% from last period</p>
+            <p className="text-xs text-muted-foreground">
+              +5.1% from last period
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -156,7 +239,9 @@ export default function AdvancedDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Revenue & Appointments Over Time</CardTitle>
-              <CardDescription>Monthly revenue and appointment trends</CardDescription>
+              <CardDescription>
+                Monthly revenue and appointment trends
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={400}>
@@ -166,8 +251,20 @@ export default function AdvancedDashboard() {
                   <YAxis yAxisId="left" />
                   <YAxis yAxisId="right" orientation="right" />
                   <Tooltip />
-                  <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="#8884d8" strokeWidth={2} />
-                  <Line yAxisId="right" type="monotone" dataKey="appointments" stroke="#82ca9d" strokeWidth={2} />
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="#8884d8"
+                    strokeWidth={2}
+                  />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="appointments"
+                    stroke="#82ca9d"
+                    strokeWidth={2}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
@@ -178,7 +275,9 @@ export default function AdvancedDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Weekly Appointment Status</CardTitle>
-              <CardDescription>Completed, cancelled, and no-show appointments by day</CardDescription>
+              <CardDescription>
+                Completed, cancelled, and no-show appointments by day
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={400}>
@@ -200,7 +299,9 @@ export default function AdvancedDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Service Performance</CardTitle>
-              <CardDescription>Revenue and booking count by service type</CardDescription>
+              <CardDescription>
+                Revenue and booking count by service type
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={400}>
@@ -238,7 +339,10 @@ export default function AdvancedDashboard() {
                     dataKey="count"
                   >
                     {analyticsData.customers.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <Tooltip />
@@ -249,5 +353,5 @@ export default function AdvancedDashboard() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

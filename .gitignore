@@ -51,3 +51,11 @@ node_modules/
 
 # Supabase
 .supabase
+# clerk configuration (can include secrets)
+/.clerk/
+
+/generated/prisma
+.vercel
+.env*.local
+.idx/
+.env.production

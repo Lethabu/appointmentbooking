@@ -10,26 +10,47 @@ export default function ChatWindow() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const newMessages = [...messages, { role: 'user', content: input }];
-    setMessages(newMessages);
+    const userMessage = { role: 'user', content: input };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput('');
 
-    // TODO: Call the backend API at /api/chat
-    // const response = await fetch('/api/chat', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ message: input }),
-    // });
-    // const data = await response.json();
-    // setMessages((prevMessages) => [...prevMessages, { role: 'assistant', content: data.response }]);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: input }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to get AI response');
+      }
+
+      const data = await response.json();
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: 'assistant', content: data.response },
+      ]);
+    } catch (error) {
+      console.error('Error communicating with AI:', error);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: 'assistant', content: 'Error: Could not connect to AI.' },
+      ]);
+    }
   };
 
   return (
     <div className="flex flex-col h-full bg-white rounded-lg shadow-lg">
       <div className="flex-1 p-4 overflow-y-auto">
         {messages.map((msg, index) => (
-          <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} mb-2`}>
-            <div className={`px-4 py-2 rounded-lg ${msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
+          <div
+            key={index}
+            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} mb-2`}
+          >
+            <div
+              className={`px-4 py-2 rounded-lg ${msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            >
               {msg.content}
             </div>
           </div>

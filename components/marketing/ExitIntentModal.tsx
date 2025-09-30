@@ -8,7 +8,8 @@ export function ExitIntentModal() {
 
   useEffect(() => {
     const handleMouseLeave = (event: MouseEvent) => {
-      if (event.clientY < 10) { // If mouse moves to the top of the viewport
+      if (event.clientY < 10) {
+        // If mouse moves to the top of the viewport
         // Check if feature flag is enabled
         if (posthog.isFeatureEnabled('exit-intent-modal')) {
           setIsOpen(true);
@@ -31,8 +32,10 @@ export function ExitIntentModal() {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-8 rounded-lg shadow-lg text-center">
-        <h2 className="text-2xl font-bold mb-4">Don't leave yet!</h2>
-        <p className="mb-6">Get 10% off your first booking when you sign up now!</p>
+        <h2 className="text-2xl font-bold mb-4">Don&apos;t leave yet!</h2>
+        <p className="mb-6">
+          Get 10% off your first booking when you sign up now!
+        </p>
         <button
           onClick={() => {
             setIsOpen(false);

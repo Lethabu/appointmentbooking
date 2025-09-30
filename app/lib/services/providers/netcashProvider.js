@@ -1,7 +1,8 @@
 // lib/services/providers/netcashProvider.js
 const NETCASH_API_KEY = process.env.NETCASH_API_KEY;
 const NETCASH_SIGNATURE = process.env.NETCASH_SIGNATURE;
-const NETCASH_BASE_URL = process.env.NETCASH_BASE_URL || 'https://api.netcash.co.za/v1/';
+const NETCASH_BASE_URL =
+  process.env.NETCASH_BASE_URL || 'https://api.netcash.co.za/v1/';
 
 export class NetcashProvider {
   async createPayment(details) {
@@ -21,8 +22,8 @@ export class NetcashProvider {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'ApiKey': NETCASH_API_KEY,
-        'Signature': NETCASH_SIGNATURE,
+        ApiKey: NETCASH_API_KEY,
+        Signature: NETCASH_SIGNATURE,
       },
       body: JSON.stringify(payload),
     });

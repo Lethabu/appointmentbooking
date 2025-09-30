@@ -25,7 +25,8 @@ const ModernBookingPage = () => {
     loadData();
   }, []);
 
-  if (loading) return <div className="text-center p-8">Loading services...</div>;
+  if (loading)
+    return <div className="text-center p-8">Loading services...</div>;
   if (error) return <div className="text-red-500 p-8">Error: {error}</div>;
 
   return (
@@ -52,9 +53,11 @@ const ModernBookingPage = () => {
             key={service.id}
             onClick={() => setSelectedService(service.id)}
             className={`p-4 rounded-lg border-2 transition-all
-              ${selectedService === service.id 
-                ? 'border-blue-600 bg-blue-50' 
-                : 'border-gray-200 hover:border-blue-400'}`}
+              ${
+                selectedService === service.id
+                  ? 'border-blue-600 bg-blue-50'
+                  : 'border-gray-200 hover:border-blue-400'
+              }`}
           >
             <h3 className="text-lg font-semibold mb-2">{service.name}</h3>
             <div className="text-gray-600">

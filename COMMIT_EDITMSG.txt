@@ -1,6 +1,0 @@
-feat: Update SuperSaaS migration script and related API routes
-
-This commit includes:
-- Correction of SuperSaaS schedule ID in the migration script.
-- Updates to `package.json` (if any were made by the script).
-- Changes to `app/api/dashboard/clients/route.js` and `app/api/dashboard/services/route.js` (if any were made by the script).

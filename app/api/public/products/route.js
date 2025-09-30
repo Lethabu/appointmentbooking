@@ -7,7 +7,10 @@ export async function GET(request) {
   const salonIdentifier = searchParams.get('salon');
 
   if (!salonIdentifier) {
-    return NextResponse.json({ error: 'A salon identifier is required' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'A salon identifier is required' },
+      { status: 400 },
+    );
   }
 
   try {
@@ -22,7 +25,7 @@ export async function GET(request) {
             return cookie ? cookie.value : undefined;
           },
         },
-      }
+      },
     );
 
     // Find the salon by its subdomain or custom domain
@@ -46,12 +49,18 @@ export async function GET(request) {
       .order('name', { ascending: true });
 
     if (productsError) {
-      return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to fetch products' },
+        { status: 500 },
+      );
     }
 
     // Return both salon details and its products
     return NextResponse.json({ salon, products: products || [] });
   } catch (error) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
   }
 }

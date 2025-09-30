@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /instylehairboutique
+Allow: /instylehairboutique/shop
+
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /_next/
+Disallow: /admin/
+
+Sitemap: https://instylehairboutique.co.za/sitemap.xml

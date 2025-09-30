@@ -8,7 +8,11 @@ interface PaystackProps {
 
 export function usePaystack() {
   const payWithPaystack = async ({
-    email, amount, appointmentId, tenantId, onSuccess
+    email,
+    amount,
+    appointmentId,
+    tenantId,
+    onSuccess,
   }: PaystackProps) => {
     const PaystackPop = (await import('@paystack/inline-js')).default;
     const handler = new PaystackPop();
@@ -22,7 +26,7 @@ export function usePaystack() {
       onCancel: () => console.log('Payment cancelled'),
     });
   };
-  
+
   return { payWithPaystack };
 }
 

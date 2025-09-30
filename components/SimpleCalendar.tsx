@@ -1,10 +1,13 @@
+'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, FC } from 'react';
 import { ChevronDownIcon as IconChevronDown } from '@heroicons/react/24/solid';
 
 // --- Helper functions moved outside the component for better performance ---
-const daysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
-const firstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay(); // 0 for Sunday
+const daysInMonth = (year: number, month: number) =>
+  new Date(year, month + 1, 0).getDate();
+const firstDayOfMonth = (year: number, month: number) =>
+  new Date(year, month, 1).getDay(); // 0 for Sunday
 
 const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -13,7 +16,7 @@ interface SimpleCalendarProps {
   selectedDate?: Date | null;
 }
 
-const SimpleCalendar: React.FC<SimpleCalendarProps> = ({ onDateSelect, selectedDate }) => {
+const SimpleCalendar: FC<SimpleCalendarProps> = ({ onDateSelect, selectedDate }: SimpleCalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const year = currentMonth.getFullYear();
@@ -36,7 +39,12 @@ const SimpleCalendar: React.FC<SimpleCalendarProps> = ({ onDateSelect, selectedD
 
     // Add empty cells for days before the first of the month
     for (let i = 0; i < startDay; i++) {
-      days.push(<div key={`empty-${i}`} className="p-2 border border-neutral-200"></div>);
+      days.push(
+        <div
+          key={`empty-${i}`}
+          className="p-2 border border-neutral-200"
+        ></div>,
+      );
     }
 
     // Add cells for each day of the month
@@ -55,7 +63,7 @@ const SimpleCalendar: React.FC<SimpleCalendarProps> = ({ onDateSelect, selectedD
           onClick={() => onDateSelect(date)}
         >
           {day}
-        </div>
+        </div>,
       );
     }
     return days;
@@ -64,18 +72,33 @@ const SimpleCalendar: React.FC<SimpleCalendarProps> = ({ onDateSelect, selectedD
   return (
     <div className="bg-white p-4 rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-4">
-        <button onClick={() => changeMonth(-1)} className="p-2 rounded-full hover:bg-neutral-100" aria-label="Previous month">
+        <button
+          onClick={() => changeMonth(-1)}
+          className="p-2 rounded-full hover:bg-neutral-100"
+          aria-label="Previous month"
+        >
           <IconChevronDown className="h-5 w-5 transform rotate-90 text-neutral-600" />
         </button>
         <h3 className="text-lg font-semibold text-neutral-700">
           {currentMonth.toLocaleString('default', { month: 'long' })} {year}
         </h3>
-        <button onClick={() => changeMonth(1)} className="p-2 rounded-full hover:bg-neutral-100" aria-label="Next month">
+        <button
+          onClick={() => changeMonth(1)}
+          className="p-2 rounded-full hover:bg-neutral-100"
+          aria-label="Next month"
+        >
           <IconChevronDown className="h-5 w-5 transform -rotate-90 text-neutral-600" />
         </button>
       </div>
       <div className="grid grid-cols-7 gap-1">
-        {dayNames.map(d => <div key={d} className="p-2 text-center font-medium text-sm text-neutral-500">{d}</div>)}
+        {dayNames.map((d) => (
+          <div
+            key={d}
+            className="p-2 text-center font-medium text-sm text-neutral-500"
+          >
+            {d}
+          </div>
+        ))}
         {calendarDays}
       </div>
     </div>

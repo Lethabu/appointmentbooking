@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "github.com/Saik0s/mcp-browser-use": {
+      "command": "/home/user/.local/bin/uvx",
+      "args": ["mcp-server-browser-use@latest"],
+      "env": {}
+    }
+  }
+}

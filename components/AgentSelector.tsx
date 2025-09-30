@@ -29,7 +29,10 @@ const AgentSelector = ({
 }: AgentSelectorProps) => {
   return (
     <div className={`mb-4 ${className}`}>
-      <label htmlFor={id} className="block text-sm font-medium text-neutral-700 mb-1">
+      <label
+        htmlFor={id}
+        className="block text-sm font-medium text-neutral-700 mb-1"
+      >
         {label}
       </label>
       <div className="relative inline-block text-left w-full">

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 export default function DashboardStats() {
   return (
@@ -16,5 +16,5 @@ export default function DashboardStats() {
         <p className="text-2xl">R0.00</p>
       </div>
     </div>
-  )
+  );
 }

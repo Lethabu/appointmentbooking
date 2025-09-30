@@ -6,7 +6,7 @@ export default function SocialAndWellness() {
   const [socialStats, setSocialStats] = useState({
     tiktok_views: 8500,
     instagram_reach: 1250,
-    conversion_rate: 12.5
+    conversion_rate: 12.5,
   });
 
   const handleMoodSubmit = async () => {
@@ -16,10 +16,10 @@ export default function SocialAndWellness() {
       body: JSON.stringify({
         customer_id: 'demo_customer',
         mood_score: moodScore,
-        notes: 'Daily check-in'
-      })
+        notes: 'Daily check-in',
+      }),
     });
-    
+
     const result = await response.json();
     if (result.discount_applied > 0) {
       alert(`🎉 ${result.message}`);
@@ -33,10 +33,10 @@ export default function SocialAndWellness() {
       body: JSON.stringify({
         video_id: 'demo_video',
         views: socialStats.tiktok_views,
-        tenant_id: 'ccb12b4d-ade6-467d-a614-7c9d198ddc70'
-      })
+        tenant_id: 'ccb12b4d-ade6-467d-a614-7c9d198ddc70',
+      }),
     });
-    
+
     const result = await response.json();
     if (result.viral_triggered) {
       alert(`🔥 ${result.message}`);
@@ -46,7 +46,7 @@ export default function SocialAndWellness() {
   return (
     <div className="bg-white p-6 rounded-lg shadow space-y-6">
       <h2 className="text-xl font-semibold">Social & Wellness Hub</h2>
-      
+
       {/* Mood Tracker */}
       <div className="border rounded-lg p-4">
         <h3 className="font-medium mb-3">Daily Mood Check-in</h3>
@@ -76,15 +76,21 @@ export default function SocialAndWellness() {
         <h3 className="font-medium mb-3">Social Commerce</h3>
         <div className="grid grid-cols-3 gap-4 mb-4">
           <div className="text-center">
-            <p className="text-2xl font-bold text-pink-600">{socialStats.tiktok_views}</p>
+            <p className="text-2xl font-bold text-pink-600">
+              {socialStats.tiktok_views}
+            </p>
             <p className="text-xs text-gray-600">TikTok Views</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-purple-600">{socialStats.instagram_reach}</p>
+            <p className="text-2xl font-bold text-purple-600">
+              {socialStats.instagram_reach}
+            </p>
             <p className="text-xs text-gray-600">IG Reach</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-blue-600">{socialStats.conversion_rate}%</p>
+            <p className="text-2xl font-bold text-blue-600">
+              {socialStats.conversion_rate}%
+            </p>
             <p className="text-xs text-gray-600">Conversion</p>
           </div>
         </div>

@@ -10,17 +10,21 @@ export async function GET(request) {
       .from('appointments')
       .select('*', { count: 'exact', head: true })
       .gte('createdAt', new Date(new Date().setHours(0, 0, 0, 0)).toISOString())
-      .lt('createdAt', new Date(new Date().setHours(23, 59, 59, 999)).toISOString());
+      .lt(
+        'createdAt',
+        new Date(new Date().setHours(23, 59, 59, 999)).toISOString(),
+      );
 
     if (todaysBookingsError) {
       throw new Error(todaysBookingsError.message);
     }
 
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    const { data: weeklyAppointments, error: weeklyAppointmentsError } = await supabase
-      .from('appointments')
-      .select('*, service(*)')
-      .gte('createdAt', sevenDaysAgo.toISOString());
+    const { data: weeklyAppointments, error: weeklyAppointmentsError } =
+      await supabase
+        .from('appointments')
+        .select('*, service(*)')
+        .gte('createdAt', sevenDaysAgo.toISOString());
 
     if (weeklyAppointmentsError) {
       throw new Error(weeklyAppointmentsError.message);

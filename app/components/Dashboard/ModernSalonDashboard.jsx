@@ -13,7 +13,7 @@ const ModernSalonDashboard = () => {
       try {
         const [apps, stats] = await Promise.all([
           fetchAppointments(),
-          fetchDashboardStats()
+          fetchDashboardStats(),
         ]);
         setAppointments(apps);
         setStats(stats);
@@ -28,19 +28,23 @@ const ModernSalonDashboard = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'confirmed': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'confirmed':
+        return 'bg-green-100 text-green-800';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
-  if (loading) return <div className="text-center p-8">Loading dashboard data...</div>;
+  if (loading)
+    return <div className="text-center p-8">Loading dashboard data...</div>;
   if (error) return <div className="text-red-500 p-8">Error: {error}</div>;
 
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Today's Appointments</h2>
+        <h2 className="text-2xl font-bold mb-4">Today&apos;s Appointments</h2>
         <div className="flex gap-4 mb-6">
           <div className="p-4 bg-blue-50 rounded-lg">
             <h3 className="text-sm text-gray-600">Total Appointments</h3>
@@ -56,7 +60,7 @@ const ModernSalonDashboard = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {appointments.map((appointment) => (
           <div
@@ -64,7 +68,9 @@ const ModernSalonDashboard = () => {
             className="border rounded-lg p-4 hover:shadow-lg transition-shadow"
           >
             <div className="flex justify-between items-start mb-3">
-              <span className={`px-2 py-1 rounded-full text-sm ${getStatusColor(appointment.status)}`}>
+              <span
+                className={`px-2 py-1 rounded-full text-sm ${getStatusColor(appointment.status)}`}
+              >
                 {appointment.status}
               </span>
               <select className="text-gray-500 text-sm">

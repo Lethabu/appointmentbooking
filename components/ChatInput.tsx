@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { IconSend } from './icons';
 
@@ -19,7 +18,10 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border-t border-neutral-200 bg-white">
+    <form
+      onSubmit={handleSubmit}
+      className="p-4 border-t border-neutral-200 bg-white"
+    >
       <div className="flex items-center space-x-3">
         <input
           type="text"

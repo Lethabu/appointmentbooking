@@ -7,8 +7,13 @@ import { createService } from 'app/lib/services/service';
 const ServiceSchema = Yup.object().shape({
   name: Yup.string().required('Service name is required'),
   description: Yup.string(),
-  duration: Yup.number().required('Duration is required').positive('Must be positive').integer(),
-  price: Yup.number().required('Price is required').min(0, 'Price cannot be negative'),
+  duration: Yup.number()
+    .required('Duration is required')
+    .positive('Must be positive')
+    .integer(),
+  price: Yup.number()
+    .required('Price is required')
+    .min(0, 'Price cannot be negative'),
 });
 
 export default function ServiceForm({ onServiceAdded }) {
@@ -41,7 +46,10 @@ export default function ServiceForm({ onServiceAdded }) {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit} className="space-y-4 p-4 border rounded-lg">
+    <form
+      onSubmit={formik.handleSubmit}
+      className="space-y-4 p-4 border rounded-lg"
+    >
       {error && <div className="text-red-500">{error}</div>}
       {success && <div className="text-green-500">{success}</div>}
 
@@ -114,7 +122,11 @@ export default function ServiceForm({ onServiceAdded }) {
         </div>
       </div>
 
-      <button type="submit" disabled={formik.isSubmitting} className="btn w-full">
+      <button
+        type="submit"
+        disabled={formik.isSubmitting}
+        className="btn w-full"
+      >
         {formik.isSubmitting ? 'Adding...' : 'Add Service'}
       </button>
     </form>

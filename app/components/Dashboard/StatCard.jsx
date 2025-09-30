@@ -2,8 +2,11 @@
 
 const StatCard = ({ title, value, formatAsCurrency = false }) => {
   const displayValue = formatAsCurrency
-    ? new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format((value ?? 0) / 100)
-    : value ?? 0;
+    ? new Intl.NumberFormat('en-ZA', {
+        style: 'currency',
+        currency: 'ZAR',
+      }).format((value ?? 0) / 100)
+    : (value ?? 0);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow">

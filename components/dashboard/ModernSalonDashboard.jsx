@@ -29,7 +29,7 @@ export default function ModernSalonDashboard({ initialAppointments, user }) {
             .then(({ data }) => {
               if (data) setAppointments(data);
             });
-        }
+        },
       )
       .subscribe();
 
@@ -50,18 +50,28 @@ export default function ModernSalonDashboard({ initialAppointments, user }) {
               <li key={appt.id} className="border-b py-3 last:border-none">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="font-bold">{appt.services.name} with {appt.staff.name}</p>
-                    <p className="text-sm text-gray-600">Customer: {appt.customer_name} ({appt.customer_phone})</p>
+                    <p className="font-bold">
+                      {appt.services.name} with {appt.staff.name}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Customer: {appt.customer_name} ({appt.customer_phone})
+                    </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">{format(new Date(appt.start_time), 'PP')}</p>
-                    <p className="text-sm text-gray-600">{format(new Date(appt.start_time), 'p')}</p>
+                    <p className="font-semibold">
+                      {format(new Date(appt.start_time), 'PP')}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {format(new Date(appt.start_time), 'p')}
+                    </p>
                   </div>
                 </div>
               </li>
             ))}
           </ul>
-        ) : <p>No appointments found.</p>}
+        ) : (
+          <p>No appointments found.</p>
+        )}
       </div>
     </div>
   );

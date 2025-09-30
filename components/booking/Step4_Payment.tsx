@@ -3,17 +3,30 @@ import React, { useState } from 'react';
 
 interface Step4PaymentProps {
   data: { totalAmount: number };
-  onSuccess: (paymentData: { status: string, method: string, amount: number }) => void;
+  onSuccess: (paymentData: {
+    status: string;
+    method: string;
+    amount: number;
+  }) => void;
 }
 
-export const Step4_Payment: React.FC<Step4PaymentProps> = ({ data, onSuccess }) => {
+export const Step4_Payment: React.FC<Step4PaymentProps> = ({
+  data,
+  onSuccess,
+}) => {
   const [paymentMethod, setPaymentMethod] = useState('credit_card');
 
   const handlePayment = () => {
     // In a real application, this would integrate with a payment gateway.
     // For now, simulate success.
-    alert(`Processing payment of R${(data.totalAmount / 100).toFixed(2)} via ${paymentMethod}...`);
-    onSuccess({ status: 'success', method: paymentMethod, amount: data.totalAmount });
+    alert(
+      `Processing payment of R${(data.totalAmount / 100).toFixed(2)} via ${paymentMethod}...`,
+    );
+    onSuccess({
+      status: 'success',
+      method: paymentMethod,
+      amount: data.totalAmount,
+    });
   };
 
   return (

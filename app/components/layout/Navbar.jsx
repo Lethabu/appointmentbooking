@@ -9,11 +9,18 @@ export default function Navbar({ salonName }) {
   const pathname = usePathname();
   // const { user } = useUser(); // Placeholder for user state
   const user = null; // For demonstration purposes
-  const links = salonName ? [] : user ? navLinks.authenticated : navLinks.public;
+  const links = salonName
+    ? []
+    : user
+      ? navLinks.authenticated
+      : navLinks.public;
 
   // A more robust way to hide the navbar on specific pages
   const hiddenPaths = ['/instylehairboutique'];
-  if (hiddenPaths.some(path => pathname.startsWith(path)) || pathname.match(/^\/[^\/]+$/) && pathname !== '/') {
+  if (
+    hiddenPaths.some((path) => pathname.startsWith(path)) ||
+    (pathname.match(/^\/[^\/]+$/) && pathname !== '/')
+  ) {
     return null;
   }
 
@@ -28,19 +35,32 @@ export default function Navbar({ salonName }) {
           </div>
           <div className="flex items-center space-x-4">
             {links.map((link) => (
-              <Link key={link.href} href={link.href} className="text-gray-600 hover:text-gray-900">
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-gray-600 hover:text-gray-900"
+              >
                 {link.name}
               </Link>
             ))}
             {salonName && (
               <>
-                <Link href="/book" className="text-gray-700 hover:text-gray-900 transition-colors">
+                <Link
+                  href="/book"
+                  className="text-gray-700 hover:text-gray-900 transition-colors"
+                >
                   Book
                 </Link>
-                <Link href="/services" className="text-gray-700 hover:text-gray-900 transition-colors">
+                <Link
+                  href="/services"
+                  className="text-gray-700 hover:text-gray-900 transition-colors"
+                >
                   Services
                 </Link>
-                <Link href="/contact" className="text-gray-700 hover:text-gray-900 transition-colors">
+                <Link
+                  href="/contact"
+                  className="text-gray-700 hover:text-gray-900 transition-colors"
+                >
                   Contact
                 </Link>
               </>

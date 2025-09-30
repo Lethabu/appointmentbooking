@@ -1,4 +1,4 @@
-# Agents for AppointmentBooking
+# Agents for the Platform
 
 ## Agent Roles
 
@@ -15,7 +15,7 @@
 - Ensures migrations and schema updates.
 
 ### 4. **AI Agent Ops**
-- Runs from `appointmentbookings.agent` repo.
+- Runs from `your-platform-agent` repo.
 - Manages reminders, automations, analytics.
 
 ### 5. **Doc Agent**
@@ -25,5 +25,5 @@
 ---
 
 ## Agent Mapping
-- `appointmentbooking`: Repo Guardian Agent, Deployment Agent, Database Agent.
-- `appointmentbookings.agent`: AI Agent Ops, Doc Agent.
+- `your-platform-repo`: Repo Guardian Agent, Deployment Agent, Database Agent.
+- `your-platform-agent`: AI Agent Ops, Doc Agent.

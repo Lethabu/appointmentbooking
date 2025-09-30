@@ -1,20 +1,22 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );
 
-export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70' }) {
+export default function LiveTenantDashboard({
+  tenantId = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70',
+}) {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       const { data, error } = await supabase.rpc('get_tenant_dashboard', {
-        tenant_uuid: tenantId
+        tenant_uuid: tenantId,
       });
 
       if (error) throw error;
@@ -26,20 +28,34 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
         today_bookings: 3,
         today_revenue: 450000,
         next_5_appointments: [
-          { customer_name: 'Zanele L.', service_name: 'Middle & Side', appointment_time: '14:00', status: 'confirmed' },
-          { customer_name: 'Lilly R.', service_name: 'Maphondo & Lines', appointment_time: '15:00', status: 'confirmed' }
+          {
+            customer_name: 'Zanele L.',
+            service_name: 'Middle & Side',
+            appointment_time: '14:00',
+            status: 'confirmed',
+          },
+          {
+            customer_name: 'Lilly R.',
+            service_name: 'Maphondo & Lines',
+            appointment_time: '15:00',
+            status: 'confirmed',
+          },
         ],
         loyalty_top_5: [
           { name: 'Zanele Langa', visit_count: 12, total_spent: 18000 },
-          { name: 'Rapelang', visit_count: 8, total_spent: 12000 }
+          { name: 'Rapelang', visit_count: 8, total_spent: 12000 },
         ],
         mood_average: 8.2,
-        social_reach: { instagram_followers: 1250, tiktok_views: 8500, conversion_rate: 12.5 }
+        social_reach: {
+          instagram_followers: 1250,
+          tiktok_views: 8500,
+          conversion_rate: 12.5,
+        },
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [tenantId]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -47,14 +63,18 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
     // Real-time subscription
     const channel = supabase
       .channel('dashboard_updates')
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'appointments',
-        filter: `tenant_id=eq.${tenantId}`
-      }, () => {
-        fetchDashboardData();
-      })
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'appointments',
+          filter: `tenant_id=eq.${tenantId}`,
+        },
+        () => {
+          fetchDashboardData();
+        },
+      )
       .subscribe();
 
     // Refresh every 30 seconds
@@ -64,7 +84,7 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
       supabase.removeChannel(channel);
       clearInterval(interval);
     };
-  }, [tenantId]);
+  }, [tenantId, fetchDashboardData]);
 
   if (loading) {
     return (
@@ -81,8 +101,10 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-lg text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm opacity-90">Today's Bookings</p>
-              <p className="text-3xl font-bold">{dashboardData?.today_bookings || 0}</p>
+              <p className="text-sm opacity-90">Today&apos;s Bookings</p>
+              <p className="text-3xl font-bold">
+                {dashboardData?.today_bookings || 0}
+              </p>
             </div>
             <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
           </div>
@@ -91,8 +113,10 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
         <div className="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-lg text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm opacity-90">Today's Revenue</p>
-              <p className="text-3xl font-bold">R{((dashboardData?.today_revenue || 0) / 100).toFixed(0)}</p>
+              <p className="text-sm opacity-90">Today&apos;s Revenue</p>
+              <p className="text-3xl font-bold">
+                R{((dashboardData?.today_revenue || 0) / 100).toFixed(0)}
+              </p>
             </div>
             <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
           </div>
@@ -102,7 +126,9 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm opacity-90">Mood Score</p>
-              <p className="text-3xl font-bold">{dashboardData?.mood_average || 8.2}</p>
+              <p className="text-3xl font-bold">
+                {dashboardData?.mood_average || 8.2}
+              </p>
             </div>
             <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
           </div>
@@ -112,7 +138,9 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm opacity-90">Social Reach</p>
-              <p className="text-3xl font-bold">{dashboardData?.social_reach?.tiktok_views || 8500}</p>
+              <p className="text-3xl font-bold">
+                {dashboardData?.social_reach?.tiktok_views || 8500}
+              </p>
             </div>
             <div className="w-3 h-3 bg-pink-400 rounded-full animate-pulse"></div>
           </div>
@@ -128,7 +156,10 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
           </div>
           <div className="space-y-3">
             {(dashboardData?.next_5_appointments || []).map((apt, idx) => (
-              <div key={idx} className="flex justify-between items-center p-3 bg-gray-50 rounded">
+              <div
+                key={idx}
+                className="flex justify-between items-center p-3 bg-gray-50 rounded"
+              >
                 <div>
                   <p className="font-medium">{apt.customer_name}</p>
                   <p className="text-sm text-gray-600">{apt.service_name}</p>
@@ -151,13 +182,20 @@ export default function LiveTenantDashboard({ tenantId = 'ccb12b4d-ade6-467d-a61
           </div>
           <div className="space-y-3">
             {(dashboardData?.loyalty_top_5 || []).map((client, idx) => (
-              <div key={idx} className="flex justify-between items-center p-3 bg-gray-50 rounded">
+              <div
+                key={idx}
+                className="flex justify-between items-center p-3 bg-gray-50 rounded"
+              >
                 <div>
                   <p className="font-medium">{client.name}</p>
-                  <p className="text-sm text-gray-600">{client.visit_count} visits</p>
+                  <p className="text-sm text-gray-600">
+                    {client.visit_count} visits
+                  </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-medium">R{((client.total_spent || 0) / 100).toFixed(0)}</p>
+                  <p className="text-sm font-medium">
+                    R{((client.total_spent || 0) / 100).toFixed(0)}
+                  </p>
                   <p className="text-xs text-gray-500">lifetime value</p>
                 </div>
               </div>

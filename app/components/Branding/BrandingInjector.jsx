@@ -3,7 +3,7 @@ import { headers } from 'next/headers';
 const BrandingInjector = () => {
   const headersList = headers();
   const themeHeader = headersList.get('X-Tenant-Theme');
-  
+
   if (!themeHeader) {
     return null;
   }

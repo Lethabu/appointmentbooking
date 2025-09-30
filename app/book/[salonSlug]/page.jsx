@@ -1,117 +1,158 @@
 'use client';
-
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useRouter, useParams } from 'next/navigation';
-import { supabase } from '@/app/utils/supabaseClient'; // This path is correct
-import SimpleCalendar from "@/app/components/Booking/SimpleCalendar";
-// import ModernCalendar from "@/app/components/Booking/ModernCalendar";
+import { supabase } from '@/app/utils/supabaseClient';
+import { Step2_DateTime } from '@/components/booking/Step2_DateTime';
+import { Step3_UserDetails } from '@/components/booking/Step3_UserDetails';
+import { Step4_Confirmation } from '@/components/booking/Step4_Confirmation';
 
 export default function BookingPage() {
   const router = useRouter();
   const params = useParams();
-  const { salonSlug: rawSalonSlug } = params;
-  const salonSlug = rawSalonSlug ? rawSalonSlug.replace(/\.+$/, '') : '';
+  const { salonSlug } = params;
   const [salon, setSalon] = useState(null);
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
   const [step, setStep] = useState(1);
-  const [booking, setBooking] = useState(null);
-  const [error, setError] = useState(null);
+  const [booking, setBooking] = useState({});
 
   useEffect(() => {
-    const fetchData = async () => {
-      console.log("Fetching salon data for salonSlug:", salonSlug);
-      if (!salonSlug) {
-        console.log("salonSlug is missing, cannot fetch salon data.");
-        return;
-      }
-
-      const { data: salonData, error: salonError } = await supabase
-        .from("salons")
-        .select("id, name, subdomain")
-        .eq("subdomain", salonSlug) // Directly query for the specific salon
-        .single();
-
-      if (salonError || !salonData) {
-        console.error("Error fetching salon or salon not found:", salonError);
-        setError("Salon not found");
-        return;
-      }
-      
-      console.log("Salon data fetched:", salonData);
-      setSalon(salonData);
-
-      const { data: servicesData, error: servicesError } = await supabase
-        .from("services")
-        .select("id, name, price_cents")
-        .eq("salon_id", salonData.id);
-
-      if (servicesError) {
-        console.error("Error fetching services:", servicesError);
-        setError("Error fetching services");
-      } else {
-        console.log("Services data fetched:", servicesData);
-        setServices(servicesData || []);
-      }
-    };
-
-    fetchData();
+    if (salonSlug) {
+      const fetchSalon = async () => {
+        const { data, error } = await supabase
+          .from('salons')
+          .select('*')
+          .eq('slug', salonSlug)
+          .single();
+        if (data) {
+          setSalon(data);
+          fetchServices(data.id);
+        }
+      };
+      fetchSalon();
+    }
   }, [salonSlug]);
 
-  const handleServiceSelect = (service) => {
-    console.log("handleServiceSelect called with service:", service.name);
-    setSelectedService(service);
-    setStep(2);
+  const fetchServices = async (salonId) => {
+    const { data, error } = await supabase
+      .from('services')
+      .select('*')
+      .eq('salon_id', salonId);
+    if (data) {
+      setServices(data);
+    }
   };
 
-  const handleBookingConfirmed = (bookingData) => {
-    setBooking(bookingData);
-    setStep(3);
+  const handleNext = () => {
+    setStep(step + 1);
   };
 
-  if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
-  if (!salon) return <div className="p-8 text-center">Loading salon...</div>;
+  const handleBack = () => {
+    setStep(step - 1);
+  };
 
-  console.log("Current Step:", step);
-  console.log("Selected Service:", selectedService?.name);
+  const handleConfirmBooking = async () => {
+    const toastId = toast.loading('Booking your appointment...');
+    try {
+      const clientDetails = {
+        name: booking.name,
+        email: booking.email,
+        phone: booking.phone,
+      };
+      const serviceIds = [selectedService.id]; // Assuming serviceIds is an array
+
+      const response = await fetch('/api/book', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ clientDetails, serviceIds }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to book appointment');
+      }
+
+      const result = await response.json();
+      toast.success('Appointment booked successfully!', { id: toastId });
+      router.push('/booking-success'); // Redirect to a success page
+    } catch (error) {
+      console.error('Error booking:', error);
+      toast.error(error.message || 'Error booking appointment.', {
+        id: toastId,
+      });
+    }
+  };
+
+  if (services.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="max-w-xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Book at {salon.name}</h1>
-      
-      {step === 1 && salon && (
-        <div>
-          <h2 className="text-lg font-semibold mb-2">Select a Service</h2>
-          <ul className="mb-6">
-            {services.map((service) => (
-              <li key={service.id} className="mb-2">
-                <div
-                  className="w-full text-left p-3 border rounded hover:bg-gray-50 cursor-pointer"
-                  onClick={() => handleServiceSelect(service)}
-                >
-                  {service.name} <span className="float-right">R{service.price_cents / 100}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      {salon && (
+        <h1 className="text-3xl font-bold mb-4">
+          Book an appointment at {salon.name}
+        </h1>
       )}
 
-      {step === 2 && salon && selectedService && (
-        <SimpleCalendar
-          salonId={salon.id}
-          serviceId={selectedService.id}
-          onBookingConfirmed={handleBookingConfirmed}
-          onBack={() => setStep(1)}
+      {step === 1 && (
+        <div>
+          <h2 className="text-2xl font-semibold mb-4">
+            Step 1: Select a Service
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {services.map((service) => (
+              <div
+                key={service.id}
+                className={`p-4 border rounded-lg cursor-pointer ${selectedService?.id === service.id ? 'border-blue-500' : ''}`}
+                onClick={() => setSelectedService(service)}
+              >
+                <h3 className="font-semibold">{service.name}</h3>
+                <p>{service.description}</p>
+                <p className="font-bold">{service.price}</p>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={handleNext}
+            disabled={!selectedService}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
+          >
+            Next
+          </button>
+        </div>
+      )}
+      {step === 2 && (
+        <Step2_DateTime
+          salon={salon}
+          service={selectedService}
+          onNext={(dateTime) => {
+            setBooking({ ...booking, ...dateTime });
+            handleNext();
+          }}
+          onBack={handleBack}
         />
       )}
-      
-      {step === 3 && booking && (
-        <div className="text-center">
-          <h2 className="text-xl font-bold mb-2">Booking Confirmed!</h2>
-          <p className="mb-4">Thank you for booking {selectedService.name} at {salon.name}.</p>
-          <button className="btn" onClick={() => router.push("/")}>Back to Home</button>
-        </div>
+      {step === 3 && (
+        <Step3_UserDetails
+          onNext={(userDetails) => {
+            setBooking({ ...booking, ...userDetails });
+            handleNext();
+          }}
+          onBack={handleBack}
+        />
+      )}
+      {step === 4 && (
+        <Step4_Confirmation
+          booking={booking}
+          service={selectedService}
+          salon={salon}
+          onConfirm={handleConfirmBooking}
+          onBack={handleBack}
+        />
       )}
     </div>
   );

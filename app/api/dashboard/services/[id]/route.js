@@ -12,10 +12,12 @@ async function getSupabaseAndSalonForService(serviceId) {
       cookies: {
         get: (name) => cookieStore.get(name)?.value,
       },
-    }
+    },
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   if (!session) return { error: { message: 'Unauthorized' }, status: 401 };
 
   // Verify the user owns the salon that this service belongs to
@@ -38,7 +40,10 @@ export async function PUT(req, { params }) {
   if (error) return NextResponse.json({ error: error.message }, { status });
 
   const body = await req.json();
-  const { error: updateError } = await supabase.from('services').update(body).eq('id', id);
+  const { error: updateError } = await supabase
+    .from('services')
+    .update(body)
+    .eq('id', id);
 
   return updateError
     ? NextResponse.json({ error: updateError.message }, { status: 500 })
@@ -63,4 +68,3 @@ export async function DELETE(req, { params }) {
 
   return new NextResponse(null, { status: 204 }); // Success, no content
 }
-

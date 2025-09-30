@@ -1,17 +1,22 @@
-import type { Product } from "@/types"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
+import type { Product } from '@/types';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 interface ProductCardProps {
-  product: Product
+  product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200">
       <div className="aspect-square relative">
-        <Image src={product.image_url || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
+        <Image
+          src={product.image_url || '/placeholder.svg'}
+          alt={product.name}
+          fill
+          className="object-cover"
+        />
       </div>
       <CardContent className="p-4">
         <h4 className="font-semibold text-gray-900 mb-2">{product.name}</h4>
@@ -24,5 +29,5 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

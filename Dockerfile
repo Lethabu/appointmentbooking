@@ -13,8 +13,8 @@ ENV NODE_ENV=production
 # Copy only production dependencies
 COPY --from=builder /app/package.json ./package.json
 RUN npm install --production --frozen-lockfile
-# Copy build output and static assets
 COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
 
 # If you have a custom server.js or similar, copy it here
 # COPY --from=builder /app/server.js ./server.js

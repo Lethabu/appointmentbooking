@@ -11,12 +11,14 @@ export function InAppChecklist() {
   ]);
 
   const toggleItem = (id: number) => {
-    setChecklistItems(checklistItems.map(item => 
-      item.id === id ? { ...item, completed: !item.completed } : item
-    ));
+    setChecklistItems(
+      checklistItems.map((item) =>
+        item.id === id ? { ...item, completed: !item.completed } : item,
+      ),
+    );
   };
 
-  const completedItems = checklistItems.filter(item => item.completed).length;
+  const completedItems = checklistItems.filter((item) => item.completed).length;
   const totalItems = checklistItems.length;
   const progress = (completedItems / totalItems) * 100;
 
@@ -24,14 +26,16 @@ export function InAppChecklist() {
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Getting Started Checklist</h2>
       <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-        <div 
+        <div
           className="bg-blue-600 h-2.5 rounded-full"
           style={{ width: `${progress}%` }}
         ></div>
       </div>
-      <p className="text-sm text-gray-600 mb-4">{completedItems} of {totalItems} tasks completed</p>
+      <p className="text-sm text-gray-600 mb-4">
+        {completedItems} of {totalItems} tasks completed
+      </p>
       <ul>
-        {checklistItems.map(item => (
+        {checklistItems.map((item) => (
           <li key={item.id} className="flex items-center mb-2">
             <input
               type="checkbox"
@@ -39,7 +43,9 @@ export function InAppChecklist() {
               onChange={() => toggleItem(item.id)}
               className="mr-2"
             />
-            <span className={item.completed ? 'line-through text-gray-500' : ''}>
+            <span
+              className={item.completed ? 'line-through text-gray-500' : ''}
+            >
               {item.text}
             </span>
           </li>

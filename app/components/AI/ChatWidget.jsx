@@ -3,7 +3,10 @@ import { useState } from 'react';
 
 export default function ChatWidget() {
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hi! How can I help you with your appointment today?' }
+    {
+      role: 'assistant',
+      content: 'Hi! How can I help you with your appointment today?',
+    },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -12,7 +15,7 @@ export default function ChatWidget() {
     if (!input.trim()) return;
 
     const userMessage = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setLoading(true);
 
@@ -20,13 +23,22 @@ export default function ChatWidget() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: input })
+        body: JSON.stringify({ query: input }),
       });
 
       const data = await response.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: data.response },
+      ]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: 'Sorry, I encountered an error. Please try again.',
+        },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -35,10 +47,13 @@ export default function ChatWidget() {
   return (
     <div className="bg-white rounded-lg shadow-lg p-4 max-w-md mx-auto">
       <h3 className="font-semibold mb-4">Chat with us</h3>
-      
+
       <div className="h-64 overflow-y-auto mb-4 space-y-2">
         {messages.map((msg, idx) => (
-          <div key={idx} className={`p-2 rounded ${msg.role === 'user' ? 'bg-blue-100 ml-4' : 'bg-gray-100 mr-4'}`}>
+          <div
+            key={idx}
+            className={`p-2 rounded ${msg.role === 'user' ? 'bg-blue-100 ml-4' : 'bg-gray-100 mr-4'}`}
+          >
             <p className="text-sm">{msg.content}</p>
           </div>
         ))}

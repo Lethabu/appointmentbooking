@@ -1,37 +1,30 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase"
-import type { Tenant } from "@/types"
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/api';
+import type { Tenant } from '@/types';
 
-export function useTenant(subdomain: string) {
-  const [tenant, setTenant] = useState<Tenant | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const supabase = createClient()
+export function useTenant(subdomainOrHost: string) {
+  // If it's a host like 'example.com', extract subdomain if needed
+  // For simplicity, assume subdomainOrHost is the subdomain
+  const subdomain = subdomainOrHost.includes('.') ? subdomainOrHost.split('.')[0] : subdomainOrHost;
 
-  const fetchTenant = async () => {
-    try {
-      setLoading(true)
-      const { data, error: fetchError } = await supabase.from("tenants").select("*").eq("subdomain", subdomain).single()
-
-      if (fetchError) throw fetchError
-
-      setTenant(data)
-      setError(null)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch tenant")
-      setTenant(null)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    if (subdomain) {
-      fetchTenant()
-    }
-  }, [subdomain])
-
-  return { tenant, loading, error, refetch: fetchTenant }
+  return useQuery({
+    queryKey: ['tenant', subdomain],
+    queryFn: async () => {
+      if (!subdomain) {
+        throw new Error('Subdomain is required');
+      }
+      // Assuming api has a method to get tenant, or use fetch
+      // For now, use fetch to /api/tenant-resolver
+      const response = await fetch(`/api/tenant-resolver?subdomain=${subdomain}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch tenant');
+      }
+      const data = await response.json();
+      return data as Tenant;
+    },
+    enabled: !!subdomain,
+    retry: 1,
+  });
 }

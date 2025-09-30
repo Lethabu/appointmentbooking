@@ -19,14 +19,19 @@ async function getSupabaseClient() {
           cookieStore.set({ name, value: '', ...options });
         },
       },
-    }
+    },
   );
 }
 
 async function authorizeUser(supabase, salonId) {
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   if (!session) {
-    return { authorized: false, response: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
+    return {
+      authorized: false,
+      response: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
+    };
   }
 
   const { data: salon, error: salonError } = await supabase
@@ -38,7 +43,13 @@ async function authorizeUser(supabase, salonId) {
 
   if (salonError || !salon) {
     console.error('Authorization error:', salonError);
-    return { authorized: false, response: NextResponse.json({ error: 'Forbidden: Not salon owner' }, { status: 403 }) };
+    return {
+      authorized: false,
+      response: NextResponse.json(
+        { error: 'Forbidden: Not salon owner' },
+        { status: 403 },
+      ),
+    };
   }
   return { authorized: true };
 }
@@ -50,7 +61,10 @@ export async function GET(req) {
   const salonId = searchParams.get('salon_id');
 
   if (!salonId) {
-    return NextResponse.json({ error: 'Missing salon_id parameter' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing salon_id parameter' },
+      { status: 400 },
+    );
   }
 
   const { authorized, response } = await authorizeUser(supabase, salonId);
@@ -76,7 +90,10 @@ export async function POST(req) {
   const { salon_id, full_name, phone, email } = clientData;
 
   if (!salon_id || !full_name) {
-    return NextResponse.json({ error: 'Missing required client fields' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing required client fields' },
+      { status: 400 },
+    );
   }
 
   const { authorized, response } = await authorizeUser(supabase, salon_id);
@@ -113,7 +130,10 @@ export async function PUT(req) {
   const { id, salon_id, full_name, phone, email } = clientData;
 
   if (!id || !salon_id) {
-    return NextResponse.json({ error: 'Missing client ID or salon ID' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing client ID or salon ID' },
+      { status: 400 },
+    );
   }
 
   const { authorized, response } = await authorizeUser(supabase, salon_id);
@@ -146,7 +166,10 @@ export async function DELETE(req) {
   const salonId = searchParams.get('salon_id');
 
   if (!id || !salonId) {
-    return NextResponse.json({ error: 'Missing client ID or salon ID' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing client ID or salon ID' },
+      { status: 400 },
+    );
   }
 
   const { authorized, response } = await authorizeUser(supabase, salonId);
@@ -163,5 +186,8 @@ export async function DELETE(req) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ message: 'Client deleted successfully' }, { status: 204 });
+  return NextResponse.json(
+    { message: 'Client deleted successfully' },
+    { status: 204 },
+  );
 }
