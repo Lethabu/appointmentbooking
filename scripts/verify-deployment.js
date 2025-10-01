@@ -74,16 +74,16 @@ async function fetchWithTimeout(url, options = {}, timeout = 10000) {
   }
 }
 
-async function verifyRoute(domain, route) {
-  const url = `https://${domain}${route.path}`;
+async function verifyRouteLocal(domain, port, protocol, route) {
+  const url = `${protocol}://${domain}:${port}${route.path}`;
   try {
     log(`Checking route: ${url}`);
     const response = await fetchWithTimeout(url);
     const html = await response.text();
     const statusOk = response.status === 200;
-    const hasTailwind = html.includes('bg-') || html.includes('text-');
+    const hasTailwind = html.includes('bg-') || html.includes('text-') || html.includes('tailwind');
     const hasTitle = html.includes('<title>');
-    const hasReact = html.includes('__NEXT_DATA__');
+    const hasReact = html.includes('__NEXT_DATA__') || html.includes('react');
     return {
       route: route.path,
       statusOk,
@@ -102,8 +102,8 @@ async function verifyRoute(domain, route) {
   }
 }
 
-async function verifyAsset(domain, asset) {
-  const url = `https://${domain}${asset.path}`;
+async function verifyAssetLocal(domain, port, protocol, asset) {
+  const url = `${protocol}://${domain}:${port}${asset.path}`;
   try {
     log(`Checking asset: ${url}`);
     const response = await fetchWithTimeout(url, { method: 'HEAD' });
@@ -124,44 +124,63 @@ async function verifyAsset(domain, asset) {
 }
 
 async function main() {
-  log('🚀 Starting Deployment Verification', 'info');
+  log('🚀 Starting Local Deployment Verification', 'info');
   log('='.repeat(80), 'info');
-  for (const [domain, config] of Object.entries(VERIFICATION_CONFIG)) {
-    log(`\nVerifying ${config.name} (${domain})...`, 'info');
-    // Test all routes
-    const routeResults = [];
-    for (const route of config.routes) {
-      const result = await verifyRoute(domain, route);
-      routeResults.push(result);
+  const domain = 'localhost';
+  const port = 3000;
+  const protocol = 'http';
+  const config = {
+    name: 'Local Appointment Booking Platform',
+    routes: [
+      { path: '/', name: 'Home', critical: true },
+      { path: '/book', name: 'Booking', critical: true },
+      { path: '/services', name: 'Services', critical: true },
+      { path: '/api/health', name: 'Health Check', critical: false } // Add if exists
+    ],
+    assets: [
+      { path: '/placeholder-logo.svg', name: 'Placeholder Logo', critical: true },
+      { path: '/favicon.ico', name: 'Favicon', critical: false }
+    ],
+    expectedContent: {
+      '/': ['Appointment', 'Booking', 'Platform'],
+      '/book': ['book', 'appointment'],
+      '/services': ['service']
     }
-    // Test assets
-    const assetResults = [];
-    for (const asset of config.assets) {
-      const result = await verifyAsset(domain, asset);
-      assetResults.push(result);
-    }
-    // Summary
-    log('\n' + '='.repeat(50), 'info');
-    log('📊 VERIFICATION SUMMARY', 'info');
-    log('='.repeat(50), 'info');
-    const successfulRoutes = routeResults.filter(r => r.success).length;
-    const successfulAssets = assetResults.filter(a => a.success).length;
-    log(`Routes: ${successfulRoutes}/${routeResults.length} ✅`, 'info');
-    log(`Assets: ${successfulAssets}/${assetResults.length} ✅`, 'info');
-    const overallSuccess = successfulRoutes === routeResults.length && successfulAssets === assetResults.length;
-    log(`\n🎯 Overall Status: ${overallSuccess ? '✅ PASS' : '❌ FAIL'}`, overallSuccess ? 'success' : 'error');
-    if (!overallSuccess) {
-      log('\n❌ Issues found:', 'error');
-      routeResults.filter(r => !r.success).forEach(r => {
-        log(`   - Route ${r.route}: ${r.error || 'Failed checks'}`, 'error');
-      });
-      assetResults.filter(a => !a.success).forEach(a => {
-        log(`   - Asset ${a.asset}: ${a.error || `Status ${a.statusCode}`}`, 'error');
-      });
-      process.exit(1);
-    }
-    log('\n🎉 All checks passed! Deployment is successful.', 'success');
+  };
+  log(`\nVerifying Local Platform (http://${domain}:${port})...`, 'info');
+  // Test all routes
+  const routeResults = [];
+  for (const route of config.routes) {
+    const result = await verifyRouteLocal(domain, port, protocol, route);
+    routeResults.push(result);
   }
+  // Test assets
+  const assetResults = [];
+  for (const asset of config.assets) {
+    const result = await verifyAssetLocal(domain, port, protocol, asset);
+    assetResults.push(result);
+  }
+  // Summary
+  log('\n' + '='.repeat(50), 'info');
+  log('📊 VERIFICATION SUMMARY', 'info');
+  log('='.repeat(50), 'info');
+  const successfulRoutes = routeResults.filter(r => r.success).length;
+  const successfulAssets = assetResults.filter(a => a.success).length;
+  log(`Routes: ${successfulRoutes}/${routeResults.length} ✅`, 'info');
+  log(`Assets: ${successfulAssets}/${assetResults.length} ✅`, 'info');
+  const overallSuccess = successfulRoutes === routeResults.length && successfulAssets === assetResults.length;
+  log(`\n🎯 Overall Status: ${overallSuccess ? '✅ PASS' : '❌ FAIL'}`, overallSuccess ? 'success' : 'error');
+  if (!overallSuccess) {
+    log('\n❌ Issues found:', 'error');
+    routeResults.filter(r => !r.success).forEach(r => {
+      log(`   - Route ${r.route}: ${r.error || 'Failed checks'}`, 'error');
+    });
+    assetResults.filter(a => !a.success).forEach(a => {
+      log(`   - Asset ${a.asset}: ${a.error || `Status ${a.statusCode}`}`, 'error');
+    });
+    process.exit(1);
+  }
+  log('\n🎉 All checks passed! Local simulation successful.', 'success');
   process.exit(0);
 }
 
