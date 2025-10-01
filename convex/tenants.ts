@@ -1,7 +1,7 @@
-import { internalMutation } from "convex/server";
+import { mutation } from "./_generated/server";
 import { v } from "convex/values";
 
-export const create = internalMutation({
+export const create = mutation({
   args: {
     name: v.string(),
     slug: v.string(),
@@ -17,7 +17,7 @@ export const create = internalMutation({
   },
 });
 
-export const updateTier = internalMutation({
+export const updateTier = mutation({
   args: {
     tenantId: v.id("tenants"),
     tier: v.string(),
