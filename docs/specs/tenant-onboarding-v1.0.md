@@ -1,9 +1,11 @@
 # Spec: Tenant Onboarding v1.0
 
 ## Changelog
+
 - **v1.0 (2025-10-01)**: Initial specification for automated tenant onboarding process, addressing audit gaps in tenant setup, multi-tenancy isolation, and Supabase migration from Firebase. Incorporates freemium tools for minimal lock-in.
 
 ## Overview
+
 This specification outlines the process for onboarding new tenants to the multi-tenant appointment booking platform. Tenant onboarding automates the setup of isolated environments, including database schemas, authentication, UI customization, and initial data seeding. It resolves prior audit issues such as incomplete tenant functionality (e.g., Instyle's partial booking support) and exposed Firebase keys by migrating to Supabase for auth and realtime features. The process prioritizes freemium tools like Supabase Spark plan for backend services and avoids heavy vendor dependencies. Goals include production-readiness with IaC via Terraform for infra provisioning, ensuring tenant isolation via row-level security (RLS), and enabling rapid deployment without manual intervention.
 
 Key benefits:
@@ -15,6 +17,7 @@ Key benefits:
 ## Requirements
 
 ### Functional Requirements
+
 1. **Tenant Registration**: Allow admins or self-service users to initiate onboarding via a web form or API endpoint, capturing tenant details (name, domain, logo, services).
 2. **Environment Provisioning**: Automatically create tenant-specific Supabase schemas, Convex schemas (if retained), and Next.js resolver configurations for subdomain routing (e.g., tenant.appointmentbooking.com).
 3. **Auth Setup**: Integrate Clerk for tenant-specific user pools; migrate any Firebase auth to Supabase Auth if realtime chat/agent features are involved.
@@ -24,6 +27,7 @@ Key benefits:
 7. **Validation & Activation**: Run health checks (e.g., via `scripts/health-check.js`) and activate tenant upon success, notifying via email/Slack.
 
 ### Non-Functional Requirements
+
 1. **Performance**: Onboarding completes in <5 minutes for standard tenants; scale to 100+ tenants/month.
 2. **Scalability**: Use Supabase's freemium tier initially; auto-scale to Pro if needed without code changes.
 3. **Reliability**: 99.9% uptime for onboarding API; include retry logic for provisioning failures.
@@ -31,6 +35,7 @@ Key benefits:
 5. **Cost**: Limit to freemium tools (Supabase Spark, Clerk dev tier); document migration costs from Firebase (~$0 initial).
 
 ## Acceptance Criteria
+
 - [ ] Onboarding form/API accepts valid tenant data and returns a unique tenant ID.
 - [ ] Supabase schema is created with RLS policies enforcing tenant isolation (e.g., `tenant_id = auth.jwt()->>'tenant_id'`).
 - [ ] Clerk instance is configured with tenant-specific sign-up/sign-in URLs.
@@ -50,6 +55,7 @@ Key benefits:
 7. **Coverage**: Aim for 90%+ code coverage; include edge cases like invalid domains or seeding failures.
 
 ## Security Considerations
+
 - **Isolation**: Enforce RLS on all Supabase tables; use Clerk's multi-session support to prevent auth mismatches.
 - **Secrets Management**: Migrate Firebase keys to Supabase env vars; use Terraform to provision without hardcoding.
 - **Input Validation**: Sanitize tenant inputs (e.g., domain) to prevent injection; rate-limit onboarding API.

@@ -5,6 +5,7 @@ This document provides a comprehensive, step-by-step checklist for handing over 
 The checklist emphasizes freemium/open-source priorities (e.g., Supabase Spark, Clerk dev tier) and security (e.g., RLS enforcement, secrets in env vars). Timelines assume a standard tenant; adjust for complexity. Owners: Dev (setup/verification), Ops (monitoring/training), Tenant Owner (sign-off).
 
 ## Pre-Handover Verification
+
 Perform these checks before handover to confirm isolation, functionality, and security. Run in staging first, then production. Timeline: 1-2 days. Owner: Dev.
 
 - [ ] **Run Deployment Verification Script**  
@@ -42,6 +43,7 @@ Perform these checks before handover to confirm isolation, functionality, and se
   *Timeline: 30 mins. Tools: Wrangler CLI, Supabase metrics.*
 
 ## Onboarding Steps
+
 Tie to automated provisioning from Tenant Onboarding spec. If manual, follow these. Timeline: 1 day (automated <5 mins). Owner: Dev.
 
 - [ ] **Provision Environment**  
@@ -67,6 +69,7 @@ Tie to automated provisioning from Tenant Onboarding spec. If manual, follow the
   *Acceptance: Health check passes; tenant live without downtime.*
 
 ## Post-Handover Tasks
+
 Ongoing support after handover. Timeline: 1 week initial, then monthly. Owner: Ops/Tenant Owner.
 
 - [ ] **User Training**  
@@ -90,6 +93,7 @@ Ongoing support after handover. Timeline: 1 week initial, then monthly. Owner: O
   *Timeline: Ongoing.*
 
 ## Acceptance Sign-Off
+
 - [ ] All pre-handover checks pass (attach verify-deployment.js output).  
 - [ ] Functionality verified: Booking/payments/agents work; isolation confirmed.  
 - [ ] Tenant owner trained; monitoring in place.  

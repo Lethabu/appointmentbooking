@@ -3,6 +3,7 @@
 This document outlines the integration pattern for using Stitch, an open-source AI-driven UI generation tool, in the multi-tenant appointment booking platform. It aligns with the [UI Enhancement (Stitch) v1.0 spec](docs/specs/ui-enhancement-stitch-v1.0.md), focusing on generating tenant-specific components via CLI prompts, ensuring isolation, and integrating with Next.js 14. Stitch CLI (freemium) generates TSX components from natural language prompts, which are then incorporated into tenant subdomains without full code rewrites.
 
 ## Integration Pattern
+
 1. **Prompt Generation**: Admins/tenants submit prompts via a dashboard or CLI to generate UI components (e.g., booking forms, dashboards).
 2. **CLI Execution**: Run Stitch CLI to output TSX/CSS files, customized per tenant (e.g., using design tokens from Specify).
 3. **Storage & Isolation**: Store generated components in Supabase (e.g., `ui_components` table with RLS on `tenant_id`) or as static files in `components/tenants/[tenant]/`.
@@ -14,9 +15,10 @@ This document outlines the integration pattern for using Stitch, an open-source 
 This pattern resolves audit issues like 404s on tenant pages (e.g., Instyle e-commerce) by ensuring generated UIs route correctly via `[tenant]` dynamic segments.
 
 ## Example Prompt for Booking Form
+
 Use this prompt in Stitch CLI for a tenant-specific booking form:
 
-```
+```bash
 Generate a responsive booking form component for a hair salon appointment booking platform. Include:
 - Service selection dropdown (fetched from Supabase via useServices hook).
 - Realtime calendar for availability (integrate Supabase subscription for slots).
@@ -33,6 +35,7 @@ Output as React TSX component named BookingForm.tsx, compatible with Next.js 14.
 Run: `npx stitch generate --prompt "above prompt" --output components/tenants/[tenant]/BookingForm.tsx`
 
 ## Next.js Snippet for Component Integration
+
 Integrate generated components in tenant pages, e.g., `app/[tenant]/book/page.tsx`. Use dynamic import for code-splitting and error boundaries.
 
 ```typescript
@@ -72,10 +75,12 @@ export default async function BookPage({ params }: { params: { tenant: string } 
 ```
 
 ### Security in Snippet
+
 - **RLS**: All Supabase queries in `BookingForm` use `tenant_id = auth.jwt()->>'tenant_id'` policy.
 - **Auth**: Clerk session via middleware; prefill form with user data if authenticated.
 
 ### Jest Test Snippet for Integration
+
 ```typescript
 // __tests__/useStitchComponent.test.tsx (see hook below for full usage)
 import { render, screen } from '@testing-library/react';
@@ -97,3 +102,5 @@ test('BookingForm renders with tenant isolation', () => {
 ```
 
 This setup ensures rapid UI enhancements with tenant isolation, compatible with existing Next.js/Supabase/Clerk stack. For data pipeline needs, refer to legacy ETL notes in appendix.
+
+</final>

@@ -1,6 +1,7 @@
 # Pragmatic Firebase Migration Plan to Supabase
 
 ## Overview
+
 This plan outlines the migration from Firebase to Supabase for realtime features and authentication in the multi-tenant appointment booking platform. Audits revealed Firebase exposure (e.g., exposed keys in client code, auth mismatches with agents), favoring Supabase for better isolation via RLS, freemium scaling, and alignment with existing stack (Next.js 14, Clerk). The migration is reverse-compatible where needed but prioritizes Supabase for auth/realtime (e.g., chat, bookings). No full rewrite; focus on data export/import, code redirects, and testing. Estimated time: 2-4 days; cost: $0 (Supabase Spark tier).
 
 Key benefits:
@@ -14,6 +15,7 @@ Assumptions: Firebase project has auth users, realtime DB (e.g., chat messages, 
 ## Migration Steps
 
 ### 1. Preparation & Audit (1 day)
+
 - **Audit Firebase Usage**: Scan codebase for Firebase imports (`grep -r "firebase" lib/ components/ app/`).
   - Identified: `lib/firebase.ts` (client init), `lib/firebase-admin.ts` (server), realtime listeners in chat/agent components.
   - Document dependencies: Auth (signInWithPhone), Realtime (chat, availability), Storage (logos).
@@ -26,6 +28,7 @@ Assumptions: Firebase project has auth users, realtime DB (e.g., chat messages, 
 - **Update Scripts**: Modify `scripts/migration.py` (create if missing) for data import.
 
 ### 2. Data Export from Firebase & Import to Supabase (1 day)
+
 - **Export Firebase Data**:
   - Auth Users: `firebase auth:export users.json --project=your-project --format=json`.
   - Realtime DB: Use Admin SDK script to dump JSON (e.g., `admin.database().ref().once('value')`).
@@ -33,6 +36,7 @@ Assumptions: Firebase project has auth users, realtime DB (e.g., chat messages, 
 - **Import to Supabase** (via updated `scripts/migration.py`):
   - Install deps: `pip install firebase-admin supabase python-dotenv`.
   - Script Snippet (update/create `scripts/migration.py`):
+
 ```python
 import json
 import os
@@ -91,13 +95,16 @@ if __name__ == '__main__':
     migrate_storage()
     print('Migration complete')
 ```
+
   - Run: `python scripts/migration.py` (test on staging Supabase first).
   - Handle Conflicts: Use upsert for users/bookings; log errors to `migration_logs` table.
 
 ### 3. Code Updates: Redirect Firebase to Supabase (1 day)
+
 - **Update lib/firebase.ts to lib/supabase.ts**:
   - Rename/move `lib/firebase.ts` to `lib/supabase-legacy.ts` (for redirects).
   - Create `lib/supabase.ts` with equivalents:
+
 ```typescript
 // lib/supabase.ts (new)
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
@@ -127,13 +134,16 @@ export async function signInWithPhone(phone: string) {
 // Redirects: In components using Firebase, update imports
 // e.g., import { supabase } from '@/lib/supabase'; // Instead of firebase
 ```
+
   - Search/Replace: `grep -r "import.*firebase" . | xargs sed -i 's/firebase/supabase/g'` (review manually).
   - Admin SDK: Update `lib/firebase-admin.ts` to Supabase server client with service key.
   - Feature Flag: Use `process.env.USE_SUPABASE === 'true'` to toggle; default to true post-migration.
 - **Handle Legacy**: For agent repo mismatches, update `temp-agent-repo/services/firebase.ts` similarly.
 
 ### 4. Testing Plan (0.5 day)
+
 - **Unit Tests (Jest)**: Test redirects and RLS.
+
 ```typescript
 // __tests__/supabase-migration.test.ts
 import { supabase } from '@/lib/supabase';
@@ -159,6 +169,7 @@ describe('Supabase Migration', () => {
   });
 });
 ```
+
 Run: `npm test -- supabase-migration`.
 - **Integration Tests**: Use MSW to mock Supabase; test booking flow with realtime updates.
 - **E2E Tests (Playwright)**: Simulate user login/chat; verify no Firebase calls (`npx playwright test --grep "no firebase"`).
@@ -168,6 +179,7 @@ Run: `npm test -- supabase-migration`.
 - **Coverage**: 90% for migrated code; include edge cases (e.g., phone auth OTP).
 
 ### 5. Rollout & Monitoring (0.5 day)
+
 - **Staged Rollout**: Deploy to staging; test with Instyle tenant first.
 - **Downtime Mitigation**: Dual-write during transition (Firebase + Supabase); sync via cron job.
 - **Go-Live**: Set `USE_SUPABASE=true`; monitor with `scripts/post-deploy-monitor.sh` (add Supabase metrics).
@@ -175,9 +187,12 @@ Run: `npm test -- supabase-migration`.
 - **Rollback**: Revert flag to false; restore from Firebase backups; re-export if needed.
 
 ## Risks & Mitigations
+
 - **Data Loss**: Backups + transactions in import script.
 - **Auth Breaks**: Clerk fallback; manual user reset if needed.
 - **Realtime Lag**: Supabase subscriptions faster; test thoroughly.
 - **Cost**: Monitor Supabase usage; free tier limits (500k rows).
 
 This plan ensures a secure, isolated migration without disrupting production bookings or agents.
+
+</final>

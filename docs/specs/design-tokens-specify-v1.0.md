@@ -1,9 +1,11 @@
 # Spec: Design Tokens (Specify) v1.0
 
 ## Changelog
+
 - **v1.0 (2025-10-01)**: Initial specification for implementing design tokens using Specify CLI to standardize theming across the multi-tenant platform. Addresses audit findings on inconsistent UI (e.g., Instyle theming mismatches) and supports UI enhancements via Stitch.
 
 ## Overview
+
 This specification details the adoption of design tokens for consistent, scalable theming in the multi-tenant appointment booking platform using Specify, an open-source CLI tool for generating tokens from Figma or code. Tokens will define colors, typography, spacing, and shadows per tenant, ensuring isolation and customization without code duplication. This resolves audit issues like partial tenant functionality (e.g., Instyle's unthemed e-commerce) by providing a centralized token system integrated with Tailwind and Next.js. Freemium Specify CLI usage minimizes costs and lock-in, favoring Supabase for token storage/retrieval. Goals: Production-ready with IaC for token deployment, tests for theme consistency, and rollback for theme breaks.
 
 Key benefits:
@@ -15,6 +17,7 @@ Key benefits:
 ## Requirements
 
 ### Functional Requirements
+
 1. **Token Definition**: Use Specify CLI to generate JSON tokens from prompts or Figma exports (e.g., `specify generate --input theme.fig --output tokens.json`).
 2. **Tenant Customization**: Store tokens in Supabase per tenant_id; allow updates via admin dashboard.
 3. **Integration**: Extend Tailwind config to consume tokens (e.g., `tailwind.config.ts` with dynamic imports); apply in components via CSS vars.
@@ -23,6 +26,7 @@ Key benefits:
 6. **Export/Import**: CLI commands for token syncing across environments (dev/staging/prod).
 
 ### Non-Functional Requirements
+
 1. **Consistency**: Tokens ensure 100% theme adherence across UI; no inline styles.
 2. **Performance**: Token loading <100ms; bundle size increase <5% via tree-shaking.
 3. **Maintainability**: Tokens versioned in Supabase; changes trigger UI rebuilds.
@@ -30,6 +34,7 @@ Key benefits:
 5. **Cost**: Specify CLI free tier; Supabase storage within Spark limits.
 
 ## Acceptance Criteria
+
 - [ ] Specify CLI generates valid JSON tokens for sample tenants (e.g., colors, fonts).
 - [ ] Tokens load and apply correctly in Tailwind classes on tenant subdomains.
 - [ ] Theme switch updates UI dynamically without page reload.
@@ -39,13 +44,10 @@ Key benefits:
 - [ ] Cross-device testing: Themes consistent on mobile/desktop.
 
 ## Test Plan
+
 1. **Unit Tests**: Jest for token parsing/generation; validate JSON schema.
 2. **Integration Tests**: Test Tailwind integration with mocked Supabase data.
-3. **E2E Tests**: Playwright for theme application in booking flows; verify isolation.
-4. **Visual Tests**: Snapshot tokens in components; diff for changes.
-5. **Accessibility Tests**: Automated contrast checks with pa11y; manual color blindness sim.
-6. **Load Tests**: Ensure token fetches don't bottleneck under 50 users/tenant.
-7. **Coverage**: 90% for token-related code; include CLI command tests.
+3. **E2E Tests**: Playwright for theme
 
 ## Security Considerations
 - **Storage**: Tokens in Supabase with RLS (tenant_id filter); encrypt sensitive (e.g., brand colors if proprietary).

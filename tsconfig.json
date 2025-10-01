@@ -42,6 +42,7 @@
     "functions/**/*",
     "__tests__/**/*",
     "**/*.test.ts",
-    "**/*.test.tsx"
+    "**/*.test.tsx",
+    "temp-agent-repo/**"
   ]
 }
