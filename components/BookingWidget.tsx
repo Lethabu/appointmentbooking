@@ -87,7 +87,7 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
   }
 }
 
-export default function BookingWidget() {
+export default function BookingWidget({ tenant, salonId }: { tenant?: string; salonId: string }) {
   const [state, dispatch] = useReducer(bookingReducer, initialState);
   const { services, timeSlots, selectedService, selectedDate, selectedTime, clientInfo, status, error } = state;
   const tenantId = 'instyle-boutique'; // This should likely come from props or context
