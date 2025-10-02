@@ -119,7 +119,7 @@ async function getTenantData(tenant: string): Promise<{ config: TenantConfig; se
   // Fetch services dynamically
   const { data: services } = await supabase
     .from('services')
-    .select('id, name, duration_minutes, price, service_category(name)')
+    .select('id, name, description, duration_minutes, price, service_category(name)')
     .eq('salon_id', config.salon_id)
     .eq('is_active', true)
     .order('name', { ascending: true });
@@ -163,4 +163,8 @@ export default async function TenantPage({ params }: TenantPageProps) {
   const { config, services, products } = await getTenantData(tenant);
 
   return <TenantHome config={config} services={services} products={products} />;
+}
+;
+}
+ts={products} />;
 }
