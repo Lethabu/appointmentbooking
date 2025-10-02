@@ -164,7 +164,3 @@ export default async function TenantPage({ params }: TenantPageProps) {
 
   return <TenantHome config={config} services={services} products={products} />;
 }
-;
-}
-ts={products} />;
-}
