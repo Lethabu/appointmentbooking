@@ -9,6 +9,7 @@
 This specification details the adoption of design tokens for consistent, scalable theming in the multi-tenant appointment booking platform using Specify, an open-source CLI tool for generating tokens from Figma or code. Tokens will define colors, typography, spacing, and shadows per tenant, ensuring isolation and customization without code duplication. This resolves audit issues like partial tenant functionality (e.g., Instyle's unthemed e-commerce) by providing a centralized token system integrated with Tailwind and Next.js. Freemium Specify CLI usage minimizes costs and lock-in, favoring Supabase for token storage/retrieval. Goals: Production-ready with IaC for token deployment, tests for theme consistency, and rollback for theme breaks.
 
 Key benefits:
+
 - Tenant-specific tokens (e.g., Instyle: warm tones; new tenant: customizable).
 - Automates token generation from designs, reducing manual CSS errors.
 - Integrates with resolver.ts for runtime theme loading.
@@ -47,9 +48,14 @@ Key benefits:
 
 1. **Unit Tests**: Jest for token parsing/generation; validate JSON schema.
 2. **Integration Tests**: Test Tailwind integration with mocked Supabase data.
-3. **E2E Tests**: Playwright for theme
+3. **E2E Tests**: Playwright for theme application in booking flows; verify isolation.
+4. **Visual Tests**: Snapshot tokens in components; diff for changes.
+5. **Accessibility Tests**: Automated contrast checks with pa11y; manual color blindness sim.
+6. **Load Tests**: Ensure token fetches don't bottleneck under 50 users/tenant.
+7. **Coverage**: 90% for token-related code; include CLI command tests.
 
 ## Security Considerations
+
 - **Storage**: Tokens in Supabase with RLS (tenant_id filter); encrypt sensitive (e.g., brand colors if proprietary).
 - **Input Sanitization**: Validate Specify inputs to prevent malformed JSON; scan for XSS in dynamic CSS.
 - **Access Control**: Clerk-gated admin dashboard for token edits; audit logs in Supabase.
@@ -58,6 +64,7 @@ Key benefits:
 - **Compliance**: Tokens support GDPR (e.g., no PII); document for SOC2.
 
 ## Rollback Strategy
+
 1. **Pre-Update**: Backup current tokens in Supabase; run diff check.
 2. **Staged Apply**: Update staging first; monitor UI with Lighthouse.
 3. **Partial Revert**: If theme breaks, revert Supabase row; cache previous tokens client-side.
@@ -66,6 +73,7 @@ Key benefits:
 6. **Post-Rollback**: Run `scripts/validate-deployment.js` to confirm theme integrity.
 
 ## Dependencies
+
 - **Tools/Services**: Specify CLI (token gen), Tailwind (styling), Supabase (storage/retrieval).
 - **Internal**: tailwind.config.ts, use-theme-context.tsx, resolver.ts for tenant loading.
 - **External**: Optional Figma integration for design handoff; Clerk for admin auth.
@@ -73,6 +81,7 @@ Key benefits:
 - **Related Specs**: UI Enhancement (Stitch uses tokens), Tenant Onboarding (initial token setup).
 
 ## Diagram: Token Workflow
+
 ```mermaid
 flowchart LR
     A[Design/Prompt Input] --> B[Specify CLI Generate]
@@ -89,6 +98,7 @@ flowchart LR
 ```
 
 ## Simulated Human Review Checklist
+
 - **Completeness**: Full Spec Kit coverage; links to related specs. ✅
 - **Clarity**: Token examples implied; diagram shows flow clearly. ✅
 - **Feasibility**: CLI-based, integrates existing Tailwind/Supabase. ✅

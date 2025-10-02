@@ -16,7 +16,10 @@ export interface TenantConfig {
     email: string;
     address: string;
   };
-// ...existing code...
+  description: string;
+  openingHours: string[];
+  salon_id: string;
+  socials: Record<string, string>;
 }
 
 const TENANT_CONFIGURATIONS: Record<string, TenantConfig> = {
@@ -27,16 +30,24 @@ const TENANT_CONFIGURATIONS: Record<string, TenantConfig> = {
     name: 'InStyle Hair Boutique',
     canonical: 'instyle',
     assets: 'instyle',
-    redirects: ['instylehairboutique', 'instyle-hair-boutique'],
+    redirects: ['instylehairboutique', 'instyle-hair-boutique', 'instyle'],
     theme: {
-      primaryColor: '#8B4513',
-      secondaryColor: '#DAA520',
-      logo: '/tenants/instyle/logo.png'
+      primaryColor: '#C0392B',
+      secondaryColor: '#A93226',
+      logo: '/tenants/instyle/logo.svg'
     },
     contact: {
-      phone: '+27123456789',
-      email: 'info@instylehairboutique.co.za',
-      address: 'Pretoria, South Africa'
+      phone: '+27 64 769 6159',
+      email: 'zanele@instyle.co.za',
+      address: '4582 Block B, Mabopane, Pretoria 0190, South Africa'
+    },
+    description: 'Premium hair treatments, professional styling, and colour services in the heart of Johannesburg.',
+    openingHours: ['Mo-Fr 09:00-18:00', 'Sa 09:00-16:00', 'Su Closed'],
+    salon_id: process.env.NEXT_PUBLIC_INSTYLE_SALON_ID || 'default-instyle-id',
+    socials: {
+      instagram: 'https://instagram.com/instylehairboutique',
+      whatsapp: 'https://wa.me/27647696159',
+      facebook: 'https://facebook.com/instylehairboutique'
     }
   },
   'www.appointmentbooking.co.za': {
@@ -51,8 +62,18 @@ const TENANT_CONFIGURATIONS: Record<string, TenantConfig> = {
       primaryColor: '#0070f3',
       secondaryColor: '#00d9ff',
       logo: '/platform/logo.png'
-    }
+    },
+    contact: {
+      phone: '+27 11 123 4567',
+      email: 'support@appointmentbooking.co.za',
+      address: 'Johannesburg, South Africa'
+    },
+    description: 'Multi-tenant appointment booking platform.',
+    openingHours: ['Mo-Fr 08:00-17:00'],
+    salon_id: 'platform-default',
+    socials: {}
   }
+  // Add more tenants as needed
 };
 
 export function resolveTenantFromHostname(hostname: string): TenantConfig | null {
@@ -75,6 +96,18 @@ export function resolveTenantFromSlug(slug: string): TenantConfig | null {
     tenant.canonical === slug || 
     tenant.redirects.includes(slug)
   ) || null;
+}
+
+export async function resolveTenant(slug: string): Promise<TenantConfig | null> {
+  // For now, use static; in future, fetch from Supabase for dynamic tenants
+  let config = resolveTenantFromSlug(slug);
+  if (!config) {
+    // Fallback to DB fetch if static not found
+    // const supabase = createServerComponentClient({ cookies });
+    // const { data } = await supabase.from('tenants').select('*').eq('slug', slug).single();
+    // if (data) config = { ...data, ...static overrides };
+  }
+  return config;
 }
 
 export function getAllTenants(): TenantConfig[] {
