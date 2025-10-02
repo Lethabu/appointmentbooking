@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import SimpleCalendar from './SimpleCalendar'; // Assume this exists or create it
@@ -30,7 +30,7 @@ export default function MultiStepBooking({ services, salonId, tenant, salonName 
   const supabase = createClientComponentClient();
 
   // Fetch salon ID if auth-gated (from app/book logic)
-  useState(() => {
+  useEffect(() => {
     async function getSalonId() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session && !salonIdState) {

@@ -6,9 +6,9 @@ interface Appointment {
   id: string;
   scheduled_time: string;
   status: string;
-  services?: { name: string };
-  staff?: { name: string };
-  users?: { name: string; email?: string };
+  services: { name: string }[];
+  staff: { name: string }[];
+  users: { name: string; email?: string }[];
 }
 
 interface AppointmentCardProps {
@@ -35,15 +35,15 @@ function AppointmentCard({ appointment }: AppointmentCardProps) {
           <CalendarDaysIcon className="w-6 h-6 text-purple-600" />
         </div>
         <div>
-          <h4 className="text-lg font-bold">
-            {appointment.services?.name || 'N/A'}
-          </h4>
-          <p className="text-sm text-gray-500">
-            With {appointment.staff?.name || 'N/A'}
-          </p>
-          <p className="text-sm text-gray-500">
-            Booked by: {appointment.users?.name || appointment.users?.email || 'N/A'}
-          </p>
+<h4 className="text-lg font-bold">
+  {appointment.services[0]?.name || 'N/A'}
+</h4>
+<p className="text-sm text-gray-500">
+  With {appointment.staff[0]?.name || 'N/A'}
+</p>
+<p className="text-sm text-gray-500">
+  Booked by: {appointment.users[0]?.name || appointment.users[0]?.email || 'N/A'}
+</p>
         </div>
       </div>
       <div className="text-right">

@@ -8,12 +8,14 @@ import type { Database } from '@/types/supabase';
 
 // Types
 type ServiceRow = Database['public']['Tables']['services']['Row'] & {
+  description?: string | null;
   service_category: { name: string } | null | any[]; // Handle join result
 };
 
 export interface Service {
   id: string;
   name: string;
+  description: string;
   price_cents: number;
   duration_minutes: number;
   service_category?: { name: string } | null;
@@ -26,7 +28,7 @@ export interface Product {
   name: string;
   description?: string | null;
   price_cents: number;
-  image_url?: string | null;
+  image_url: string;
 }
 
 interface TenantConfig {
@@ -135,6 +137,7 @@ async function getTenantData(tenant: string): Promise<{ config: TenantConfig; se
   const servicesTyped: Service[] = (services as ServiceRow[] | null)?.map((service) => ({
     id: service.id,
     name: service.name,
+    description: service.description || '',
     price_cents: (service.price as number) || 0,
     duration_minutes: service.duration_minutes || 0,
     service_category: Array.isArray(service.service_category)
@@ -147,7 +150,7 @@ async function getTenantData(tenant: string): Promise<{ config: TenantConfig; se
     name: product.name,
     description: product.description,
     price_cents: product.price || 0,
-    image_url: (product.image_urls as string[] | null)?.[0] || null,
+    image_url: (product.image_urls as string[] | null)?.[0] || '/placeholder-product-image.svg',
   })) || [];
 
   return {
