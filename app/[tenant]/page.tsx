@@ -4,22 +4,29 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { resolveTenant } from '@/lib/tenant-resolver';
 import TenantHome from '@/components/tenant/TenantHome';
+import type { Database } from '@/types/supabase';
 
 // Types
+type ServiceRow = Database['public']['Tables']['services']['Row'] & {
+  service_category: { name: string } | null | any[]; // Handle join result
+};
+
 export interface Service {
   id: string;
   name: string;
-  description: string;
   price_cents: number;
   duration_minutes: number;
-  service_category?: { name: string };
+  service_category?: { name: string } | null;
 }
+
+type ProductRow = Database['public']['Tables']['products']['Row'];
 
 export interface Product {
   id: string;
   name: string;
+  description?: string | null;
   price_cents: number;
-  image_url: string;
+  image_url?: string | null;
 }
 
 interface TenantConfig {
@@ -112,18 +119,42 @@ async function getTenantData(tenant: string): Promise<{ config: TenantConfig; se
   // Fetch services dynamically
   const { data: services } = await supabase
     .from('services')
-    .select('id, name, description, price_cents, duration_minutes, service_category(name)')
+    .select('id, name, duration_minutes, price, service_category(name)')
     .eq('salon_id', config.salon_id)
-    .order('sort_order', { referencedTable: 'service_categories', ascending: true });
+    .eq('is_active', true)
+    .order('name', { ascending: true });
 
   // Fetch products
-  const { data: products } = await supabase
+  const { data: productsData } = await supabase
     .from('products')
-    .select('id, name, price_cents, image_url')
+    .select('id, name, description, price, image_urls, is_active')
     .eq('salon_id', config.salon_id)
+    .eq('is_active', true)
     .limit(6);
 
-  return { config, services: services || [], products: products || [] };
+  const servicesTyped: Service[] = (services as ServiceRow[] | null)?.map((service) => ({
+    id: service.id,
+    name: service.name,
+    price_cents: (service.price as number) || 0,
+    duration_minutes: service.duration_minutes || 0,
+    service_category: Array.isArray(service.service_category)
+      ? service.service_category[0]?.name ? { name: service.service_category[0].name as string } : null
+      : service.service_category?.name ? { name: service.service_category.name as string } : null,
+  })) || [];
+
+  const products: Product[] = (productsData as ProductRow[] | null)?.map((product) => ({
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    price_cents: product.price || 0,
+    image_url: (product.image_urls as string[] | null)?.[0] || null,
+  })) || [];
+
+  return {
+    config,
+    services: servicesTyped,
+    products,
+  };
 }
 
 // Main page component
