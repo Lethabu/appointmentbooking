@@ -1,5 +1,6 @@
 'use client';
 
+<<<<<<< HEAD
 import React, { ReactNode, useEffect, useState } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
@@ -45,3 +46,13 @@ export const useAuth = () => {
   }
   return context;
 };
+=======
+import { ReactNode } from 'react';
+import { ConvexProvider, ConvexReactClient } from 'convex/react';
+
+const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+
+export default function ConvexClientProvider({ children }: { children: ReactNode }) {
+  return <ConvexProvider client={convex}>{children}</ConvexProvider>;
+}
+>>>>>>> origin/feat/instyle-whitelabel

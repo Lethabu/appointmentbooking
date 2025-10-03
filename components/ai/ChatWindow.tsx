@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 'use client';
 
 import { useState } from 'react';
@@ -15,6 +16,25 @@ interface Message {
   text: string;
   isUser: boolean;
   timestamp: Date;
+=======
+"use client"
+
+import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { MessageCircle, Send, Loader2 } from 'lucide-react'
+
+interface ChatWindowProps {
+  tenantId: string
+}
+
+interface Message {
+  id: string
+  text: string
+  isUser: boolean
+  timestamp: Date
+>>>>>>> origin/feat/instyle-whitelabel
 }
 
 export function ChatWindow({ tenantId }: ChatWindowProps) {
@@ -23,6 +43,7 @@ export function ChatWindow({ tenantId }: ChatWindowProps) {
       id: '1',
       text: `Hi! I'm Nia, your AI assistant for ${tenantId}. How can I help you today?`,
       isUser: false,
+<<<<<<< HEAD
       timestamp: new Date(),
     },
   ]);
@@ -31,17 +52,36 @@ export function ChatWindow({ tenantId }: ChatWindowProps) {
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
+=======
+      timestamp: new Date()
+    }
+  ])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const sendMessage = async () => {
+    if (!input.trim() || loading) return
+>>>>>>> origin/feat/instyle-whitelabel
 
     const userMessage: Message = {
       id: Date.now().toString(),
       text: input,
       isUser: true,
+<<<<<<< HEAD
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setLoading(true);
+=======
+      timestamp: new Date()
+    }
+
+    setMessages(prev => [...prev, userMessage])
+    setInput('')
+    setLoading(true)
+>>>>>>> origin/feat/instyle-whitelabel
 
     try {
       const response = await fetch('/api/chat', {
@@ -49,26 +89,43 @@ export function ChatWindow({ tenantId }: ChatWindowProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: input,
+<<<<<<< HEAD
           tenantId,
         }),
       });
 
       const data = await response.json();
+=======
+          tenantId
+        })
+      })
+
+      const data = await response.json()
+>>>>>>> origin/feat/instyle-whitelabel
 
       if (response.ok) {
         const aiMessage: Message = {
           id: (Date.now() + 1).toString(),
           text: data.response,
           isUser: false,
+<<<<<<< HEAD
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, aiMessage]);
       } else {
         throw new Error(data.error || 'Failed to send message');
+=======
+          timestamp: new Date()
+        }
+        setMessages(prev => [...prev, aiMessage])
+      } else {
+        throw new Error(data.error || 'Failed to send message')
+>>>>>>> origin/feat/instyle-whitelabel
       }
     } catch (error) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
+<<<<<<< HEAD
         text: "Sorry, I'm having trouble responding right now. Please try again.",
         isUser: false,
         timestamp: new Date(),
@@ -78,6 +135,17 @@ export function ChatWindow({ tenantId }: ChatWindowProps) {
       setLoading(false);
     }
   };
+=======
+        text: 'Sorry, I\'m having trouble responding right now. Please try again.',
+        isUser: false,
+        timestamp: new Date()
+      }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
+      setLoading(false)
+    }
+  }
+>>>>>>> origin/feat/instyle-whitelabel
 
   return (
     <Card className="w-full max-w-md">
@@ -113,7 +181,11 @@ export function ChatWindow({ tenantId }: ChatWindowProps) {
             </div>
           )}
         </div>
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> origin/feat/instyle-whitelabel
         <div className="flex gap-2">
           <Input
             value={input}
@@ -128,5 +200,10 @@ export function ChatWindow({ tenantId }: ChatWindowProps) {
         </div>
       </CardContent>
     </Card>
+<<<<<<< HEAD
   );
 }
+=======
+  )
+}
+>>>>>>> origin/feat/instyle-whitelabel

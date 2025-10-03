@@ -37,7 +37,11 @@ export async function POST(request: Request) {
   await sendWhatsAppMessage({
     phone: client_phone,
     message: `Hi ${client_name}! Your booking for ${service_id} at ${start_time} has been confirmed. See you soon!`,
+<<<<<<< HEAD
     tenantId: 'instylehairboutique',
+=======
+    tenantId: 'instylehairboutique'
+>>>>>>> origin/feat/instyle-whitelabel
   });
 
   return NextResponse.json({ success: true, booking: data });

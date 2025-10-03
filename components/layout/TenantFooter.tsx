@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/feat/instyle-whitelabel
 interface TenantFooterProps {
   brandName?: string;
   footerHtml?: string;
@@ -10,10 +14,14 @@ export function TenantFooter({ brandName, footerHtml }: TenantFooterProps) {
         {footerHtml ? (
           <div dangerouslySetInnerHTML={{ __html: footerHtml }} />
         ) : (
+<<<<<<< HEAD
           <p>
             &copy; {new Date().getFullYear()}{' '}
             {brandName || 'All Rights Reserved'}
           </p>
+=======
+          <p>&copy; {new Date().getFullYear()} {brandName || 'All Rights Reserved'}</p>
+>>>>>>> origin/feat/instyle-whitelabel
         )}
       </div>
     </footer>

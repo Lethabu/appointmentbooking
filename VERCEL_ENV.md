@@ -1,0 +1,24 @@
+# 🔧 VERCEL ENVIRONMENT SETUP
+
+## Add Environment Variables
+
+Go to: https://vercel.com/lethabus-projects/appointmentbooking/settings/environment-variables
+
+Add these variables:
+
+### Production Environment Variables
+
+| Name | Value |
+|------|-------|
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://awrnkvjitzwzojaonrzo.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3cm5rdmppdHp3em9qYW9ucnpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzMzAzODQsImV4cCI6MjA2NTkwNjM4NH0.7ueNZeQZf6eUe-Q-Hu3vnid5SaFk3JT2Oxx0v5loAU4` |
+| `SUPABASE_SERVICE_ROLE_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3cm5rdmppdHp3em9qYW9ucnpvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDMzMDM4NCwiZXhwIjoyMDY1OTA2Mzg0fQ._X6Ukz5cJ3GxxZGcJq3mmmOP9egBz65QIZN0016X3p4` |
+| `GEMINI_API_KEY` | `demo_gemini_key` |
+
+## Then Redeploy
+
+```bash
+npx vercel --prod --yes
+```
+
+**This will fix the build error and deploy successfully!**

@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
+<<<<<<< HEAD
     const { service_id, customer, date, time, payment_reference } =
       await request.json();
+=======
+    const { service_id, customer, date, time, payment_reference } = await request.json();
+>>>>>>> origin/feat/instyle-whitelabel
 
     const booking = {
       id: `booking_${Date.now()}`,
@@ -16,6 +20,7 @@ export async function POST(request: NextRequest) {
       appointment_time: time,
       status: 'confirmed',
       payment_reference,
+<<<<<<< HEAD
       created_at: new Date().toISOString(),
     };
 
@@ -23,11 +28,27 @@ export async function POST(request: NextRequest) {
       success: true,
       booking,
       message: 'Booking confirmed successfully',
+=======
+      created_at: new Date().toISOString()
+    };
+
+    return NextResponse.json({ 
+      success: true, 
+      booking,
+      message: 'Booking confirmed successfully'
+>>>>>>> origin/feat/instyle-whitelabel
     });
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to create booking' },
+<<<<<<< HEAD
       { status: 500 },
     );
   }
 }
+=======
+      { status: 500 }
+    );
+  }
+}
+>>>>>>> origin/feat/instyle-whitelabel

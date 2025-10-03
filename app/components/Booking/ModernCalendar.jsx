@@ -86,7 +86,11 @@ export default function ModernCalendar({
   }, [selectedDate, selectedStaff]);
 
   useEffect(() => {
+<<<<<<< HEAD
     fetchAvailableSlots();
+=======
+      fetchAvailableSlots();
+>>>>>>> origin/feat/instyle-whitelabel
   }, [fetchAvailableSlots]);
 
   const handleBooking = async () => {
@@ -271,12 +275,16 @@ export default function ModernCalendar({
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden relative">
                           {stylist.image_url ? (
+<<<<<<< HEAD
                             <Image
                               src={stylist.image_url}
                               alt={stylist.name}
                               layout="fill"
                               objectFit="cover"
                             />
+=======
+                            <Image src={stylist.image_url} alt={stylist.name} layout="fill" objectFit="cover" />
+>>>>>>> origin/feat/instyle-whitelabel
                           ) : (
                             <User className="w-6 h-6 text-gray-400" />
                           )}

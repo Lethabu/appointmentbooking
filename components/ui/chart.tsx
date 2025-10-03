@@ -105,6 +105,7 @@ const ChartTooltip = RechartsPrimitive.Tooltip;
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
   RechartsPrimitive.TooltipProps<any, any> &
+<<<<<<< HEAD
     React.ComponentProps<'div'> & {
       payload?: any;
       label?: any;
@@ -113,6 +114,14 @@ const ChartTooltipContent = React.forwardRef<
       indicator?: 'line' | 'dot' | 'dashed';
       nameKey?: string;
       labelKey?: string;
+=======
+    React.ComponentProps<"div"> & {
+      hideLabel?: boolean
+      hideIndicator?: boolean
+      indicator?: "line" | "dot" | "dashed"
+      nameKey?: string
+      labelKey?: string
+>>>>>>> origin/feat/instyle-whitelabel
     }
 >(
   (

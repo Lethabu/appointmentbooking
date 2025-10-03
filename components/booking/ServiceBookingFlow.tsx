@@ -12,6 +12,7 @@ const services = [
     name: 'Middle & Side Installation',
     price_cents: 45000, // R450
     duration: 60,
+<<<<<<< HEAD
     description: 'Professional installation of middle and side part weaves',
   },
   {
@@ -20,14 +21,29 @@ const services = [
     price_cents: 60000, // R600
     duration: 90,
     description: 'Intricate Maphondo and lines installation',
+=======
+    description: 'Professional installation of middle and side part weaves'
+  },
+  {
+    id: 'service_2',
+    name: 'Maphondo & Lines Installation', 
+    price_cents: 60000, // R600
+    duration: 90,
+    description: 'Intricate Maphondo and lines installation'
+>>>>>>> origin/feat/instyle-whitelabel
   },
   {
     id: 'service_3',
     name: 'Hair Treatment',
     price_cents: 25000, // R250
     duration: 30,
+<<<<<<< HEAD
     description: 'Rejuvenating hair treatment for healthy hair',
   },
+=======
+    description: 'Rejuvenating hair treatment for healthy hair'
+  }
+>>>>>>> origin/feat/instyle-whitelabel
 ];
 
 export default function ServiceBookingFlow() {
@@ -35,7 +51,11 @@ export default function ServiceBookingFlow() {
   const [customerDetails, setCustomerDetails] = useState<any>({
     name: '',
     email: '',
+<<<<<<< HEAD
     phone: '',
+=======
+    phone: ''
+>>>>>>> origin/feat/instyle-whitelabel
   });
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
@@ -52,6 +72,7 @@ export default function ServiceBookingFlow() {
   }
 
   const handleBookingPayment = async () => {
+<<<<<<< HEAD
     if (
       !selectedService ||
       !customerDetails.name ||
@@ -59,6 +80,9 @@ export default function ServiceBookingFlow() {
       !selectedDate ||
       !selectedTime
     ) {
+=======
+    if (!selectedService || !customerDetails.name || !customerDetails.email || !selectedDate || !selectedTime) {
+>>>>>>> origin/feat/instyle-whitelabel
       alert('Please fill in all details');
       return;
     }
@@ -75,6 +99,7 @@ export default function ServiceBookingFlow() {
           amount: selectedService.price_cents,
           email: customerDetails.email,
           phone: customerDetails.phone,
+<<<<<<< HEAD
           items: [
             {
               id: selectedService.id,
@@ -84,18 +109,36 @@ export default function ServiceBookingFlow() {
               type: 'service',
             },
           ],
+=======
+          items: [{
+            id: selectedService.id,
+            name: selectedService.name,
+            price_cents: selectedService.price_cents,
+            quantity: 1,
+            type: 'service'
+          }],
+>>>>>>> origin/feat/instyle-whitelabel
           tenantId: 'ccb12b4d-ade6-467d-a614-7c9d198ddc70',
           bookingDetails: {
             service_id: selectedService.id,
             customer: customerDetails,
             date: selectedDate,
+<<<<<<< HEAD
             time: selectedTime,
           },
+=======
+            time: selectedTime
+          }
+>>>>>>> origin/feat/instyle-whitelabel
         }),
       });
 
       const data = await response.json();
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> origin/feat/instyle-whitelabel
       if (data.url) {
         // Redirect to PayStack
         window.location.href = data.url;
@@ -113,12 +156,17 @@ export default function ServiceBookingFlow() {
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       <div className="text-center">
+<<<<<<< HEAD
         <h1 className="text-3xl font-bold text-purple-600">
           Book Your Service
         </h1>
         <p className="text-gray-600">
           Choose a service and pay securely with PayStack
         </p>
+=======
+        <h1 className="text-3xl font-bold text-purple-600">Book Your Service</h1>
+        <p className="text-gray-600">Choose a service and pay securely with PayStack</p>
+>>>>>>> origin/feat/instyle-whitelabel
       </div>
 
       {/* Service Selection */}
@@ -131,8 +179,13 @@ export default function ServiceBookingFlow() {
             <div
               key={service.id}
               className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+<<<<<<< HEAD
                 selectedService?.id === service.id
                   ? 'border-purple-500 bg-purple-50'
+=======
+                selectedService?.id === service.id 
+                  ? 'border-purple-500 bg-purple-50' 
+>>>>>>> origin/feat/instyle-whitelabel
                   : 'border-gray-200 hover:border-purple-300'
               }`}
               onClick={() => setSelectedService(service)}
@@ -164,31 +217,43 @@ export default function ServiceBookingFlow() {
             <Input
               placeholder="Full Name"
               value={customerDetails.name}
+<<<<<<< HEAD
               onChange={(e) =>
                 setCustomerDetails({ ...customerDetails, name: e.target.value })
               }
+=======
+              onChange={(e) => setCustomerDetails({...customerDetails, name: e.target.value})}
+>>>>>>> origin/feat/instyle-whitelabel
             />
             <Input
               type="email"
               placeholder="Email Address"
               value={customerDetails.email}
+<<<<<<< HEAD
               onChange={(e) =>
                 setCustomerDetails({
                   ...customerDetails,
                   email: e.target.value,
                 })
               }
+=======
+              onChange={(e) => setCustomerDetails({...customerDetails, email: e.target.value})}
+>>>>>>> origin/feat/instyle-whitelabel
             />
             <Input
               type="tel"
               placeholder="Phone Number"
               value={customerDetails.phone}
+<<<<<<< HEAD
               onChange={(e) =>
                 setCustomerDetails({
                   ...customerDetails,
                   phone: e.target.value,
                 })
               }
+=======
+              onChange={(e) => setCustomerDetails({...customerDetails, phone: e.target.value})}
+>>>>>>> origin/feat/instyle-whitelabel
             />
           </CardContent>
         </Card>
@@ -247,6 +312,7 @@ export default function ServiceBookingFlow() {
               </div>
               <div className="flex justify-between font-bold text-lg border-t pt-2">
                 <span>Total:</span>
+<<<<<<< HEAD
                 <span className="text-purple-600">
                   {formatPrice(selectedService.price_cents)}
                 </span>
@@ -254,17 +320,32 @@ export default function ServiceBookingFlow() {
             </div>
 
             <Button
+=======
+                <span className="text-purple-600">{formatPrice(selectedService.price_cents)}</span>
+              </div>
+            </div>
+            
+            <Button 
+>>>>>>> origin/feat/instyle-whitelabel
               onClick={handleBookingPayment}
               disabled={isProcessing}
               className="w-full mt-4 bg-green-600 hover:bg-green-700"
             >
+<<<<<<< HEAD
               {isProcessing
                 ? 'Processing...'
                 : `Pay ${formatPrice(selectedService.price_cents)} with PayStack`}
+=======
+              {isProcessing ? 'Processing...' : `Pay ${formatPrice(selectedService.price_cents)} with PayStack`}
+>>>>>>> origin/feat/instyle-whitelabel
             </Button>
           </CardContent>
         </Card>
       )}
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/feat/instyle-whitelabel

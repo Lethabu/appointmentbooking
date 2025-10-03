@@ -1,5 +1,6 @@
 'use client';
 
+<<<<<<< HEAD
 import { useState, useEffect } from 'react';
 import {
   Card,
@@ -14,6 +15,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar, Clock, Phone, User } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Appointment } from '@/types';
+=======
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Calendar, Clock, Phone, User } from "lucide-react"
+import { supabase } from "@/lib/supabase"
+import type { Appointment } from "@/types"
+>>>>>>> origin/feat/instyle-whitelabel
 
 interface AppointmentLiveViewProps {
   tenantId: string;
@@ -80,6 +91,7 @@ const mockAppointments: Appointment[] = [
 ];
 
 export function AppointmentLiveView({ tenantId }: AppointmentLiveViewProps) {
+<<<<<<< HEAD
   const [selectedPeriod, setSelectedPeriod] = useState('today');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -117,11 +129,49 @@ export function AppointmentLiveView({ tenantId }: AppointmentLiveViewProps) {
       }
     };
 
+=======
+  const [selectedPeriod, setSelectedPeriod] = useState("today")
+  const [appointments, setAppointments] = useState<Appointment[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch appointments with tenant isolation
+  const fetchAppointments = async () => {
+    try {
+      // Set tenant context for RLS
+      await supabase.rpc('set_tenant_context', { p_tenant_id: tenantId });
+      
+      const { data, error } = await supabase
+        .from('appointments')
+        .select(`
+          *,
+          clients(name, phone),
+          services(name, price)
+        `)
+        .order('datetime', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching appointments:', error);
+        setAppointments(mockAppointments); // Fallback to mock data
+      } else {
+        setAppointments(data || []);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setAppointments(mockAppointments);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Real-time subscription
+  useEffect(() => {
+>>>>>>> origin/feat/instyle-whitelabel
     fetchAppointments();
 
     // Set up real-time subscription
     const channel = supabase
       .channel('appointments-changes')
+<<<<<<< HEAD
       .on(
         'postgres_changes',
         {
@@ -135,6 +185,17 @@ export function AppointmentLiveView({ tenantId }: AppointmentLiveViewProps) {
           fetchAppointments(); // Refresh data
         },
       )
+=======
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'appointments',
+        filter: `tenant_id=eq.${tenantId}`
+      }, (payload) => {
+        console.log('Real-time update:', payload);
+        fetchAppointments(); // Refresh data
+      })
+>>>>>>> origin/feat/instyle-whitelabel
       .subscribe();
 
     return () => {
@@ -160,6 +221,7 @@ export function AppointmentLiveView({ tenantId }: AppointmentLiveViewProps) {
   const filterAppointments = (period: string) => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+<<<<<<< HEAD
 
     return appointments.filter((appointment) => {
       const appointmentDate = new Date(appointment.datetime);
@@ -185,12 +247,32 @@ export function AppointmentLiveView({ tenantId }: AppointmentLiveViewProps) {
             today.getMonth() + 1,
             1,
           );
+=======
+    
+    return appointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.datetime);
+      
+      switch (period) {
+        case 'today':
+          return appointmentDate >= today && appointmentDate < new Date(today.getTime() + 24 * 60 * 60 * 1000);
+        case 'week':
+          const weekStart = new Date(today.getTime() - today.getDay() * 24 * 60 * 60 * 1000);
+          const weekEnd = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+          return appointmentDate >= weekStart && appointmentDate < weekEnd;
+        case 'month':
+          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+          const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+>>>>>>> origin/feat/instyle-whitelabel
           return appointmentDate >= monthStart && appointmentDate < monthEnd;
         default:
           return true;
       }
     });
+<<<<<<< HEAD
   };
+=======
+  }
+>>>>>>> origin/feat/instyle-whitelabel
 
   return (
     <Card>

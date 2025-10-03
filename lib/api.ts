@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { supabase } from './supabase';
 import type { Service, Appointment, Product, BookingFormData } from '@/types';
+=======
+import { supabase } from "./supabase"
+import type { Service, Appointment, Product, BookingFormData } from "@/types"
+>>>>>>> origin/feat/instyle-whitelabel
 
 interface ChatResponse {
   reply: string;
@@ -12,7 +17,11 @@ interface AgentSuggestion {
 }
 
 class ApiClient {
+<<<<<<< HEAD
   private supabase = supabase;
+=======
+  private supabase = supabase
+>>>>>>> origin/feat/instyle-whitelabel
 
   // Services
   async getServices(tenantId: string): Promise<Service[]> {

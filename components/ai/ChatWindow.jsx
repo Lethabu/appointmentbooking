@@ -27,6 +27,7 @@ export default function ChatWindow() {
       }
 
       const data = await response.json();
+<<<<<<< HEAD
       setMessages((prevMessages) => [
         ...prevMessages,
         { role: 'assistant', content: data.response },
@@ -37,6 +38,12 @@ export default function ChatWindow() {
         ...prevMessages,
         { role: 'assistant', content: 'Error: Could not connect to AI.' },
       ]);
+=======
+      setMessages((prevMessages) => [...prevMessages, { role: 'assistant', content: data.response }]);
+    } catch (error) {
+      console.error('Error communicating with AI:', error);
+      setMessages((prevMessages) => [...prevMessages, { role: 'assistant', content: 'Error: Could not connect to AI.' }]);
+>>>>>>> origin/feat/instyle-whitelabel
     }
   };
 

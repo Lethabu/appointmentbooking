@@ -19,11 +19,19 @@ export default function CustomerJourney() {
     // Cart abandonment tracking
     if (items.length > 0) {
       const abandonmentTimer = setTimeout(() => {
+<<<<<<< HEAD
         trackEvent('cart_abandoned', {
           items: items.length,
           value: total,
         });
 
+=======
+        trackEvent('cart_abandoned', { 
+          items: items.length, 
+          value: total 
+        });
+        
+>>>>>>> origin/feat/instyle-whitelabel
         // Trigger WhatsApp reminder
         fetch('/api/webhooks/automation/abandoned-cart', {
           method: 'POST',
@@ -31,8 +39,13 @@ export default function CustomerJourney() {
           body: JSON.stringify({
             tenantId: 'instylehairboutique',
             clientPhone: '+27123456789', // Get from user session
+<<<<<<< HEAD
             cartItems: items,
           }),
+=======
+            cartItems: items
+          })
+>>>>>>> origin/feat/instyle-whitelabel
         });
       }, 300000); // 5 minutes
 
@@ -41,4 +54,8 @@ export default function CustomerJourney() {
   }, [items, total]);
 
   return null; // Invisible tracking component
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/feat/instyle-whitelabel

@@ -18,7 +18,11 @@ export default function PayStackCheckout() {
     }
 
     setLoading(true);
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> origin/feat/instyle-whitelabel
     try {
       const response = await fetch('/api/paystack/create', {
         method: 'POST',
@@ -29,18 +33,32 @@ export default function PayStackCheckout() {
           amount: total,
           email,
           phone,
+<<<<<<< HEAD
           items: items.map((i) => ({
             id: i.id,
             name: i.name,
             price_cents: i.price_cents,
             quantity: i.quantity,
+=======
+          items: items.map(i => ({ 
+            id: i.id, 
+            name: i.name, 
+            price_cents: i.price_cents,
+            quantity: i.quantity 
+>>>>>>> origin/feat/instyle-whitelabel
           })),
           tenantId: 'ccb12b4d-ade6-467d-a614-7c9d198ddc70',
         }),
       });
+<<<<<<< HEAD
 
       const data = await response.json();
 
+=======
+      
+      const data = await response.json();
+      
+>>>>>>> origin/feat/instyle-whitelabel
       if (data.url) {
         // Redirect to PayStack
         window.location.href = data.url;
@@ -69,6 +87,7 @@ export default function PayStackCheckout() {
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
       />
+<<<<<<< HEAD
       <Button
         onClick={handleCheckout}
         disabled={loading || total === 0}
@@ -81,3 +100,15 @@ export default function PayStackCheckout() {
     </div>
   );
 }
+=======
+      <Button 
+        onClick={handleCheckout} 
+        disabled={loading || total === 0}
+        className="w-full bg-green-600 hover:bg-green-700"
+      >
+        {loading ? 'Processing...' : `Pay R${(total / 100).toFixed(0)} with PayStack`}
+      </Button>
+    </div>
+  );
+}
+>>>>>>> origin/feat/instyle-whitelabel

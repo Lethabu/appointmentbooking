@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase';
 import { aisensy } from '@/lib/aisensy';
@@ -8,13 +9,30 @@ export async function POST(request: NextRequest) {
     const { sessionId, variables, answers } = body;
 
     const supabase = createServerSupabaseClient();
+=======
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerSupabaseClient } from '@/lib/supabase'
+import { aisensy } from '@/lib/aisensy'
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { sessionId, variables, answers } = body
+
+    const supabase = createServerSupabaseClient()
+>>>>>>> origin/feat/instyle-whitelabel
     const {
       customerName,
       customerPhone,
       service,
       date,
+<<<<<<< HEAD
       tenantId = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70',
     } = variables;
+=======
+      tenantId = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70'
+    } = variables
+>>>>>>> origin/feat/instyle-whitelabel
 
     if (service && date && customerName) {
       const { data: serviceData } = await supabase
@@ -22,7 +40,11 @@ export async function POST(request: NextRequest) {
         .select('*')
         .eq('name', service)
         .eq('tenant_id', tenantId)
+<<<<<<< HEAD
         .single();
+=======
+        .single()
+>>>>>>> origin/feat/instyle-whitelabel
 
       if (serviceData) {
         const { data: customer } = await supabase
@@ -31,10 +53,17 @@ export async function POST(request: NextRequest) {
             tenant_id: tenantId,
             name: customerName,
             phone: customerPhone,
+<<<<<<< HEAD
             consent_data_processing: true,
           })
           .select()
           .single();
+=======
+            consent_data_processing: true
+          })
+          .select()
+          .single()
+>>>>>>> origin/feat/instyle-whitelabel
 
         const { data: appointment } = await supabase
           .from('appointments')
@@ -44,6 +73,7 @@ export async function POST(request: NextRequest) {
             customer_id: customer.id,
             datetime: date,
             price: serviceData.price,
+<<<<<<< HEAD
             status: 'pending',
           })
           .select()
@@ -70,3 +100,25 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+=======
+            status: 'pending'
+          })
+          .select()
+          .single()
+
+        await aisensy.sendMessage(
+          customerPhone,
+          `🎉 Booking confirmed!\n\nService: ${service}\nDate: ${new Date(date).toLocaleDateString('en-ZA')}\nPrice: R${(serviceData.price / 100).toFixed(2)}\n\nSee you soon! - InStyle Hair Boutique`
+        )
+
+        return NextResponse.json({ success: true, appointmentId: appointment.id })
+      }
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Typebot webhook error:', error)
+    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 })
+  }
+}
+>>>>>>> origin/feat/instyle-whitelabel

@@ -23,6 +23,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 ```
+
 # The Platform
 
 A multi-tenant appointment booking SaaS platform built with **Next.js**, **Supabase**, **AWS RDS**, and AI agent integration.
@@ -32,5 +33,5 @@ A multi-tenant appointment booking SaaS platform built with **Next.js**, **Supab
 - `your-platform-agent`: AI agent for automation, reminders, and analytics.
 
 ## Deployment
-- Main platform: [your-platform-domain.com](https://your-platform-domain.com)
+- Main platform: [appointmentbooking.co.za](https://appointmentbooking.co.za)
 - Tenant example: [instylehairboutique.co.za](https://www.instylehairboutique.co.za)

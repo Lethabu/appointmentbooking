@@ -7,7 +7,11 @@ export async function POST(request: NextRequest) {
 
     if (event === 'charge.success') {
       const { reference, metadata } = data;
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> origin/feat/instyle-whitelabel
       if (metadata.bookingDetails) {
         await fetch('/api/book', {
           method: 'POST',
@@ -15,8 +19,13 @@ export async function POST(request: NextRequest) {
           body: JSON.stringify({
             ...metadata.bookingDetails,
             payment_reference: reference,
+<<<<<<< HEAD
             status: 'confirmed',
           }),
+=======
+            status: 'confirmed'
+          })
+>>>>>>> origin/feat/instyle-whitelabel
         });
       }
 
@@ -29,4 +38,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return NextResponse.json({ error: 'Webhook failed' }, { status: 500 });
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/feat/instyle-whitelabel
