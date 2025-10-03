@@ -1,0 +1,16 @@
+{
+  "projectId": "prj_wQ5yKHftPDnh2HsZBXXx5gwO8Y6c",
+  "orgId": "team_FrMoiimBKma0ySVyoX8IpRJy",
+  "projectName": "appointmentbooking",
+  "settings": {
+    "createdAt": 1755829990953,
+    "framework": "nextjs",
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": null,
+    "outputDirectory": null,
+    "rootDirectory": null,
+    "directoryListing": false,
+    "nodeVersion": "22.x"
+  }
+}
