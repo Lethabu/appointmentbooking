@@ -107,14 +107,9 @@ export default function SimpleCalendar({
     }
   }, [serviceId, fetchServicePrice]);
 
-<<<<<<< HEAD
   const fetchAvailableSlots = useCallback(async () => {
     if (!stylistId || !selectedDate) {
       // Only fetch slots if a stylist is selected
-=======
-    const fetchAvailableSlots = useCallback(async () => {
-    if (!stylistId || !selectedDate) { // Only fetch slots if a stylist is selected
->>>>>>> origin/feat/instyle-whitelabel
       setAvailableSlots([]); // Clear slots if no stylist is selected
       return;
     }
@@ -154,7 +149,6 @@ export default function SimpleCalendar({
     }
   }, [selectedDate, stylistId]);
 
-<<<<<<< HEAD
   useEffect(() => {
     // Only fetch slots if a date and a valid stylist are selected
     if (selectedDate && stylistId) {
@@ -164,13 +158,6 @@ export default function SimpleCalendar({
         'and stylist:',
         stylistId,
       ); // Log for debugging
-=======
-
-  useEffect(() => {
-    // Only fetch slots if a date and a valid stylist are selected
-    if (selectedDate && stylistId) {
-      console.log('Fetching slots for date:', selectedDate, 'and stylist:', stylistId); // Log for debugging
->>>>>>> origin/feat/instyle-whitelabel
       fetchAvailableSlots();
     } else {
       setAvailableSlots([]); // Clear slots if conditions are not met
@@ -232,11 +219,7 @@ export default function SimpleCalendar({
       );
     } finally {
       setLoading(false);
-<<<<<<< HEAD
       console.log('handleBooking finished, loading set to false.'); // Debug log
-=======
-      console.log("handleBooking finished, loading set to false."); // Debug log
->>>>>>> origin/feat/instyle-whitelabel
     }
   };
 

@@ -1,4 +1,5 @@
-import { createServerSupabaseClient, setTenantContext } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase-server';
+import { setTenantContext } from '@/lib/supabase';
 import { RealTimeDashboard } from '@/components/dashboard/real-time-dashboard';
 import { notFound } from 'next/navigation';
 

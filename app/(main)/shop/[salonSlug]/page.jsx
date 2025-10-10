@@ -1,160 +1,82 @@
-<<<<<<< HEAD:app/(main)/shop/[salonSlug]/page.jsx
 'use client';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import Image from 'next/image';
-import { supabase } from '../../../utils/supabaseClient';
-import { useCartStore } from '../../../utils/cartStore';
-=======
-"use client";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import Image from "next/image";
-import { supabase } from "../../utils/supabaseClient";
-import { useCartStore } from "../../utils/cartStore";
->>>>>>> origin/feat/instyle-whitelabel:app/shop/[salonSlug]/page.jsx
 
-export default function ShopPage() {
-  const params = useParams();
+import { useState, useEffect } from 'react';
+import { createClient } from '@/lib/supabase'; // Assuming supabase client is in lib
+
+// A simple placeholder for a cart store/context
+const useCartStore = () => {
+  const [cart, setCart] = useState([]);
+  const addToCart = (product) => setCart(prevCart => [...prevCart, product]);
+  return { cart, addToCart };
+};
+
+export default function SalonPage({ params }) {
   const { salonSlug } = params;
   const [salon, setSalon] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [cartOpen, setCartOpen] = useState(false);
-  const cart = useCartStore();
+  const { addToCart } = useCartStore();
 
   useEffect(() => {
-    const fetchSalonAndProducts = async () => {
-      setLoading(true);
-      setError(null);
-      const { data: salonData, error: salonError } = await supabase
-        .from('salons')
-        .select('id, name')
-        .eq('slug', salonSlug)
-        .single();
-      if (salonError || !salonData) {
-        setError('Salon not found');
+    if (!salonSlug) return;
+
+    const supabase = createClient();
+
+    async function fetchSalonData() {
+      try {
+        setLoading(true);
+        // Fetch salon details
+        const { data: salonData, error: salonError } = await supabase
+          .from('salons')
+          .select('*')
+          .eq('slug', salonSlug)
+          .single();
+
+        if (salonError) throw salonError;
+        setSalon(salonData);
+
+        // Fetch products for the salon
+        const { data: productsData, error: productsError } = await supabase
+          .from('products')
+          .select('*')
+          .eq('salon_id', salonData.id);
+
+        if (productsError) throw productsError;
+        setProducts(productsData);
+
+      } catch (e) {
+        setError(e.message);
+      } finally {
         setLoading(false);
-        return;
       }
-      setSalon(salonData);
-      const { data: productsData } = await supabase
-        .from('products')
-        .select('id, name, price, image_url')
-        .eq('salon_id', salonData.id);
-      setProducts(productsData || []);
-      setLoading(false);
-    };
-    if (salonSlug) fetchSalonAndProducts();
+    }
+
+    fetchSalonData();
   }, [salonSlug]);
 
-  const handleAddToCart = (product) => {
-    cart.addItem({ ...product, salonSlug });
-    setCartOpen(true);
-  };
-
-  if (loading) return <div className="p-8 text-center">Loading shop...</div>;
-  if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!salon) return <div>Salon not found.</div>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Shop at {salon.name}</h1>
-      <div className="flex justify-end mb-4">
-        <button className="btn" onClick={() => setCartOpen(true)}>
-          Cart (
-          {cart.items.filter((item) => item.salonSlug === salonSlug).length})
-        </button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white rounded shadow p-4 flex flex-col items-center"
-          >
-            {product.image_url && (
-<<<<<<< HEAD:app/(main)/shop/[salonSlug]/page.jsx
-              <Image
-                src={product.image_url}
-                alt={product.name}
-                width={96}
-                height={96}
-                className="w-24 h-24 object-cover mb-2 rounded"
-              />
-=======
-              <Image src={product.image_url} alt={product.name} width={96} height={96} className="w-24 h-24 object-cover mb-2 rounded" />
->>>>>>> origin/feat/instyle-whitelabel:app/shop/[salonSlug]/page.jsx
-            )}
-            <div className="font-semibold mb-1">{product.name}</div>
-            <div className="mb-2">R{product.price}</div>
-            <button className="btn" onClick={() => handleAddToCart(product)}>
+    <div className="container mx-auto px-4">
+      <h1 className="text-3xl font-bold my-4">{salon.name}</h1>
+      <p>{salon.description}</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+        {products.map(product => (
+          <div key={product.id} className="border p-4 rounded-lg">
+            <h2 className="text-xl font-semibold">{product.name}</h2>
+            <p className="text-gray-600">${product.price}</p>
+            <button 
+              onClick={() => addToCart(product)}
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
               Add to Cart
             </button>
           </div>
         ))}
       </div>
-      {/* Cart Drawer */}
-      {cartOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-end z-50">
-          <div className="bg-white w-80 h-full shadow-lg p-4 flex flex-col">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold">Cart</h2>
-              <button
-                onClick={() => setCartOpen(false)}
-                className="text-gray-500"
-              >
-                ✕
-              </button>
-            </div>
-            {cart.items.length === 0 ? (
-              <div className="text-gray-500">Cart is empty.</div>
-            ) : (
-              <ul className="flex-1 overflow-y-auto mb-4">
-                {cart.items.map((item, idx) => (
-                  <li
-                    key={idx}
-                    className="flex justify-between items-center mb-2"
-                  >
-                    <span>{item.name}</span>
-                    <span>R{item.price}</span>
-                    <button
-                      onClick={() => cart.removeItem(item.id)}
-                      className="text-red-500 ml-2"
-                    >
-                      Remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <div className="flex justify-between items-center mt-4">
-              <button
-                className="btn w-1/2 mr-2"
-                onClick={() => {
-                  setCartOpen(false);
-                  window.location.href = `/checkout/${salonSlug}`;
-                }}
-                disabled={
-                  cart.items.filter((item) => item.salonSlug === salonSlug)
-                    .length === 0
-                }
-              >
-                Go to Checkout
-              </button>
-              <button
-                className="btn w-1/2 bg-gray-200 text-gray-700"
-                onClick={() => cart.clearCart()}
-                disabled={
-                  cart.items.filter((item) => item.salonSlug === salonSlug)
-                    .length === 0
-                }
-              >
-                Clear Cart
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -3,84 +3,48 @@ import { nanoid } from 'nanoid';
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount, email, phone, items, tenantId } = await request.json();
-    const reference = `instyle_${nanoid(8)}`;
+    const { amount, email, tenantId } = await request.json();
 
-<<<<<<< HEAD
-    const paystackResponse = await fetch(
-      'https://api.paystack.co/transaction/initialize',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: amount, // Amount in kobo (cents)
-          currency: 'ZAR',
-          email,
-          reference,
-          metadata: {
-            tenantId,
-            phone,
-            items: JSON.stringify(items),
-          },
-          callback_url: `https://instylehairboutique.co.za/success?ref=${reference}`,
-          cancel_url: `https://instylehairboutique.co.za/shop`,
-        }),
-      },
-    );
-=======
-    const paystackResponse = await fetch('https://api.paystack.co/transaction/initialize', {
+    if (!amount || !email || !tenantId) {
+      return NextResponse.json({ error: 'Amount, email, and tenantId are required' }, { status: 400 });
+    }
+
+    const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
+    if (!paystackSecretKey) {
+      throw new Error('Paystack secret key is not configured.');
+    }
+
+    const reference = nanoid(); // Generate unique reference
+
+    const response = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+        'Authorization': `Bearer ${paystackSecretKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        amount: amount, // Amount in kobo (cents)
-        currency: 'ZAR',
         email,
+        amount: amount * 100, // Amount in kobo
         reference,
         metadata: {
-          tenantId,
-          phone,
-          items: JSON.stringify(items),
-        },
-        callback_url: `https://instylehairboutique.co.za/success?ref=${reference}`,
-        cancel_url: `https://instylehairboutique.co.za/shop`,
+          tenantId: tenantId,
+          source: 'appointmentbooking-saas'
+        }
       }),
     });
->>>>>>> origin/feat/instyle-whitelabel
 
-    const data = await paystackResponse.json();
+    const data = await response.json();
 
-    if (data.status) {
-<<<<<<< HEAD
-      return NextResponse.json({
-        url: data.data.authorization_url,
-        reference,
-=======
-      return NextResponse.json({ 
-        url: data.data.authorization_url,
-        reference 
->>>>>>> origin/feat/instyle-whitelabel
-      });
-    } else {
-      throw new Error(data.message || 'PayStack initialization failed');
+    if (!response.ok || !data.status) {
+      console.error('Paystack API Error:', data);
+      return NextResponse.json({ error: 'Failed to initialize payment', details: data.message }, { status: 500 });
     }
+
+    return NextResponse.json({ success: true, authorization_url: data.data.authorization_url });
+
   } catch (error) {
-    console.error('PayStack create error:', error);
-    return NextResponse.json(
-      { error: 'Failed to create payment' },
-<<<<<<< HEAD
-      { status: 500 },
-    );
+    console.error('Create Paystack transaction error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    return NextResponse.json({ success: false, error: 'Failed to create transaction', details: errorMessage }, { status: 500 });
   }
 }
-=======
-      { status: 500 }
-    );
-  }
-}
->>>>>>> origin/feat/instyle-whitelabel

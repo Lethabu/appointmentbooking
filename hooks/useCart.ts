@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-import { useCart } from '@/app/context/CartContext'
-
-export { useCart }
-=======
 'use client';
 
 import { create } from 'zustand';
@@ -92,4 +87,3 @@ export const useCart = create<CartStore>()(
     }
   )
 );
->>>>>>> origin/feat/instyle-whitelabel

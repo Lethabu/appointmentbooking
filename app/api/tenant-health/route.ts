@@ -1,96 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
-<<<<<<< HEAD
 import { createClient } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
-  const supabase = createClient();
-  const tenantId = request.headers.get('x-tenant-id') || 'unknown';
+  const tenantId = request.headers.get('x-tenant-id');
+
+  if (!tenantId) {
+    return NextResponse.json({ error: 'x-tenant-id header is required' }, { status: 400 });
+  }
 
   try {
-    // Test tenant context
-    await supabase.rpc('set_tenant_context', { p_tenant_id: tenantId });
+    const supabase = createClient();
+    // Use an RPC call to test if the tenant context can be set in the database
+    const { error } = await supabase.rpc('set_tenant_context', { p_tenant_id: tenantId });
 
-=======
-import { supabase } from '@/lib/supabase';
+    if (error) {
+      throw new Error(`Tenant context check failed: ${error.message}`);
+    }
 
-export async function GET(request: NextRequest) {
-  const tenantId = request.headers.get('x-tenant-id') || 'unknown';
-  
-  try {
-    // Test tenant context
-    await supabase.rpc('set_tenant_context', { p_tenant_id: tenantId });
-    
->>>>>>> origin/feat/instyle-whitelabel
-    // Test database connectivity with tenant isolation
-    const { data: appointments, error: apptError } = await supabase
-      .from('appointments')
-      .select('count')
-      .limit(1);
-<<<<<<< HEAD
+    return NextResponse.json({ status: 'ok', tenantId: tenantId });
 
-=======
-    
->>>>>>> origin/feat/instyle-whitelabel
-    const { data: products, error: prodError } = await supabase
-      .from('products')
-      .select('count')
-      .limit(1);
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> origin/feat/instyle-whitelabel
-    const health = {
-      status: 'healthy',
-      tenant_id: tenantId,
-      timestamp: new Date().toISOString(),
-      checks: {
-        database: !apptError && !prodError,
-        tenant_context: true,
-<<<<<<< HEAD
-        rls_active: appointments !== null,
-      },
-    };
-
-    const allHealthy = Object.values(health.checks).every(
-      (check) => check === true,
-    );
-
-    return NextResponse.json({
-      ...health,
-      status: allHealthy ? 'healthy' : 'degraded',
-    });
   } catch (error) {
+    console.error(`Tenant health check failed for [${tenantId}]:`, error);
     return NextResponse.json(
-      {
-        status: 'unhealthy',
-        tenant_id: tenantId,
-        timestamp: new Date().toISOString(),
-        error: 'Database connection failed',
-      },
-      { status: 500 },
+      { status: 'error', tenantId: tenantId, message: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
     );
   }
 }
-=======
-        rls_active: appointments !== null
-      }
-    };
-    
-    const allHealthy = Object.values(health.checks).every(check => check === true);
-    
-    return NextResponse.json({
-      ...health,
-      status: allHealthy ? 'healthy' : 'degraded'
-    });
-    
-  } catch (error) {
-    return NextResponse.json({
-      status: 'unhealthy',
-      tenant_id: tenantId,
-      timestamp: new Date().toISOString(),
-      error: 'Database connection failed'
-    }, { status: 500 });
-  }
-}
->>>>>>> origin/feat/instyle-whitelabel

@@ -21,7 +21,6 @@ const getStaticProducts = (tenantId: string) => {
     instyle: [
       {
         id: 1,
-<<<<<<< HEAD
         name: 'Premium Hair Serum',
         description: 'Nourishing serum for all hair types',
         price: 299,
@@ -41,27 +40,6 @@ const getStaticProducts = (tenantId: string) => {
     ],
   };
 
-=======
-        name: "Premium Hair Serum",
-        description: "Nourishing serum for all hair types",
-        price: 299,
-        image: "/products/serum.jpg",
-        category: "Hair Care",
-        in_stock: true
-      },
-      {
-        id: 2,
-        name: "Luxury Shampoo",
-        description: "Professional grade shampoo",
-        price: 199,
-        image: "/products/shampoo.jpg",
-        category: "Hair Care", 
-        in_stock: true
-      }
-    ]
-  };
-  
->>>>>>> origin/feat/instyle-whitelabel
   return staticProducts[tenantId as keyof typeof staticProducts] || [];
 };
 
@@ -77,19 +55,11 @@ export async function getProducts(tenantId: string) {
       `${STRAPI_URL}/api/products?filters[tenant_id][$eq]=${tenantId}&populate=*`,
       {
         headers: {
-<<<<<<< HEAD
           Authorization: `Bearer ${STRAPI_TOKEN}`,
           'Content-Type': 'application/json',
         },
         next: { revalidate: 300 }, // Cache for 5 minutes
       },
-=======
-          'Authorization': `Bearer ${STRAPI_TOKEN}`,
-          'Content-Type': 'application/json'
-        },
-        next: { revalidate: 300 } // Cache for 5 minutes
-      }
->>>>>>> origin/feat/instyle-whitelabel
     );
 
     if (!response.ok) {
@@ -97,11 +67,7 @@ export async function getProducts(tenantId: string) {
     }
 
     const data = await response.json();
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> origin/feat/instyle-whitelabel
     // Transform Strapi data to our format
     return data.data.map((item: StrapiProduct) => ({
       id: item.id,
@@ -110,14 +76,8 @@ export async function getProducts(tenantId: string) {
       price: item.attributes.price,
       image: item.attributes.image,
       category: item.attributes.category,
-<<<<<<< HEAD
       in_stock: item.attributes.in_stock,
     }));
-=======
-      in_stock: item.attributes.in_stock
-    }));
-    
->>>>>>> origin/feat/instyle-whitelabel
   } catch (error) {
     console.error('Error fetching products from Strapi:', error);
     // Fallback to static products
@@ -128,11 +88,7 @@ export async function getProducts(tenantId: string) {
 export async function getProduct(tenantId: string, productId: string) {
   if (!STRAPI_URL || !STRAPI_TOKEN) {
     const products = getStaticProducts(tenantId);
-<<<<<<< HEAD
     return products.find((p) => p.id.toString() === productId);
-=======
-    return products.find(p => p.id.toString() === productId);
->>>>>>> origin/feat/instyle-whitelabel
   }
 
   try {
@@ -140,17 +96,10 @@ export async function getProduct(tenantId: string, productId: string) {
       `${STRAPI_URL}/api/products/${productId}?filters[tenant_id][$eq]=${tenantId}&populate=*`,
       {
         headers: {
-<<<<<<< HEAD
           Authorization: `Bearer ${STRAPI_TOKEN}`,
           'Content-Type': 'application/json',
         },
       },
-=======
-          'Authorization': `Bearer ${STRAPI_TOKEN}`,
-          'Content-Type': 'application/json'
-        }
-      }
->>>>>>> origin/feat/instyle-whitelabel
     );
 
     if (!response.ok) {
@@ -159,11 +108,7 @@ export async function getProduct(tenantId: string, productId: string) {
 
     const data = await response.json();
     const item = data.data;
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> origin/feat/instyle-whitelabel
     return {
       id: item.id,
       name: item.attributes.name,
@@ -171,20 +116,10 @@ export async function getProduct(tenantId: string, productId: string) {
       price: item.attributes.price,
       image: item.attributes.image,
       category: item.attributes.category,
-<<<<<<< HEAD
       in_stock: item.attributes.in_stock,
     };
-=======
-      in_stock: item.attributes.in_stock
-    };
-    
->>>>>>> origin/feat/instyle-whitelabel
   } catch (error) {
     console.error('Error fetching product from Strapi:', error);
     return null;
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/feat/instyle-whitelabel

@@ -1,548 +1,370 @@
--- ######################################################
--- ##    APPOINTMENTBOOKINGS SAAS SCHEMA v4.0            ##
--- ##    Enterprise-Grade: RBAC, Analytics, AI, Ops      ##
--- ######################################################
+-- ===================================================================
+-- InStyle Smart Salon - Database Schema
+-- Corrected and consolidated version
+-- ===================================================================
 
+-- Enable UUID extension (if not already enabled)
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- =========== TABLE 1: SALONS ===========
-CREATE TABLE salons (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    name TEXT NOT NULL,
-    owner_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    subdomain TEXT UNIQUE,
-    custom_domain TEXT UNIQUE,
-    logo_url TEXT,
-    primary_color TEXT,
-    plan TEXT DEFAULT 'trial' NOT NULL, -- 'trial' | 'essential' | 'pro' | 'elite' | 'free'
-    trial_ends_at TIMESTAMP WITH TIME ZONE,
-    subscription_status TEXT, -- 'active', 'past_due', 'cancelled'
-    billing_cycle TEXT DEFAULT 'monthly', -- 'monthly', 'annual'
-    last_billed_at TIMESTAMP WITH TIME ZONE,
-    next_billing_date TIMESTAMP WITH TIME ZONE,
-    api_enabled BOOLEAN DEFAULT false,
-    whatsapp_enabled BOOLEAN DEFAULT false,
-    pricing_model JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- ===================================================================
+-- 1. PROFILES TABLE (User Management)
+-- ===================================================================
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  full_name TEXT,
+  phone TEXT,
+  email TEXT,
+  role TEXT DEFAULT 'client' CHECK (role IN ('client', 'staff', 'admin', 'owner')),
+  tenant_id TEXT DEFAULT 'instyle',
+  profile_image_url TEXT,
+  preferences JSONB DEFAULT '{}',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- =========== TABLE 2: PROFILES ===========
-CREATE TABLE profiles (
-    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-    full_name TEXT,
-    phone TEXT,
-    -- Role is now managed in staff_members for non-clients
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Indexes for profiles
+CREATE INDEX IF NOT EXISTS idx_profiles_tenant ON profiles(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_profiles_role ON profiles(role);
+CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
+
+-- ===================================================================
+-- 2. SERVICES TABLE (Salon Services)
+-- ===================================================================
+CREATE TABLE IF NOT EXISTS services (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  tenant_id TEXT DEFAULT 'instyle' NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT,
+  duration_minutes INTEGER NOT NULL DEFAULT 30,
+  price NUMERIC(10,2) NOT NULL,
+  category TEXT, -- e.g., 'haircut', 'color', 'styling', 'treatment'
+  is_active BOOLEAN DEFAULT TRUE,
+  image_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- =========== TABLE 3: STAFF MEMBERS & RBAC ===========
-CREATE TABLE staff_members (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-    role TEXT NOT NULL, -- 'owner', 'manager', 'staff'
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    UNIQUE(salon_id, user_id)
+-- Indexes for services
+CREATE INDEX IF NOT EXISTS idx_services_tenant ON services(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_services_active ON services(is_active);
+CREATE INDEX IF NOT EXISTS idx_services_category ON services(category);
+
+-- ===================================================================
+-- 3. STAFF TABLE (Salon Staff/Stylists)
+-- ===================================================================
+CREATE TABLE IF NOT EXISTS staff (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  tenant_id TEXT DEFAULT 'instyle' NOT NULL,
+  display_name TEXT NOT NULL,
+  specialties TEXT[], -- Array of specialties
+  bio TEXT,
+  is_available BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE staff_invites (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-    email TEXT NOT NULL,
-    role TEXT NOT NULL,
-    invited_by UUID REFERENCES auth.users(id),
-    token TEXT DEFAULT extensions.uuid_generate_v4() UNIQUE,
-    expires_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() + INTERVAL '7 days',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Indexes for staff
+CREATE INDEX IF NOT EXISTS idx_staff_tenant ON staff(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_staff_available ON staff(is_available);
+
+-- ===================================================================
+-- 4. STAFF AVAILABILITY TABLE
+-- ===================================================================
+CREATE TABLE IF NOT EXISTS staff_availability (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  staff_id UUID REFERENCES staff(id) ON DELETE CASCADE,
+  day_of_week INTEGER NOT NULL CHECK (day_of_week BETWEEN 0 AND 6), -- 0=Sunday, 6=Saturday
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- =========== TABLE 4: E-COMMERCE ===========
-CREATE TABLE products (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-    name TEXT NOT NULL,
-    description TEXT,
-    price INT NOT NULL, -- in cents
-    image_urls TEXT[],
-    stock_quantity INT DEFAULT 0,
-    is_active BOOLEAN DEFAULT true,
-    variants JSONB,
-    stock_threshold INT,
-    sales_count INT DEFAULT 0,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Indexes for staff availability
+CREATE INDEX IF NOT EXISTS idx_staff_availability_staff ON staff_availability(staff_id);
+CREATE INDEX IF NOT EXISTS idx_staff_availability_day ON staff_availability(day_of_week);
+
+-- ===================================================================
+-- 5. APPOINTMENTS TABLE (Bookings)
+-- ===================================================================
+CREATE TABLE IF NOT EXISTS appointments (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  tenant_id TEXT DEFAULT 'instyle' NOT NULL,
+  user_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  service_id UUID REFERENCES services(id) ON DELETE SET NULL,
+  staff_id UUID REFERENCES staff(id) ON DELETE SET NULL,
+  scheduled_time TIMESTAMP WITH TIME ZONE NOT NULL,
+  duration_minutes INTEGER NOT NULL,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled', 'no_show')),
+  notes TEXT,
+  client_name TEXT, -- For guest bookings
+  client_phone TEXT, -- For guest bookings
+  client_email TEXT, -- For guest bookings
+  confirmation_sent BOOLEAN DEFAULT FALSE,
+  reminder_sent BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE orders (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-    client_id UUID REFERENCES profiles(id),
-    customer_name TEXT,
-    customer_email TEXT,
-    customer_phone TEXT,
-    customer_address TEXT,
-    total INT NOT NULL, -- in cents
-    status TEXT DEFAULT 'pending' NOT NULL, -- 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled'
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Indexes for appointments
+CREATE INDEX IF NOT EXISTS idx_appointments_tenant ON appointments(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_appointments_user ON appointments(user_id);
+CREATE INDEX IF NOT EXISTS idx_appointments_staff ON appointments(staff_id);
+CREATE INDEX IF NOT EXISTS idx_appointments_scheduled ON appointments(scheduled_time);
+CREATE INDEX IF NOT EXISTS idx_appointments_status ON appointments(status);
+
+-- ===================================================================
+-- 6. CHAT LOGS TABLE (AI Agent Conversations)
+-- ===================================================================
+CREATE TABLE IF NOT EXISTS chat_logs (
+  id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  session_id TEXT, -- For tracking conversations
+  agent_name TEXT NOT NULL CHECK (agent_name IN ('Nia', 'Blaze', 'Nova')),
+  role TEXT NOT NULL CHECK (role IN ('user', 'agent', 'system')),
+  message TEXT NOT NULL,
+  metadata JSONB DEFAULT '{}', -- For storing additional context
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE order_items (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-    order_id UUID REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
-    product_id UUID REFERENCES products(id) ON DELETE SET NULL,
-    quantity INT NOT NULL,
-    price INT NOT NULL -- in cents
+-- Indexes for chat logs
+CREATE INDEX IF NOT EXISTS idx_chat_logs_user ON chat_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_chat_logs_session ON chat_logs(session_id);
+CREATE INDEX IF NOT EXISTS idx_chat_logs_agent ON chat_logs(agent_name);
+CREATE INDEX IF NOT EXISTS idx_chat_logs_created ON chat_logs(created_at DESC);
+
+-- ===================================================================
+-- 7. NOTIFICATIONS TABLE
+-- ===================================================================
+CREATE TABLE IF NOT EXISTS notifications (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  appointment_id UUID REFERENCES appointments(id) ON DELETE CASCADE,
+  type TEXT NOT NULL CHECK (type IN ('confirmation', 'reminder', 'cancellation', 'update')),
+  channel TEXT NOT NULL CHECK (channel IN ('email', 'sms', 'whatsapp', 'push')),
+  recipient TEXT NOT NULL, -- Email address or phone number
+  message TEXT NOT NULL,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'sent', 'failed', 'delivered')),
+  sent_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- =========== TABLE 5: BOOKING & SERVICES ===========
-CREATE TABLE services (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-    name TEXT NOT NULL,
-    duration_minutes INT,
-    price INT, -- in cents
-    is_active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Indexes for notifications
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_appointment ON notifications(appointment_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_status ON notifications(status);
+
+-- ===================================================================
+-- 8. TENANTS TABLE (Multi-tenant Support)
+-- ===================================================================
+CREATE TABLE IF NOT EXISTS tenants (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  domain TEXT UNIQUE,
+  subdomain TEXT UNIQUE,
+  branding JSONB DEFAULT '{}',
+  settings JSONB DEFAULT '{}',
+  is_active BOOLEAN DEFAULT TRUE,
+  subscription_status TEXT DEFAULT 'trial',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE appointments (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-    client_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-    service_id UUID REFERENCES services(id) ON DELETE CASCADE,
-    staff_id UUID REFERENCES staff_members(id),
-    start_time TIMESTAMP WITH TIME ZONE,
-    end_time TIMESTAMP WITH TIME ZONE,
-    status TEXT DEFAULT 'scheduled' NOT NULL, -- 'scheduled', 'in_progress', 'completed', 'cancelled', 'no_show'
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+-- Insert default tenant (InStyle)
+INSERT INTO tenants (id, name, domain, subdomain, branding)
+VALUES (
+  'instyle',
+  'InStyle Hair Boutique',
+  'instylehairboutique.co.za',
+  'instyle',
+  '{"primaryColor": "#d4af37", "secondaryColor": "#2d2d2d", "logo": "/logo.png"}'
+)
+ON CONFLICT (id) DO NOTHING;
 
--- =========== TABLE 6: PAYMENTS & BILLING ===========
-CREATE TABLE payments (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-<<<<<<< HEAD
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-=======
->>>>>>> origin/feat/instyle-whitelabel
-    order_id UUID REFERENCES orders(id),
-    amount INT NOT NULL, -- in cents
-    method TEXT, -- 'payflex', 'netcash_card'
-    status TEXT DEFAULT 'pending', -- 'pending', 'completed', 'failed'
-    transaction_id TEXT,
-    processed_at TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+-- ===================================================================
+-- ROW LEVEL SECURITY (RLS) POLICIES
+-- ===================================================================
 
-CREATE TABLE transactions (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-    amount INT NOT NULL,
-    type TEXT, -- 'subscription', 'ecommerce_payout'
-    status TEXT,
-    payment_method TEXT,
-    reference TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- =========== TABLE 7: AI & OPERATIONAL LOGS ===========
-CREATE TABLE chat_logs (
-    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-    user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-    agent_name TEXT,
-    role TEXT, -- 'user' or 'agent'
-    message TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE reminder_queue (
-    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
-<<<<<<< HEAD
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-=======
->>>>>>> origin/feat/instyle-whitelabel
-    appointment_id UUID REFERENCES appointments(id) ON DELETE CASCADE,
-    send_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    message TEXT,
-    phone TEXT,
-    sent BOOLEAN DEFAULT false,
-    sent_at TIMESTAMP WITH TIME ZONE
-);
-
-CREATE TABLE audit_logs (
-    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
-    user_id UUID,
-    salon_id UUID,
-    action TEXT,
-    path TEXT,
-    status INT,
-    user_agent TEXT,
-    ip_address INET,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- =========== TABLE 8: SYSTEM & ADMIN ===========
-CREATE TABLE api_keys (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    salon_id UUID REFERENCES salons(id) ON DELETE CASCADE NOT NULL,
-    key TEXT UNIQUE NOT NULL,
-    expires_at TIMESTAMP WITH TIME ZONE,
-    revoked BOOLEAN DEFAULT false,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE system_backups (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    type TEXT,
-    size BIGINT,
-    url TEXT,
-    status TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE rate_limits (
-    ip INET PRIMARY KEY,
-    count INT,
-    last_request TIMESTAMP WITH TIME ZONE
-);
-
-CREATE TABLE security_logs (
-    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
-    type TEXT,
-    ip INET,
-    details TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-<<<<<<< HEAD
--- =========== TABLE 9: TENANT COMPONENTS ===========
-CREATE TABLE tenant_components (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id     UUID REFERENCES salons(id) ON DELETE CASCADE,
-  comp_type     TEXT CHECK (comp_type IN ('header','footer','hero','menu')),
-  comp_name     TEXT,          -- e.g. "InstyleHeader"
-  html_chunk    TEXT,          -- pre-rendered safe HTML
-  css           TEXT,          -- full CSS string
-  version       INTEGER DEFAULT 1,
-  updated_at    TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Seed for Instyle:
--- NOTE: Replace '8a8d8e8e-8e8e-8e8e-8e8e-8e8e8e8e8e8e' with the actual tenant_id for Instyle
-INSERT INTO tenant_components(tenant_id,comp_type,comp_name,html_chunk,css)
-VALUES
-('8a8d8e8e-8e8e-8e8e-8e8e-8e8e8e8e8e8e','header','InstyleHeader',
- '<header class="instyle-header"><img src="https://cdn-instyle/logo.svg"/>...</header>',
- ':root { --primary: #d946ef; --font: "Poppins"; }'),
-('8a8d8e8e-8e8e-8e8e-8e8e-8e8e8e8e8e8e','footer','InstyleFooter',
- '<footer class="instyle-footer"><p>© 2025 Instyle Hair Boutique</p></footer>',
- '{}');
-
--- =========== SECURITY: ROW LEVEL SECURITY (RLS) ===========
--- Hardened RLS for true multi-tenancy
-
--- Helper function to get the current user's tenant ID.
--- This is a security-critical function.
-CREATE OR REPLACE FUNCTION get_current_tenant_id()
-RETURNS UUID AS $
-DECLARE
-  tenant_id_val UUID;
-BEGIN
-  -- The claim must be set by a trusted JWT issuer (e.g., Firebase Auth).
-  tenant_id_val := (current_setting('request.jwt.claims', true)::jsonb ->> 'tenant_id')::UUID;
-  IF tenant_id_val IS NULL THEN
-    RAISE EXCEPTION 'tenant_id not found in JWT claims';
-  END IF;
-  RETURN tenant_id_val;
-END;
-$ LANGUAGE plpgsql STABLE;
-
--- Generic policy for staff members (owners, managers, staff)
--- Grants full access to their own tenant's data.
-CREATE OR REPLACE FUNCTION create_staff_policy(table_name TEXT)
-RETURNS void AS $
-BEGIN
-  EXECUTE format('
-    CREATE POLICY "Allow staff full access to their own tenant data" 
-    ON %I 
-    FOR ALL 
-    USING (salon_id = get_current_tenant_id());', table_name);
-END;
-$ LANGUAGE plpgsql;
-
--- Apply policies to all tenant-scoped tables
-SELECT create_staff_policy(table_name) FROM (
-  VALUES
-    ('profiles'),
-    ('services'),
-    ('appointments'),
-    ('products'),
-    ('orders'),
-    ('order_items'),
-    ('staff_members'),
-    ('staff_invites'),
-    ('chat_logs'),
-    ('reminder_queue'),
-    ('payments'),
-    ('transactions'),
-    ('api_keys'),
-    ('tenant_components')
-) AS tables(table_name);
-
--- Special policies for the 'salons' table
-ALTER TABLE salons ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public read access to salons" ON salons FOR SELECT USING (true);
-CREATE POLICY "Salon owners can manage their own salon details" ON salons FOR ALL 
-  USING (id = get_current_tenant_id() AND auth.uid() = owner_id);
-
-=======
--- =========== SECURITY: ROW LEVEL SECURITY (RLS) ===========
->>>>>>> origin/feat/instyle-whitelabel
--- Enable RLS on all tenant-facing tables
+-- Enable RLS on all tables
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE services ENABLE ROW LEVEL SECURITY;
+ALTER TABLE staff ENABLE ROW LEVEL SECURITY;
+ALTER TABLE staff_availability ENABLE ROW LEVEL SECURITY;
 ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE products ENABLE ROW LEVEL SECURITY;
-ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
-ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
-ALTER TABLE staff_members ENABLE ROW LEVEL SECURITY;
-ALTER TABLE staff_invites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE chat_logs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE reminder_queue ENABLE ROW LEVEL SECURITY;
-<<<<<<< HEAD
-ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE api_keys ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tenant_components ENABLE ROW LEVEL SECURITY;
+ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tenants ENABLE ROW LEVEL SECURITY;
 
+-- PROFILES policies
+CREATE POLICY "Users can view their own profile"
+  ON profiles FOR SELECT
+  USING (auth.uid() = id);
 
--- =========== POSTGRESQL FUNCTIONS (RPCs) ===========
+CREATE POLICY "Users can update their own profile"
+  ON profiles FOR UPDATE
+  USING (auth.uid() = id);
 
--- Function for user role lookup
-CREATE OR REPLACE FUNCTION get_user_role(p_salon_id uuid, p_user_id uuid)
-RETURNS TEXT AS $$
-DECLARE
-  user_role TEXT;
-BEGIN
-  -- Check if owner first
-  PERFORM 1 FROM salons WHERE id = p_salon_id AND owner_id = p_user_id;
-  IF FOUND THEN
-    RETURN 'owner';
-  END IF;
+CREATE POLICY "Staff can view all profiles in their tenant"
+  ON profiles FOR SELECT
+  USING (
+    tenant_id = current_setting('app.current_tenant', TRUE)
+    AND EXISTS (
+      SELECT 1 FROM profiles
+      WHERE id = auth.uid() AND role IN ('staff', 'admin', 'owner')
+    )
+  );
 
-  -- Check staff_members table
-  SELECT role INTO user_role
-  FROM staff_members
-  WHERE salon_id = p_salon_id AND user_id = p_user_id;
+-- SERVICES policies (publicly viewable)
+CREATE POLICY "Anyone can view active services"
+  ON services FOR SELECT
+  USING (is_active = TRUE);
 
-  RETURN COALESCE(user_role, 'client');
-END;
-$$ LANGUAGE plpgsql;
+CREATE POLICY "Staff can manage services"
+  ON services FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE id = auth.uid() AND role IN ('admin', 'owner')
+    )
+  );
 
--- Function for global search within a salon
-CREATE OR REPLACE FUNCTION global_search(search_term text, p_salon_id uuid)
-RETURNS TABLE(id uuid, type text, title text, subtitle text) AS $$
-BEGIN
-  RETURN QUERY
-    -- Appointments
-    SELECT a.id, 'appointment' AS type, p.full_name AS title,
-           CONCAT('Service: ', s.name, ' • ', TO_CHAR(a.start_time, 'DD Mon HH24:MI')) AS subtitle
-    FROM appointments a
-    JOIN profiles p ON p.id = a.client_id
-    JOIN services s ON s.id = a.service_id
-    WHERE a.salon_id = p_salon_id AND (p.full_name ILIKE '%' || search_term || '%' OR s.name ILIKE '%' || search_term || '%')
-    UNION ALL
-    -- Clients
-    SELECT pr.id, 'client' AS type, pr.full_name AS title,
-           CONCAT('Phone: ', COALESCE(pr.phone, 'N/A')) AS subtitle
-    FROM profiles pr
-    WHERE pr.salon_id = p_salon_id AND (pr.full_name ILIKE '%' || search_term || '%' OR pr.phone ILIKE '%' || search_term || '%')
-    UNION ALL
-    -- Products
-    SELECT prod.id, 'product' AS type, prod.name AS title,
-           CONCAT('Stock: ', prod.stock_quantity, ' • Price: R', (prod.price/100)::money) AS subtitle
-    FROM products prod
-    WHERE prod.salon_id = p_salon_id AND prod.name ILIKE '%' || search_term || '%'
-    LIMIT 10;
-END;
-$ LANGUAGE plpgsql;
+-- STAFF policies
+CREATE POLICY "Anyone can view active staff"
+  ON staff FOR SELECT
+  USING (is_available = TRUE);
 
--- ... other advanced functions like get_platform_stats, get_salon_financials, etc. would go here ...
+CREATE POLICY "Staff can update their own profile"
+  ON staff FOR UPDATE
+  USING (user_id = auth.uid());
 
--- =========== TRIGGERS ===========
+-- APPOINTMENTS policies
+CREATE POLICY "Users can view their own appointments"
+  ON appointments FOR SELECT
+  USING (user_id = auth.uid());
 
--- Trigger to auto-update appointment status based on time
-CREATE OR REPLACE FUNCTION update_appointment_status()
+CREATE POLICY "Users can create appointments"
+  ON appointments FOR INSERT
+  WITH CHECK (
+    user_id = auth.uid() OR user_id IS NULL -- Allow guest bookings
+  );
+
+CREATE POLICY "Users can update their own appointments"
+  ON appointments FOR UPDATE
+  USING (user_id = auth.uid());
+
+CREATE POLICY "Staff can view all appointments in their tenant"
+  ON appointments FOR SELECT
+  USING (
+    tenant_id = current_setting('app.current_tenant', TRUE)
+    AND EXISTS (
+      SELECT 1 FROM profiles
+      WHERE id = auth.uid() AND role IN ('staff', 'admin', 'owner')
+    )
+  );
+
+-- CHAT LOGS policies
+CREATE POLICY "Users can view their own chat logs"
+  ON chat_logs FOR SELECT
+  USING (user_id = auth.uid());
+
+CREATE POLICY "Users can insert their own chat messages"
+  ON chat_logs FOR INSERT
+  WITH CHECK (user_id = auth.uid());
+
+CREATE POLICY "Staff can view all chat logs in their tenant"
+  ON chat_logs FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE id = auth.uid() AND role IN ('admin', 'owner')
+    )
+  );
+
+-- NOTIFICATIONS policies
+CREATE POLICY "Users can view their own notifications"
+  ON notifications FOR SELECT
+  USING (user_id = auth.uid());
+
+-- TENANTS policies
+CREATE POLICY "Anyone can view active tenants"
+  ON tenants FOR SELECT
+  USING (is_active = TRUE);
+
+-- ===================================================================
+-- FUNCTIONS & TRIGGERS
+-- ===================================================================
+
+-- Function to update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
-  IF TG_OP = 'INSERT' THEN
-    NEW.status := 'scheduled';
-  ELSIF TG_OP = 'UPDATE' THEN
-    IF NEW.start_time <= NOW() AND (NEW.end_time IS NULL OR NEW.end_time >= NOW()) THEN
-      NEW.status := 'in_progress';
-    ELSIF NEW.end_time < NOW() THEN
-      NEW.status := 'completed';
-    END IF;
-  END IF;
+  NEW.updated_at = NOW();
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER appointment_status_trigger
-BEFORE INSERT OR UPDATE ON appointments
-FOR EACH ROW EXECUTE FUNCTION update_appointment_status();
+-- Add triggers for updated_at
+CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON profiles
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- Trigger to create a profile when a new user signs up
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+CREATE TRIGGER update_services_updated_at BEFORE UPDATE ON services
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_appointments_updated_at BEFORE UPDATE ON appointments
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_tenants_updated_at BEFORE UPDATE ON tenants
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ===================================================================
+-- SEED DATA (for testing)
+-- ===================================================================
+
+-- Insert sample services for InStyle
+INSERT INTO services (tenant_id, name, description, duration_minutes, price, category, is_active)
+VALUES
+  ('instyle', 'Ladies Cut & Style', 'Professional haircut and styling for women', 45, 150.00, 'haircut', TRUE),
+  ('instyle', 'Gents Cut', 'Classic men''s haircut', 30, 100.00, 'haircut', TRUE),
+  ('instyle', 'Full Color Treatment', 'Complete hair coloring service', 120, 450.00, 'color', TRUE),
+  ('instyle', 'Highlights', 'Partial highlights or lowlights', 90, 350.00, 'color', TRUE),
+  ('instyle', 'Blowout & Style', 'Professional blow dry and styling', 30, 120.00, 'styling', TRUE),
+  ('instyle', 'Deep Conditioning Treatment', 'Intensive hair treatment', 45, 200.00, 'treatment', TRUE),
+  ('instyle', 'Bridal Package', 'Complete bridal hair and makeup', 180, 800.00, 'special', TRUE),
+  ('instyle', 'Kids Cut', 'Haircut for children under 12', 20, 80.00, 'haircut', TRUE)
+ON CONFLICT DO NOTHING;
+
+-- ===================================================================
+-- CLEANUP OLD DUPLICATE POLICIES (if any exist)
+-- ===================================================================
+
+-- Drop duplicate policies if they exist
+DO $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name)
-  VALUES (new.id, new.raw_user_meta_data->>'full_name');
-  RETURN new;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+  -- This will help clean up any duplicate policies from previous migrations
+  PERFORM pg_advisory_lock(123456);
+  -- Add cleanup logic here if needed
+  PERFORM pg_advisory_unlock(123456);
+END $$;
 
-=======
-ALTER TABLE salons ENABLE ROW LEVEL SECURITY;
+-- ===================================================================
+-- VERIFICATION QUERIES
+-- ===================================================================
 
--- POLICIES
-CREATE POLICY "Allow public read access to salons" ON salons FOR SELECT USING (true);
-CREATE POLICY "Salon owners can manage their own salon details" ON salons FOR ALL USING (auth.uid() = owner_id);
+-- Run these after applying schema to verify everything is set up correctly:
 
-CREATE OR REPLACE FUNCTION get_user_salon_id(user_id_param UUID)
-RETURNS UUID AS $$
-DECLARE
-  salon_uuid UUID;
-BEGIN
-  SELECT salon_id INTO salon_uuid FROM staff_members WHERE user_id = user_id_param;
-  IF NOT FOUND THEN
-    SELECT id INTO salon_uuid FROM salons WHERE owner_id = user_id_param;
-  END IF;
-  RETURN salon_uuid;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- Check all tables exist
+-- SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name;
 
-CREATE POLICY "Staff can access their salon's data" ON services
-FOR ALL USING (salon_id = get_user_salon_id(auth.uid()));
+-- Check RLS is enabled
+-- SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename;
 
-CREATE POLICY "Staff can access their salon's data" ON appointments
-FOR ALL USING (salon_id = get_user_salon_id(auth.uid()));
+-- Check policies
+-- SELECT schemaname, tablename, policyname FROM pg_policies ORDER BY tablename, policyname;
 
-CREATE POLICY "Staff can access their salon's data" ON products
-FOR ALL USING (salon_id = get_user_salon_id(auth.uid()));
+-- Verify seed data
+-- SELECT COUNT(*) as service_count FROM services WHERE tenant_id = 'instyle';
 
-CREATE POLICY "Staff can access their salon's data" ON orders
-FOR ALL USING (salon_id = get_user_salon_id(auth.uid()));
-
--- ... add similar policies for all other tenant-scoped tables ...
-
--- =========== POSTGRESQL FUNCTIONS (RPCs) ===========
-
--- Function for user role lookup
-CREATE OR REPLACE FUNCTION get_user_role(p_salon_id uuid, p_user_id uuid)
-RETURNS TEXT AS $$
-DECLARE
-  user_role TEXT;
-BEGIN
-  -- Check if owner first
-  PERFORM 1 FROM salons WHERE id = p_salon_id AND owner_id = p_user_id;
-  IF FOUND THEN
-    RETURN 'owner';
-  END IF;
-
-  -- Check staff_members table
-  SELECT role INTO user_role
-  FROM staff_members
-  WHERE salon_id = p_salon_id AND user_id = p_user_id;
-
-  RETURN COALESCE(user_role, 'client');
-END;
-$$ LANGUAGE plpgsql;
-
--- Function for global search within a salon
-CREATE OR REPLACE FUNCTION global_search(search_term text, p_salon_id uuid)
-RETURNS TABLE(id uuid, type text, title text, subtitle text) AS $$
-BEGIN
-  RETURN QUERY
-    -- Appointments
-    SELECT a.id, 'appointment' AS type, p.full_name AS title,
-           CONCAT('Service: ', s.name, ' • ', TO_CHAR(a.start_time, 'DD Mon HH24:MI')) AS subtitle
-    FROM appointments a
-    JOIN profiles p ON p.id = a.client_id
-    JOIN services s ON s.id = a.service_id
-    WHERE a.salon_id = p_salon_id AND (p.full_name ILIKE '%' || search_term || '%' OR s.name ILIKE '%' || search_term || '%')
-    UNION ALL
-    -- Clients
-    SELECT pr.id, 'client' AS type, pr.full_name AS title,
-           CONCAT('Phone: ', COALESCE(pr.phone, 'N/A')) AS subtitle
-    FROM profiles pr
-    WHERE pr.salon_id = p_salon_id AND (pr.full_name ILIKE '%' || search_term || '%' OR pr.phone ILIKE '%' || search_term || '%')
-    UNION ALL
-    -- Products
-    SELECT prod.id, 'product' AS type, prod.name AS title,
-           CONCAT('Stock: ', prod.stock_quantity, ' • Price: R', (prod.price/100)::money) AS subtitle
-    FROM products prod
-    WHERE prod.salon_id = p_salon_id AND prod.name ILIKE '%' || search_term || '%'
-    LIMIT 10;
-END;
-$$ LANGUAGE plpgsql;
-
--- ... other advanced functions like get_platform_stats, get_salon_financials, etc. would go here ...
-
--- =========== TRIGGERS ===========
-
--- Trigger to auto-update appointment status based on time
-CREATE OR REPLACE FUNCTION update_appointment_status()
-RETURNS TRIGGER AS $$
-BEGIN
-  IF TG_OP = 'INSERT' THEN
-    NEW.status := 'scheduled';
-  ELSIF TG_OP = 'UPDATE' THEN
-    IF NEW.start_time <= NOW() AND (NEW.end_time IS NULL OR NEW.end_time >= NOW()) THEN
-      NEW.status := 'in_progress';
-    ELSIF NEW.end_time < NOW() THEN
-      NEW.status := 'completed';
-    END IF;
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER appointment_status_trigger
-BEFORE INSERT OR UPDATE ON appointments
-FOR EACH ROW EXECUTE FUNCTION update_appointment_status();
-
--- Trigger to create a profile when a new user signs up
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO public.profiles (id, full_name)
-  VALUES (new.id, new.raw_user_meta_data->>'full_name');
-  RETURN new;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
->>>>>>> origin/feat/instyle-whitelabel
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
-
--- =========== INDEXES ===========
-CREATE INDEX CONCURRENTLY idx_appointments_salon_time ON appointments (salon_id, start_time);
-CREATE INDEX CONCURRENTLY idx_services_salon_active ON services (salon_id, is_active);
-CREATE INDEX CONCURRENTLY idx_orders_salon_date ON orders (salon_id, created_at);
-CREATE INDEX CONCURRENTLY idx_staff_members_salon_user ON staff_members (salon_id, user_id);
-
--- Supabase RPC for get_dashboard_stats
-CREATE OR REPLACE FUNCTION get_dashboard_stats(salon_id_param uuid)
-RETURNS TABLE(total_appointments bigint, total_revenue numeric, latest_booking timestamp with time zone)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-  RETURN QUERY
-  SELECT
-    (SELECT COUNT(*) FROM appointments WHERE salon_id = salon_id_param) as total_appointments,
-    (SELECT SUM(price) FROM services s JOIN appointments a ON s.id = a.service_id WHERE a.salon_id = salon_id_param) as total_revenue,
-    (SELECT MAX(created_at) FROM appointments WHERE salon_id = salon_id_param) as latest_booking;
-END;
-$$;
+-- ===================================================================
+-- END OF SCHEMA
+-- ===================================================================

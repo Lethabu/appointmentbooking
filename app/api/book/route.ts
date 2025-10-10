@@ -1,54 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
-<<<<<<< HEAD
-    const { service_id, customer, date, time, payment_reference } =
-      await request.json();
-=======
-    const { service_id, customer, date, time, payment_reference } = await request.json();
->>>>>>> origin/feat/instyle-whitelabel
-
-    const booking = {
-      id: `booking_${Date.now()}`,
-      tenant_id: 'ccb12b4d-ade6-467d-a614-7c9d198ddc70',
-      service_id,
-      customer_name: customer.name,
-      customer_email: customer.email,
-      customer_phone: customer.phone,
-      appointment_date: date,
-      appointment_time: time,
-      status: 'confirmed',
+    const {
+      serviceId,
+      bookingDate,
+      customerName,
+      customerEmail,
       payment_reference,
-<<<<<<< HEAD
-      created_at: new Date().toISOString(),
+      tenantId
+    } = await request.json();
+
+    if (!serviceId || !bookingDate || !customerName || !customerEmail || !payment_reference) {
+      return NextResponse.json({ error: 'Missing required booking information.' }, { status: 400 });
+    }
+
+    const supabase = createClient();
+
+    const bookingData = {
+      service_id: serviceId,
+      booking_date: bookingDate,
+      customer_name: customerName,
+      customer_email: customerEmail,
+      payment_reference: payment_reference,
+      status: 'confirmed',
+      tenant_id: tenantId, // For whitelabel
     };
 
-    return NextResponse.json({
-      success: true,
-      booking,
-      message: 'Booking confirmed successfully',
-=======
-      created_at: new Date().toISOString()
-    };
+    const { data, error } = await supabase
+      .from('bookings')
+      .insert([bookingData])
+      .select()
+      .single();
 
-    return NextResponse.json({ 
-      success: true, 
-      booking,
-      message: 'Booking confirmed successfully'
->>>>>>> origin/feat/instyle-whitelabel
-    });
+    if (error) {
+      console.error('Supabase booking error:', error);
+      throw new Error('Failed to create booking in database.');
+    }
+
+    return NextResponse.json({ success: true, booking: data });
+
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to create booking' },
-<<<<<<< HEAD
-      { status: 500 },
-    );
+    console.error('Booking API error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
   }
 }
-=======
-      { status: 500 }
-    );
-  }
-}
->>>>>>> origin/feat/instyle-whitelabel

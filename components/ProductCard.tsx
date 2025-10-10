@@ -23,24 +23,16 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
-<<<<<<< HEAD
-    const { addToCart, addItem } = useCart() as any;
+  const { addToCart, addItem } = useCart() as any;
 
   const handleAddToCart = async () => {
     setIsAdding(true);
-      // Prefer `addToCart` if available, otherwise fallback to `addItem` from older JS context
-      if (typeof addToCart === 'function') {
-        await addToCart(product);
-      } else if (typeof addItem === 'function') {
-        await addItem(product);
-      }
-=======
-  const { addItem } = useCart();
-
-  const handleAddToCart = async () => {
-    setIsAdding(true);
-    await addItem(product);
->>>>>>> origin/feat/instyle-whitelabel
+    // Prefer `addToCart` if available, otherwise fallback to `addItem` from older JS context
+    if (typeof addToCart === 'function') {
+      await addToCart(product);
+    } else if (typeof addItem === 'function') {
+      await addItem(product);
+    }
     setIsAdding(false);
   };
 
@@ -66,11 +58,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <CardContent className="p-4">
         <CardTitle className="text-lg mb-2">{product.name}</CardTitle>
         <p className="text-gray-600 text-sm mb-4">{product.description}</p>
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> origin/feat/instyle-whitelabel
         <div className="flex items-center justify-between mb-4">
           <span className="text-2xl font-bold text-purple-600">
             {formatPrice(product.price_cents)}
@@ -80,30 +68,18 @@ export default function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
 
-<<<<<<< HEAD
         <Button
-=======
-        <Button 
->>>>>>> origin/feat/instyle-whitelabel
           onClick={handleAddToCart}
           disabled={isAdding || product.inventory === 0}
           className="w-full bg-purple-600 hover:bg-purple-700"
         >
-<<<<<<< HEAD
           {isAdding
             ? 'Adding...'
             : product.inventory === 0
               ? 'Out of Stock'
               : 'Add to Cart'}
-=======
-          {isAdding ? 'Adding...' : product.inventory === 0 ? 'Out of Stock' : 'Add to Cart'}
->>>>>>> origin/feat/instyle-whitelabel
         </Button>
       </CardContent>
     </Card>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/feat/instyle-whitelabel

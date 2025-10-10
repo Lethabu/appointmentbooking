@@ -30,7 +30,6 @@ export default function MultiStepBooking({ services, salonId, tenant, salonName 
   const supabase = createClientComponentClient();
 
   // Fetch salon ID if auth-gated (from app/book logic)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     async function getSalonId() {
       const { data: { session } } = await supabase.auth.getSession();
@@ -44,7 +43,7 @@ export default function MultiStepBooking({ services, salonId, tenant, salonName 
       }
     }
     getSalonId();
-  }, []);
+  }, [salonIdState, supabase]);
 
   const handleServiceSelect = (service: Service) => {
     setSelectedService(service);

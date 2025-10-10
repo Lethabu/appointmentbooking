@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ interface Order {
   status: string;
 }
 
-export default function OrderSuccessPage() {
+function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams ? searchParams.get('order_id') : null;
   const [order, setOrder] = useState<Order | null>(null);
@@ -97,10 +97,10 @@ export default function OrderSuccessPage() {
                   </p>
                 </div>
                 <div className="bg-purple-50 p-4 rounded">
-                  <h3 className="font-semibold mb-2">What&apos;s Next?</h3>
+                  <h3 className="font-semibold mb-2">What's Next?</h3>
                   <ul className="text-sm space-y-1">
-                    <li>• We&apos;ll prepare your items for collection</li>
-                    <li>• You&apos;ll receive a WhatsApp confirmation</li>
+                    <li>• We'll prepare your items for collection</li>
+                    <li>• You'll receive a WhatsApp confirmation</li>
                     <li>• Visit us at InStyle Hair Boutique to collect</li>
                   </ul>
                 </div>
@@ -118,5 +118,13 @@ export default function OrderSuccessPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function OrderSuccessPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+      <OrderSuccessContent />
+    </Suspense>
   );
 }

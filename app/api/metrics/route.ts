@@ -1,55 +1,38 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
+// In a real app, this data would be fetched from a database or analytics service
 export async function GET() {
   const metrics = {
-    timestamp: new Date().toISOString(),
-    commerce: {
-      totalRevenue: 125000, // R1,250
-      totalOrders: 47,
-      avgOrderValue: 26595,
-      conversionRate: 3.2,
-<<<<<<< HEAD
-      cartAbandonmentRate: 68.5,
-=======
-      cartAbandonmentRate: 68.5
->>>>>>> origin/feat/instyle-whitelabel
+    sales: {
+      total: 9850.75,
+      average_per_day: 450.25,
+      top_selling_product: 'Product A',
+      whitelabel_revenue: {
+        'instylehairboutique': 2500.50,
+        'other_tenant': 1500.25
+      }
     },
     performance: {
-      pageLoadTime: 1.2,
-      apiResponseTime: 0.3,
-      uptime: 99.9,
-<<<<<<< HEAD
-      errorRate: 0.1,
-=======
-      errorRate: 0.1
->>>>>>> origin/feat/instyle-whitelabel
+      api_latency_p95: '120ms',
+      uptime: '99.98%',
+      error_rate: '0.02%',
+      database_health: 'ok'
     },
     ai: {
-      chatbotInteractions: 234,
-      resolutionRate: 87.3,
-      avgResponseTime: 2.1,
-<<<<<<< HEAD
-      customerSatisfaction: 4.6,
-=======
-      customerSatisfaction: 4.6
->>>>>>> origin/feat/instyle-whitelabel
+      chatbots_triggered: 1500,
+      intents_recognized: 1350,
+      fallback_rate: 0.1,
+      top_intent: 'CheckBookingStatus'
     },
     social: {
-      instagramFollowers: 1250,
-      tiktokViews: 15600,
-      whatsappMessages: 89,
-<<<<<<< HEAD
-      socialConversions: 12,
-    },
-  };
-
-  return NextResponse.json(metrics);
-}
-=======
-      socialConversions: 12
+      instagram_posts: 45,
+      engagement_rate: '2.5%',
+      top_post_id: 'ig_post_12345',
+      mentions: 250
     }
   };
 
   return NextResponse.json(metrics);
 }
->>>>>>> origin/feat/instyle-whitelabel

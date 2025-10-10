@@ -28,7 +28,8 @@ interface Activity {
 }
 
 export default function AdminDashboard() {
-  const { user, loading } = useAuth();
+  // Call ALL hooks first - must be in same order every render
+  const authResult = useAuth();
   const [metrics, setMetrics] = useState<Metrics>({
     todayBookings: 0,
     pendingDemos: 0,
@@ -38,7 +39,62 @@ export default function AdminDashboard() {
   const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
 
   useEffect(() => {
-    if (loading || !user) return;
+    // Function defined inside useEffect to avoid dependency issues
+    const fetchDashboardData = async () => {
+      if (!authResult || !authResult.user) return;
+
+      try {
+        // Fetch today's bookings
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const appointmentsQuery = query(
+          collection(db, 'appointments'),
+          where('createdAt', '>=', today),
+        );
+        const appointmentsSnapshot = await getDocs(appointmentsQuery);
+        const todayBookings = appointmentsSnapshot.docs;
+
+        // Fetch pending demos
+        const demosQuery = query(
+          collection(db, 'demo_requests'),
+          where('status', '==', 'pending'),
+        );
+        const demosSnapshot = await getDocs(demosQuery);
+        const pendingDemos = demosSnapshot.docs;
+
+        // Calculate revenue (mock calculation)
+        const totalRevenue = todayBookings.length * 500; // Average booking value
+
+        // Recent activity
+        const recentQuery = query(
+          collection(db, 'appointments'),
+          orderBy('createdAt', 'desc'),
+        );
+        const recentSnapshot = await getDocs(recentQuery);
+        const recentActivity = recentSnapshot.docs.slice(0, 10).map((doc) => ({
+          id: doc.id,
+          type: 'booking',
+          clientName: doc.data().clientName || 'Unknown',
+          createdAt: doc.data().createdAt,
+          amount: 500,
+        }));
+
+        setMetrics({
+          todayBookings: todayBookings.length,
+          pendingDemos: pendingDemos.length,
+          totalRevenue,
+          conversionRate: 85, // Mock conversion rate
+        });
+
+        setRecentActivity(recentActivity);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      }
+    };
+
+    // Handle auth checks inside the effect
+    if (!authResult || !authResult.user || authResult.loading) return;
 
     fetchDashboardData();
 
@@ -54,62 +110,20 @@ export default function AdminDashboard() {
     });
 
     return () => unsubscribe();
-  }, [loading, user]);
+  }, [authResult]); // No more dependency issues
 
-  const fetchDashboardData = async () => {
-    try {
-      // Fetch today's bookings
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const appointmentsQuery = query(
-        collection(db, 'appointments'),
-        where('createdAt', '>=', today),
-      );
-      const appointmentsSnapshot = await getDocs(appointmentsQuery);
-      const todayBookings = appointmentsSnapshot.docs;
-
-      // Fetch pending demos
-      const demosQuery = query(
-        collection(db, 'demo_requests'),
-        where('status', '==', 'pending'),
-      );
-      const demosSnapshot = await getDocs(demosQuery);
-      const pendingDemos = demosSnapshot.docs;
-
-      // Calculate revenue (mock calculation)
-      const totalRevenue = todayBookings.length * 500; // Average booking value
-
-      // Recent activity
-      const recentQuery = query(
-        collection(db, 'appointments'),
-        orderBy('createdAt', 'desc'),
-      );
-      const recentSnapshot = await getDocs(recentQuery);
-      const recentActivity = recentSnapshot.docs.slice(0, 10).map((doc) => ({
-        id: doc.id,
-        type: 'booking',
-        clientName: doc.data().clientName || 'Unknown',
-        createdAt: doc.data().createdAt,
-        amount: 500,
-      }));
-
-      setMetrics({
-        todayBookings: todayBookings.length,
-        pendingDemos: pendingDemos.length,
-        totalRevenue,
-        conversionRate: 85, // Mock conversion rate
-      });
-
-      setRecentActivity(recentActivity);
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-    }
-  };
-
-  if (loading) return <div className="p-6">Loading...</div>;
-  if (!user)
+  // Handle loading and authentication states after all hooks
+  if (!authResult || authResult === null) {
+    return <div>Please sign in to access admin dashboard</div>;
+  }
+  if (authResult.loading) {
+    return <div className="p-6">Loading...</div>;
+  }
+  if (!authResult.user) {
     return <div className="p-6">Please sign in to access admin dashboard.</div>;
+  }
+
+  const { user } = authResult; // Destructure after null checks
 
   return (
     <div className="p-6 max-w-7xl mx-auto">

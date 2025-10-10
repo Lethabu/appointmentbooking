@@ -1,53 +1,21 @@
 import { NextResponse } from 'next/server';
-<<<<<<< HEAD
 import { createClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
     const supabase = createClient();
-    
-    // Test database connection
-    const { error } = await supabase
-      .from('tenants')
-      .select('count')
-      .limit(1);
-    
+    const { error } = await supabase.from('health_check').select('*').limit(1);
+
     if (error) {
-      throw error;
+      console.error('Supabase health check failed:', error);
+      return NextResponse.json({ status: 'degraded', database: 'error' }, { status: 503 });
     }
-    
-    return NextResponse.json({
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      services: {
-        database: 'connected',
-        api: 'operational'
-      }
-    });
+
+    return NextResponse.json({ status: 'ok', database: 'ok' });
   } catch (error) {
-    return NextResponse.json({
-      status: 'unhealthy',
-      timestamp: new Date().toISOString(),
-      error: 'Database connection failed'
-    }, { status: 503 });
+    console.error('API health check failed:', error);
+    return NextResponse.json({ status: 'error', message: 'Internal Server Error' }, { status: 500 });
   }
-=======
-
-export async function GET() {
-  const health = {
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    service: 'InStyle Hair Boutique E-Commerce',
-    version: '1.0.0',
-    features: {
-      ecommerce: true,
-      payments: true,
-      ai_chat: true,
-      whatsapp: true,
-      social_sync: true
-    }
-  };
-
-  return NextResponse.json(health);
->>>>>>> origin/feat/instyle-whitelabel
 }

@@ -5,24 +5,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCart } from '@/hooks/useCart';
 
-export default function PayStackCheckout() {
+export default function PayStackCheckout({ tenantId }: { tenantId: string }) {
   const { total, items, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [error, setError] = useState('');
 
   const handleCheckout = async () => {
+    setError('');
     if (!email || !phone) {
-      alert('Please enter your email and phone number');
+      setError('Please enter your email and phone number.');
       return;
     }
 
     setLoading(true);
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> origin/feat/instyle-whitelabel
     try {
       const response = await fetch('/api/paystack/create', {
         method: 'POST',
@@ -33,32 +30,16 @@ export default function PayStackCheckout() {
           amount: total,
           email,
           phone,
-<<<<<<< HEAD
           items: items.map((i) => ({
             id: i.id,
             name: i.name,
             price_cents: i.price_cents,
             quantity: i.quantity,
-=======
-          items: items.map(i => ({ 
-            id: i.id, 
-            name: i.name, 
-            price_cents: i.price_cents,
-            quantity: i.quantity 
->>>>>>> origin/feat/instyle-whitelabel
           })),
-          tenantId: 'ccb12b4d-ade6-467d-a614-7c9d198ddc70',
+          tenantId: tenantId,
         }),
       });
-<<<<<<< HEAD
-
       const data = await response.json();
-
-=======
-      
-      const data = await response.json();
-      
->>>>>>> origin/feat/instyle-whitelabel
       if (data.url) {
         // Redirect to PayStack
         window.location.href = data.url;
@@ -67,7 +48,7 @@ export default function PayStackCheckout() {
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Checkout failed. Please try again.');
+      setError('Checkout failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -87,22 +68,9 @@ export default function PayStackCheckout() {
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
       />
-<<<<<<< HEAD
+      {error && <p className="text-sm text-red-500">{error}</p>}
       <Button
         onClick={handleCheckout}
-        disabled={loading || total === 0}
-        className="w-full bg-green-600 hover:bg-green-700"
-      >
-        {loading
-          ? 'Processing...'
-          : `Pay R${(total / 100).toFixed(0)} with PayStack`}
-      </Button>
-    </div>
-  );
-}
-=======
-      <Button 
-        onClick={handleCheckout} 
         disabled={loading || total === 0}
         className="w-full bg-green-600 hover:bg-green-700"
       >
@@ -111,4 +79,3 @@ export default function PayStackCheckout() {
     </div>
   );
 }
->>>>>>> origin/feat/instyle-whitelabel

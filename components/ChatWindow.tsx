@@ -12,24 +12,14 @@ export default function ChatWindow({ tenantId }: ChatWindowProps) {
 
   const sendMessage = async () => {
     if (!message.trim()) return;
-<<<<<<< HEAD
-
-=======
     
->>>>>>> origin/feat/instyle-whitelabel
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-<<<<<<< HEAD
-        body: JSON.stringify({ message, tenantId }),
-      });
-
-=======
         body: JSON.stringify({ message, tenantId })
       });
       
->>>>>>> origin/feat/instyle-whitelabel
       if (response.ok) {
         setMessage('');
       }
@@ -44,11 +34,7 @@ export default function ChatWindow({ tenantId }: ChatWindowProps) {
         <div className="bg-white rounded-lg shadow-lg w-80 h-96 flex flex-col">
           <div className="p-4 bg-purple-600 text-white rounded-t-lg">
             <h3 className="font-semibold">Nia AI Assistant</h3>
-<<<<<<< HEAD
-            <button
-=======
             <button 
->>>>>>> origin/feat/instyle-whitelabel
               onClick={() => setIsOpen(false)}
               className="absolute top-2 right-2 text-white hover:text-gray-200"
             >
@@ -87,8 +73,4 @@ export default function ChatWindow({ tenantId }: ChatWindowProps) {
       )}
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/feat/instyle-whitelabel

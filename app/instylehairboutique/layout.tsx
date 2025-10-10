@@ -48,7 +48,7 @@ export default function InStyleLayout({
   return (
     <>
       {children}
-      <CustomerJourney />
+      <CustomerJourney tenantId="instylehairboutique" />
     </>
   );
 }

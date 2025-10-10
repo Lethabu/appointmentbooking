@@ -1,7 +1,8 @@
 export enum AgentType {
+  NIA = 'NIA',
+  ECHO = 'ECHO',
   BLAZE = 'BLAZE',
   AURA = 'AURA',
-  ECHO = 'ECHO',
 }
 
 export type ChatMessage = {

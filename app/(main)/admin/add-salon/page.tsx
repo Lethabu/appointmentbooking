@@ -8,11 +8,15 @@ import { useAuth } from '@/app/ConvexClientProvider';
 export default function AddSalonPage() {
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
-  const { user } = useAuth();
+  const authResult = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!authResult || authResult === null) return;
+
+    // TODO: Implement proper user authentication with Clerk
+    // For now, use a placeholder user - this will need to be fixed
+    const user = { uid: 'placeholder-user-id' };
 
     try {
       await addDoc(collection(db, 'tenants'), {

@@ -1,8 +1,5 @@
 'use client';
 
-<<<<<<< HEAD
-'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { useTenantContext } from '@/contexts/tenant-context';
 import { useTheme } from '@/contexts/theme-context';
@@ -14,19 +11,6 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { api } from '@/lib/api';
 import type { Service, Product, BookingFormData } from '@/types';
-=======
-import { useState, useEffect, useCallback } from "react"
-import { useTenantContext } from "@/contexts/tenant-context"
-import { useTheme } from "@/contexts/theme-context"
-import { BookingHeader } from "./booking-header"
-import { ServiceList } from "./service-list"
-import { ProductShowcase } from "./product-showcase"
-import { AppointmentSummary } from "./appointment-summary"
-import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { ErrorBoundary } from "@/components/ui/error-boundary"
-import { api } from "@/lib/api"
-import type { Service, Product, BookingFormData } from "@/types"
->>>>>>> origin/feat/instyle-whitelabel
 
 export function BookingPageContent() {
   const {
@@ -71,36 +55,11 @@ export function BookingPageContent() {
     }
   }, [tenant]);
 
-<<<<<<< HEAD
   useEffect(() => {
     if (tenant) {
       loadData();
     }
   }, [tenant, loadData]);
-=======
-  const loadData = useCallback(async () => {
-    if (!tenant) return
-
-    try {
-      setLoading(true)
-      const [servicesData, productsData] = await Promise.all([api.getServices(tenant.id), api.getProducts(tenant.id)])
-
-      setServices(servicesData)
-      setProducts(productsData)
-      setError(null)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load data")
-    } finally {
-      setLoading(false)
-    }
-  }, [tenant])
-
-  useEffect(() => {
-    if (tenant) {
-      loadData()
-    }
-  }, [tenant, loadData])
->>>>>>> origin/feat/instyle-whitelabel
 
   const handleServiceToggle = (service: Service) => {
     setSelectedServices((prev) => {

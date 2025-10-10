@@ -18,7 +18,6 @@ const config = {
   		colors: {
   			// InStyle Brand Colors
   			instyle: {
-<<<<<<< HEAD
   				primary: '#8b5cf6', // purple-600
   				secondary: '#f59e0b', // amber-600
   				dark: '#1f2937',
@@ -53,13 +52,6 @@ const config = {
   				primary: '#9333ea',
   				secondary: '#f59e0b',
   			},
-=======
-  				primary: '#8b5cf6',
-  				secondary: '#f59e0b',
-  				dark: '#1f2937',
-  				light: '#ffffff'
-  			},
->>>>>>> origin/feat/instyle-whitelabel
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
