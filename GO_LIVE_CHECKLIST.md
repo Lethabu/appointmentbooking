@@ -93,7 +93,7 @@ git push origin main
 #### **1. Run Automated Security Tests (5 minutes)**
 ```bash
 # Navigate to your project directory
-cd c:\Users\Adrin\Documents\MyProjects\appointmentbooking
+cd /path/to/your/project/appointmentbooking
 
 # Install dependencies if needed
 npm install
