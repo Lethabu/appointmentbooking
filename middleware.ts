@@ -7,20 +7,20 @@ import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 // Spec: OWASP A01 - Broken Access Control Prevention
 // ============================================================================
 
-// Tenant mapping configuration - PER-PRD v13.0
+// Tenant mapping configuration - Standardized IDs
 const TENANT_CONFIG: Record<string, { id: string; slug: string; name: string }> = {
   'instylehairboutique.co.za': {
-    id: 'tnt_instyle_7c8f9d00a1bc',
-    slug: 'instylehairboutique',
+    id: 'instyle-001',
+    slug: 'instyle',
     name: 'InStyle Hair Boutique',
   },
   'www.instylehairboutique.co.za': {
-    id: 'tnt_instyle_7c8f9d00a1bc',
-    slug: 'instylehairboutique',
+    id: 'instyle-001',
+    slug: 'instyle',
     name: 'InStyle Hair Boutique',
   },
   'appointmentbooking.co.za': {
-    id: 'tnt_platform_default',
+    id: 'platform-001',
     slug: 'platform',
     name: 'Appointment Booking Platform',
   },
@@ -102,7 +102,7 @@ export async function middleware(request: NextRequest) {
   // ========================================================================
   // STEP 6: Rewrite URL for tenant-specific paths (excluding API routes)
   // ========================================================================
-  if (!pathname.startsWith('/api/') && !pathname.startsWith(`/${tenant.slug}`)) {
+  if (!pathname.startsWith('/api/') && !pathname.startsWith(`/${tenant.slug}`) && tenant.slug !== 'platform') {
     url.pathname = `/${tenant.slug}${pathname}`;
   }
 

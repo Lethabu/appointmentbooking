@@ -1,36 +1,54 @@
-## Firebase Initialization Example
+# AppointmentBooking — Developer Quickstart
 
-```js
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+## Purpose
+Multi-tenant appointment booking SaaS. This repo follows Spec-Driven Development (SDD): specs and acceptance tests are the source of truth.
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-	apiKey: "AIzaSyBgRQnAI4-vz7ZWQobkA2FvbF_Fg2dwmkI",
-	authDomain: "appointmentbookings-459617.firebaseapp.com",
-	projectId: "appointmentbookings-459617",
-	storageBucket: "appointmentbookings-459617.firebasestorage.app",
-	messagingSenderId: "676754877412",
-	appId: "1:676754877412:web:98602600cd8ff9a7c6f5f1",
-	measurementId: "G-CC32G09BYR"
-};
+## Prereqs
+- Node 20+, npm
+- Supabase account and project
+- Vercel account for deployment
+- Optional: `ts-node`, `playwright` for E2E
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-```
+## Setup
+1. Clone the repo
+2. Copy `.env.example` to `.env` and fill your values.
+3. Create the database in Supabase and run migrations:
+   ```bash
+   supabase db push --project-ref your-ref
+   # or run SQL files in supabase/migrations
+   ```
+4. Install:
+   ```bash
+   npm ci
+   ```
+5. Start dev server:
+   ```bash
+   npm run dev
+   ```
 
-# The Platform
+## Bootstrap a tenant (dev)
 
-A multi-tenant appointment booking SaaS platform built with **Next.js**, **Supabase**, **AWS RDS**, and AI agent integration.
+* Build TS if needed, then run:
+  ```bash
+  node dist/scripts/bootstrapTenant.js "InStyle Hair" instyle admin@instyle.co.za
+  ```
+  or `ts-node scripts/bootstrapTenant.ts` in dev.
 
-## Structure
-- `your-platform-repo`: Core booking platform (frontend + backend).
-- `your-platform-agent`: AI agent for automation, reminders, and analytics.
+## Tests
+
+* Unit: `npm test`
+* E2E (Playwright): configure `STAGING_URL` and run `npx playwright test`.
+
+## Contributing / SDD
+
+* Write/expand spec in `docs/specs` before implementing features.
+* Add acceptance tests that fail before implementing the feature, then implement until tests pass.
+
+## Useful scripts
+
+* `npm run lint` — run linters
+* `npm run format` — run prettier
+* `npm run build` — build for production
 
 ## Deployment
 - Main platform: [appointmentbooking.co.za](https://appointmentbooking.co.za)
