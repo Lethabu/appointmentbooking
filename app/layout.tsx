@@ -4,6 +4,7 @@ import { AppProviders } from '@/components/providers';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
 import ChatWindow from '@/components/ChatWindow';
+import CookieConsentBanner from '@/components/CookieConsentBanner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
           <main className="min-h-screen flex-grow">{children}</main>
           <Footer />
           <ChatWindow tenantId={'default'} />
+          <CookieConsentBanner />
         </AppProviders>
       </body>
     </html>

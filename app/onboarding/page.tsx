@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 import { useRouter } from 'next/navigation';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase/client';
@@ -13,6 +16,11 @@ export default function OnboardingPage() {
 
   const handleOnboarding = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!auth) {
+      console.error('Firebase auth not initialized');
+      return;
+    }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);

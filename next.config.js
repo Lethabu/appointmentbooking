@@ -23,11 +23,6 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
-
-  experimental: {
-    optimizeCss: true,
-    scrollRestoration: true,
-  },
   async headers() {
     return [
       {
@@ -79,6 +74,8 @@ nextConfig.webpack = (config, { isServer }) => {
     config.ignoreWarnings = [
       /Critical dependency: the request of a dependency is an expression/,
       /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/,
+      /A Node.js API is used \(process.versions at line: 35\) which is not supported in the Edge Runtime/,
+      /A Node.js API is used \(process.version at line: 24\) which is not supported in the Edge Runtime/,
     ];
   }
   return config;

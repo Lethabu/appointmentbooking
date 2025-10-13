@@ -97,10 +97,10 @@ function OrderSuccessContent() {
                   </p>
                 </div>
                 <div className="bg-purple-50 p-4 rounded">
-                  <h3 className="font-semibold mb-2">What's Next?</h3>
+                  <h3 className="font-semibold mb-2">What&apos;s Next?</h3>
                   <ul className="text-sm space-y-1">
-                    <li>• We'll prepare your items for collection</li>
-                    <li>• You'll receive a WhatsApp confirmation</li>
+                    <li>• We&apos;ll prepare your items for collection</li>
+                    <li>• You&apos;ll receive a WhatsApp confirmation</li>
                     <li>• Visit us at InStyle Hair Boutique to collect</li>
                   </ul>
                 </div>
