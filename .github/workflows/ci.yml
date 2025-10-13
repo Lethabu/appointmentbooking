@@ -139,6 +139,8 @@ jobs:
   build:
     name: 🏗️ Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [quality, security, test]
     steps:
       - name: 📥 Checkout code
