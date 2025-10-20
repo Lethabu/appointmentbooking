@@ -1,0 +1,96 @@
+{
+  "name": "Nia – WhatsApp Booking Agent",
+  "nodes": [
+    {
+      "parameters": { "path": "nia/whatsapp", "httpMethod": "POST" },
+      "name": "WhatsApp Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "messages": {
+          "system": "You are Nia, Instyle Hair Boutique’s friendly AI booking assistant. Use South African English, emojis, and a warm tone. Always check Google Calendar before confirming slots. If no match, offer alternatives.",
+          "user": "={{$json.Body}}"
+        }
+      },
+      "name": "OpenAI Nia",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": "tenants",
+        "columns": ["id"],
+        "filter": {
+          "column": "subdomain",
+          "operator": "eq",
+          "value": "{{$json.From}}"
+        }
+      },
+      "name": "GetTenantId",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "operation": "runSql",
+        "sql": "SELECT id,name,duration_min,price_cents FROM services WHERE tenant_id='{{$node.GetTenantId.json.tenant_id}}' ORDER BY category,name"
+      },
+      "name": "Supabase Get Services",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "calendarId": "{{$node.GetTenantId.json.google_calendar}}"
+      },
+      "name": "Google Calendar FreeBusy",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.AISENSY_API_URL}}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "headerAuth": {
+          "name": "Authorization",
+          "value": "Bearer {{$env.AISENSY_API_KEY}}"
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{$json.From}}"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.reply}}"
+            }
+          ]
+        }
+      },
+      "name": "Aisensy WhatsApp Reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1050, 300]
+    }
+  ],
+  "connections": {
+    "WhatsApp Webhook": { "main": [["OpenAI Nia"]] },
+    "OpenAI Nia": { "main": [["GetTenantId"]] },
+    "GetTenantId": { "main": [["Supabase Get Services"]] },
+    "Supabase Get Services": { "main": [["Google Calendar FreeBusy"]] },
+    "Google Calendar FreeBusy": { "main": [["Aisensy WhatsApp Reply"]] }
+  }
+}

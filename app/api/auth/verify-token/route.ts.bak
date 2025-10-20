@@ -1,0 +1,24 @@
+export const dynamic = 'force-dynamic';
+import { NextRequest, NextResponse } from 'next/server';
+import { firebaseAdmin } from '@/lib/firebase/server';
+
+export async function POST(req: NextRequest) {
+  let token: string | undefined;
+  try {
+    const body = await req.json();
+    token = body?.token;
+  } catch (err) {
+    return new NextResponse('Invalid JSON', { status: 400 });
+  }
+
+  if (!token) {
+    return new NextResponse('Missing token', { status: 400 });
+  }
+
+  try {
+    const decodedToken = await firebaseAdmin.auth().verifyIdToken(token);
+    return NextResponse.json({ decodedToken });
+  } catch (error) {
+    return new NextResponse('Unauthorized', { status: 401 });
+  }
+}

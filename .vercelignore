@@ -1,0 +1,68 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Build outputs
+.next
+out
+dist
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Development files
+.git
+.gitignore
+README.md
+docs/
+__tests__/
+e2e/
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Temporary files
+.temp
+.cache
+.swc
+
+# Database files
+*.db
+*.sqlite
+
+# Backup files
+backups/
+
+# Scripts (except essential ones)
+scripts/
+!scripts/deploy-vercel.js
+!scripts/setup-vercel-env.js
+
+# Large directories
+.bmad-core/
+.clinerules/
+.continue/
+.files/
+.gemini/
+.git-rewrite/
+.roo/
+.specify/
+workers/
+whatsapp-mcp/

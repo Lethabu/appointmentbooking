@@ -1,0 +1,375 @@
+From af469e31167f10d6427670f4a4ab34aee69d58ee Mon Sep 17 00:00:00 2001
+From: thabangt01 <thabangt01@gmail.com>
+Date: Mon, 22 Sep 2025 10:15:30 +0000
+Subject: [PATCH] feat: Fix Clerk CORS issue and improve middleware
+
+This commit addresses a CORS issue with the Clerk.js script by adding a proxy rewrite rule to next.config.js.
+
+It also replaces the existing middleware with a more robust version to prevent issues with static assets.
+
+Finally, it includes minor formatting and content changes to schema.sql and app/instylehairboutique/page.tsx.
+---
+ .gitignore                       |   1 +
+ app/instylehairboutique/page.tsx |   2 +-
+ middleware.ts                    | 139 ++++++++++++++++++++++++++++---
+ middleware.ts.backup             | 136 ------------------------------
+ next.config.js                   |   9 ++
+ schema.sql                       |   2 +-
+ 6 files changed, 139 insertions(+), 150 deletions(-)
+ delete mode 100644 middleware.ts.backup
+
+diff --git a/.gitignore b/.gitignore
+index 395b79f..22b4e36 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -57,3 +57,4 @@ node_modules/
+ /generated/prisma
+ .vercel
+ .env*.local
++.idx/
+diff --git a/app/instylehairboutique/page.tsx b/app/instylehairboutique/page.tsx
+index 671db77..7cd1cf8 100644
+--- a/app/instylehairboutique/page.tsx
++++ b/app/instylehairboutique/page.tsx
+@@ -1,7 +1,7 @@
+ export default function InstylePage() {
+   return (
+     <div style={{minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+-      <h1 style={{fontSize: '3rem', fontWeight: 'bold'}}>Instyle Hair Boutique</h1>
++      <h1 style={{fontSize: '3rem', fontWeight: 'bold'}}>Instyle Hair Boutique - Welcome</h1>
+     </div>
+   );
+ }
+\ No newline at end of file
+diff --git a/middleware.ts b/middleware.ts
+index d5a39a3..a39059e 100644
+--- a/middleware.ts
++++ b/middleware.ts
+@@ -1,21 +1,136 @@
++// =============================================================================
++// FIXED MIDDLEWARE.TS - Resolves MIDDLEWARE_INVOCATION_FAILED Error
++// =============================================================================
++
+ import { NextRequest, NextResponse } from 'next/server';
++import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+ 
+-export function middleware(request: NextRequest) {
+-  const url = request.nextUrl;
+-  const hostname = request.headers.get('host') || '';
+-  const pathname = url.pathname;
++// Define protected routes matcher
++const isProtectedRoute = createRouteMatcher([
++  '/dashboard(.*)',
++  '/admin(.*)',
++  '/api/protected(.*)'
++]);
+ 
+-  // Only handle tenant domains, ignore everything else
+-  if (hostname === 'instylehairboutique.co.za' || hostname === 'www.instylehairboutique.co.za') {
+-    const rewrittenPath = `/instylehairboutique${pathname}`;
+-    return NextResponse.rewrite(new URL(rewrittenPath, request.url));
+-  }
++// Define tenant configuration - simplified and edge-runtime safe
++const getTenantConfig = (hostname: string) => {
++  // Remove any subdomain and check for exact matches
++  const cleanHostname = hostname.replace('www.', '');
+   
+-  return NextResponse.next();
+-}
++  switch (cleanHostname) {
++    case 'instylehairboutique.co.za':
++      return {
++        tenant: 'instyle',
++        rewrite: '/instyle'
++      };
++    default:
++      return null;
++  }
++};
++
++// Main middleware function
++export default clerkMiddleware(async (auth, req: NextRequest) => {
++  try {
++    const { pathname, search } = req.nextUrl;
++    const hostname = req.headers.get('host') || '';
++    
++    console.log(`[Middleware] Processing: ${hostname}${pathname}`);
++
++    // Skip middleware for static assets and certain API routes
++    if (
++      pathname.startsWith('/_next/') ||
++      pathname.startsWith('/favicon.ico') ||
++      pathname.startsWith('/api/webhooks/') ||
++      pathname.includes('.') && !pathname.includes('/api/') ||
++      pathname === '/robots.txt' ||
++      pathname === '/sitemap.xml'
++    ) {
++      console.log(`[Middleware] Skipping static asset: ${pathname}`);
++      return NextResponse.next();
++    }
++
++    // Get tenant configuration
++    const tenantConfig = getTenantConfig(hostname);
++    
++    if (tenantConfig) {
++      console.log(`[Middleware] Tenant detected: ${tenantConfig.tenant}`);
++      
++      // Handle protected routes
++      if (isProtectedRoute(req)) {
++        try {
++          await auth.protect();
++        } catch (error) {
++          console.log(`[Middleware] Auth protection failed: ${error}`);
++          // Return to sign-in page
++          const signInUrl = new URL('/sign-in', req.url);
++          signInUrl.searchParams.set('redirect_url', req.url);
++          return NextResponse.redirect(signInUrl);
++        }
++      }
++      
++      // Create rewrite URL
++      const rewriteUrl = new URL(`${tenantConfig.rewrite}${pathname}${search}`, req.url);
++      
++      console.log(`[Middleware] Rewriting to: ${rewriteUrl.pathname}`);
++      
++      // Create response with rewrite
++      const response = NextResponse.rewrite(rewriteUrl);
++      
++      // Add tenant headers for API consumption
++      response.headers.set('x-tenant', tenantConfig.tenant);
++      response.headers.set('x-original-host', hostname);
++      response.headers.set('x-pathname', pathname);
++      
++      return response;
++    }
++
++    // Handle www redirects for main domain
++    if (hostname.startsWith('www.') && !tenantConfig) {
++      const redirectUrl = new URL(req.url);
++      redirectUrl.hostname = hostname.replace('www.', '');
++      
++      console.log(`[Middleware] WWW redirect: ${redirectUrl.toString()}`);
++      return NextResponse.redirect(redirectUrl, 301);
++    }
++
++    // Default handling for main domain
++    if (isProtectedRoute(req)) {
++      try {
++        await auth.protect();
++      } catch (error) {
++        const signInUrl = new URL('/sign-in', req.url);
++        signInUrl.searchParams.set('redirect_url', req.url);
++        return NextResponse.redirect(signInUrl);
++      }
++    }
++    
++    console.log(`[Middleware] Default handling: ${pathname}`);
++    return NextResponse.next();
++
++  } catch (error) {
++    console.error('[Middleware] Error:', error);
++    
++    // Return a proper error response instead of throwing
++    return new NextResponse(
++      JSON.stringify({ 
++        error: 'Middleware error', 
++        message: error instanceof Error ? error.message : 'Unknown error',
++        path: req.nextUrl.pathname 
++      }),
++      { 
++        status: 500,
++        headers: {
++          'Content-Type': 'application/json',
++        },
++      }
++    );
++  }
++});
+ 
++// Simplified and safer matcher configuration
+ export const config = {
+   matcher: [
+-    '/((?!_next|api|favicon.ico|.*\\.).*)',
++    // Match all paths except static files
++    '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)',
+   ]
+ };
+\ No newline at end of file
+diff --git a/middleware.ts.backup b/middleware.ts.backup
+deleted file mode 100644
+index 2e5b358..0000000
+--- a/middleware.ts.backup
++++ /dev/null
+@@ -1,136 +0,0 @@
+-// =============================================================================
+-// FIXED MIDDLEWARE.TS - Resolves MIDDLEWARE_INVOCATION_FAILED Error
+-// =============================================================================
+-
+-import { NextRequest, NextResponse } from 'next/server';
+-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+-
+-// Define protected routes matcher
+-const isProtectedRoute = createRouteMatcher([
+-  '/dashboard(.*)',
+-  '/admin(.*)',
+-  '/api/protected(.*)'
+-]);
+-
+-// Define tenant configuration - simplified and edge-runtime safe
+-const getTenantConfig = (hostname: string) => {
+-  // Remove any subdomain and check for exact matches
+-  const cleanHostname = hostname.replace('www.', '');
+-  
+-  switch (cleanHostname) {
+-    case 'instylehairboutique.co.za':
+-      return {
+-        tenant: 'instyle',
+-        rewrite: '/instyle'
+-      };
+-    default:
+-      return null;
+-  }
+-};
+-
+-// Main middleware function
+-export default clerkMiddleware(async (auth, req: NextRequest) => {
+-  try {
+-    const { pathname, search } = req.nextUrl;
+-    const hostname = req.headers.get('host') || '';
+-    
+-    console.log(`[Middleware] Processing: ${hostname}${pathname}`);
+-
+-    // Skip middleware for static assets and certain API routes
+-    if (
+-      pathname.startsWith('/_next/') ||
+-      pathname.startsWith('/favicon.ico') ||
+-      pathname.startsWith('/api/webhooks/') ||
+-      pathname.includes('.') && !pathname.includes('/api/') ||
+-      pathname === '/robots.txt' ||
+-      pathname === '/sitemap.xml'
+-    ) {
+-      console.log(`[Middleware] Skipping static asset: ${pathname}`);
+-      return NextResponse.next();
+-    }
+-
+-    // Get tenant configuration
+-    const tenantConfig = getTenantConfig(hostname);
+-    
+-    if (tenantConfig) {
+-      console.log(`[Middleware] Tenant detected: ${tenantConfig.tenant}`);
+-      
+-      // Handle protected routes
+-      if (isProtectedRoute(req)) {
+-        try {
+-          await auth.protect();
+-        } catch (error) {
+-          console.log(`[Middleware] Auth protection failed: ${error}`);
+-          // Return to sign-in page
+-          const signInUrl = new URL('/sign-in', req.url);
+-          signInUrl.searchParams.set('redirect_url', req.url);
+-          return NextResponse.redirect(signInUrl);
+-        }
+-      }
+-      
+-      // Create rewrite URL
+-      const rewriteUrl = new URL(`${tenantConfig.rewrite}${pathname}${search}`, req.url);
+-      
+-      console.log(`[Middleware] Rewriting to: ${rewriteUrl.pathname}`);
+-      
+-      // Create response with rewrite
+-      const response = NextResponse.rewrite(rewriteUrl);
+-      
+-      // Add tenant headers for API consumption
+-      response.headers.set('x-tenant', tenantConfig.tenant);
+-      response.headers.set('x-original-host', hostname);
+-      response.headers.set('x-pathname', pathname);
+-      
+-      return response;
+-    }
+-
+-    // Handle www redirects for main domain
+-    if (hostname.startsWith('www.') && !tenantConfig) {
+-      const redirectUrl = new URL(req.url);
+-      redirectUrl.hostname = hostname.replace('www.', '');
+-      
+-      console.log(`[Middleware] WWW redirect: ${redirectUrl.toString()}`);
+-      return NextResponse.redirect(redirectUrl, 301);
+-    }
+-
+-    // Default handling for main domain
+-    if (isProtectedRoute(req)) {
+-      try {
+-        await auth.protect();
+-      } catch (error) {
+-        const signInUrl = new URL('/sign-in', req.url);
+-        signInUrl.searchParams.set('redirect_url', req.url);
+-        return NextResponse.redirect(signInUrl);
+-      }
+-    }
+-    
+-    console.log(`[Middleware] Default handling: ${pathname}`);
+-    return NextResponse.next();
+-
+-  } catch (error) {
+-    console.error('[Middleware] Error:', error);
+-    
+-    // Return a proper error response instead of throwing
+-    return new NextResponse(
+-      JSON.stringify({ 
+-        error: 'Middleware error', 
+-        message: error instanceof Error ? error.message : 'Unknown error',
+-        path: req.nextUrl.pathname 
+-      }),
+-      { 
+-        status: 500,
+-        headers: {
+-          'Content-Type': 'application/json',
+-        },
+-      }
+-    );
+-  }
+-});
+-
+-// Simplified and safer matcher configuration
+-export const config = {
+-  matcher: [
+-    // Match all paths except static files
+-    '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)',
+-  ]
+-};
+diff --git a/next.config.js b/next.config.js
+index 77f113a..7e2e0d5 100644
+--- a/next.config.js
++++ b/next.config.js
+@@ -25,6 +25,15 @@ const nextConfig = {
+         ]
+       }
+     ];
++  },
++  async rewrites() {
++    return [
++      {
++        source: '/:path*',
++        destination: 'https://clerk.accounts.dev/:path*',
++        has: [{ type: 'host', value: 'clerk.appointmentbooking.co.za' }],
++      }
++    ]
+   }
+ };
+ 
+diff --git a/schema.sql b/schema.sql
+index 5709e02..3af321a 100644
+--- a/schema.sql
++++ b/schema.sql
+@@ -322,7 +322,7 @@ BEGIN
+     WHERE prod.salon_id = p_salon_id AND prod.name ILIKE '%' || search_term || '%'
+     LIMIT 10;
+ END;
+-$$ LANGUAGE plpgsql;
++$ LANGUAGE plpgsql;
+ 
+ -- ... other advanced functions like get_platform_stats, get_salon_financials, etc. would go here ...
+ 
+-- 
+2.47.2
+

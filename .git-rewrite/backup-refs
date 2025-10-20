@@ -1,0 +1,14 @@
+2d4fd1e78d1a617036ab8aacde0c9cc0415d2d34 commit	refs/heads/feat/instyle-whitelabel
+e2fbf9627ec049443162a50dc0bad0a679babecc commit	refs/heads/main
+a0ce4fd1fb7e389c4c5241e2a3932f38b921711b commit	refs/remotes/origin/HEAD
+ba2cf951b5608afc8c37a38a6a5d01101d6d7c9b commit	refs/remotes/origin/backup-before-cleanup-20251006_203550
+bc1772228e03caff82f3644d51ab429fbadf062c commit	refs/remotes/origin/dependabot/pip/ai-agent/pip-512858e340
+2d4fd1e78d1a617036ab8aacde0c9cc0415d2d34 commit	refs/remotes/origin/feat/instyle-whitelabel
+a81cf0e22337827cbb91574de56aa4fe0c3bfcdc commit	refs/remotes/origin/feature/instyle-whitelabel
+d308f23a7a34b6c1386369b76393093f8de18a1b commit	refs/remotes/origin/fix-payment-api-call
+14069d78d38c977e3c270be8a1b6b6f7f0f812d3 commit	refs/remotes/origin/fix/build-errors
+3ea6e066bc1906feef2fe85cb437fb130c513fb9 commit	refs/remotes/origin/fix/build-errors-and-docs
+a0ce4fd1fb7e389c4c5241e2a3932f38b921711b commit	refs/remotes/origin/main
+7da99ae0c7faf087760494841457fc26495dd084 commit	refs/remotes/origin/master
+e69367bdc6e535661dfa780a8a087a6fe4be3d8a commit	refs/remotes/origin/production-ready-deployment
+866a2c4c77252271d3f62f8d5d1173ab1ed7e850 commit	refs/stash

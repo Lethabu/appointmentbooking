@@ -1,0 +1,15 @@
+/* styles/fonts.css: Font loading with fallbacks for Inter and system fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+body, html {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+}
+
+/* Fallback for font loading failure */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Inter'), local('Inter-Regular');
+  unicode-range: U+000-5FF; /* Basic Latin and Latin-1 Supplement */
+}
