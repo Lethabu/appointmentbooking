@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     // Sync to SuperSaaS
     await axios.post('https://www.supersaas.com/api/bookings.json', {
-      schedule_id: 'Instyle_Hair_Boutique',
+      schedule_id: process.env.SUPERSAAS_SCHEDULE_ID,
       full_name: booking.full_name,
       email: booking.email,
       phone: booking.phone,
