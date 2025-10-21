@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       phone: booking.phone,
       start: booking.scheduled_time
     }, {
-      auth: { username: 'lY4rIwV0BfgGin_KvxdUdQ', password: 'x' }
+      auth: { username: process.env.SUPERSAAS_API_KEY, password: 'x' }
     });
 
     return NextResponse.json({ success: true, id: appt.id });
