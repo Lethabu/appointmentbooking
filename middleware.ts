@@ -16,10 +16,10 @@ export function middleware(request: NextRequest) {
   }
 
   const tenants: Record<string, string> = {
-    'www.instylehairboutique.co.za': 'instyle',
-    'instylehairboutique.co.za': 'instyle',
-    'instyle-hair-boutique.co.za': 'instyle',
-    'www.instyle-hair-boutique.co.za': 'instyle',
+    'www.instylehairboutique.co.za': 'instylehairboutique',
+    'instylehairboutique.co.za': 'instylehairboutique',
+    'instyle-hair-boutique.co.za': 'instylehairboutique',
+    'www.instyle-hair-boutique.co.za': 'instylehairboutique',
   };
   
   const tenantSlug = tenants[hostname.replace('www.', '')];
