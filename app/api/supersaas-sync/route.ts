@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const { data: appt } = await supabase
       .from('appointments')
       .insert({
-        salon_id: 'ccb12b4d-ade6-467d-a614-7c9d198ddc70',
+        salon_id: process.env.INSTYLE_SALON_ID,
         ...booking
       })
       .select()
