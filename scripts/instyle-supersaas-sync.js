@@ -14,9 +14,9 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-const SALON_ID = 'ccb12b4d-ade6-467d-a614-7c9d198ddc70';
-const SSA_KEY = 'lY4rIwV0BfgGin_KvxdUdQ';
-const SSA_SCHEDULE = 'Instyle_Hair_Boutique';
+const SALON_ID = process.env.INSTYLE_SALON_ID;
+const SSA_KEY = process.env.SUPERSAAS_API_KEY;
+const SSA_SCHEDULE = process.env.SUPERSAAS_SCHEDULE_ID;
 
 // Pull from SuperSaaS
 async function pullBookings() {
