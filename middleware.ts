@@ -1,41 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createSupabaseClient } from '@/lib/supabase/middleware';
+import { cookies } from 'next/headers';
 
-// ============================================================================
-// ROUTER UNIFICATION FIX: App Router Optimized Middleware
-// File: middleware.ts
-// Purpose: Resolve routing conflicts and enable multi-tenant functionality
-// ============================================================================
-
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const hostname = request.headers.get('host') || '';
-  
-  // CRITICAL: Bypass all internal, asset, and API paths
-  if (url.pathname.startsWith('/_next') || url.pathname.startsWith('/api') || url.pathname.includes('.')) {
+
+  // Bypass internal, asset, and API paths
+  if (
+    url.pathname.startsWith('/_next') ||
+    url.pathname.startsWith('/api') ||
+    url.pathname.includes('.')
+  ) {
     return NextResponse.next();
   }
 
-  const tenants: Record<string, string> = {
-    'www.instylehairboutique.co.za': 'instylehairboutique',
-    'instylehairboutique.co.za': 'instylehairboutique',
-    'instyle-hair-boutique.co.za': 'instylehairboutique',
-    'www.instyle-hair-boutique.co.za': 'instylehairboutique',
-  };
-  
-  const tenantSlug = tenants[hostname.replace('www.', '')];
+  // Create Supabase client and fetch tenant
+  const cookieStore = cookies();
+  const supabase = createSupabaseClient(cookieStore);
+  const { data: tenant } = await supabase
+    .from('tenants')
+    .select('slug')
+    .or(`custom_domain.eq.${hostname},subdomain.eq.${hostname.split('.')[0]}`)
+    .single();
 
-  if (tenantSlug) {
-    // Rewrite to the App Router dynamic segment path
-    url.pathname = `/${tenantSlug}${url.pathname}`;
+  if (tenant) {
+    // Rewrite to the dynamic tenant path
+    url.pathname = `/${tenant.slug}${url.pathname}`;
     return NextResponse.rewrite(url);
   }
-  
-  // For the main domain, ensure it resolves to the platform pages
-  if (hostname === 'www.appointmentbooking.co.za' || hostname === 'appointmentbooking.co.za') {
-     // Route to platform pages in (main) route group
-     return NextResponse.next();
-  }
 
+  // If no tenant is found, it's a request for the main platform
   return NextResponse.next();
 }
 
