@@ -63,7 +63,7 @@ describe('Multi-Tenant Security Tests', () => {
       .select('*');
     
     // Should return empty array or error due to RLS
-    expect(data).toBeFalsy();
+    expect(data).toEqual([]);
   });
 
   test('Tenant context function exists and works', async () => {
