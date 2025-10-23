@@ -1,10 +1,10 @@
-// app/[tenant]/layout.tsx
-
+import { Metadata } from 'next';
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { TenantHeader } from '@/components/layout/TenantHeader';
 import { TenantFooter } from '@/components/layout/TenantFooter';
 import { notFound } from 'next/navigation';
+import CustomerJourney from '@/components/CustomerJourney';
 
 interface TenantLayoutProps {
   params: { tenant: string };
@@ -46,6 +46,69 @@ function createServerSupabaseClient() {
   );
 }
 
+// Generate metadata for tenant pages
+export async function generateMetadata({ params }: TenantLayoutProps): Promise<Metadata> {
+  const supabase = createServerSupabaseClient();
+  const { data: tenant } = await supabase
+    .from('tenants')
+    .select('name, description') // Add other metadata fields as needed
+    .eq('slug', params.tenant)
+    .single();
+
+  if (params.tenant === 'instylehairboutique') {
+    return {
+      title: 'InStyle Hair Boutique - Premium Hair Services & Products',
+      description: 'Professional hair installations, treatments, and premium products in South Africa. Book appointments and shop online with ZAR payments.',
+      keywords: 'hair salon, hair extensions, maphondo, hair treatment, south africa, hair products, booking',
+      openGraph: {
+        title: 'InStyle Hair Boutique - Premium Hair Services',
+        description: 'Professional hair services and premium products. Book online or shop our collection.',
+        url: 'https://instylehairboutique.co.za',
+        siteName: 'InStyle Hair Boutique',
+        images: [
+          {
+            url: '/tenants/instyle/og-image.png',
+            width: 1200,
+            height: 630,
+            alt: 'InStyle Hair Boutique',
+          },
+        ],
+        locale: 'en_ZA',
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'InStyle Hair Boutique',
+        description: 'Premium hair services and products in South Africa',
+        images: ['/tenants/instyle/og-image.png'],
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
+      },
+    };
+  }
+
+  if (!tenant) {
+    return {
+      title: 'Page Not Found',
+      description: 'The page you are looking for does not exist.',
+    };
+  }
+
+  return {
+    title: `${tenant.name} - Book Appointments`,
+    description: tenant.description || `Book your next appointment with ${tenant.name}.`,
+  };
+}
+
 export default async function TenantLayout({ params, children }: TenantLayoutProps) {
   const supabase = createServerSupabaseClient();
 
@@ -79,7 +142,10 @@ export default async function TenantLayout({ params, children }: TenantLayoutPro
     };
   }
 
+import { TenantProviders } from '@/components/TenantProviders';
+
   return (
+    <TenantProviders>
     <div className="flex flex-col min-h-screen">
       <TenantHeader 
         salonSlug={params.tenant}
@@ -95,6 +161,8 @@ export default async function TenantLayout({ params, children }: TenantLayoutPro
         brandName={theme.brand_name || tenant.name}
         footerHtml={theme.footer_html}
       />
+      <CustomerJourney tenantId={params.tenant} />
     </div>
+    </TenantProviders>
   );
 }

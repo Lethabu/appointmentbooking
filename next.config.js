@@ -47,19 +47,6 @@ const nextConfig = {
       {
         source: '/tenants/:tenant/:asset*',
         destination: '/tenants/:tenant/:asset*'
-      },
-      // Legacy tenant redirects to unified [tenant] route
-      {
-        source: '/instylehairboutique/:path*',
-        destination: '/instyle/:path*'
-      },
-      {
-        source: '/instyle-hair-boutique/:path*',
-        destination: '/instyle/:path*'
-      },
-      {
-        source: '/instyle/:path*',
-        destination: '/instyle/:path*'
       }
     ];
   },

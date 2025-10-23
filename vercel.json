@@ -8,17 +8,10 @@
       "maxDuration": 30
     }
   },
-  "redirects": [
-    {
-      "source": "/instylehairboutique/:path*",
-      "destination": "/instyle/:path*",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     {
-      "source": "/instyle/:path*",
-      "destination": "/instyle/:path*"
+      "source": "/((?!api/|_next/|_static/|_vercel|assets/|favicon.ico|sitemap.xml|robots.txt|sw.js|workbox-.*$).*)",
+      "destination": "/:path"
     }
   ],
   "headers": [

@@ -15,14 +15,12 @@ export function AppProviders({ children }: { children: ReactNode }) {
     <ClerkProvider>
       <CSPostHogProvider>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <ConvexClientProvider>
-            <CartProvider>
-              {children}
-              <Toaster />
-              <SonnerToaster />
-              <Debug />
-            </CartProvider>
-          </ConvexClientProvider>
+          <CartProvider>
+            {children}
+            <Toaster />
+            <SonnerToaster />
+            <Debug />
+          </CartProvider>
         </ThemeProvider>
       </CSPostHogProvider>
     </ClerkProvider>
