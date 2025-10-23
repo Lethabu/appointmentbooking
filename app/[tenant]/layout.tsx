@@ -142,7 +142,10 @@ export default async function TenantLayout({ params, children }: TenantLayoutPro
     };
   }
 
+import { TenantProviders } from '@/components/TenantProviders';
+
   return (
+    <TenantProviders>
     <div className="flex flex-col min-h-screen">
       <TenantHeader 
         salonSlug={params.tenant}
@@ -160,5 +163,6 @@ export default async function TenantLayout({ params, children }: TenantLayoutPro
       />
       <CustomerJourney tenantId={params.tenant} />
     </div>
+    </TenantProviders>
   );
 }

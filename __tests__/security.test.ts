@@ -89,7 +89,7 @@ describe('Multi-Tenant Security Tests', () => {
   });
 
   test('Services are tenant-isolated', async () => {
-    await supabase.rpc('set__context', { tenant_id: 'test-tenant-1' });
+    await supabase.rpc('set_tenant_context', { tenant_id: 'test-tenant-1' });
     
     const { data, error } = await supabase
       .from('services')
