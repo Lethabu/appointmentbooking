@@ -30,7 +30,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  // If no tenant is found, it's a request for the main platform
+  // Explicitly rewrite the main domain to the root to resolve the 404
+  if (hostname === 'appointmentbooking.co.za' || hostname === 'www.appointmentbooking.co.za') {
+    url.pathname = `/`;
+    return NextResponse.rewrite(url);
+  }
+
+  // Fallback for any other case
   return NextResponse.next();
 }
 
