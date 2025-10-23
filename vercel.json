@@ -8,12 +8,6 @@
       "maxDuration": 30
     }
   },
-  "rewrites": [
-    {
-      "source": "/((?!api/|_next/|_static/|_vercel|assets/|favicon.ico|sitemap.xml|robots.txt|sw.js|workbox-.*$).*)",
-      "destination": "/:path"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
