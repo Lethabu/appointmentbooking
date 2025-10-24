@@ -8,10 +8,11 @@
       "maxDuration": 30
     }
   },
-  "rewrites": [
+  "redirects": [
     {
-      "source": "/((?!api/|_next/static/|_next/image|favicon.ico).*)",
-      "destination": "/"
+      "source": "/",
+      "destination": "https://www.google.com",
+      "permanent": false
     }
   ],
   "headers": [
