@@ -339,7 +339,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ initialData, services
       service_id,
       staff_id,
       datetime,
-      time: '', // TODO: Set actual time value if available
       status: status as 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'no_show',
       price: service?.price || 0,
       service_name: service?.name || '',

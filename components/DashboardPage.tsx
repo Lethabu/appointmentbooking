@@ -14,7 +14,7 @@ const DashboardPage: FC = () => {
     setHost(window.location.host);
   }, []);
 
-  const { data: tenant } = useTenant(host || 'localhost');
+  const { tenant } = useTenant(host || 'localhost');
 
   const { data: dashboardData, isLoading, error } = useQuery({
     queryKey: ['dashboardData', tenant?.id],

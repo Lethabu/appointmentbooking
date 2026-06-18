@@ -1,40 +1,25 @@
 'use client';
 
 import { useEffect } from 'react';
-import posthog from 'posthog-js';
-import { useUser } from '@clerk/nextjs';
 import { useCart } from '@/hooks/useCart';
 
-// This component could accept the tenantId as a prop
-export default function CustomerJourney({ tenantId }: { tenantId: string }) {
+export default function CustomerJourney() {
   const { items, total } = useCart();
-  const { user } = useUser();
-
-  const abandonmentTimeout = parseInt(process.env.NEXT_PUBLIC_ABANDONMENT_TIMEOUT_MS || '300000', 10);
 
   useEffect(() => {
     // Track customer journey events
-    const trackEvent = (event: string, properties?: Record<string, any>) => {
-      const eventData = {
-        ...properties,
-        tenantId: tenantId, // Add tenant context to all events
-        userId: user?.id,
-      };
-      console.log('Tracking Event:', event, eventData); // For debugging
-      posthog.capture(event, eventData);
+    const trackEvent = (event: string, data?: any) => {
+      console.log('Customer Journey:', event, data);
+      // In production: send to analytics
     };
 
-    if (user) {
-      posthog.identify(user.id, { email: user.primaryEmailAddress?.emailAddress, name: user.fullName });
-    }
-
     // Page view tracking
-    trackEvent('page_viewed', { page_path: window.location.pathname });
+    trackEvent('page_view', { page: window.location.pathname });
 
     // Cart abandonment tracking
     if (items.length > 0) {
       const abandonmentTimer = setTimeout(() => {
-        trackEvent('cart_abandoned', { // Changed event name for clarity
+        trackEvent('cart_abandoned', {
           items: items.length,
           value: total,
         });
@@ -44,18 +29,16 @@ export default function CustomerJourney({ tenantId }: { tenantId: string }) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            tenantId: tenantId,
-            // Get phone number from the authenticated user session
-            // The exact property depends on your Clerk user metadata setup
-            clientPhone: user?.primaryPhoneNumber?.toString(),
+            tenantId: 'instylehairboutique',
+            clientPhone: '+27123456789', // Get from user session
             cartItems: items,
           }),
         });
-      }, abandonmentTimeout);
+      }, 300000); // 5 minutes
 
       return () => clearTimeout(abandonmentTimer);
     }
-  }, [items, total, abandonmentTimeout, tenantId, user]);
+  }, [items, total]);
 
   return null; // Invisible tracking component
 }

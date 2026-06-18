@@ -1,30 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Placeholder for social posting service
-async function postToInstagram(caption: string, media?: any) {
-  console.log('Posting to Instagram:', { caption, media });
-  return { success: true, postId: 'mock_ig_123' };
-}
-
 export async function POST(request: NextRequest) {
   try {
-    const { tenantId, platform, caption, media } = await request.json();
+    const body = await request.json();
+    const { tenantId, platform, caption, media } = body;
 
-    console.log('Social post webhook received:', { tenantId, platform });
-
-    if (platform === 'instagram') {
-      await postToInstagram(caption, media);
-    }
-    // Add other platforms here if needed
-    // else if (platform === 'facebook') { ... }
+    console.log('Social post webhook:', { tenantId, platform, caption });
 
     return NextResponse.json({
       success: true,
-      message: `Social post to ${platform} processed`,
+      message: 'Social post processed',
     });
-
   } catch (error) {
-    console.error('Social post webhook error:', error);
-    return NextResponse.json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+    console.error('Social webhook error:', error);
+    return NextResponse.json(
+      { error: 'Failed to process social post' },
+      { status: 500 },
+    );
   }
 }

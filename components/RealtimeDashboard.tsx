@@ -20,14 +20,14 @@ interface Appointment {
 }
 
 export default function RealtimeDashboard() {
-  const authResult = useAuth();
+  const { user } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!authResult || !authResult.user) return;
+    if (!user) return;
 
-    authResult.user.getIdTokenResult().then((tokenResult: any) => {
+    user.getIdTokenResult().then((tokenResult) => {
       const tenantId = tokenResult.claims.tenantId;
 
       if (!tenantId) return;
@@ -50,7 +50,7 @@ export default function RealtimeDashboard() {
 
       return () => unsubscribe();
     });
-  }, [authResult]);
+  }, [user]);
 
   if (loading) return <div>Loading dashboard...</div>;
 

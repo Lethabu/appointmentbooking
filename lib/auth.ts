@@ -10,7 +10,7 @@ export interface AuthUser {
 }
 
 export async function getCurrentUser(): Promise<AuthUser> {
-  const { userId } = await auth()
+  const { userId } = auth()
   if (!userId) {
     throw new NextResponse('Unauthorized', { status: 401 })
   }

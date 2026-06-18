@@ -6,7 +6,7 @@ import { httpsCallable } from 'firebase/functions';
 import { useAuth } from '@/app/ConvexClientProvider';
 
 export default function AiChat({ tenantId }: { tenantId: string }) {
-  const authResult = useAuth();
+  const { user } = useAuth();
   const [messages, setMessages] = useState<
     Array<{ role: string; content: string }>
   >([]);
@@ -14,9 +14,7 @@ export default function AiChat({ tenantId }: { tenantId: string }) {
   const [loading, setLoading] = useState(false);
 
   const sendMessage = async () => {
-    if (!input.trim() || !authResult || !authResult.user) return;
-
-    const { user } = authResult;
+    if (!input.trim() || !user) return;
 
     const userMessage = { role: 'user', content: input };
     setMessages((prev) => [...prev, userMessage]);

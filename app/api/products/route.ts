@@ -1,39 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase';
-
-// Placeholder for auth middleware
-async function requireAuth(req: NextRequest) {
-  // In a real app, this would validate a JWT or session
-  console.log('Auth check passed (placeholder)');
-  return { user: { id: 'user_123', role: 'customer' } };
-}
+import { createTenantClient } from '@/lib/supabase';
+import { requireCustomerOrAdmin } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
-  try {
-    await requireAuth(request);
+  return requireCustomerOrAdmin(async (request: NextRequest) => {
+    const tenantId = request.headers.get('x-tenant-id') || 'default';
 
-    const supabase = createClient();
-    const { searchParams } = new URL(request.url);
-    const tenantId = searchParams.get('tenantId');
+    try {
+      // Use Strapi if configured, fallback to Supabase
+      if (process.env.STRAPI_URL) {
+        const response = await fetch(
+          `${process.env.STRAPI_URL}/api/products?filters[tenant_id][$eq]=${tenantId}`,
+        );
+        const data = await response.json();
+        return NextResponse.json(data);
+      }
 
-    if (!tenantId) {
-      return NextResponse.json({ error: 'Tenant ID is required' }, { status: 400 });
+      // Fallback to tenant-aware Supabase
+      const supabase = createTenantClient(tenantId);
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('tenant_id', tenantId);
+
+      if (error) throw error;
+
+      return NextResponse.json(data || []);
+    } catch (error: unknown) {
+      console.error('Products API error:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch products' },
+        { status: 500 },
+      );
     }
-
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .eq('tenant_id', tenantId);
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return NextResponse.json({ success: true, products: data });
-
-  } catch (error) {
-    console.error('Get Products API error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    return NextResponse.json({ success: false, error: 'Failed to fetch products', details: errorMessage }, { status: 500 });
-  }
+  })(request);
 }

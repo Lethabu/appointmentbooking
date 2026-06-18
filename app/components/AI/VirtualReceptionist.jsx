@@ -9,7 +9,7 @@ export default function VirtualReceptionist() {
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
-  const { data: tenant } = useTenant();
+  const { tenant } = useTenant();
 
   useEffect(() => {
     if (tenant) {

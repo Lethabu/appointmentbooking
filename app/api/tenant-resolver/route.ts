@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from 'redis';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -12,26 +12,24 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  const redisClient = createClient({
+    url: process.env.REDIS_URL,
+  });
+
+  redisClient.on('error', (err) => console.error('Redis Client Error', err));
+
   try {
-    // Use Supabase instead of Redis for tenant lookup
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    await redisClient.connect();
+    const tenantId = await redisClient.get(hostname);
+    await redisClient.disconnect();
 
-    const { data: tenant, error } = await supabase
-      .from('tenants')
-      .select('id')
-      .eq('domain', hostname)
-      .single();
-
-    if (error || !tenant) {
+    if (!tenantId) {
       return NextResponse.json({ error: 'Tenant not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ tenantId: tenant.id });
+    return NextResponse.json({ tenantId });
   } catch (error) {
-    console.error('Error resolving tenant:', error);
+    console.error('Error connecting to Redis:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 },

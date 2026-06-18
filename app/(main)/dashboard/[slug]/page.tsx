@@ -1,10 +1,9 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createServerSupabaseClient, setTenantContext } from '@/lib/supabase';
 import { RealTimeDashboard } from '@/components/dashboard/real-time-dashboard';
 import { notFound } from 'next/navigation';
 
 export default async function DashboardPage({ params }: any) {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createServerSupabaseClient();
 
   // Get tenant by slug
   const { data: tenant } = await supabase
@@ -16,6 +15,8 @@ export default async function DashboardPage({ params }: any) {
   if (!tenant) {
     notFound();
   }
+
+  await setTenantContext(supabase, tenant.id);
 
   return (
     <div className="min-h-screen bg-gray-50">

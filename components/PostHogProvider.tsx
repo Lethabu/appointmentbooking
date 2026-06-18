@@ -9,7 +9,7 @@ const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 if (typeof window !== 'undefined' && posthogKey) {
   posthog.init(posthogKey, {
     api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-    capture_pageview: false, // Disable auto pageview capture, as we capture manually
+    capture_pageview: false, // Disable automatic pageview capture, as we capture manually
   });
 }
 
@@ -28,6 +28,9 @@ export function CSPostHogProvider({ children }: { children?: ReactNode }) {
     }
   }, [user, isSignedIn]);
 
-  // Only wrap with the provider if the key is available
-  return posthogKey ? <PostHogProvider client={posthog}>{children}</PostHogProvider> : <>{children}</>;
+  if (posthogKey) {
+    return <PostHogProvider client={posthog}>{children}</PostHogProvider>;
+  } else {
+    return <>{children}</>;
+  }
 }

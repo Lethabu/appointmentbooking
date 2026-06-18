@@ -1,25 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { firebaseAdmin } from '@/lib/firebase/server';
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
+  const { token } = await req.json();
+
+  if (!token) {
+    return new NextResponse('Missing token', { status: 400 });
+  }
+
   try {
-    if (!firebaseAdmin) {
-      return NextResponse.json({ error: 'Firebase not configured' }, { status: 503 });
-    }
-
-    const body = await request.json();
-    const token = body?.token;
-
-    if (!token) {
-      return NextResponse.json({ error: 'Missing token' }, { status: 400 });
-    }
-
     const decodedToken = await firebaseAdmin.auth().verifyIdToken(token);
-    return NextResponse.json({ decodedToken }, { status: 200 });
+    return NextResponse.json({ decodedToken });
   } catch (error) {
-    if (error instanceof SyntaxError) {
-      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
-    }
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return new NextResponse('Unauthorized', { status: 401 });
   }
 }

@@ -4,7 +4,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'InStyle Hair Boutique',
     short_name: 'InStyle',
-    description: 'Premium hair services and products - Book appointments and shop online',
+    description:
+      'Premium hair services and products - Book appointments and shop online',
     start_url: '/instylehairboutique',
     display: 'standalone',
     background_color: '#ffffff',

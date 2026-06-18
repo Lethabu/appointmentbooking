@@ -23,16 +23,11 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
-  const { addToCart, addItem } = useCart() as any;
+  const { addItem } = useCart();
 
   const handleAddToCart = async () => {
     setIsAdding(true);
-    // Prefer `addToCart` if available, otherwise fallback to `addItem` from older JS context
-    if (typeof addToCart === 'function') {
-      await addToCart(product);
-    } else if (typeof addItem === 'function') {
-      await addItem(product);
-    }
+    await addItem(product);
     setIsAdding(false);
   };
 

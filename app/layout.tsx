@@ -1,37 +1,103 @@
 import './globals.css';
+import { CSPostHogProvider } from '@/components/PostHogProvider';
 import { Inter } from 'next/font/google';
-import { AppProviders } from '@/components/providers';
-import { Navigation } from '@/components/layout/Navigation';
-import { Footer } from '@/components/layout/Footer';
-import ChatWindow from '@/components/ChatWindow';
-import CookieConsentBanner from '@/components/CookieConsentBanner';
+import { headers } from 'next/headers';
+import dynamic from 'next/dynamic';
+import { Analytics } from '@vercel/analytics/react';
+import { ClerkProvider } from '@clerk/nextjs';
+
+// Import components directly for server components
+import ConvexClientProvider from './ConvexClientProvider';
+import { Toaster } from '@/components/ui/toaster';
+import { Toaster as SonnerToaster } from '@/components/ui/sonner';
+import { CartProvider } from '@/app/context/CartContext';
+import Providers from './providers';
+import Debug from '@/components/Debug';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata = {
-  metadataBase: new URL(process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
-  title: 'AppointmentBooking SaaS Platform',
-  description: 'Multi-tenant booking and commerce platform for salon businesses',
-};
+// Force dynamic rendering to ensure headers() is available
+export const dynamic = 'force-dynamic';
 
-export default function RootLayout({
+// Helper function to detect tenant from headers
+async function getTenantFromHeaders(): Promise<string | null> {
+  const headersList = await headers();
+  const host = headersList.get('host') || '';
+  const xTenant = headersList.get('x-tenant-id');
+
+  // Check x-tenant header first (set by middleware)
+  if (xTenant) {
+    return xTenant;
+  }
+
+  // Check hostname for tenant domains
+  if (host.includes('instylehairboutique.co.za') || 
+      host.includes('instylehairboutique') ||
+      host === 'www.instylehairboutique.co.za') {
+    return 'instyle';
+  }
+
+  return null;
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const tenant = await getTenantFromHeaders();
+
+  // For tenant domains, use minimal wrapper without platform branding
+  if (tenant) {
+    return (
+      <html lang="en">
+        <head>
+          <meta name="referrer" content="strict-origin-when-cross-origin" />
+        </head>
+        <body className={inter.className}>
+          <ClerkProvider>
+            <CSPostHogProvider>
+              <Providers>
+                <ConvexClientProvider>
+                  <CartProvider>
+                    {/* NO PLATFORM HEADER/FOOTER FOR TENANTS */}
+                    {children}
+                    <Toaster />
+                    <SonnerToaster />
+                    <Debug />
+                  </CartProvider>
+                </ConvexClientProvider>
+              </Providers>
+            </CSPostHogProvider>
+            <Analytics />
+          </ClerkProvider>
+        </body>
+      </html>
+    );
+  }
+
+  // For main platform domain, use full platform layout
   return (
     <html lang="en">
       <head>
-        <meta name="referrer" content="strict-origin-when-cross-origin" />
+          <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
       <body className={inter.className}>
-        <AppProviders>
-          <Navigation />
-          <main className="min-h-screen flex-grow">{children}</main>
-          <Footer />
-          <ChatWindow tenantId={'default'} />
-          <CookieConsentBanner />
-        </AppProviders>
+        <ClerkProvider>
+          <CSPostHogProvider>
+            <Providers>
+              <ConvexClientProvider>
+                <CartProvider>
+                  {children}
+                  <Toaster />
+                  <SonnerToaster />
+                  <Debug />
+                </CartProvider>
+              </ConvexClientProvider>
+            </Providers>
+          </CSPostHogProvider>
+          <Analytics />
+        </ClerkProvider>
       </body>
     </html>
   );

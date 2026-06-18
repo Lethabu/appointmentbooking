@@ -10,7 +10,10 @@ export function TenantFooter({ brandName, footerHtml }: TenantFooterProps) {
         {footerHtml ? (
           <div dangerouslySetInnerHTML={{ __html: footerHtml }} />
         ) : (
-          <p>&copy; {new Date().getFullYear()} {brandName || 'All Rights Reserved'}</p>
+          <p>
+            &copy; {new Date().getFullYear()}{' '}
+            {brandName || 'All Rights Reserved'}
+          </p>
         )}
       </div>
     </footer>

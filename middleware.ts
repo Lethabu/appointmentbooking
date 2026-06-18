@@ -1,41 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseClient } from '@/lib/supabase/middleware';
-import { cookies } from 'next/headers';
+import { firebaseAuthMiddleware } from './lib/firebase/middleware';
 
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const hostname = request.headers.get('host') || '';
+  const pathname = url.pathname;
 
-  // Bypass internal, asset, and API paths
-  if (
-    url.pathname.startsWith('/_next') ||
-    url.pathname.startsWith('/api') ||
-    url.pathname.includes('.')
-  ) {
-    return NextResponse.next();
+  let response: NextResponse;
+
+  // Protect API routes with Firebase Auth
+  if (pathname.startsWith('/api/')) {
+    response = await firebaseAuthMiddleware(request);
+  } else {
+    response = NextResponse.next();
   }
 
-  // Create Supabase client and fetch tenant
-  const cookieStore = cookies();
-  const supabase = createSupabaseClient(cookieStore);
-  const { data: tenant } = await supabase
-    .from('tenants')
-    .select('slug')
-    .or(`custom_domain.eq.${hostname},subdomain.eq.${hostname.split('.')[0]}`)
-    .single();
-
-  if (tenant) {
-    // Rewrite to the dynamic tenant path
-    url.pathname = `/${tenant.slug}${url.pathname}`;
-    return NextResponse.rewrite(url);
+  // Ignore static assets
+  if (pathname.startsWith('/_next') || pathname.includes('.')) {
+    return response;
   }
 
-  // If no tenant is found, it's a request for the main platform
-  return NextResponse.next();
+  // Handle tenant domains - route to tenant pages
+  if (hostname === 'instylehairboutique.co.za' || hostname === 'www.instylehairboutique.co.za') {
+    // Set the tenant header for the layout to read
+    response.headers.set('x-tenant-id', 'instyle');
+    const rewrittenPath = `/instylehairboutique${pathname}`;
+    return NextResponse.rewrite(new URL(rewrittenPath, request.url));
+  }
+  
+  return response;
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.).*)',
-  ],
+    '/((?!_next|favicon.ico|.*\\.).*)',
+  ]
 };

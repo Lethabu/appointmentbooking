@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ interface Order {
   status: string;
 }
 
-function OrderSuccessContent() {
+export default function OrderSuccessPage() {
   const searchParams = useSearchParams();
   const orderId = searchParams ? searchParams.get('order_id') : null;
   const [order, setOrder] = useState<Order | null>(null);
@@ -118,13 +118,5 @@ function OrderSuccessContent() {
         </Card>
       </div>
     </div>
-  );
-}
-
-export default function OrderSuccessPage() {
-  return (
-    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
-      <OrderSuccessContent />
-    </Suspense>
   );
 }

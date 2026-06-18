@@ -1,65 +1,98 @@
-// Validate environment variables at build time
-try {
-  require('./lib/env.ts');
-} catch (error) {
-  console.error('Environment validation failed:', error.message);
-  process.exit(1);
-}
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   compress: true,
-  trailingSlash: false,
+
+  
+
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,
   },
+
   images: {
     domains: [
       'images.unsplash.com',
       'cdn-instyle',
       'instylehairboutique.co.za',
       'www.instylehairboutique.co.za',
-      'appointmentbooking.co.za',
-      'localhost',
-      'fonts.gstatic.com',
-      'fonts.googleapis.com'
+      'firebasestorage.googleapis.com',
     ],
     formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 86400,
-    dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
+    minimumCacheTTL: 60 * 60 * 24 * 7, // 1 week
   },
+
   async headers() {
     return [
       {
-        source: '/tenants/:tenant/:asset*',
+        source: '/_next/static/(.*)',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-          { key: 'X-Content-Type-Options', value: 'nosniff' }
-        ]
-      }
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, HEAD, OPTIONS',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin',
+          },
+        ],
+      },
     ];
   },
+
+  async redirects() {
+    return [
+      {
+        source: '/demo',
+        destination: '/book-demo',
+        permanent: true,
+      },
+      {
+        source: '/booking',
+        destination: '/book-appointment',
+        permanent: true,
+      },
+    ];
+  },
+
   async rewrites() {
     return [
       {
-        source: '/tenants/:tenant/:asset*',
-        destination: '/tenants/:tenant/:asset*'
-      }
+        source: '/:path*',
+        destination: 'https://clerk.accounts.dev/:path*',
+        has: [{ type: 'host', value: 'clerk.appointmentbooking.co.za' }],
+      },
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap',
+      },
+      {
+        source: '/robots.txt',
+        destination: '/api/robots',
+      },
     ];
   },
-  swcMinify: true,
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production'
-  },
-  typescript: {
-    ignoreBuildErrors: false
-  },
-  eslint: {
-    ignoreDuringBuilds: false
-  }
 };
 
 module.exports = nextConfig;
@@ -69,8 +102,6 @@ nextConfig.webpack = (config, { isServer }) => {
     config.ignoreWarnings = [
       /Critical dependency: the request of a dependency is an expression/,
       /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/,
-      /A Node.js API is used \(process.versions at line: 35\) which is not supported in the Edge Runtime/,
-      /A Node.js API is used \(process.version at line: 24\) which is not supported in the Edge Runtime/,
     ];
   }
   return config;

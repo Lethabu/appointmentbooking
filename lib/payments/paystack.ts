@@ -40,12 +40,3 @@ interface PaystackResponse {
     access_code: string;
   };
 }
-
-export function verifyPaystackSignature(payload: any, signature: string | null): boolean {
-  if (!signature) return false;
-  const crypto = require('crypto');
-  const secret = process.env.PAYSTACK_SECRET_KEY!;
-  if (!secret) return false;
-  const expectedSignature = crypto.createHmac('sha512', secret).update(JSON.stringify(payload)).digest('hex');
-  return signature === expectedSignature;
-}

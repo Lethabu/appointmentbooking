@@ -5,21 +5,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCart } from '@/hooks/useCart';
 
-export default function PayStackCheckout({ tenantId }: { tenantId: string }) {
+export default function PayStackCheckout() {
   const { total, items, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [error, setError] = useState('');
 
   const handleCheckout = async () => {
-    setError('');
     if (!email || !phone) {
-      setError('Please enter your email and phone number.');
+      alert('Please enter your email and phone number');
       return;
     }
 
     setLoading(true);
+
     try {
       const response = await fetch('/api/paystack/create', {
         method: 'POST',
@@ -36,10 +35,12 @@ export default function PayStackCheckout({ tenantId }: { tenantId: string }) {
             price_cents: i.price_cents,
             quantity: i.quantity,
           })),
-          tenantId: tenantId,
+          tenantId: 'ccb12b4d-ade6-467d-a614-7c9d198ddc70',
         }),
       });
+
       const data = await response.json();
+
       if (data.url) {
         // Redirect to PayStack
         window.location.href = data.url;
@@ -48,7 +49,7 @@ export default function PayStackCheckout({ tenantId }: { tenantId: string }) {
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      setError('Checkout failed. Please try again.');
+      alert('Checkout failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -68,13 +69,14 @@ export default function PayStackCheckout({ tenantId }: { tenantId: string }) {
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
       />
-      {error && <p className="text-sm text-red-500">{error}</p>}
       <Button
         onClick={handleCheckout}
         disabled={loading || total === 0}
         className="w-full bg-green-600 hover:bg-green-700"
       >
-        {loading ? 'Processing...' : `Pay R${(total / 100).toFixed(0)} with PayStack`}
+        {loading
+          ? 'Processing...'
+          : `Pay R${(total / 100).toFixed(0)} with PayStack`}
       </Button>
     </div>
   );
